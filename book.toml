@@ -1,0 +1,6 @@
+[book]
+authors = ["Henry Bergström"]
+language = "en"
+multilingual = false
+src = "src"
+title = "Glimåkra Webbutvecklare - Kursbook"
