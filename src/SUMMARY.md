@@ -1,6 +1,6 @@
 # Innehållsförteckning
 
-# Kapitel 1: Introduktion till Webbutveckling
+# Innehållsförteckning
 - [Introduktion till Webbutveckling](./kapitel_1/index.md)
   - [Vad är webbutveckling?](./kapitel_1/vad-ar-webbutveckling.md)
   - [Webbens historia och framtid](./kapitel_1/webbens-historia-och-framtid.md)
@@ -86,3 +86,7 @@
   - [Dokumentation](./kapitel_12/documentation.md)
   - [Portfolio](./kapitel_12/portfolio.md)
   - [Karriärutveckling](./kapitel_12/career.md)
+
+# Design
+- [Grudnläggande Design Teori](./Design/index.md)
+  - [Typografi](./Design/typografi.md)
