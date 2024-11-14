@@ -7,14 +7,14 @@ Funktioner är en av de mest grundläggande byggstenarna i JavaScript. De låter
 En funktion är ett block av kod som utför en specifik uppgift. Den kan ta emot indata (parametrar), bearbeta dem och returnera ett resultat.
 
 Syntax för att deklarera en funktion:
-```js
+```javascript,editable 
 function funktionNamn(parameter1, parameter2) {
     // Kod som ska utföras
     return resultat;
 }
 ```
 Exempel:
-```js
+```javascript,editable 
 function addera(a, b) {
     return a + b;
 }
@@ -28,7 +28,7 @@ console.log(summa); // Output: 8
 - Argument är de faktiska värden som skickas till funktionen när den anropas.
 
 Exempel:
-```js
+```javascript,editable 
 function greet(namn) {
     console.log("Hej, " + namn + "!");
 }
@@ -42,7 +42,7 @@ Här är `namn` en parameter, och `"Alice"` är ett argument.
 Förutom att deklarera funktioner med function-nyckelordet kan du också skapa anonyma funktioner (funktioner utan namn) och lagra dem i variabler.
 
 Exempel:
-```js
+```javascript,editable 
 let multiplicera = function(a, b) {
     return a * b;
 };
@@ -54,14 +54,14 @@ console.log(multiplicera(4, 5)); // Output: 20
 Introducerade i ES6, arrow functions ger ett kortare syntax för att skriva funktioner.
 
 Syntax:
-```js
+```javascript,editable 
 let funktionNamn = (parameter1, parameter2) => {
     // Kod som ska utföras
     return resultat;
 };
 ```
 Exempel:
-```js
+```javascript,editable 
 let kvadrera = x => x * x;
 
 console.log(kvadrera(5)); // Output: 25
@@ -81,7 +81,7 @@ Det finns huvudsakligen två typer av scope i JavaScript:
 Variabler deklarerade utanför några funktioner eller block har globalt scope och kan nås från vilken plats som helst i koden.
 
 Exempel:
-```js
+```javascript,editable 
 var globalVariabel = "Jag är global";
 
 function visaGlobal() {
@@ -96,7 +96,7 @@ console.log(globalVariabel); // Output: Jag är global
 Variabler deklarerade inom en funktion är lokala och kan endast nås inom den funktionen.
 
 Exempel:
-```js
+```javascript,editable 
 function minFunktion() {
     var lokalVariabel = "Jag är lokal";
     console.log(lokalVariabel);
@@ -110,7 +110,7 @@ console.log(lokalVariabel); // Fel: lokalVariabel är inte definierad
 Med introduktionen av let och const i ES6 har JavaScript fått stöd för block scope. Det betyder att variabler deklarerade med let eller const endast är tillgängliga inom det block där de deklarerades (mellan {}).
 
 Exempel:
-```js
+```javascript,editable 
 if (true) {
     let blockVariabel = "Inne i blocket";
     console.log(blockVariabel); // Output: Inne i blocket
@@ -123,7 +123,7 @@ console.log(blockVariabel); // Fel: blockVariabel är inte definierad
 Hoisting är JavaScripts defaultbeteende där variabel- och funktionsdeklarationer flyttas till toppen av deras scope innan koden exekveras.
 
 Exempel med funktion hoisting:
-```js
+```javascript,editable 
 greet("Bob");
 
 function greet(namn) {
@@ -135,7 +135,7 @@ function greet(namn) {
 Funktionen kan anropas innan den definieras på grund av hoisting.
 
 Exempel med variabel hoisting:
-```js
+```javascript,editable 
 console.log(mittNamn); // Output: undefined
 var mittNamn = "Eva";
 console.log(mittNamn); // Output: Eva
@@ -148,7 +148,7 @@ Variabeldeklarationen flyttas upp, men inte tilldelningen. Därför är värdet 
 Du kan ange standardvärden för parametrar i funktioner, vilket används om inget argument ges vid funktionsanropet.
 
 Exempel:
-```js
+```javascript,editable 
 function greet(namn = "Gäst") {
     console.log("Hej, " + namn + "!");
 }
@@ -161,7 +161,7 @@ greet("Carl"); // Output: Hej, Carl!
 En rekursiv funktion är en funktion som anropar sig själv tills ett basfall uppnås.
 
 Exempel: Beräkna fakultet
-```js
+```javascript,editable 
 function fakultet(n) {
     if (n === 0) {
         return 1;
@@ -185,7 +185,7 @@ Fördelar med Funktioner
 
 Skapa en funktion kalkylator som tar tre parametrar: två tal och en operator (+, -, *, /). Funktionen ska utföra operationen och returnera resultatet.
 
-```js
+```javascript,editable 
 function kalkylator(a, b, operator) {
     // Implementera funktionen
 }
@@ -196,7 +196,7 @@ console.log(kalkylator(10, 5, '/')); // Output: 2
 2. ### Omvandla till Arrow Function
 
 Skriv om följande funktion till en arrow function:
-```js
+```javascript,editable 
 function kvadrat(x) { // Skriv om mig
     return x * x;
 }
@@ -209,7 +209,7 @@ console.log(kvadrat(6)); // Output: 36
 
 Vad kommer följande kod att skriva ut?
 
-```js
+```javascript,editable 
 var x = 10;
 
 function foo() {
@@ -223,7 +223,7 @@ console.log(x); // Output: ?
 
 Skapa en rekursiv funktion `fibonacci(n)` som returnerar det n:te numret i Fibonacci-serien.
 
-```js
+```javascript,editable 
 function fibonacci(n) {
     // Implementera funktionen
 }
@@ -233,7 +233,7 @@ console.log(fibonacci(6)); // Output: 8
 
 ## Lösningsförslag
 1. Skapa en Kalkylatorfunktion
-```js
+```javascript,editable 
 function kalkylator(a, b, operator) {
     switch(operator) {
         case '+':
@@ -251,11 +251,11 @@ function kalkylator(a, b, operator) {
 ```
 
 2. Omvanlda till Arrow Function
-```js
+```javascript,editable 
 const kvadrat = x => x * x;
 ```
 3. Utforska Scope
-```js
+```javascript,editable 
 foo(); // Output: 20
 console.log(x); // Output: 10
 ```
@@ -264,7 +264,7 @@ Förklaring:
 - Utanför funktionen är x fortfarande 10, eftersom den globala variabeln inte påverkas av den lokala.
 
 4. Rekursiv Funktion för Fibonacci-serien
-```js
+```javascript,editable 
 function fibonacci(n) {
     if (n <= 1) {
         return n;
