@@ -53,7 +53,7 @@ console.log(person.namn); // Output: Eva
 
 JavaScript har sju primitiva datatyper som används för olika ändamål:
 
-1. String (Text)
+1. __String (Text)__
 ```js
 let text = "Hej världen";
 let name = 'Anna';
@@ -61,7 +61,7 @@ let template = `Välkommen ${name}`;
 ```
 Strings används för all texthantering - användarnamn, meddelanden, HTML-innehåll etc. Kan skapas med enkelfnuttar, dubbelfnuttar eller backticks (för template strings).
 
-2. Number (Numeriska värden)
+2. __Number (Numeriska värden)__
 ```js
 let heltal = 42;
 let decimal = 3.14;
@@ -69,14 +69,14 @@ let negativt = -17;
 ```
 Numbers används för alla numeriska beräkningar - priser, åldrar, matematiska uträkningar, animationer etc. JavaScript har bara en numbertyp som hanterar både heltal och decimaler.
 
-3. Boolean (sant/falskt)
+3. __Boolean (sant/falskt)__
 ```js
 let isLoggedIn = true;
 let isApproved = false;
 ```
 Booleans används för logiska kontroller - användarstatus, formulärvalidering, villkor i if-satser etc. Har endast två möjliga värden: true eller false.
 
-4. Undefined
+4. __Undefined__
 ```js
 let odefinierad;
 let person = {namn: "Anna"};
@@ -86,13 +86,13 @@ console.log(person.namn); // "Anna"
 ```
 Undefined är standardvärdet för variabler som deklarerats men inte tilldelats något värde. Används ofta för att kontrollera om en variabel eller objektegenskap har initialiserats.
 
-5. Null
+5. __Null__
 ```js
 let ingenData = null;
 ```
 `null` används när man explicit vill ange att något saknar värde - t.ex. när en databassökning inte ger några träffar eller när man vill återställa en variabel.
 
-6. Symbol
+6. __Symbol__
 ```js
 let uniktId = Symbol('id');
 let annatId = Symbol('id');
@@ -100,7 +100,7 @@ console.log(uniktId === annatId); // false
 ```
 Symbols skapar garanterat unika identifierare. Används främst i objektegenskaper när man behöver säkerställa att nycklar är unika, särskilt i bibliotek och ramverk.
 
-7. BigInt
+7. __BigInt__
 ```js
 let enormtTal = BigInt(9007199254740991);
 let binartTal = BigInt("0b11111111111111111");
@@ -348,24 +348,24 @@ console.log(typeof "Hej"); // Output: string
 ## Övningar
 
 För att befästa din förståelse, försök lösa följande övningar:
-1.	Variabler och scope:
+1.	__Variabler och scope__:
 - a) Deklarera en variabel `x` med värdet 10 utanför en funktion.
 - b) Inuti en funktion, deklarera en variabel `x` med värdet 20 med hjälp av var.
 - c) Logga värdet av `x` både inuti och utanför funktionen. Vad blir resultatet och varför?
-2.	Primitiva datatyper:
+2.	__Primitiva datatyper__:
 - a) Skapa en variabel av varje primitiv datatyp och logga deras typer med typeof.
 - b) Förklara skillnaden mellan null och undefined.
-3.	Objekt och arrayer:
+3.	__Objekt och arrayer__:
 - a) Skapa ett objekt bil med egenskaperna märke, modell och år.
 - b) Lägg till en metod beskrivning som returnerar en sträng med bilens detaljer.
 - c) Skapa en array garage som innehåller flera bil-objekt.
 - d) Iterera över garage och logga beskrivningen av varje bil.
-4.	Operatorer och uttryck:
+4.	__Operatorer och uttryck__:
 - a) Skriv en funktion som tar två tal som argument och returnerar det större talet utan att använda if...else (använd en ternär operator).
 - b) Förklara vad som händer när du jämför en sträng och ett tal med == respektive ===.
 
 ## Lösningsförslag
-1. Variabler och scope:
+1. __Variabler och scope__:
 ```js
 // a)
 var x = 10;
@@ -382,7 +382,7 @@ console.log("Utanför funktionen:", x); // Output: Utanför funktionen: 10
 ```
 __Förklaring__: Variabeln `x` inuti funktionen är lokal på grund av funktionsscope med var. Den påverkar inte den globala `x`.
 
-2. Primitiva datatyper:
+2. __Primitiva datatyper__:
 ```js
 // a)
 let str = "Hej";
@@ -403,7 +403,7 @@ console.log(typeof stortTal);  // Output: bigint
 ```
 undefined betyder att en variabel är deklarerad men inte har tilldelats ett värde. null är ett explicit inget värde.
 
-3. Objekt och arrayer:
+3. __Objekt och arrayer__:
 ```js
 // a)
 function Bil(brand, modell, year) {
@@ -433,9 +433,9 @@ Volvo XC60 från 2020
 Tesla Model S från 2021
 Audi A4 från 2019
 */
-````
+```
 
-4. Operatorer och uttryck
+4. __Operatorer och uttryck__
 ```js
 // a)
 function max(a, b) {
