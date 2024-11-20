@@ -106,6 +106,9 @@ let enormtTal = BigInt(9007199254740991);
 let binartTal = BigInt("0b11111111111111111");
 ```
 BigInt används när man behöver arbeta med heltal större än 2^53-1. Vanligt vid kryptografi, tidsstämplar i millisekunder eller andra beräkningar med mycket stora tal.
+
+
+
 ### Typkontroll
 Du kan alltid kontrollera en variabels datatyp med typeof:
 ```js
@@ -137,9 +140,8 @@ Att typeof null returnerar "object" är ett historiskt misstag i JavaScript som 
 let test = null;
 console.log(test === null);
 ```
-### Objekt och arrayer
 
-#### Objekt
+### Objekt
 
 Ett objekt är en samling egenskaper, där varje egenskap består av ett nyckel-värde-par.
 ```js

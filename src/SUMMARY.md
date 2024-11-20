@@ -26,7 +26,7 @@
   - [Variabler och datatyper](./kapitel_4/variabler.md)
   - [Funktioner och scope](./kapitel_4/funktioner.md)
   - [Kontrollstrukturer och loopar](./kapitel_4/kontrollstrukturer.md)
-  - [DOM-manipulation](./kapitel_4/dom-manipulation.md)
+  - [DOM-manipulation och Events](./kapitel_4/dom-manipulation-events.md)
   - [Praktiska övningar](./kapitel_4/ovningar.md)
 - [Fortsättning JavaScript](./kapitel_5/index.md)
   - [Asynkron programmering](./kapitel_5/asynkron.md)

@@ -28,7 +28,7 @@ console.log(summa); // Output: 8
 - Argument är de faktiska värden som skickas till funktionen när den anropas.
 
 Exempel:
-```javascript,editable 
+```js 
 function greet(namn) {
     console.log("Hej, " + namn + "!");
 }
