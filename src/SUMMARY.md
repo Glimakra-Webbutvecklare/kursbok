@@ -92,3 +92,4 @@
 # Design
 - [Grudnläggande Design Teori](./Design/index.md)
   - [Typografi](./Design/typografi.md)
+  - [Bildhantering](./Design/bildhantering.md)
