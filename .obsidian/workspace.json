@@ -1,0 +1,170 @@
+{
+  "main": {
+    "id": "dee3eaadb41537d8",
+    "type": "split",
+    "children": [
+      {
+        "id": "ea5067eb5c863c6a",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "6cb01740fb5d720d",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "src/kapitel_10/canvas.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "canvas"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "1bc94cd2100bbc0a",
+    "type": "split",
+    "children": [
+      {
+        "id": "a2c67f3ebc588b0e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "3da742e5c7587296",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "c14e9cdff4910fa8",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "51dd2895a890e0ee",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "f25e0c6c5a8cd68f",
+    "type": "split",
+    "children": [
+      {
+        "id": "6dbddc916fd081f3",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "9bc7dbb39130cbe1",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "src/kapitel_10/canvas.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for canvas"
+            }
+          },
+          {
+            "id": "edb326bc6a3ef713",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "src/kapitel_10/canvas.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from canvas"
+            }
+          },
+          {
+            "id": "c33b10a1ee102622",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "e319a2f9116018c8",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "src/kapitel_10/canvas.md"
+              },
+              "icon": "lucide-list",
+              "title": "Outline of canvas"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "6cb01740fb5d720d",
+  "lastOpenFiles": [
+    "src/kapitel_1/index.md",
+    "src/kapitel_1/installera-verktyg.md"
+  ]
+}
