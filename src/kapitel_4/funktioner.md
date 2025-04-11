@@ -7,14 +7,14 @@ Funktioner är en av de mest grundläggande byggstenarna i JavaScript. De låter
 En funktion är ett block av kod som utför en specifik uppgift. Den kan ta emot indata (parametrar), bearbeta dem och returnera ett resultat.
 
 Syntax för att deklarera en funktion:
-```javascript,editable 
+```javascript 
 function funktionNamn(parameter1, parameter2) {
     // Kod som ska utföras
     return resultat;
 }
 ```
 Exempel:
-```javascript,editable 
+```javascript 
 function addera(a, b) {
     return a + b;
 }
