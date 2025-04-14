@@ -1,301 +1,177 @@
-# Funktioner och scope
+# Funktioner och Scope i JavaScript
 
-Funktioner är en av de mest grundläggande byggstenarna i JavaScript. De låter dig kapsla in kod som kan återanvändas, vilket gör ditt program mer modulärt och lättare att underhålla. I detta avsnitt kommer vi att utforska hur man deklarerar och använder funktioner samt förstå begreppet scope (variabelns räckvidd) i JavaScript.
+När vi skriver kod vill vi ofta kunna återanvända vissa kodstycken på flera ställen eller gruppera kod som utför en specifik uppgift. I JavaScript gör vi detta med **funktioner**. Funktioner är en av de mest fundamentala byggstenarna i språket.
 
-## Vad är en funktion?
+Vi behöver också förstå **scope** (räckvidd eller omfång), som bestämmer var i koden våra variabler är tillgängliga.
 
-En funktion är ett block av kod som utför en specifik uppgift. Den kan ta emot indata (parametrar), bearbeta dem och returnera ett resultat.
+**Mål:** Lära oss definiera och anropa funktioner på olika sätt (inklusive arrow functions), förstå skillnaden mellan parametrar och argument, och förstå hur globalt, lokalt och block-scope fungerar för variabler.
 
-Syntax för att deklarera en funktion:
-```javascript 
-function funktionNamn(parameter1, parameter2) {
-    // Kod som ska utföras
-    return resultat;
-}
-```
-Exempel:
-```javascript 
-function addera(a, b) {
-    return a + b;
-}
+## Vad är en Funktion?
 
-let summa = addera(5, 3);
-console.log(summa); // Output: 8
-```
-## Parametrar och Argument
+En funktion är ett namngivet block av kod som är designat för att utföra en specifik uppgift. Funktioner gör koden mer:
 
-- Parametrar är variabler som anges i funktionsdefinitionen.
-- Argument är de faktiska värden som skickas till funktionen när den anropas.
+*   **Återanvändbar:** Istället för att skriva samma kod om och om igen, skriver du den en gång i en funktion och anropar sedan funktionen när du behöver den.
+*   **Modulär:** Bryter ner komplexa problem i mindre, hanterbara delar.
+*   **Läsbar:** Ger koden struktur och gör den lättare att följa.
 
-Exempel:
-```js 
-function greet(namn) {
-    console.log("Hej, " + namn + "!");
+Funktioner kan ta emot indata (via **parametrar**) och kan returnera ett värde (med `return`-nyckelordet).
+
+## Funktionsdeklaration (Function Declaration)
+
+Det klassiska sättet att definiera en funktion.
+
+```javascript
+// Deklaration av funktionen "add"
+function add(num1, num2) { // num1 och num2 är parametrar
+  const sum = num1 + num2;
+  return sum; // Returnerar resultatet
 }
 
-greet("Alice"); // Output: Hej, Alice!
+// Anrop av funktionen med argument (5 och 3)
+let result = add(5, 3);
+console.log(result); // Output: 8
+
+// Anropa igen med andra argument
+console.log( add(10, -2) ); // Output: 8
 ```
-Här är `namn` en parameter, och `"Alice"` är ett argument.
 
-## Anonyma Funktioner och Funktionsuttryck
+*   **`function`:** Nyckelordet som startar deklarationen.
+*   **`add`:** Funktionens namn.
+*   **`(num1, num2)`:** Parameterlistan. Dessa är som lokala variabler inuti funktionen som tar emot värdena som skickas in när funktionen anropas.
+*   **`{ ... }`:** Funktionskroppen, där koden som ska utföras finns.
+*   **`return sum;`:** `return`-satsen specificerar vilket värde funktionen ska "skicka tillbaka" till den plats där den anropades. Om `return` saknas, returnerar funktionen automatiskt `undefined`.
+*   **`add(5, 3)`:** Ett **funktionsanrop (function call)**. Värdena `5` och `3` kallas **argument** och tilldelas till parametrarna `num1` respektive `num2`.
 
-Förutom att deklarera funktioner med function-nyckelordet kan du också skapa anonyma funktioner (funktioner utan namn) och lagra dem i variabler.
+## Funktionsuttryck (Function Expression)
 
-Exempel:
-```javascript,editable 
-let multiplicera = function(a, b) {
-    return a * b;
+Man kan också skapa en funktion och tilldela den till en variabel. Funktionen är då ofta **anonym** (saknar eget namn efter `function`-nyckelordet).
+
+```javascript
+const multiply = function(num1, num2) {
+  return num1 * num2;
+}; // Notera semikolon här eftersom det är en variabeltilldelning
+
+let product = multiply(4, 6);
+console.log(product); // Output: 24
+```
+Skillnaden mot funktionsdeklarationer är subtil och handlar främst om *hoisting* (se nedan). I många fall är de utbytbara.
+
+## Arrow Functions (Pilfunktioner, ES6)
+
+Ett modernare och oftast kortare sätt att skriva funktionsuttryck.
+
+```javascript
+// Lång form
+const subtract = (num1, num2) => {
+  return num1 - num2;
 };
 
-console.log(multiplicera(4, 5)); // Output: 20
-```
-## Arrow Functions (Pilfunktioner)
+// Kort form (om funktionen bara har en return-sats)
+const divide = (num1, num2) => num1 / num2;
 
-Introducerade i ES6, arrow functions ger ett kortare syntax för att skriva funktioner.
+// Ännu kortare form (om funktionen bara har EN parameter)
+const square = num => num * num;
 
-Syntax:
-```javascript,editable 
-let funktionNamn = (parameter1, parameter2) => {
-    // Kod som ska utföras
-    return resultat;
-};
-```
-Exempel:
-```javascript,editable 
-let kvadrera = x => x * x;
-
-console.log(kvadrera(5)); // Output: 25
-```
-Om funktionen endast har en parameter och ett returvärde kan syntaxen förenklas ytterligare.
-
-## Scope (Omfång)
-
-Scope refererar till den del av koden där en variabel är tillgänglig.
-
-Det finns huvudsakligen två typer av scope i JavaScript:
-1.	Global Scope
-2.	Lokalt Scope
-
-### Global Scope
-
-Variabler deklarerade utanför några funktioner eller block har globalt scope och kan nås från vilken plats som helst i koden.
-
-Exempel:
-```javascript,editable 
-var globalVariabel = "Jag är global";
-
-function visaGlobal() {
-    console.log(globalVariabel);
-}
-
-visaGlobal(); // Output: Jag är global
-console.log(globalVariabel); // Output: Jag är global
-```
-### Lokalt Scope
-
-Variabler deklarerade inom en funktion är lokala och kan endast nås inom den funktionen.
-
-Exempel:
-```javascript,editable 
-function minFunktion() {
-    var lokalVariabel = "Jag är lokal";
-    console.log(lokalVariabel);
-}
-
-minFunktion(); // Output: Jag är lokal
-console.log(lokalVariabel); // Fel: lokalVariabel är inte definierad
-```
-## Block Scope med let och const
-
-Med introduktionen av let och const i ES6 har JavaScript fått stöd för block scope. Det betyder att variabler deklarerade med let eller const endast är tillgängliga inom det block där de deklarerades (mellan {}).
-
-Exempel:
-```javascript,editable 
-if (true) {
-    let blockVariabel = "Inne i blocket";
-    console.log(blockVariabel); // Output: Inne i blocket
-}
-console.log(blockVariabel); // Fel: blockVariabel är inte definierad
+console.log(subtract(10, 7)); // Output: 3
+console.log(divide(20, 4));   // Output: 5
+console.log(square(9));     // Output: 81
 ```
 
-## Hoisting
+*   Använder `=>` (pil) istället för `function`-nyckelordet.
+*   Om det bara finns en parameter behövs inga parenteser runt den (`num => ...`).
+*   Om funktionskroppen bara består av en enda `return`-sats kan måsvingarna `{}` och `return`-nyckelordet utelämnas.
+*   Arrow functions har också en viktig skillnad i hur de hanterar `this`-nyckelordet (vilket vi utforskar i senare kapitel), men för enkla funktioner är de ofta ett smidigt alternativ.
 
-Hoisting är JavaScripts defaultbeteende där variabel- och funktionsdeklarationer flyttas till toppen av deras scope innan koden exekveras.
+## Scope: Var är Variabeln Tillgänglig?
 
-Exempel med funktion hoisting:
-```javascript,editable 
-greet("Bob");
+Scope avgör varifrån i koden du kan komma åt en variabel.
 
-function greet(namn) {
-    console.log("Hej, " + namn + "!");
-}
+**1. Global Scope:**
 
-// Output: Hej, Bob!
-```
-Funktionen kan anropas innan den definieras på grund av hoisting.
+*   Variabler deklarerade *utanför* alla funktioner och block (`{}`) är globala.
+*   De kan nås från *var som helst* i din kod (i samma scriptfil eller HTML-sida).
+*   **Undvik globala variabler så mycket som möjligt!** De kan lätt leda till namnkonflikter och göra koden svår att följa och felsöka.
 
-Exempel med variabel hoisting:
-```javascript,editable 
-console.log(mittNamn); // Output: undefined
-var mittNamn = "Eva";
-console.log(mittNamn); // Output: Eva
-```
+    ```javascript
+    const globalMessage = "Detta är globalt";
 
-Variabeldeklarationen flyttas upp, men inte tilldelningen. Därför är värdet undefined innan tilldelningen.
-
-## Parameterar med Standardvärden
-
-Du kan ange standardvärden för parametrar i funktioner, vilket används om inget argument ges vid funktionsanropet.
-
-Exempel:
-```javascript,editable 
-function greet(namn = "Gäst") {
-    console.log("Hej, " + namn + "!");
-}
-
-greet(); // Output: Hej, Gäst!
-greet("Carl"); // Output: Hej, Carl!
-```
-## Rekursiva Funktioner
-
-En rekursiv funktion är en funktion som anropar sig själv tills ett basfall uppnås.
-
-Exempel: Beräkna fakultet
-```javascript,editable 
-function fakultet(n) {
-    if (n === 0) {
-        return 1;
-    } else {
-        return n * fakultet(n - 1);
+    function showMessage() {
+      console.log(globalMessage); // Kan nås inuti funktionen
     }
-}
 
-console.log(fakultet(5)); // Output: 120
-```
-Fördelar med Funktioner
+    showMessage();
+    console.log(globalMessage); // Kan nås även här
+    ```
 
-- Återanvändbarhet: Minska duplicering av kod genom att återanvända funktioner.
-- Modularitet: Dela upp koden i mindre, hanterbara delar.
-- Enkelhet: Gör koden lättare att läsa och underhålla.
-- Testbarhet: Funktioner kan enkelt testas individuellt.
+**2. Lokalt Scope (Funktionsscope):**
 
-## Praktiska Övningar
+*   Variabler deklarerade *inuti* en funktion (med `let`, `const`, eller det äldre `var`) är lokala till den funktionen.
+*   De kan **endast** nås inifrån den funktion där de skapades.
 
-1. ### Skapa en Kalkylatorfunktion
-
-Skapa en funktion kalkylator som tar tre parametrar: två tal och en operator (+, -, *, /). Funktionen ska utföra operationen och returnera resultatet.
-
-```javascript,editable 
-function kalkylator(a, b, operator) {
-    // Implementera funktionen
-}
-
-console.log(kalkylator(10, 5, '+')); // Output: 15
-console.log(kalkylator(10, 5, '/')); // Output: 2
-```
-2. ### Omvandla till Arrow Function
-
-Skriv om följande funktion till en arrow function:
-```javascript,editable 
-function kvadrat(x) { // Skriv om mig
-    return x * x;
-}
-
-console.log(kvadrat(6)); // Output: 36
-```
-
-
-3. ### Utforska Scope
-
-Vad kommer följande kod att skriva ut?
-
-```javascript,editable 
-var x = 10;
-
-function foo() {
-    var x = 20;
-    console.log(x);
-}
-foo(); // Output: ?
-console.log(x); // Output: ?
-```
-4. ### Rekursiv Funktion för Fibonacci-serien
-
-Skapa en rekursiv funktion `fibonacci(n)` som returnerar det n:te numret i Fibonacci-serien.
-
-```javascript,editable 
-function fibonacci(n) {
-    // Implementera funktionen
-}
-
-console.log(fibonacci(6)); // Output: 8
-```
-
-## Lösningsförslag
-1. Skapa en Kalkylatorfunktion
-```javascript,editable 
-function kalkylator(a, b, operator) {
-    switch(operator) {
-        case '+':
-            return a + b;
-        case '-':
-            return a - b;
-        case '*':
-            return a * b;
-        case '/':
-            return a / b;
-        default:
-            return "Ogiltig operator";
+    ```javascript
+    function calculate() {
+      const localSecret = 42;
+      let innerResult = localSecret * 2;
+      console.log("Inuti calculate:", innerResult);
     }
-}
-```
 
-2. Omvanlda till Arrow Function
-```javascript,editable 
-const kvadrat = x => x * x;
-```
-3. Utforska Scope
-```javascript,editable 
-foo(); // Output: 20
-console.log(x); // Output: 10
-```
-Förklaring:
-- Inuti funktionen foo deklareras en lokal variabel x med värdet 20. Denna variabel är endast tillgänglig inom funktionen.
-- Utanför funktionen är x fortfarande 10, eftersom den globala variabeln inte påverkas av den lokala.
+    calculate(); // Output: Inuti calculate: 84
+    // console.log(localSecret); // Fel! localSecret är inte definierad här.
+    // console.log(innerResult); // Fel! innerResult är inte definierad här.
+    ```
 
-4. Rekursiv Funktion för Fibonacci-serien
-```javascript,editable 
-function fibonacci(n) {
-    if (n <= 1) {
-        return n;
-    } else {
-        return fibonacci(n - 1) + fibonacci(n - 2);
+**3. Block Scope (för `let` och `const`):**
+
+*   Variabler deklarerade med `let` och `const` *inuti* ett block (kod omgiven av måsvingar `{}`, t.ex. i en `if`-sats eller `for`-loop) är lokala till det blocket.
+*   De kan **endast** nås inifrån det blocket.
+
+    ```javascript
+    if (true) {
+      const blockVar = "Syns bara här";
+      let anotherBlockVar = 100;
+      console.log(blockVar); // Output: Syns bara här
     }
-}
-```
-## Reflektionsfrågor
 
-1.	Varför är det viktigt att förstå skillnaden mellan globalt och lokalt scope?
-Att förstå scope hjälper dig att kontrollera variabelns livslängd och tillgänglighet, vilket minskar risken för namnkonflikter och oväntade beteenden.
-2.	Hur kan användningen av funktioner förbättra läsbarheten i din kod?
-Funktioner gör koden mer organiserad genom att dela upp den i logiska delar. Detta gör det lättare att förstå och underhålla.
-3.	Vad är skillnaden mellan var, let och const när det gäller scope?
-	- `var` har funktionellt scope och är hoisted.
-	- `let` och `const` har block scope och är inte tillgängliga innan de deklareras.
-	- `const` används för konstanter och kan inte reasigneras.
+    // console.log(blockVar); // Fel! blockVar är inte definierad här.
+    // console.log(anotherBlockVar); // Fel!
 
-## Tips och Bästa Praxis
+    // Variabel i loop
+    for (let i = 0; i < 3; i++) {
+      console.log(i); // i är bara tillgänglig här inne
+    }
+    // console.log(i); // Fel! i är inte definierad här.
+    ```
+*   Detta är en stor fördel med `let` och `const` jämfört med `var`, som *inte* har block scope.
 
-- Använd `let` och `const` istället för `var`: För att undvika problem med hoisting och för att bättre kontrollera scope.
-- Namnge funktioner och variabler tydligt: Detta förbättrar koden läsbarhet och underlättar underhåll.
-- Undvik globala variabler: De kan leda till svårspårade buggar.
-- Bryt ner stora funktioner: Om en funktion gör för mycket, dela upp den i mindre funktioner.
+## Hoisting (Lyftning)
+
+JavaScript har ett beteende som kallas hoisting. Det innebär att *deklarationer* av variabler (med `var`) och funktioner (deklarerade med `function`) "flyttas" upp till toppen av sitt scope *innan* koden exekveras.
+
+*   **Funktionsdeklarationer:** Hela funktionen hissas upp, vilket betyder att du kan anropa en funktion *innan* den är definierad i koden.
+    ```javascript
+    hoistedFunction(); // Fungerar!
+
+    function hoistedFunction() {
+      console.log("Jag blev hissad!");
+    }
+    ```
+*   **`var`-variabler:** Endast *deklarationen* hissas, inte *tilldelningen*. Variabeln existerar från början av scopet, men dess värde är `undefined` tills tilldelningsraden nås.
+    ```javascript
+    console.log(myVar); // Output: undefined (inte fel!)
+    var myVar = "Nu har jag ett värde";
+    console.log(myVar); // Output: Nu har jag ett värde
+    ```
+*   **`let` och `const`:** Deklarationerna hissas också, men de initieras *inte*. Att försöka komma åt dem innan deklarationsraden resulterar i ett `ReferenceError` (detta kallas ibland Temporal Dead Zone - TDZ). Detta är oftast ett säkrare beteende än med `var`.
+    ```javascript
+    // console.log(myLet); // Fel! ReferenceError: Cannot access 'myLet' before initialization
+    let myLet = "Värde";
+    ```
+
+**Slutsats om Hoisting:** Känn till att det finns, men skriv din kod som om det inte fanns – deklarera funktioner och variabler innan du använder dem för tydlighets skull. Förlita dig inte på hoisting för `var`.
 
 ## Sammanfattning
-- Funktioner är essentiella för att skapa strukturerad och återanvändbar kod i JavaScript.
-- Scope bestämmer variablernas tillgänglighet och är viktigt för att undvika konflikter.
-- Användning av let och const ger bättre kontroll över variablernas scope och kan förebygga fel.
-- Genom att förstå och korrekt använda funktioner och scope kan du skriva effektivare och mer pålitlig kod.
 
-**Nästa steg**: Fortsätt att öva på att skriva egna funktioner och experimentera med scope för att befästa din förståelse. Prova att skapa små program där du medvetet använder olika typer av variabler och observera hur scope påverkar deras tillgänglighet.
+Funktioner (`function`, funktionsuttryck, arrow functions `=>`) är återanvändbara kodblock som kan ta parametrar och returnera värden. Scope (globalt, lokalt/funktions-, block-) bestämmer var variabler är tillgängliga. `let` och `const` har block scope och är att föredra framför `var`. Hoisting flyttar deklarationer uppåt, men `let` och `const` ger fel om de används före sin deklaration.
+
+I nästa avsnitt tittar vi på hur vi styr kodens flöde med villkorssatser och loopar.
 

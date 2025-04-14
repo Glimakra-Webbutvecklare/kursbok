@@ -1,464 +1,197 @@
-# Intro till Variabler, datatyper och operatorer
+# Variabler och Datatyper i JavaScript
 
-I denna guide kommer vi att gå igenom grunderna i JavaScript, inklusive hur man deklarerar variabler med let, const och var, de primitiva datatyperna, hur man använder objekt och arrayer, samt operatorer och uttryck. Syftet är att ge en tydlig och pedagogisk introduktion med exempel och resultat.
+För att kunna arbeta med information i ett program behöver vi ett sätt att lagra och referera till den. I JavaScript, precis som i de flesta programmeringsspråk, gör vi detta med **variabler**. En variabel är som en namngiven behållare där vi kan spara ett värde (som en siffra, en textsträng, etc.).
 
-## let, const och var
+**Mål:** Lära oss hur man deklarerar variabler med `let` och `const`, förstå de grundläggande (primitiva) datatyperna i JavaScript, samt få en introduktion till de mer komplexa typerna Objekt och Arrayer.
 
-### var
+## Deklarera Variabler: `let` och `const`
 
-`var` är den äldre metoden för att deklarera variabler i JavaScript. Variabler deklarerade med `var` har funktionsscope, vilket innebär att de är tillgängliga inom hela funktionen de är deklarerade i, eller globalt om de deklareras utanför en funktion.
-```js
-var namn = "Alice";
-console.log(namn); // Output: Alice
-```
-Exempel på funktionsscope med var:
-```js
-function greet() {
-    var greeting = "Hej";
-    console.log(greeting);
-}
-greet(); // Output: Hej
-console.log(greeting); // Error: greeting is not defined
-```
-#### let
+I modern JavaScript (ES6 och senare) använder vi främst två nyckelord för att skapa (deklarera) variabler:
 
-`let` introducerades i ES6 och har blockscope, vilket innebär att variabeln endast är tillgänglig inom det block {} där den är deklarerad.
-```js
-let ålder = 30;
-if (true) {
-    let ålder = 25;
-    console.log(ålder); // Output: 25
-}
-console.log(ålder); // Output: 30
-```
-__Förklaring__: Inuti if-blocket deklareras en ny ålder-variabel som endast existerar inom blocket.
+**1. `let`:**
 
-#### const
+*   Används för att deklarera variabler vars värde **kan komma att ändras** senare i koden.
+*   Har **block-scope**, vilket betyder att variabeln bara är tillgänglig inom det kodblock (`{ ... }`) där den deklareras (t.ex. inuti en `if`-sats eller en loop).
 
-`const` används för att deklarera konstanter, dvs. variabler vars värde inte kan ändras efter tilldelning. Precis som let har const blockscope.
-```js
-const PI = 3.14;
-console.log(PI); // Output: 3.14
+    ```javascript
+    let age = 30;
+    console.log("Ålder:", age); // Output: Ålder: 30
 
-// Försök att ändra värdet
-// PI = 3.1415; // Error: Assignment to constant variable.
-```
-__Obs__: Även om själva variabeln är konstant, kan egenskaperna hos ett objekt ändras.
-```js
-const person = { namn: "Bob" };
-person.namn = "Eva";
-console.log(person.namn); // Output: Eva
-```
-### Primitiva datatyper
+    age = 31; // Vi kan ändra värdet på en let-variabel
+    console.log("Ny ålder:", age); // Output: Ny ålder: 31
 
-JavaScript har sju primitiva datatyper som används för olika ändamål:
-
-1. __String (Text)__
-```js
-let text = "Hej världen";
-let name = 'Anna';
-let template = `Välkommen ${name}`;
-```
-Strings används för all texthantering - användarnamn, meddelanden, HTML-innehåll etc. Kan skapas med enkelfnuttar, dubbelfnuttar eller backticks (för template strings).
-
-2. __Number (Numeriska värden)__
-```js
-let heltal = 42;
-let decimal = 3.14;
-let negativt = -17;
-```
-Numbers används för alla numeriska beräkningar - priser, åldrar, matematiska uträkningar, animationer etc. JavaScript har bara en numbertyp som hanterar både heltal och decimaler.
-
-3. __Boolean (sant/falskt)__
-```js
-let isLoggedIn = true;
-let isApproved = false;
-```
-Booleans används för logiska kontroller - användarstatus, formulärvalidering, villkor i if-satser etc. Har endast två möjliga värden: true eller false.
-
-4. __Undefined__
-```js
-let odefinierad;
-let person = {namn: "Anna"};
-console.log(odefinierad); // undefined
-console.log(person.age); // undefined
-console.log(person.namn); // "Anna"
-```
-Undefined är standardvärdet för variabler som deklarerats men inte tilldelats något värde. Används ofta för att kontrollera om en variabel eller objektegenskap har initialiserats.
-
-5. __Null__
-```js
-let ingenData = null;
-```
-`null` används när man explicit vill ange att något saknar värde - t.ex. när en databassökning inte ger några träffar eller när man vill återställa en variabel.
-
-6. __Symbol__
-```js
-let uniktId = Symbol('id');
-let annatId = Symbol('id');
-console.log(uniktId === annatId); // false
-```
-Symbols skapar garanterat unika identifierare. Används främst i objektegenskaper när man behöver säkerställa att nycklar är unika, särskilt i bibliotek och ramverk.
-
-7. __BigInt__
-```js
-let enormtTal = BigInt(9007199254740991);
-let binartTal = BigInt("0b11111111111111111");
-```
-BigInt används när man behöver arbeta med heltal större än 2^53-1. Vanligt vid kryptografi, tidsstämplar i millisekunder eller andra beräkningar med mycket stora tal.
-
-
-
-### Typkontroll
-Du kan alltid kontrollera en variabels datatyp med typeof:
-```js
-let name = "Erik";
-let age = 25;
-let isHappy = true;
-console.log(typeof name);  // "string"
-console.log(typeof age); // "number"
-console.log(typeof ishappy); // "boolean"
-
-```
-
-### Specialfall med typeof
-
-JavaScript har några intressanta specialfall när det gäller `typeof`-operatorn:
-
-```js
-console.log(typeof []); // "object"
-console.log(typeof {}); // "object" 
-console.log(typeof null); // "object"
-```
-Detta kan vara förvirrande eftersom Arrays, Object och null alla är tekniskt sett objekt i JavaScript, därför returnerar `typeof []` `"object"`. För att specifikt kolla om något är en array används istället:
-```js
-Array.isArray([]); // true
-Array.isArray({}); // false
-```
-Att typeof null returnerar "object" är ett historiskt misstag i JavaScript som har behållits för bakåtkompatibilitet. För att kolla om något är null används istället direkt jämförelse:
-```js
-let test = null;
-console.log(test === null);
-```
-
-### Objekt
-
-Ett objekt är en samling egenskaper, där varje egenskap består av ett nyckel-värde-par.
-```js
-let student = {
-    namn: "Karin",
-    ålder: 22,
-    program: "Datavetenskap"
-};
-
-console.log(student.namn); // Output: Karin
-```
-Åtkomst av egenskaper:
-- Punktnotation: `objekt.egenskap`
-- Hakparentesnotation: `objekt["egenskap"]`
-
-### Metod - Funktion kopplad till objekt 
-Man kan tilldela en funktion till ett objekt. Då kallas det en metod.
-```js
-let student = {
-    name: "Karin",
-    age: 22,
-    program: "Datavetenskap"
-    present: function() {
-        console.log(`Hi, my name is ${this.name}. I am ${this.age} years old. I study ${this.program}.`);
+    if (true) {
+      let message = "Inuti blocket";
+      console.log(message); // Output: Inuti blocket
     }
-};
+    // console.log(message); // Fel! message är inte tillgänglig här utanför blocket.
+    ```
 
-student.present(); // Output: Hi, my name is Karin. I am 22 years old. I study Datavetenskap.
-```
+**2. `const` (Constant):**
 
-### Klass - mall för att skapa objekt
-Ofta vill man ha flera objekt av samma typ. I vårt fall flera studenter. Varje student ska ha egenskaperna `name`, `age`, `program` och `present`. 
-Det enda som ska ändras är värdet på egenskapen. Då kan beskriva en mall hur objektet ska se om man skapar en ny.
-Denna mallen kallas en `Class`.
+*   Används för att deklarera variabler vars värde **inte ska ändras** efter att det har satts första gången. Man måste ge variabeln ett värde direkt vid deklarationen.
+*   Har också **block-scope**.
+*   **Använd `const` som standard!** Det gör din kod säkrare och lättare att förstå, eftersom det signalerar att värdet inte är tänkt att ändras. Använd bara `let` när du vet att du *behöver* kunna ändra värdet.
 
-```js
-class Student {
-    // En speciell funktion som beskriver hur argumenten ska kopplas till objektet
-    __contructor(name, age, program) {
-        this.name = name;
-        this.age = age;
-        this.program = program;
-    }
+    ```javascript
+    const name = "Alice";
+    console.log("Namn:", name); // Output: Namn: Alice
 
-    // metod till objektet
-    present() {
-        console.log(`Hi, my name is ${this.name}. I am ${this.age} years old. I study ${this.program}.`);
-    }
-}
+    // name = "Bob"; // Fel! Försök att ändra en konstant ger ett TypeError.
 
-let student1 = new Student("Karin", 22, "Datavetenskap");
-let student2 = new Student("Jimmie", 25, "Biologi");
+    const PI = 3.14159;
+    ```
 
-student1.present(); // Output: Hi, my name is Karin. I am 22 years old. I study Datavetenskap.
-student2.present(); // Output: Hi, my name is Jimmie. I am 25 years old. I study Biologi.
-```
+**Vad hände med `var`?**
 
-### Arrayer
+Du kanske ser äldre JavaScript-kod som använder `var` för att deklarera variabler. `var` fungerar annorlunda än `let` och `const` (den har *function-scope* eller global scope, inte block-scope, och har andra egenheter kring *hoisting*). **Undvik att använda `var` i ny kod.** Håll dig till `let` och `const`.
 
-En array är en ordnad lista över värden, som kan innehålla olika datatyper.
-```js
-let colors = ["Röd", "Grön", "Blå"];
-console.log(colors[0]); // Output: Röd
-console.log(colors[1]); // Output: Grön
-console.log(colors[2]); // Output: Blå
-console.log(colors[3]); // Output: Undefined
-```
-Vanliga arraymetoder:
-- push() - Lägg till element i slutet.
-```js
-colors.push("Gul");
-```
+## Primitiva Datatyper
 
-- pop() - Ta bort det sista elementet.
-```js
-colors.pop();
-```
+JavaScript har flera inbyggda, grundläggande (primitiva) datatyper som representerar olika sorters enkla värden:
 
-- length - Ger antalet element i arrayen.
-```js
-console.log(colors.length); // Output: 3
-```
+1.  **`string` (Sträng):**
+    *   Används för text.
+    *   Skrivs inom enkla (`'`) eller dubbla (`"`) citationstecken.
+    *   **Template Literals (Mallsträngar):** Använder backticks (`` ` ``) och tillåter enklare infogning av variabler (`${variabelNamn}`) och flerradig text.
+        ```javascript
+        let firstName = 'Bob';
+        let lastName = "Smith";
+        let greeting = `Hej, ${firstName} ${lastName}! 
+Välkommen.`; // Använder template literal
+        console.log(greeting);
+        // Output:
+        // Hej, Bob Smith! 
+        // Välkommen.
 
+        console.log(typeof greeting); // Output: string
+        ```
 
-### Operatorer och uttryck
+2.  **`number` (Tal):**
+    *   Används för alla typer av numeriska värden, både heltal och decimaltal.
+    *   JavaScript skiljer inte på heltal (integers) och flyttal (floats) som vissa andra språk.
+    *   Speciella talvärden: `Infinity`, `-Infinity`, `NaN` (Not a Number - resultat av ogiltiga matematiska operationer, t.ex. `0 / 0`).
+        ```javascript
+        let count = 10;
+        let price = 99.50;
+        let temperature = -5;
+        console.log(typeof count); // Output: number
+        console.log(10 / 0); // Output: Infinity
+        console.log("text" * 2); // Output: NaN
+        ```
 
-Aritmetiska operatorer för värden med datatyp `number`
+3.  **`boolean` (Boolesk):**
+    *   Representerar ett logiskt värde: antingen `true` (sant) eller `false` (falskt).
+    *   Används ofta i villkorssatser (`if`) och loopar.
+        ```javascript
+        let isLoggedIn = true;
+        let hasPermission = false;
+        console.log(typeof isLoggedIn); // Output: boolean
+        ```
 
-- Addition (+): Lägger ihop två värden.
-```js
-let summa = 5 + 3; // Output: 8
-```
+4.  **`undefined`:**
+    *   Representerar ett värde som **inte har tilldelats ännu**. Variabler som deklareras med `let` men inte får ett värde direkt blir automatiskt `undefined`.
+        ```javascript
+        let data;
+        console.log(data); // Output: undefined
+        console.log(typeof data); // Output: undefined
+        ```
 
-- Subtraktion (-): Drar ett värde från ett annat.
-```js
-let skillnad = 10 - 2; // Output: 8
-```
+5.  **`null`:**
+    *   Representerar avsiktlig **frånvaro av ett värde**. Det är ett värde man aktivt tilldelar för att indikera att en variabel inte har något (meningsfullt) värde just nu.
+        ```javascript
+        let error = null; // Inget fel har inträffat (än)
+        console.log(error); // Output: null
+        // OBS! typeof null ger "object" - detta är en historisk bugg i JS.
+        console.log(typeof error); // Output: object
+        ```
 
-- Multiplikation (*): Multiplicerar två värden.
-```js
-let produkt = 4 * 2; // Output: 8
-```
+6.  **`symbol` (ES6):**
+    *   Används för att skapa garanterat **unika identifierare**. Används mer sällan i vanlig applikationskod, oftare i bibliotek och ramverk för att undvika namnkonflikter.
+        ```javascript
+        const id1 = Symbol('desc');
+        const id2 = Symbol('desc');
+        console.log(id1 === id2); // Output: false (även om beskrivningen är samma)
+        console.log(typeof id1); // Output: symbol
+        ```
 
-- Division (/): Dividerar ett värde med ett annat.
-```js
-let kvot = 16 / 2; // Output: 8
-```
+7.  **`bigint` (ES2020):**
+    *   Används för att representera heltal som är för stora för att representeras säkert av den vanliga `number`-typen (större än \(2^{53}-1\)). Skapas genom att lägga till `n` i slutet av ett heltal eller använda `BigInt()`-funktionen.
+        ```javascript
+        const veryLargeNumber = 9007199254740991n;
+        const anotherLarge = BigInt("9007199254740992");
+        console.log(typeof veryLargeNumber); // Output: bigint
+        ```
 
-- Modulus (%): Ger resten av en division.
-```js
-let rest = 17 % 3; // Output: 2
-```
+## Komplexa Datatyper: Objekt och Arrayer (Introduktion)
 
+Utöver de primitiva typerna finns två viktiga komplexa datatyper:
 
-### Tilldelningsoperatorer
+**1. `object` (Objekt):**
 
-- Enkel tilldelning (=):
-```js
-let x = 10;
-```
+*   En samling av **egenskaper (properties)**, där varje egenskap är ett **nyckel-värde-par**. Nycklarna är oftast strängar, och värdena kan vara vilken datatyp som helst (inklusive andra objekt eller funktioner).
+*   Används för att representera mer komplexa entiteter med flera relaterade data.
+*   Skapas med måsvingar `{}`.
 
-- Additionstilldelning (+=):
-```js
-x += 5; // Samma som x = x + 5
-```
-
-- Subtraktionstilldelning (-=):
-```js
-x -= 3; // Samma som x = x - 3
-```
-
-
-### Jämförelseoperatorer
-
-- Lika med (==): Jämför värden, oavsett datatyp.
-```js
-console.log(5 == "5"); // Output: true
-```
-
-- Strikt lika med (===): Jämför både värde och datatyp.
-```js
-console.log(5 === "5"); // Output: false
-```
-
-- Inte lika med (!=):
-```js
-console.log(5 != "5"); // Output: false
-```
-
-- Strikt inte lika med (!==):
-```js
-console.log(5 !== "5"); // Output: true
-```
-
-
-### Logiska operatorer
-
-- Och (&&): Båda uttrycken måste vara sanna.
-```js
-console.log(true && false); // Output: false
-```
-
-- Eller (||): Minst ett uttryck måste vara sant.
-```js
-console.log(true || false); // Output: true
-```
-
-- Icke (!): Vänder på sanningsvärdet.
-```js
-console.log(!true); // Output: false
-```
-
-
-Exempel på användning i villkor:
-```js
-let ålder = 18;
-if (ålder >= 18 && ålder < 65) {
-    console.log("Vuxen");
-} else {
-    console.log("Inte vuxen");
-}
-// Output: Vuxen
-```
-### Strängoperator
-
-- Konkatenation (+): Slår ihop strängar.
-```js
-let hälsning = "Hej" + " " + "världen!";
-console.log(hälsning); // Output: Hej världen!
-```
-
-
-### Övriga operatorer
-
-- Ternär operator (?:): Kortform för if...else.
-```js
-let resultat = (ålder >= 18) ? "Myndig" : "Underårig";
-```
-
-- typeof: Returnerar datatypen för en variabel.
-```js
-console.log(typeof 42); // Output: number
-console.log(typeof "Hej"); // Output: string
-```
-
-## Övningar
-
-För att befästa din förståelse, försök lösa följande övningar:
-1.	__Variabler och scope__:
-- a) Deklarera en variabel `x` med värdet 10 utanför en funktion.
-- b) Inuti en funktion, deklarera en variabel `x` med värdet 20 med hjälp av var.
-- c) Logga värdet av `x` både inuti och utanför funktionen. Vad blir resultatet och varför?
-2.	__Primitiva datatyper__:
-- a) Skapa en variabel av varje primitiv datatyp och logga deras typer med typeof.
-- b) Förklara skillnaden mellan null och undefined.
-3.	__Objekt och arrayer__:
-- a) Skapa ett objekt bil med egenskaperna märke, modell och år.
-- b) Lägg till en metod beskrivning som returnerar en sträng med bilens detaljer.
-- c) Skapa en array garage som innehåller flera bil-objekt.
-- d) Iterera över garage och logga beskrivningen av varje bil.
-4.	__Operatorer och uttryck__:
-- a) Skriv en funktion som tar två tal som argument och returnerar det större talet utan att använda if...else (använd en ternär operator).
-- b) Förklara vad som händer när du jämför en sträng och ett tal med == respektive ===.
-
-## Lösningsförslag
-1. __Variabler och scope__:
-```js
-// a)
-var x = 10;
-
-function test() {
-    // b)
-    var x = 20;
-    // c)
-    console.log("Inuti funktionen:", x); // Output: Inuti funktionen: 20
-}
-
-test();
-console.log("Utanför funktionen:", x); // Output: Utanför funktionen: 10
-```
-__Förklaring__: Variabeln `x` inuti funktionen är lokal på grund av funktionsscope med var. Den påverkar inte den globala `x`.
-
-2. __Primitiva datatyper__:
-```js
-// a)
-let str = "Hej";
-let nummer = 42;
-let boolean = true;
-let odefinierad;
-let tom = null;
-let symbol = Symbol("unik");
-let stortTal = BigInt(9007199254740991);
-
-console.log(typeof str);    // Output: string
-console.log(typeof nummer);    // Output: number
-console.log(typeof boolean);   // Output: boolean
-console.log(typeof odefinierad); // Output: undefined
-console.log(typeof tom);       // Output: object (detta är ett känt "bugg")
-console.log(typeof symbol);    // Output: symbol
-console.log(typeof stortTal);  // Output: bigint
-```
-undefined betyder att en variabel är deklarerad men inte har tilldelats ett värde. null är ett explicit inget värde.
-
-3. __Objekt och arrayer__:
-```js
-// a)
-function Bil(brand, modell, year) {
-    this.brand = brand;
-    this.modell = modell;
-    this.year = year;
-    // b)
-    this.beskrivning = function() {
-        return `${this.brand} ${this.modell} från ${this.year}`;
+    ```javascript
+    const person = {
+      firstName: "Carla", // Egenskap: nyckel='firstName', värde='Carla' (string)
+      lastName: "Gustavsson",
+      age: 28, // Egenskap: nyckel='age', värde=28 (number)
+      isStudent: false, // Egenskap: nyckel='isStudent', värde=false (boolean)
+      address: { // Egenskap: nyckel='address', värde=ett annat objekt
+        street: "Storgatan 1",
+        city: "Stockholm"
+      }
     };
-}
 
-let bil1 = new Bil("Volvo", "XC60", 2020);
-let bil2 = new Bil("Tesla", "Model S", 2021);
-let bil3 = new Bil("Audi", "A4", 2019);
+    // Åtkomst till egenskaper med punktnotation
+    console.log(person.firstName); // Output: Carla
+    console.log(person.address.city); // Output: Stockholm
 
-// c)
-let garage = [bil1, bil2, bil3];
+    // Åtkomst med hakparentesnotation (användbart om nyckeln är en variabel)
+    console.log(person["lastName"]); // Output: Gustavsson
+    ```
 
-// d)
-for (let bil of garage) {
-    console.log(bil.beskrivning());
-}
-/*
-Output:
-Volvo XC60 från 2020
-Tesla Model S från 2021
-Audi A4 från 2019
-*/
+**2. `array` (Array/Fält):**
+
+*   En **ordnad lista** av värden. Varje värde i listan kallas ett **element**, och varje element har en **indexposition** (börjar från 0).
+*   Kan innehålla värden av olika datatyper.
+*   Används för att lagra sekvenser av data.
+*   Skapas med hakparenteser `[]`.
+
+    ```javascript
+    const colors = ["Röd", "Grön", "Blå"]; // En array med tre strängar
+    const mixedData = [10, "Text", true, null];
+
+    // Åtkomst till element via index (börjar från 0)
+    console.log(colors[0]); // Output: Röd
+    console.log(colors[1]); // Output: Grön
+
+    // Ändra ett element
+    colors[1] = "Gul";
+    console.log(colors); // Output: ["Röd", "Gul", "Blå"]
+
+    // Hitta antal element
+    console.log(colors.length); // Output: 3
+    ```
+*   Notera: `typeof` för en array ger också `"object"`. För att specifikt kolla om något är en array, använd `Array.isArray(dinVariabel)`.
+
+## Typomvandling (Type Coercion)
+
+JavaScript är ett *dynamiskt typat* språk, vilket betyder att du inte behöver specificera datatypen när du deklarerar en variabel. JavaScript försöker ofta automatiskt konvertera mellan datatyper när du använder operatorer, vilket kallas *typomvandling* (type coercion). Detta kan ibland leda till oväntade resultat.
+
+```javascript
+console.log("5" + 3); // Output: "53" (string - + fungerar som konkatenering)
+console.log("5" - 3); // Output: 2 (number - - försöker göra matematisk subtraktion)
+console.log("5" * 3); // Output: 15 (number)
+console.log(5 + null); // Output: 5 (null omvandlas till 0)
+console.log("hello" + undefined); // Output: "helloundefined"
 ```
-
-4. __Operatorer och uttryck__
-```js
-// a)
-function max(a, b) {
-    return (a > b) ? a : b;
-}
-
-console.log(max(5, 10)); // Output: 10
-
-// b)
-console.log(5 == "5");  // Output: true (jämför värde, typkonvertering sker)
-console.log(5 === "5"); // Output: false (jämför både värde och typ)
-```
-
-__Förklaring__: Med == sker typkonvertering innan jämförelsen, medan === jämför både värde och datatyp utan typkonvertering.
+Var medveten om detta och var försiktig när du blandar datatyper.
 
 ## Sammanfattning
 
-Vi har nu gått igenom grunderna i JavaScript:
-- Variabler: Hur man deklarerar dem med let, const och var.
-- Datatyper: De primitiva typerna som string, number, boolean, etc.
-- Objekt och arrayer: Hur man strukturerar data i nyckel-värde-par och listor.
-- Operatorer och uttryck: Hur man utför beräkningar och jämförelser.
+Variabler (`let` och `const`) är namngivna behållare för data. `const` bör föredras. JavaScript har sju primitiva datatyper: `string`, `number`, `boolean`, `undefined`, `null`, `symbol` och `bigint`. För mer komplex data används `object` (nyckel-värde-par) och `array` (ordnade listor). JavaScript är dynamiskt typat och utför automatisk typomvandling, vilket man bör vara medveten om.
 
-Dessa fundamentala koncept är avgörande för att förstå och skriva effektiv JavaScript-kod. Fortsätt att öva genom att skriva egen kod och experimentera med olika exempel.
+I nästa avsnitt ska vi titta på hur vi kan gruppera kod i återanvändbara block med hjälp av funktioner.
