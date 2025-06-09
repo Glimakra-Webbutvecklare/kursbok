@@ -24,20 +24,20 @@ Webbutveckling brukar delas upp i två huvudsakliga områden:
 
 ```mermaid
 graph TD
-    Anvandare[Användare] -->|1. Förfrågan (Request)| WebbLasare(Webbläsare/Klient);
-    WebbLasare -->|2. HTTP(S) Request| Server(Webbserver/Backend);
-    Server -->|3. Bearbetar & hämtar data| Databas[(Databas)];
-    Databas -->|4. Data| Server;
-    Server -->|5. HTTP(S) Response (HTML, CSS, JS)| WebbLasare;
-    WebbLasare -->|6. Renderar sidan| Anvandare;
+    User["Användare"] -->|"Förfrågan (Request)"| Browser["Webbläsare/Klient"]
+    Browser -->|"HTTP(S) Request"| Server["Webbserver/Backend"]
+    Server -->|"Bearbetar & hämtar data"| Database[("Databas")]
+    Database -->|"Data"| Server
+    Server -->|"HTTP(S) Response (HTML, CSS, JS)"| Browser
+    Browser -->|"Renderar sidan"| User
 
-    subgraph Frontend
-      WebbLasare
+    subgraph Frontend ["Frontend"]
+        Browser
     end
 
-    subgraph Backend
-      Server
-      Databas
+    subgraph Backend ["Backend"]
+        Server
+        Database
     end
 ```
 *Diagram: Förenklad bild av hur en webbförfrågan (request) hanteras.* 
