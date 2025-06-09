@@ -150,8 +150,90 @@ Detta avgörs av en kombination av:
 2.  **Specificitet (Specificity):** Mer specifika selektorer väger tyngre än mindre specifika. T.ex. en regel för ett element med ett visst ID (`#mittId`) är mer specifik än en regel för ett element med en viss klass (`.minKlass`), som i sin tur är mer specifik än en regel för en elementtyp (`p`). Inline-stilar har högst specificitet.
 3.  **Ordning (Order):** Om specificiteten är densamma, vinner den regel som definieras *senast* i koden eller i den senast inlänkade CSS-filen.
 
-Vi kommer titta mer på selektorer och specificitet i nästa avsnitt, men det är bra att känna till att denna "kaskad" finns och att det finns regler för hur konflikter löses.
 
+### Exempel: Hur Cascading Fungerar i Praktiken
+
+Låt oss titta på ett exempel där flera CSS-regler matchar samma element:
+
+**HTML:**
+```html
+<p id="viktigt" class="highlight">Detta är en viktig paragraf.</p>
+```
+
+**CSS:**
+```css
+/* Regel 1: Elementtyp-selektor (lägst specificitet) */
+p {
+  color: black;
+  font-size: 14px;
+}
+
+/* Regel 2: Klass-selektor (högre specificitet) */
+.highlight {
+  color: blue;
+  font-weight: bold;
+}
+
+/* Regel 3: ID-selektor (ännu högre specificitet) */
+#viktigt {
+  color: red;
+}
+
+/* Regel 4: Samma ID-selektor, men definierad senare */
+#viktigt {
+  color: green;
+  text-decoration: underline;
+}
+```
+
+<style>
+#css-example-1 {
+    padding: 20px 30px;
+    text-align: center;
+}
+
+#css-example-1 p {
+  color: black;
+  font-size: 14px;
+}
+
+/* Regel 2: Klass-selektor (högre specificitet) */
+#css-example-1 .highlight {
+  color: blue;
+  font-weight: bold;
+}
+
+/* Regel 3: ID-selektor (ännu högre specificitet) */
+#css-example-1 #viktigt {
+  color: red;
+}
+
+/* Regel 4: Samma ID-selektor, men definierad senare */
+#css-example-1 #viktigt {
+  color: green;
+  text-decoration: underline;
+}
+</style>
+
+<div id="css-example-1">
+    <p id="viktigt" class="highlight">Detta är en viktig paragraf.</p>
+</div>
+
+**Resultat:** 
+- **Färg: grön** (från regel 4 - samma specificitet som regel 3, men definierad senare)
+- **Font-storlek: 14px** (från regel 1 - ingen annan regel definierar detta)
+- **Font-vikt: bold** (från regel 2 - ingen regel med högre specificitet överskrider detta)
+- **Text-decoration: underline** (från regel 4)
+
+**Förklaring:**
+- Regel 1 (`p`) har lägst specificitet men bidrar med `font-size` eftersom ingen annan regel definierar detta.
+- Regel 2 (`.highlight`) har högre specificitet än regel 1, så `color: blue` skulle vinna över `color: black`, men...
+- Regel 3 och 4 (`#viktigt`) har högst specificitet och överskrider både regel 1 och 2 för färg.
+- Mellan regel 3 och 4 vinner regel 4 eftersom den definieras senare (samma specificitet).
+
+**Inline-stil skulle vinna över allt:** Om vi hade `<p id="viktigt" class="highlight" style="color: purple;">`, skulle texten bli lila eftersom inline-stilar har högst specificitet.
+
+Vi kommer titta mer på selektorer och specificitet i nästa avsnitt, men det är bra att känna till att denna "kaskad" finns och att det finns regler för hur konflikter löses.
 ## Sammanfattning
 
 CSS används för att definiera utseendet på HTML-element. Grundsyntaxen är `selektor { egenskap: värde; }`. Det bästa och mest rekommenderade sättet att inkludera CSS är via en **extern CSS-fil** länkad med `<link>` i HTML:s `<head>`. Intern CSS (`<style>`) och inline CSS (`style`-attribut) finns men bör användas sparsamt eller undvikas. Kaskaden och specificitetsregler avgör vilken stil som appliceras om flera regler matchar samma element.

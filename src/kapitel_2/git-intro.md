@@ -29,18 +29,18 @@ Det är här **versionshantering** kommer in. Ett versionshanteringssystem (Vers
 
 ```mermaid
 graph LR
-    subgraph Lokalt Repository
-        WD(Working Directory) -- git add --> SA(Staging Area);
-        SA -- git commit --> LH(Local History/.git);
+    subgraph "Lokalt Repository"
+        WD["Working Directory"] -- "git add" --> SA["Staging Area"];
+        SA -- "git commit" --> LH["Local History/.git"];
     end
 
-    subgraph Fjärr-Repository (t.ex. GitHub)
-      RH(Remote History)
+    subgraph "Fjärr-Repository (t.ex. GitHub)"
+      RH["Remote History"]
     end
 
-    LH -- git push --> RH;
-    RH -- git pull/fetch --> LH;
-    LH -- git checkout --> WD;
+    LH -- "git push" --> RH;
+    RH -- "git pull/fetch" --> LH;
+    LH -- "git checkout" --> WD;
 
     click WD "#working-directory" "Dina filer"
     click SA "#staging-area-index" "Förberedda ändringar"

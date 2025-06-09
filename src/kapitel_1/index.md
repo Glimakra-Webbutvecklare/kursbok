@@ -1,6 +1,6 @@
 # Kapitel 1: Introduktion till Webbutveckling
 
-Välkommen till kursen i webbutveckling! I en värld där nästan allt finns online – från hur vi handlar och kommunicerar till hur vi lär oss och arbetar – har webben blivit en oumbärlig del av våra liv. Men vad är det egentligen som får webben att fungera, och hur skapas alla dessa webbplatser och applikationer vi använder dagligen?
+Välkommen till Glimåkras kurs i webbutveckling! I en värld där nästan allt finns online – från hur vi handlar och kommunicerar till hur vi lär oss och arbetar – har webben blivit en oumbärlig del av våra liv. Men vad är det egentligen som får webben att fungera, och hur skapas alla dessa webbplatser och applikationer vi använder dagligen?
 
 Det är precis vad webbutveckling handlar om: konsten och tekniken att bygga för webben. Det är ett fält som kombinerar logiskt tänkande med kreativ design för att skapa digitala upplevelser.
 
