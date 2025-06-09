@@ -101,6 +101,10 @@
   - [Karriärutveckling](./kapitel_12/career.md)
 
 # Design
-- [Grudnläggande Design Teori](./Design/index.md)
+- [Grundläggande designteori](./Design/index.md)
   - [Typografi](./Design/typografi.md)
   - [Bildhantering](./Design/bildhantering.md)
+  - [Layout och grid-system](./Design/layout-grid.md)
+  - [Färg och kontrast](./Design/farg-kontrast.md)
+  - [Användarupplevelse (UX)](./Design/ux-grunder.md)
+  - [Designsystem](./Design/designsystem.md)
