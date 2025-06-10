@@ -107,7 +107,7 @@ Här är några av de mest grundläggande och vanliga elementen du kommer att an
 
 ## HTML - en standard
 
-HTML fortsätter att utvecklas, och som webbutvecklare är det bra att använda den standard som är gällande - se https://html.spec.whatwg.org/multipage/
+HTML fortsätter att utvecklas, och som webbutvecklare är det bra att använda den standard som är gällande - se <a href="https://html.spec.whatwg.org/multipage/" target="_blank">https://html.spec.whatwg.org/multipage/</a>
 
 
 ## Sammanfattning

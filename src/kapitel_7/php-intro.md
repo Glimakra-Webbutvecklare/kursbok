@@ -125,6 +125,10 @@ Vi kommer att använda en `docker-compose.yml`-fil för att definiera de tjänst
 
 Nedan följer ett exempel på hur en `docker-compose.yml`-fil kan se ut för att sätta upp denna miljö. (Detaljer kring Docker och Docker Compose täcks mer ingående i andra sammanhang, men detta ger en grundläggande uppfattning).
 
+---
+
+*docker-compose.yml*
+
 ```yml
 services:
     php:
@@ -133,8 +137,6 @@ services:
             dockerfile: Dockerfile
         volumes:
             - ./app/public:/var/www/html
-            - ./configurations/php.ini:/usr/local/etc/php/php.ini
-            - ./configurations/apache2.conf:/etc/apache2/apache2.conf
         ports:
             - 8060:80
     mysql:
@@ -160,6 +162,29 @@ services:
 volumes:
     mysqldata: {}
 ```
+
+*Dockerfile*
+
+```yml
+FROM php:8-apache
+RUN a2enmod ssl && a2enmod rewrite
+RUN service apache2 restart
+RUN apt-get update && apt-get install -y
+RUN docker-php-ext-install mysqli pdo pdo_mysql
+```
+
+*Mappstruktur för exemplet ovan*
+
+```yml
+project
+├───app
+│   └───public
+│       └───index.php
+├───Dockerfile
+├───docker-compose.yml
+```
+
+---
 
 ### Demo: Server-side vs Client-side
 
