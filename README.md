@@ -42,6 +42,14 @@ Contributions from other teachers are welcome! Here's how you can add or modify 
         mdbook-mermaid install .
         ```
 
+    **Using Docker:**
+
+    *   Make sure Docker Desktop is installed, up and running. Run cmd:
+        ```bash 
+        docker-compose up
+        ```
+
+
 2.  **Make Changes:**
     *   **Edit Existing Content:** Navigate to the relevant `.md` file within the `src/` directory and make your changes using standard Markdown syntax.
     *   **Add New Sections/Chapters:**

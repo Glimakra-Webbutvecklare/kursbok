@@ -32,6 +32,17 @@ Webbutvecklingen står aldrig stilla. Några trender som formar webben idag och 
 *   **Fokus på prestanda och säkerhet:** Ständig utveckling för att göra webben snabbare och säkrare.
 *   **Tillgänglighet (Accessibility):** Ökad medvetenhet och krav på att webbplatser ska vara användbara för alla, oavsett funktionsvariationer.
 
+
+## Lär dig följa gällande standard
+
+När webben var ung så var det inte ovanligt att vissa webbplatser fungerade endast om man använde speciella webbläsare. Som webbutvecklare är det viktigt att följa standarder som anger hur ny funktionalitet implementeras.
+
+W3C är en organisation som publicerar gällande riktilinjer för webbens framtida utveckling. Det är bra att ibland läsa den dokumentation som finns tillgänglig för en viss webbstandard. Se mer här:   
+<a href="https://www.w3.org/TR/" target="_blank">https://www.w3.org/TR/</a>
+
+
+<img src="https://www.w3.org/assets/logos/w3c/w3c-no-bars.svg" alt="W3C logotype">
+
 ## Sammanfattning
 
 Webben har utvecklats från enkla, statiska textsidor till komplexa, dynamiska och interaktiva applikationer som är centrala i våra liv. Resan har gått via införandet av CSS och JavaScript, backend-teknologier, mobilanpassning och kraftfulla ramverk. Framtiden pekar mot ännu mer integrerade, intelligenta och högpresterande webbupplevelser.

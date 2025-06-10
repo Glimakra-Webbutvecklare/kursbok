@@ -104,6 +104,12 @@ Här är några av de mest grundläggande och vanliga elementen du kommer att an
 *   **Kommentarer:** `<!-- Din kommentar här -->`
     *   Kommentarer visas inte i webbläsaren men är användbara för att lämna anteckningar i koden till dig själv eller andra utvecklare.
 
+
+## HTML - en standard
+
+HTML fortsätter att utvecklas, och som webbutvecklare är det bra att använda den standard som är gällande - se https://html.spec.whatwg.org/multipage/
+
+
 ## Sammanfattning
 
 HTML är grunden för allt webbinnehåll. Vi har sett den grundläggande strukturen i ett HTML-dokument (`<!DOCTYPE>`, `<html>`, `<head>`, `<body>`), förstått koncepten taggar, element och attribut, och lärt oss de vanligaste elementen för att skapa rubriker (`<h1>`-`<h6>`), paragrafer (`<p>`), länkar (`<a>`), bilder (`<img>`) och listor (`<ul>`, `<ol>`, `<li>`).
