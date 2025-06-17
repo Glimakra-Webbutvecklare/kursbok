@@ -5,18 +5,18 @@
 - PHP och webbservrar
 - Grundläggande koncept
 
-# PHP Syntax och Grundläggande Funktioner
+# PHP Syntax och grundläggande funktioner
 
 Detta avsnitt dyker djupare in i den grundläggande syntaxen för PHP. Om du har erfarenhet av JavaScript kommer mycket att kännas bekant, men det finns viktiga skillnader i hur du skriver variabler, hanterar datatyper, och strukturerar din kod. Vi kommer att fokusera på dessa skillnader och även introducera några moderna PHP-funktioner.
 
-## PHP-Taggar och Kommentarer
+## PHP-taggar och kommentarer
 
 PHP-kod exekveras på servern och bäddas oftast in i HTML-dokument med hjälp av speciella taggar.
 
 *   **Standardtaggar:** `<?php ... ?>`
     Detta är det vanligaste och mest rekommenderade sättet att markera PHP-kodblock.
-*   **Kort Echo-tagg:** `<?= ... ?>`
-    En genväg för `<?php echo ... ?>`. Användbar för att snabbt skriva ut en variabel eller resultatet av en funktion direkt i HTML. Alltid tillgänglig sedan PHP 5.4.
+*   **Kort echo-tagg:** `<?= ... ?>`
+    En genväg för `<?php echo ... ?>`. Användbar för att snabbt skriva ut en variabel eller resultatet av en funktion direkt i HTML.
 
 ```php
 <!DOCTYPE html>
@@ -43,31 +43,68 @@ PHP-kod exekveras på servern och bäddas oftast in i HTML-dokument med hjälp a
 
 *   **Kommentarer:** Liknar JavaScript: `//` för enkelradskommentarer och `/* ... */` för flerradskommentarer.
 
-## Variabler
+
+## Kodstandard och namngivningsprinciper
+
+Att följa en kodstandard är något som programmerare bör vara insatt i. PHP är ett programspråk som funnits under relativt lång tid och därmed förändras också en kodstandard. Sträva efter att vara konsekvent.
+
+### Variabler
 
 En av de mest uppenbara skillnaderna från JavaScript är hur variabler deklareras och används i PHP.
 
-*   Alla variabelnamn i PHP måste börja med ett dollartecken (`$`).
+*   Alla variabelnamn i PHP inleds med ett dollartecken (`$`).
 *   Efter `$` måste namnet börja med en bokstav eller ett understreck (`_`), följt av valfritt antal bokstäver, siffror eller understreck.
 *   PHP är **Case sensitive** för variabelnamn (`$name` och `$Name` är två olika variabler).
-*   Du behöver **inte** använda ett nyckelord som `var`, `let`, eller `const` för att deklarera en variabel. Variabeln skapas automatiskt när du tilldelar den ett värde första gången.
+En variabel namnges med gemener. Använd understreck mellan ord.
+
+```php
+$last_name
+$is_authenticated
+```
+
+
+### Funktioner
+
+Funktionsnamn skrivs med gemener och understreck mellan ord - snake_case.
+
+```php
+get_name()
+render_copyright()
+```
+
+### Klasser och metoder
+En klass namnges PascalCase, och metoder i klassen som camelCase. 
+
+```php
+MyClass() {
+    function __construct() {
+    
+    }
+    
+    public function printInfo() {
+
+    }
+}
+```
+
+
 
 **PHP:**
 
 ```php
 <?php
-$firstName = "Anna"; // Skapar och tilldelar en sträng
+$first_name = "Anna"; // Skapar och tilldelar en sträng
 $age = 30;          // Skapar och tilldelar ett heltal
 $price = 199.50;    // Skapar och tilldelar ett flyttal
-$_isValid = true;   // Namn kan börja med _
+$is_valid = true;   // Namn kan börja med _
 
 $age = 31; // Ändrar värdet på en befintlig variabel
 
-echo "Namn: " . $firstName . ", Ålder: " . $age;
+echo "Namn: " . $first_name . ", Ålder: " . $age;
 ?>
 ```
 
-**JavaScript (Jämförelse):**
+**JavaScript (jämförelse):**
 
 ```javascript
 let firstName = "Anna"; // Kräver let, const (eller var)
@@ -99,15 +136,15 @@ Dessa representerar enskilda värden.
 <?php
 $count = 100;       // int
 $pi = 3.14159;    // float
-$isAdmin = false;   // bool
+$is_admin = false;   // bool
 
-$singleQuote = 'Detta är en sträng. Variabel: $count \n'; // $count och \n skrivs ut bokstavligt
-$doubleQuote = "Detta är en sträng. Variabel: $count \n"; // $count ersätts, \n blir nyrad
+$single_quote = 'Detta är en sträng. Variabel: $count \n'; // $count och \n skrivs ut bokstavligt
+$double_quote = "Detta är en sträng. Variabel: $count \n"; // $count ersätts, \n blir nyrad
 
-echo $singleQuote; 
+echo $single_quote; 
 // Output: Detta är en sträng. Variabel: $count \n
 
-echo $doubleQuote;
+echo $double_quote;
 // Output: Detta är en sträng. Variabel: 100 
 // (och en nyrad)
 ?>
