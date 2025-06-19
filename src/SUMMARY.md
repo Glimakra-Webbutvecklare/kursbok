@@ -13,6 +13,7 @@
   - [Introduktion till Git](./kapitel_2/git-intro.md)
   - [Grundläggande Git-kommandon](./kapitel_2/git-kommandon.md)
   - [Arbeta med GitHub](./kapitel_2/github.md)
+  - [Mer Git kommandon](./kapitel_2/mer-git-kommandon.md)
   - [Praktiska övningar](./kapitel_2/ovningar.md)
   - [Teknisk Intervju](./kapitel_2/teknisk-intervju.md)
 - [Grundläggande CSS](./kapitel_3/index.md)

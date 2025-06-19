@@ -104,7 +104,9 @@ To maintain a consistent feel throughout the book, please try to follow these st
     *   *Example:* `syntax.md` is divided into sections like "Basic Syntax", "Variables", "Data Types", "Operators", etc.
 
 3.  **Provide Code Examples:**
-    *   Include clear, concise, and runnable code examples.
+    *   Include simple code example that highlights the core idea
+    *   Avoid the whole solution, instead hint the reader what is needed to run the code
+    *   Use common naming conventions for each programming language (snake_case for php, camelCase for Js)
     *   Use fenced code blocks with language identifiers (e.g., ```php ... ```).
     *   *Example:* All lessons include code snippets. `security.md` effectively uses examples to show both vulnerable and secure code.
 
@@ -138,6 +140,7 @@ To maintain a consistent feel throughout the book, please try to follow these st
     *   *Example:* `crud-app.md` notes that understanding sessions, SQL, and basic PHP is assumed.
 
 11. **Use Swedish mostly**
-    The course is in Swedish but use English if it is a technical term. Provide the Swedish translation in parenthesis. E.g "Användaren skickar en HTTP request (förfrågan)"
+    The course is in Swedish but use English if it is a technical term. Provide the Swedish translation in parenthesis. E.g "Användaren skickar en HTTP request (förfrågan)".
+    Make sure all variable names are written in English.
 
 Thank you for contributing!

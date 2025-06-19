@@ -307,7 +307,7 @@ class GameStateManager {
 Skapa en multiplayer-version av Snake där spelare kan skapa och gå med i spelrum. Inkluderar real-time synchronization, spectator-läge och turn-based gameplay.
 
 ### Teknikfokus
-- WebSockets och Socket.IO
+- WebSockets och realtidssynkronisering
 - Client-server arkitektur
 - Room management
 - State synchronization
@@ -319,39 +319,53 @@ Skapa en multiplayer-version av Snake där spelare kan skapa och gå med i spelr
 // server.js
 const express = require('express');
 const http = require('http');
-const socketIo = require('socket.io');
+const WebSocket = require('ws');
 
 class SnakeServer {
   constructor() {
     this.app = express();
     this.server = http.createServer(this.app);
-    this.io = socketIo(this.server);
+    this.wss = new WebSocket.Server({ server: this.server });
     this.rooms = new Map();
+    this.clients = new Map(); // ws -> playerInfo
     
-    this.setupSocketHandlers();
+    this.setupWebSocketHandlers();
   }
   
-  setupSocketHandlers() {
-    this.io.on('connection', (socket) => {
-      console.log('Player connected:', socket.id);
+  setupWebSocketHandlers() {
+    this.wss.on('connection', (ws) => {
+      console.log('Player connected');
       
-      socket.on('createRoom', (roomData) => {
-        const roomId = this.generateRoomId();
-        const room = new GameRoom(roomId, roomData.maxPlayers);
-        this.rooms.set(roomId, room);
-        
-        this.joinRoom(socket, roomId, roomData.playerName);
-      });
-      
-      socket.on('joinRoom', (data) => {
-        this.joinRoom(socket, data.roomId, data.playerName);
-      });
-      
-      socket.on('playerInput', (input) => {
-        const room = this.findPlayerRoom(socket.id);
-        if (room) {
-          room.handlePlayerInput(socket.id, input);
+      ws.on('message', (message) => {
+        try {
+          const data = JSON.parse(message);
+          
+          switch (data.type) {
+            case 'createRoom':
+              const roomId = this.generateRoomId();
+              const room = new GameRoom(roomId, data.maxPlayers);
+              this.rooms.set(roomId, room);
+              this.joinRoom(ws, roomId, data.playerName);
+              break;
+              
+            case 'joinRoom':
+              this.joinRoom(ws, data.roomId, data.playerName);
+              break;
+              
+            case 'playerInput':
+              const playerRoom = this.findPlayerRoom(ws);
+              if (playerRoom) {
+                playerRoom.handlePlayerInput(ws, data.input);
+              }
+              break;
+          }
+        } catch (error) {
+          console.error('Error parsing message:', error);
         }
+      });
+      
+      ws.on('close', () => {
+        this.handlePlayerDisconnect(ws);
       });
     });
   }
@@ -368,11 +382,13 @@ class GameRoom {
     this.turnTimer = null;
   }
   
-  handlePlayerInput(playerId, input) {
+  handlePlayerInput(playerWs, input) {
     if (this.gameState !== 'playing') return;
-    if (this.getCurrentPlayer() !== playerId) return;
     
-    const player = this.players.get(playerId);
+    const currentPlayerWs = this.getCurrentPlayerWs();
+    if (currentPlayerWs !== playerWs) return;
+    
+    const player = this.players.get(playerWs);
     if (this.isValidMove(player, input.direction)) {
       this.movePlayer(player, input.direction);
       this.nextTurn();
@@ -380,8 +396,15 @@ class GameRoom {
   }
   
   broadcast(eventName, data) {
-    this.players.forEach((player) => {
-      player.socket.emit(eventName, data);
+    const message = JSON.stringify({
+      type: eventName,
+      data: data
+    });
+    
+    this.players.forEach((player, ws) => {
+      if (ws.readyState === WebSocket.OPEN) {
+        ws.send(message);
+      }
     });
   }
 }
@@ -392,46 +415,76 @@ class GameRoom {
 ```javascript
 class MultiplayerSnake {
   constructor() {
-    this.socket = io();
+    this.socket = null;
     this.gameState = 'lobby';
     this.playerId = null;
     this.room = null;
     
-    this.setupSocketEvents();
+    this.connectToServer();
     this.setupUI();
   }
   
-  setupSocketEvents() {
-    this.socket.on('connect', () => {
-      this.playerId = this.socket.id;
-    });
+  connectToServer() {
+    this.socket = new WebSocket('ws://localhost:3000');
     
-    this.socket.on('roomJoined', (roomData) => {
-      this.room = roomData;
-      this.gameState = 'room';
-      this.updateUI();
-    });
+    this.socket.onopen = () => {
+      console.log('Ansluten till servern');
+      this.playerId = Math.random().toString(36).substr(2, 9);
+    };
     
-    this.socket.on('gameStarted', (initialState) => {
-      this.gameState = 'playing';
-      this.board = initialState.board;
-      this.players = initialState.players;
-      this.startGameLoop();
-    });
+    this.socket.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        this.handleServerMessage(data);
+      } catch (error) {
+        console.error('Error parsing server message:', error);
+      }
+    };
     
-    this.socket.on('gameUpdate', (gameState) => {
-      this.updateGameState(gameState);
-    });
+    this.socket.onclose = () => {
+      console.log('Frånkopplad från servern');
+      this.gameState = 'disconnected';
+    };
     
-    this.socket.on('turnChanged', (turnData) => {
-      this.currentTurn = turnData.playerId;
-      this.turnTimeLeft = turnData.timeLeft;
-    });
+    this.socket.onerror = (error) => {
+      console.error('WebSocket-fel:', error);
+    };
+  }
+  
+  handleServerMessage(data) {
+    switch (data.type) {
+      case 'roomJoined':
+        this.room = data.data;
+        this.gameState = 'room';
+        this.updateUI();
+        break;
+        
+      case 'gameStarted':
+        this.gameState = 'playing';
+        this.board = data.data.board;
+        this.players = data.data.players;
+        this.startGameLoop();
+        break;
+        
+      case 'gameUpdate':
+        this.updateGameState(data.data);
+        break;
+        
+      case 'turnChanged':
+        this.currentTurn = data.data.playerId;
+        this.turnTimeLeft = data.data.timeLeft;
+        break;
+    }
   }
   
   sendMove(direction) {
     if (this.gameState === 'playing' && this.currentTurn === this.playerId) {
-      this.socket.emit('playerInput', { direction });
+      if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+        this.socket.send(JSON.stringify({
+          type: 'playerInput',
+          input: { direction }
+        }));
+      }
     }
   }
 }
@@ -634,7 +687,7 @@ Efter att ha slutfört alla projekt, skapa en portfolio-sida som visar:
 - **Three.js**: För 3D webspel
 - **Matter.js**: Fysikmotor för 2D spel
 - **Phaser**: Komplett spelframework
-- **Socket.IO**: Avancerade real-time features
+- **ws library**: Native WebSocket server för Node.js
 
 ### Deployment
 - **Netlify/Vercel**: För frontend hosting

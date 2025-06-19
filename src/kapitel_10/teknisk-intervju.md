@@ -489,7 +489,7 @@ console.log('WebSocket server körs på port 8080');
 - Vi skickar JSON-meddelanden med `socket.send()`
 - Servern använder `broadcast()` för att skicka till alla anslutna
 - `readyState` kontrollerar om anslutningen är öppen
-- Enklare och mer grundläggande än Socket.IO
+- Inbyggt i webbläsaren utan behov av externa bibliotek
 
 ---
 

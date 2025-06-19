@@ -1,28 +1,42 @@
 # Multiplayer-spel och realtidsarkitektur
 
-Multiplayer-spel representerar toppen av webbaserad spelutveckling, där flera spelare interagerar i realtid inom samma virtuella miljö. Detta kapitel utforskar arkitekturen, utmaningarna och lösningarna för att skapa framgångsrika multiplayer-upplevelser.
+## Varför multiplayer-spel?
+
+Tänk dig att du spelar ett schackparti mot datorn - det fungerar bra, men det verkligt spännande händer när du spelar mot en riktig motståndare. Samma princip gäller för alla spel. Multiplayer-spel (flerspelarspel) skapar dynamiska, oförutsägbara upplevelser som bara människor kan leverera.
+
+Webbaserade multiplayer-spel har revolutionerat spelvärlden genom att göra det möjligt för spelare världen över att interagera i realtid. Men att bygga dessa system innebär unika tekniska utmaningar - hur synkroniserar man spelstatus mellan flera klienter? Hur hanterar man nätverkslatens? Hur förhindrar man fusk?
+
+Detta kapitel utforskar arkitekturen, utmaningarna och lösningarna för att skapa framgångsrika multiplayer-upplevelser på webben.
+
+**Förkunskaper**: Detta kapitel förutsätter kunskap om WebSockets (kapitel 4), objektorienterad programmering och grundläggande nätverkskoncept.
 
 ## Vad är multiplayer-spel?
 
-Multiplayer-spel låter flera spelare delta samtidigt i samma spelupplevelse. De kan vara:
-- **Cooperative**: Spelare arbetar tillsammans mot gemensamma mål
-- **Competitive**: Spelare konkurrerar mot varandra
-- **Sandbox**: Öppen värld där spelare kan interagera fritt
+Multiplayer-spel låter flera spelare (players) delta samtidigt i samma spelupplevelse. De kan kategoriseras på olika sätt:
+
+**Efter samarbetstyp**:
+- **Cooperative (Co-op)**: Spelare arbetar tillsammans mot gemensamma mål (t.ex. Portal 2)
+- **Competitive**: Spelare konkurrerar mot varandra (t.ex. Counter-Strike)
+- **Sandbox**: Öppen värld där spelare kan interagera fritt (t.ex. Minecraft)
+
+**Efter skala**:
+- **Local multiplayer**: 2-4 spelare på samma enhet
+- **Online multiplayer**: Spelare ansluter via internet
 - **MMO**: Massively Multiplayer Online med hundratals eller tusentals spelare
 
-### Typer av multiplayer-arkitekturer
+### Arkitektur-alternativ
 
 ```mermaid
 graph TB
-    A[Multiplayer-arkitekturer] --> B[Client-Server]
-    A --> C[Peer-to-Peer]
-    A --> D[Hybrid]
+    A[Multiplayer-arkitekturer] --> B[Client-Server<br/>Klient-Server]
+    A --> C[Peer-to-Peer<br/>P2P]
+    A --> D[Hybrid<br/>Blandad]
     
-    B --> B1[Authoritative Server]
-    B --> B2[Listen Server]
+    B --> B1[Authoritative Server<br/>Auktoritativ server]
+    B --> B2[Listen Server<br/>Lyssnarserver]
     
-    C --> C1[Pure P2P]
-    C --> C2[P2P med Relay]
+    C --> C1[Pure P2P<br/>Ren P2P]
+    C --> C2[P2P med Relay<br/>P2P med vidarebefordran]
     
     D --> D1[Server för kritisk data]
     D --> D2[P2P för ljud/video]
@@ -34,12 +48,14 @@ graph TB
 
 ## Client-Server arkitektur
 
-### Authoritative Server
+I client-server arkitektur fungerar servern som en "domare" i spelet - den bestämmer vad som är sant och vad som händer. Tänk på det som en fotbollsmatch där domaren har det sista ordet, oavsett vad spelarna tycker.
 
-Servern har full kontroll över spelstatet och validerar alla handlingar.
+### Authoritative Server (Auktoritativ server)
+
+Servern har full kontroll över game state (spelstatus) och validerar alla handlingar. Detta är den mest säkra men också mest komplexa lösningen.
 
 ```javascript
-// Server-side game state management
+// Grundläggande spelserver
 class GameServer {
   constructor() {
     this.gameState = {
@@ -47,159 +63,158 @@ class GameServer {
       entities: new Map(),
       worldState: {}
     };
-    this.tickRate = 60; // 60 updates per sekund
-    this.lastUpdate = Date.now();
+    this.tickRate = 60; // Uppdateringar per sekund
   }
   
   startGameLoop() {
     setInterval(() => {
-      const currentTime = Date.now();
-      const deltaTime = currentTime - this.lastUpdate;
-      
-      this.updateGameLogic(deltaTime);
+      this.updateGameLogic();
       this.broadcastGameState();
-      
-      this.lastUpdate = currentTime;
     }, 1000 / this.tickRate);
   }
   
-  updateGameLogic(deltaTime) {
+  updateGameLogic() {
     // Uppdatera alla spelobjekt
     this.gameState.players.forEach(player => {
-      player.update(deltaTime);
-      this.validatePlayerPosition(player);
+      player.update();
+      this.validatePlayerAction(player);
     });
-    
-    // Hantera kollisioner
-    this.handleCollisions();
-    
-    // Spawna nya objekt
-    this.spawnEntities();
-  }
-  
-  validatePlayerPosition(player) {
-    // Anti-cheat: Kontrollera att spelaren inte rör sig för snabbt
-    const maxSpeed = 300; // pixels per sekund
-    const maxDistance = maxSpeed * (this.deltaTime / 1000);
-    
-    if (player.distanceMoved > maxDistance) {
-      // Återställ spelaren till förra giltiga position
-      player.x = player.lastValidX;
-      player.y = player.lastValidY;
-      console.log(`Player ${player.id} potential speed hack detected`);
-    }
   }
 }
 ```
 
-### State Synchronization
+**Fördelar**:
+- Säker mot fusk (cheating)
+- Konsistent spelupplevelse för alla
+- Enkelt att implementera complex spellogik
+
+**Nackdelar**:
+- Kräver kraftfull server
+- Högre latens (fördröjning)
+- Single point of failure
+
+### State Synchronization (Tillståndssynkronisering)
 
 ```mermaid
 sequenceDiagram
-    participant P1 as Player 1
+    participant P1 as Spelare 1
     participant S as Server
-    participant P2 as Player 2
+    participant P2 as Spelare 2
     
-    P1->>S: Input: Move Right
-    S->>S: Validate & Update State
-    S->>P1: State Update (Authoritative)
-    S->>P2: State Update (Other Players)
+    P1->>S: Input: Flytta höger
+    S->>S: Validera & Uppdatera tillstånd
+    S->>P1: Tillståndsuppdatering
+    S->>P2: Andra spelares positioner
     
-    Note over S: Server är sanningskälla
+    Note over S: Servern är sanningskälla
     
-    P2->>S: Input: Shoot
-    S->>S: Process Action
-    S->>P1: Player 2 shot
-    S->>P2: Confirm shot
+    P2->>S: Input: Skjut
+    S->>S: Behandla handling
+    S->>P1: Spelare 2 sköt
+    S->>P2: Bekräfta skott
 ```
 
-### Netcode och latency handling
+Servern fungerar som den enda källan till sanning (single source of truth). Alla klienter måste synkronisera sitt lokala **tillstånd** med serverns auktoritativa tillstånd.
+
+## Hantera nätverkslatens
+
+Nätverkslatens (network latency) är tiden det tar för data att resa från klient till server och tillbaka. För multiplayer-spel kan detta skapa märkbara förseningar.
+
+### Client-side Prediction
+
+Tänk på det som att "gissa" vad som kommer att hända medan du väntar på serverns svar:
 
 ```javascript
-// Client-side prediction och reconciliation
-class MultiplayerClient {
+// Enkel client-side prediction
+class GameClient {
   constructor() {
-    this.socket = null;
-    this.localPlayer = null;
-    this.serverState = null;
+    this.socket = new WebSocket('ws://localhost:3000');
+    this.localPlayer = { x: 100, y: 100 };
     this.inputHistory = [];
-    this.stateBuffer = [];
   }
   
-  // Client-side prediction
-  sendInput(input) {
-    const timestamp = Date.now();
-    
-    // Spara input för senare reconciliation
-    this.inputHistory.push({
-      input,
-      timestamp,
+  handleInput(direction) {
+    const input = {
+      direction: direction,
+      timestamp: Date.now(),
       sequenceNumber: this.getNextSequence()
-    });
+    };
     
-    // Applicera input lokalt omedelbart (prediction)
-    this.applyInputLocally(input);
+    // Spara för senare reconciliation
+    this.inputHistory.push(input);
+    
+    // Applicera omedelbart lokalt (prediction)
+    this.movePlayer(this.localPlayer, direction);
     
     // Skicka till server
     this.socket.send(JSON.stringify({
       type: 'player_input',
-      input,
-      timestamp,
-      sequenceNumber: this.currentSequence
+      input: input
     }));
   }
   
-  // Server reconciliation
-  onServerUpdate(serverState) {
-    this.stateBuffer.push({
-      state: serverState,
-      timestamp: Date.now()
-    });
-    
-    // Jämför server state med vår prediction
-    const serverPlayer = serverState.players[this.playerId];
-    const localPlayer = this.localPlayer;
-    
-    const positionDiff = Math.sqrt(
-      Math.pow(serverPlayer.x - localPlayer.x, 2) +
-      Math.pow(serverPlayer.y - localPlayer.y, 2)
-    );
-    
-    // Om skillnaden är för stor, korrigera
-    if (positionDiff > 5) {
-      this.reconcileWithServer(serverPlayer);
+  movePlayer(player, direction) {
+    const speed = 5;
+    switch (direction) {
+      case 'up': player.y -= speed; break;
+      case 'down': player.y += speed; break;
+      case 'left': player.x -= speed; break;
+      case 'right': player.x += speed; break;
     }
-  }
-  
-  reconcileWithServer(serverPlayer) {
-    // Sätt spelaren till serverns position
-    this.localPlayer.x = serverPlayer.x;
-    this.localPlayer.y = serverPlayer.y;
-    
-    // Återapplicera alla inputs sedan serverns timestamp
-    const serverTime = serverPlayer.timestamp;
-    const inputsToReplay = this.inputHistory.filter(
-      input => input.timestamp > serverTime
-    );
-    
-    inputsToReplay.forEach(input => {
-      this.applyInputLocally(input.input);
-    });
   }
 }
 ```
 
-## Lag Compensation tekniker
+### Server Reconciliation
 
-### Interpolation och extrapolation
+När servern skickar tillbaka den "riktiga" positionen måste klienten jämföra och korrigera eventuella skillnader:
 
 ```javascript
-// Smooth movement för andra spelare
+// Hantera serveruppdateringar
+onServerUpdate(serverState) {
+  const serverPlayer = serverState.players[this.playerId];
+  const localPlayer = this.localPlayer;
+  
+  // Beräkna skillnad i position
+  const positionDiff = Math.sqrt(
+    Math.pow(serverPlayer.x - localPlayer.x, 2) +
+    Math.pow(serverPlayer.y - localPlayer.y, 2)
+  );
+  
+  // Om skillnaden är för stor, korrigera
+  if (positionDiff > 5) {
+    this.reconcileWithServer(serverPlayer);
+  }
+}
+
+reconcileWithServer(serverPlayer) {
+  // Sätt till serverns position
+  this.localPlayer.x = serverPlayer.x;
+  this.localPlayer.y = serverPlayer.y;
+  
+  // Återapplicera inputs som servern inte hade sett ännu
+  const serverTime = serverPlayer.timestamp;
+  const inputsToReplay = this.inputHistory.filter(
+    input => input.timestamp > serverTime
+  );
+  
+  inputsToReplay.forEach(input => {
+    this.movePlayer(this.localPlayer, input.direction);
+  });
+}
+```
+
+## Interpolation för mjuk rörelse
+
+För att andra spelares rörelser ska se mjuka ut använder vi interpolation - som att "fylla i luckorna" mellan positionsuppdateringar:
+
+```javascript
+// Mjuk rörelse för andra spelare
 class NetworkedPlayer {
   constructor() {
     this.positions = []; // Buffer av positioner från server
     this.renderPosition = { x: 0, y: 0 };
-    this.interpolationDelay = 100; // ms
+    this.interpolationDelay = 100; // 100ms fördröjning
   }
   
   addServerPosition(position, timestamp) {
@@ -209,14 +224,13 @@ class NetworkedPlayer {
       timestamp: timestamp
     });
     
-    // Håll bara de senaste positionerna
+    // Behåll bara de senaste positionerna
     const cutoff = Date.now() - 1000;
     this.positions = this.positions.filter(p => p.timestamp > cutoff);
   }
   
   update() {
-    const now = Date.now();
-    const renderTime = now - this.interpolationDelay;
+    const renderTime = Date.now() - this.interpolationDelay;
     
     // Hitta två positioner att interpolera mellan
     let before = null;
@@ -244,85 +258,29 @@ class NetworkedPlayer {
 }
 ```
 
-### Rollback och konfliktlösning
+## Room Management (Rumhantering)
+
+I de flesta multiplayer-spel behöver spelare organiseras i rooms (spelrum) eller lobbies:
 
 ```javascript
-// Rollback netcode för fighting games
-class RollbackManager {
-  constructor() {
-    this.stateHistory = [];
-    this.inputHistory = [];
-    this.confirmedFrame = 0;
-  }
-  
-  saveState(frame, gameState) {
-    this.stateHistory[frame] = this.deepClone(gameState);
-  }
-  
-  rollbackToFrame(frame) {
-    if (this.stateHistory[frame]) {
-      return this.deepClone(this.stateHistory[frame]);
-    }
-    return null;
-  }
-  
-  onConfirmedInput(frame, inputs) {
-    // Om vi får bekräftad input som skiljer sig från vad vi trodde
-    const ourInput = this.inputHistory[frame];
-    
-    if (JSON.stringify(ourInput) !== JSON.stringify(inputs)) {
-      // Rollback och simulera igen
-      const rollbackState = this.rollbackToFrame(frame);
-      
-      if (rollbackState) {
-        // Simulera alla frames igen med korrekta inputs
-        for (let f = frame; f <= this.currentFrame; f++) {
-          const frameInputs = this.getConfirmedInputs(f);
-          rollbackState = this.simulateFrame(rollbackState, frameInputs);
-        }
-        
-        // Uppdatera current state
-        this.currentState = rollbackState;
-      }
-    }
-    
-    this.confirmedFrame = Math.max(this.confirmedFrame, frame);
-  }
-}
-```
-
-## Game Rooms och matchmaking
-
-### Room Management
-
-```javascript
-// Server-side room management
+// Enkel rumhantering
 class GameRoom {
   constructor(roomId, maxPlayers = 4) {
     this.id = roomId;
     this.players = new Map();
     this.maxPlayers = maxPlayers;
     this.gameState = 'waiting'; // waiting, playing, finished
-    this.gameData = {};
-    this.spectators = new Set();
   }
   
   addPlayer(playerId, playerData) {
     if (this.players.size >= this.maxPlayers) {
-      return { success: false, reason: 'Room full' };
-    }
-    
-    if (this.gameState === 'playing') {
-      // Lägg till som spectator istället
-      this.spectators.add(playerId);
-      return { success: true, role: 'spectator' };
+      return { success: false, reason: 'Rummet är fullt' };
     }
     
     this.players.set(playerId, {
       id: playerId,
       ...playerData,
-      ready: false,
-      score: 0
+      ready: false
     });
     
     // Meddela alla i rummet
@@ -332,289 +290,74 @@ class GameRoom {
       playerCount: this.players.size
     });
     
-    return { success: true, role: 'player' };
+    return { success: true };
   }
   
-  setPlayerReady(playerId, ready) {
-    const player = this.players.get(playerId);
-    if (player) {
-      player.ready = ready;
-      
-      // Kolla om alla är redo
-      const allReady = Array.from(this.players.values())
-        .every(p => p.ready);
-      
-      if (allReady && this.players.size >= 2) {
-        this.startGame();
-      }
-    }
-  }
-  
-  startGame() {
-    this.gameState = 'playing';
-    this.initializeGameData();
-    
-    this.broadcast({
-      type: 'game_started',
-      initialState: this.gameData
-    });
-    
-    // Starta game loop
-    this.gameLoop();
-  }
-  
-  broadcast(message, excludePlayer = null) {
-    this.players.forEach((player, playerId) => {
-      if (playerId !== excludePlayer) {
+  broadcast(message) {
+    this.players.forEach((player) => {
+      if (player.socket && player.socket.readyState === WebSocket.OPEN) {
         player.socket.send(JSON.stringify(message));
       }
     });
-    
-    // Skicka även till spectators
-    this.spectators.forEach(spectatorId => {
-      const spectator = this.getPlayerConnection(spectatorId);
-      if (spectator) {
-        spectator.send(JSON.stringify(message));
-      }
-    });
-  }
-}
-
-// Room Manager
-class RoomManager {
-  constructor() {
-    this.rooms = new Map();
-    this.playerRooms = new Map(); // player -> room mapping
-  }
-  
-  createRoom(roomId, settings) {
-    const room = new GameRoom(roomId, settings.maxPlayers);
-    this.rooms.set(roomId, room);
-    return room;
-  }
-  
-  joinRoom(playerId, roomId, playerData) {
-    let room = this.rooms.get(roomId);
-    
-    if (!room) {
-      // Skapa rum automatiskt
-      room = this.createRoom(roomId, { maxPlayers: 4 });
-    }
-    
-    const result = room.addPlayer(playerId, playerData);
-    
-    if (result.success) {
-      this.playerRooms.set(playerId, roomId);
-    }
-    
-    return result;
-  }
-  
-  // Matchmaking baserat på skill
-  findMatch(playerId, playerSkill) {
-    // Hitta rum med liknande skill-nivå
-    for (const [roomId, room] of this.rooms) {
-      if (room.gameState === 'waiting' && room.players.size < room.maxPlayers) {
-        const avgSkill = this.calculateRoomSkill(room);
-        
-        if (Math.abs(avgSkill - playerSkill) < 100) {
-          return this.joinRoom(playerId, roomId, { skill: playerSkill });
-        }
-      }
-    }
-    
-    // Skapa nytt rum om inget hittas
-    const newRoomId = `room_${Date.now()}`;
-    return this.joinRoom(playerId, newRoomId, { skill: playerSkill });
-  }
-}
-```
-
-## Player Management och persistens
-
-### Player State Synchronization
-
-```javascript
-// Persistent player data
-class PlayerManager {
-  constructor() {
-    this.players = new Map();
-    this.database = new DatabaseConnection();
-  }
-  
-  async createPlayer(playerId, initialData) {
-    const playerData = {
-      id: playerId,
-      username: initialData.username,
-      level: 1,
-      experience: 0,
-      stats: {
-        gamesPlayed: 0,
-        gamesWon: 0,
-        totalScore: 0
-      },
-      inventory: [],
-      achievements: [],
-      createdAt: new Date(),
-      lastSeen: new Date()
-    };
-    
-    // Spara till databas
-    await this.database.savePlayer(playerData);
-    
-    this.players.set(playerId, playerData);
-    return playerData;
-  }
-  
-  async updatePlayerStats(playerId, gameResult) {
-    const player = this.players.get(playerId);
-    
-    if (player) {
-      player.stats.gamesPlayed++;
-      player.stats.totalScore += gameResult.score;
-      
-      if (gameResult.won) {
-        player.stats.gamesWon++;
-      }
-      
-      // Uppdatera level baserat på experience
-      const newExp = player.experience + gameResult.experienceGained;
-      const newLevel = this.calculateLevel(newExp);
-      
-      if (newLevel > player.level) {
-        player.level = newLevel;
-        
-        // Notify level up
-        this.notifyLevelUp(playerId, newLevel);
-      }
-      
-      player.experience = newExp;
-      player.lastSeen = new Date();
-      
-      // Spara till databas
-      await this.database.updatePlayer(playerId, player);
-    }
-  }
-  
-  calculateLevel(experience) {
-    return Math.floor(Math.sqrt(experience / 100)) + 1;
-  }
-}
-```
-
-## Real-time kommunikationsprotokoll
-
-### Message Types och protokoll
-
-```javascript
-// Standardiserat meddelande-protokoll
-const MessageTypes = {
-  // Connection
-  CONNECT: 'connect',
-  DISCONNECT: 'disconnect',
-  
-  // Room management
-  JOIN_ROOM: 'join_room',
-  LEAVE_ROOM: 'leave_room',
-  ROOM_STATE: 'room_state',
-  
-  // Game state
-  GAME_START: 'game_start',
-  GAME_END: 'game_end',
-  GAME_UPDATE: 'game_update',
-  
-  // Player actions
-  PLAYER_INPUT: 'player_input',
-  PLAYER_ACTION: 'player_action',
-  PLAYER_UPDATE: 'player_update',
-  
-  // Chat
-  CHAT_MESSAGE: 'chat_message',
-  SYSTEM_MESSAGE: 'system_message'
-};
-
-class MessageHandler {
-  constructor(gameServer) {
-    this.server = gameServer;
-  }
-  
-  handleMessage(playerId, message) {
-    try {
-      const data = JSON.parse(message);
-      const { type, payload } = data;
-      
-      switch (type) {
-        case MessageTypes.JOIN_ROOM:
-          this.handleJoinRoom(playerId, payload);
-          break;
-          
-        case MessageTypes.PLAYER_INPUT:
-          this.handlePlayerInput(playerId, payload);
-          break;
-          
-        case MessageTypes.CHAT_MESSAGE:
-          this.handleChatMessage(playerId, payload);
-          break;
-          
-        default:
-          console.warn(`Unknown message type: ${type}`);
-      }
-    } catch (error) {
-      console.error('Error handling message:', error);
-    }
-  }
-  
-  sendMessage(playerId, type, payload) {
-    const message = JSON.stringify({ type, payload });
-    this.server.sendToPlayer(playerId, message);
-  }
-  
-  broadcastMessage(roomId, type, payload, excludePlayer = null) {
-    const message = JSON.stringify({ type, payload });
-    this.server.broadcastToRoom(roomId, message, excludePlayer);
   }
 }
 ```
 
 ## Säkerhet och anti-cheat
 
-### Input Validation
+Multiplayer-spel är måltavlor för fuskare. Här är grundläggande säkerhetsåtgärder:
+
+### Input Validation (Indatavalidering)
 
 ```javascript
-// Server-side input validation
+// Validera all input på servern
 class InputValidator {
-  constructor() {
-    this.maxInputRate = 120; // Max inputs per sekund
-    this.playerInputRates = new Map();
+  static validateMove(player, input) {
+    // Kontrollera att input har rätt format
+    if (typeof input.direction !== 'string') {
+      return false;
+    }
+    
+    // Kontrollera giltiga riktningar
+    const validDirections = ['up', 'down', 'left', 'right'];
+    if (!validDirections.includes(input.direction)) {
+      return false;
+    }
+    
+    // Kontrollera hastighet (anti-speed hack)
+    const maxSpeed = 300; // pixels per sekund
+    const timeDiff = Date.now() - player.lastMoveTime;
+    const maxDistance = (maxSpeed * timeDiff) / 1000;
+    
+    if (player.distanceMoved > maxDistance) {
+      console.log(`Misstänkt hastighetsfusk från spelare ${player.id}`);
+      return false;
+    }
+    
+    return true;
   }
-  
-  validateInput(playerId, input) {
-    // Rate limiting
-    if (!this.checkInputRate(playerId)) {
-      return { valid: false, reason: 'Input rate exceeded' };
-    }
-    
-    // Validate input struktur
-    if (!this.isValidInputStructure(input)) {
-      return { valid: false, reason: 'Invalid input structure' };
-    }
-    
-    // Validate input värden
-    if (!this.isValidInputValues(input)) {
-      return { valid: false, reason: 'Invalid input values' };
-    }
-    
-    return { valid: true };
+}
+```
+
+### Rate Limiting
+
+Förhindra spam genom att begränsa hur ofta en spelare kan skicka inputs:
+
+```javascript
+class RateLimiter {
+  constructor() {
+    this.playerInputCounts = new Map();
+    this.maxInputsPerSecond = 60;
   }
   
   checkInputRate(playerId) {
     const now = Date.now();
-    const playerData = this.playerInputRates.get(playerId) || {
+    const playerData = this.playerInputCounts.get(playerId) || {
       inputs: [],
       lastCleanup: now
     };
     
-    // Rensa gamla inputs
+    // Rensa gamla inputs varje sekund
     if (now - playerData.lastCleanup > 1000) {
       playerData.inputs = playerData.inputs.filter(
         timestamp => now - timestamp < 1000
@@ -624,225 +367,62 @@ class InputValidator {
     
     // Lägg till ny input
     playerData.inputs.push(now);
-    this.playerInputRates.set(playerId, playerData);
+    this.playerInputCounts.set(playerId, playerData);
     
-    return playerData.inputs.length <= this.maxInputRate;
-  }
-  
-  isValidInputStructure(input) {
-    return (
-      typeof input === 'object' &&
-      'type' in input &&
-      'timestamp' in input
-    );
-  }
-  
-  isValidInputValues(input) {
-    switch (input.type) {
-      case 'move':
-        return (
-          typeof input.direction === 'string' &&
-          ['up', 'down', 'left', 'right'].includes(input.direction)
-        );
-        
-      case 'shoot':
-        return (
-          typeof input.angle === 'number' &&
-          input.angle >= 0 &&
-          input.angle < 360
-        );
-        
-      default:
-        return false;
-    }
+    return playerData.inputs.length <= this.maxInputsPerSecond;
   }
 }
 ```
 
-### Cheat Detection
+## Praktiska användningsområden
 
-```javascript
-// Anti-cheat system
-class AntiCheatSystem {
-  constructor() {
-    this.suspicionLevels = new Map();
-    this.flaggedPlayers = new Set();
-  }
-  
-  checkPlayer(playerId, gameState, input) {
-    let suspicion = this.suspicionLevels.get(playerId) || 0;
-    
-    // Kontrollera hastighet
-    if (this.checkSpeedHack(playerId, gameState)) {
-      suspicion += 10;
-    }
-    
-    // Kontrollera impossible shots
-    if (this.checkAimbot(playerId, input, gameState)) {
-      suspicion += 20;
-    }
-    
-    // Kontrollera koordinat-hopp
-    if (this.checkTeleportHack(playerId, gameState)) {
-      suspicion += 50;
-    }
-    
-    this.suspicionLevels.set(playerId, suspicion);
-    
-    // Flagga spelare vid hög misstanke
-    if (suspicion > 100 && !this.flaggedPlayers.has(playerId)) {
-      this.flagPlayer(playerId, suspicion);
-    }
-  }
-  
-  checkSpeedHack(playerId, gameState) {
-    const player = gameState.players.get(playerId);
-    const maxSpeed = 300; // pixels per sekund
-    
-    if (player && player.velocity) {
-      const speed = Math.sqrt(
-        player.velocity.x ** 2 + player.velocity.y ** 2
-      );
-      
-      return speed > maxSpeed * 1.5; // 50% tolerance
-    }
-    
-    return false;
-  }
-  
-  flagPlayer(playerId, suspicionLevel) {
-    this.flaggedPlayers.add(playerId);
-    
-    console.log(`Player ${playerId} flagged for cheating (suspicion: ${suspicionLevel})`);
-    
-    // Notify administrators
-    this.notifyAdmins(playerId, suspicionLevel);
-    
-    // Take action based on suspicion level
-    if (suspicionLevel > 200) {
-      this.kickPlayer(playerId);
-    }
-  }
-}
-```
+### Realtidsstrategi (RTS)
+- Synkroniserade commands (kommandon) mellan spelare
+- Fog of war (krigsdimma) implementering
+- Resource management (resurshantering)
 
-## Best Practices för multiplayer-spel
+### Action-spel
+- Snabb input-respons krävs
+- Kollisionsdetektering i realtid
+- Smooth movement interpolation
 
-### Skalbarhet och prestanda
+### Turn-based spel
+- Enklare att implementera
+- Mindre krav på latens
+- Fokus på fair turn management
 
-```javascript
-// Load balancing för multiple game servers
-class LoadBalancer {
-  constructor() {
-    this.servers = [];
-    this.serverStats = new Map();
-  }
-  
-  addServer(serverId, serverInfo) {
-    this.servers.push({
-      id: serverId,
-      host: serverInfo.host,
-      port: serverInfo.port,
-      maxCapacity: serverInfo.maxCapacity
-    });
-    
-    this.serverStats.set(serverId, {
-      currentLoad: 0,
-      activeGames: 0,
-      averageLatency: 0
-    });
-  }
-  
-  findBestServer(playerLocation) {
-    let bestServer = null;
-    let bestScore = Infinity;
-    
-    for (const server of this.servers) {
-      const stats = this.serverStats.get(server.id);
-      const loadRatio = stats.currentLoad / server.maxCapacity;
-      
-      // Kombinera load och latency för score
-      const score = loadRatio * 0.7 + stats.averageLatency * 0.3;
-      
-      if (score < bestScore && loadRatio < 0.9) {
-        bestScore = score;
-        bestServer = server;
-      }
-    }
-    
-    return bestServer;
-  }
-}
-```
+## Best Practices
 
-### Monitoring och observability
-
-```javascript
-// Spel-metrics och monitoring
-class GameMetrics {
-  constructor() {
-    this.metrics = {
-      activePlayer: 0,
-      activeRooms: 0,
-      messageRate: 0,
-      averageLatency: 0,
-      errorRate: 0
-    };
-    
-    this.startMetricsCollection();
-  }
-  
-  startMetricsCollection() {
-    setInterval(() => {
-      this.collectMetrics();
-      this.sendMetricsToMonitoring();
-    }, 10000); // Var 10:e sekund
-  }
-  
-  collectMetrics() {
-    this.metrics.timestamp = Date.now();
-    
-    // Exempel metrics collection
-    this.metrics.memoryUsage = process.memoryUsage();
-    this.metrics.cpuUsage = process.cpuUsage();
-    this.metrics.uptime = process.uptime();
-  }
-  
-  trackLatency(playerId, latency) {
-    // Beräkna rullande medelvärde
-    const current = this.metrics.averageLatency;
-    this.metrics.averageLatency = (current * 0.9) + (latency * 0.1);
-  }
-}
-```
-
-## Slutsats
-
-Multiplayer-spelutveckling är komplext men otroligt givande. Viktiga principer att komma ihåg:
-
-**Arkitektur**:
-- Välj rätt arkitektur för ditt spel (client-server vs P2P)
-- Implementera robust state synchronization
+**Arkitekturval**:
+- Använd authoritative server för competitive spel
+- Överväg P2P för casual co-op spel
 - Planera för skalbarhet från början
 
-**Networking**:
-- Hantera latency med prediction och interpolation
-- Implementera rollback för konkurrensspel
-- Validera all input på servern
+**Prestanda**:
+- Optimera nätverkstrafik genom att bara skicka förändringar
+- Använd object pooling för ofta skapade objekt
+- Implementera lag compensation tekniker
 
 **Säkerhet**:
-- Implementera anti-cheat system
-- Rate-limit alla inputs
-- Validera all data på servern
-
-**Performance**:
-- Optimera för nätverkstrafik
-- Använd object pooling
-- Implementera load balancing
+- Validera all input på servern
+- Implementera rate limiting
+- Använd SSL/TLS (wss://) för säker kommunikation
 
 **Användarupplevelse**:
-- Smooth interpolation för visuell kvalitet
-- Robust reconnection-hantering
-- Bra felmeddelanden och feedback
+- Implementera reconnection-hantering
+- Visa tydliga felmeddelanden
+- Ge feedback för nätverksstatus
 
-Med dessa principer och tekniker kan du skapa multiplayer-spel som skalas och ger spelare fantastiska upplevelser tillsammans!
+## Sammanfattning
+
+Multiplayer-spelutveckling kombinerar flera komplexa tekniker:
+
+1. **Nätverkarkitektur**: Välj rätt struktur för ditt spel
+2. **Tillståndssynkronisering**: Håll alla klienter uppdaterade
+3. **Latenskompensation**: Gör spelet responsivt trots nätverksfördröjning
+4. **Säkerhet**: Skydda mot fusk och attacker
+5. **Skalbarhet**: Planera för tillväxt
+
+Med en solid förståelse av dessa principer kan du bygga engagerande multiplayer-upplevelser som spelarna kommer att älska!
+
+**Nästa steg**: Testa att implementera en enkel multiplayer-demo med 2-4 spelare för att praktisera dessa koncept.

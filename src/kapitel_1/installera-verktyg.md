@@ -19,12 +19,12 @@ VS Code är en gratis, populär och mycket utbyggbar kod-editor från Microsoft.
     2.  Ladda ner installationsprogrammet för ditt operativsystem (Windows, macOS, Linux).
     3.  Kör installationsprogrammet och följ instruktionerna. Acceptera standardinställningarna om du är osäker.
 
-*   **Grundläggande konfiguration (Valfritt men rekommenderat):**
-    *   **Svenskt språkpaket:** Öppna VS Code. Tryck på `Ctrl+Shift+P` (eller `Cmd+Shift+P` på Mac) för att öppna kommandopaletten. Skriv `Configure Display Language`, välj det och sedan `Install additional languages...`. Sök efter `Swedish Language Pack for Visual Studio Code` och installera det. Starta om VS Code när du uppmanas.
+*   **Grundläggande konfiguration:**
+    *   **Svenskt språkpaket (ej rekommenderat):** Engleska är det universala språket inom programmering. Majoriteten av arbetsplatser använder språket för all kommunikation. Men om du bara vill komma igång med programmering och Svenska fungerar mycket bättre. Öppna VS Code. Tryck på `Ctrl+Shift+P` (eller `Cmd+Shift+P` på Mac) för att öppna kommandopaletten. Skriv `Configure Display Language`, välj det och sedan `Install additional languages...`. Sök efter `Swedish Language Pack for Visual Studio Code` och installera det. Starta om VS Code när du uppmanas.
     *   **Utforska tillägg (Extensions):** Klicka på ikonen för tillägg i sidopanelen (ser ut som fyra rutor, en separerad). Här kan du söka efter och installera tillägg som kan underlätta ditt arbete. Några populära för webbutveckling är:
         *   `Prettier - Code formatter`: Formaterar din kod automatiskt.
         *   `Live Server`: Startar en lokal utvecklingsserver med live-reload för statiska sidor.
-        *   `PHP Intelephense`: Ger bättre kodkomplettering och analys för PHP.
+        *   `PHP Intelephense`: Ger bättre kodkomplettering och analys för PHP. (Kan göras senare)
 
 ## 2. Git
 

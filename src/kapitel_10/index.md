@@ -311,7 +311,7 @@ flowchart TD
     B1[Sprites<br/>Animation Loops<br/>requestAnimationFrame] --> B
     C1[Classes<br/>Inheritance<br/>Game Architecture] --> C
     D1[Keyboard/Mouse<br/>Collision Algorithms<br/>Physics] --> D
-    E1[Socket.IO<br/>Real-time Updates<br/>Event Handling] --> E
+    E1[WebSockets<br/>Real-time Updates<br/>Event Handling] --> E
     F1[Client-Server<br/>State Sync<br/>Latency] --> F
     G1[Sound<br/>Particles<br/>AI<br/>Save System] --> G
     H1[Pong<br/>Platform Game<br/>Battle Arena<br/>MMO Basics] --> H
@@ -325,7 +325,7 @@ flowchart TD
 3. **WebSockets** - Realtidskommunikation och grundläggande multiplayer
 
 **Intermediate (Kapitel 4-6)**:
-4. **Chat-applikationer** - Socket.IO och användarhantering
+4. **Chat-applikationer** - WebSockets och användarhantering
 5. **Multiplayer-spel** - State synchronization och spelmekanik
 6. **Praktiska övningar** - Fyra progressiva spelprojekt
 
@@ -355,13 +355,29 @@ flowchart TD
 // Enkel server för WebSocket-testning
 const express = require('express');
 const http = require('http');
-const socketIo = require('socket.io');
+const WebSocket = require('ws');
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);
+const wss = new WebSocket.Server({ server });
 
 app.use(express.static('public'));
+
+wss.on('connection', (ws) => {
+  console.log('En spelare anslöt');
+  
+  ws.on('message', (message) => {
+    const data = JSON.parse(message);
+    console.log('Mottaget:', data);
+    
+    // Broadcast till alla anslutna
+    wss.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(JSON.stringify(data));
+      }
+    });
+  });
+});
 
 server.listen(3000, () => {
   console.log('Game server på port 3000');
@@ -388,7 +404,7 @@ game-project/
 │       ├── Vector2D.js
 │       └── SpriteLoader.js
 ├── server/                # Backend (multiplayer)
-│   ├── server.js          # Socket.IO server
+│   ├── server.js          # WebSocket server
 │   ├── GameRoom.js        # Spelrum-logik
 │   └── PlayerManager.js   # Spelarhantering
 ├── assets/                # Grafik och ljud

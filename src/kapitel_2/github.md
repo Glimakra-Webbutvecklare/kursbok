@@ -14,7 +14,7 @@ Vi har lärt oss hur Git fungerar lokalt på vår dator för att spåra ändring
 
 **Förutsättning:** Du har ett gratis konto på [GitHub](https://github.com/). Om inte, skapa ett nu.
 
-## Skapa ett Fjärr-Repository på GitHub
+## Skapa en remote-Repository på GitHub
 
 1.  Logga in på ditt GitHub-konto.
 2.  Klicka på "+"-ikonen uppe till höger och välj "New repository".
