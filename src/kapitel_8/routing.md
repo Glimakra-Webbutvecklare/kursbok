@@ -219,7 +219,7 @@ function ProductList() {
 }
 ```
 
-## Navigation
+## Navigation (varför och hur)
 
 ### Link Component
 
@@ -290,7 +290,7 @@ function Navigation() {
 }
 ```
 
-### Programmatisk Navigation
+### Programmatisk Navigation (varför)
 
 ```jsx
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -336,127 +336,15 @@ function LoginForm() {
 }
 ```
 
-## Protected Routes
+## Vidare läsning
 
-Skydda routes som kräver autentisering eller auktorisation.
+Fler routing‑ämnen när du är redo: skyddade routes (auth), data‑laddare, central felhantering, och animerade övergångar. Dessa bör komma efter att grunderna sitter.
 
-### Enkel Protected Route
+<!-- Avancerade exempel flyttade till fördjupning -->
 
-```jsx
-import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+<!-- Avancerade Routing Patterns flyttade till fördjupning -->
 
-function ProtectedRoute({ children }) {
-  const { user, loading } = useAuth();
-  const location = useLocation();
-
-  if (loading) {
-    return <div>Laddar...</div>;
-  }
-
-  if (!user) {
-    // Spara nuvarande location för att navigera tillbaka efter login
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
-
-  return children;
-}
-
-// Användning
-function App() {
-  return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/login" element={<Login />} />
-      
-      {/* Skyddade routes */}
-      <Route 
-        path="/dashboard" 
-        element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        } 
-      />
-      
-      <Route 
-        path="/profile" 
-        element={
-          <ProtectedRoute>
-            <Profile />
-          </ProtectedRoute>
-        } 
-      />
-    </Routes>
-  );
-}
-```
-
-### Avancerad Protected Route med Roller
-
-```jsx
-function ProtectedRoute({ children, requiredRole = null }) {
-  const { user, loading } = useAuth();
-  const location = useLocation();
-
-  if (loading) {
-    return <LoadingSpinner />;
-  }
-
-  if (!user) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
-
-  if (requiredRole && user.role !== requiredRole) {
-    return <Navigate to="/unauthorized" replace />;
-  }
-
-  return children;
-}
-
-// Route Guard Hook
-function useRouteGuard() {
-  const { user } = useAuth();
-  const navigate = useNavigate();
-
-  const requireAuth = useCallback(() => {
-    if (!user) {
-      navigate('/login');
-      return false;
-    }
-    return true;
-  }, [user, navigate]);
-
-  const requireRole = useCallback((role) => {
-    if (!user) {
-      navigate('/login');
-      return false;
-    }
-    if (user.role !== role) {
-      navigate('/unauthorized');
-      return false;
-    }
-    return true;
-  }, [user, navigate]);
-
-  return { requireAuth, requireRole };
-}
-
-// Användning
-function AdminPanel() {
-  const { requireRole } = useRouteGuard();
-
-  useEffect(() => {
-    requireRole('admin');
-  }, [requireRole]);
-
-  return <div>Admin Panel</div>;
-}
-```
-
-## Avancerade Routing Patterns
-
-### Route Configuration Object
+<!-- Route Configuration Object -->
 
 ```jsx
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
@@ -511,7 +399,7 @@ function App() {
 }
 ```
 
-### Data Loading med Loaders
+<!-- Data Loading med Loaders -->
 
 ```jsx
 // Modern data loading pattern (React Router v6.4+)
@@ -543,7 +431,7 @@ function ProductDetail() {
 }
 ```
 
-### Route Transitions och Animations
+<!-- Route Transitions och Animations -->
 
 ```jsx
 import { AnimatePresence, motion } from 'framer-motion';
@@ -575,7 +463,7 @@ function AnimatedRoutes() {
 }
 ```
 
-## Error Handling och 404 Pages
+<!-- Error Handling och 404 Pages -->
 
 ### Error Boundaries för Routes
 

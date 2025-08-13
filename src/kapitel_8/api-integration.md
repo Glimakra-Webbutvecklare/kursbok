@@ -339,7 +339,7 @@ function ProductManager() {
 }
 ```
 
-## Avancerad Error Handling
+<!-- Avancerad Error Handling flyttad till fördjupning; behåll enkel fetchJson i grunden -->
 
 ```mermaid
 graph TD
@@ -404,7 +404,7 @@ class ApiErrorBoundary extends React.Component {
 }
 ```
 
-### Global Error Handler (Fetch)
+### Enkel global felhantering (Fetch)
 
 ```jsx
 // utils/http.js
@@ -440,7 +440,7 @@ export async function fetchJson(url, options = {}) {
   return data;
 }
 
-// Exempel på central felhantering beroende på statuskod
+// Exempel: enkel central felhantering beroende på statuskod
 export function handleApiError(error) {
   if (error instanceof ApiError) {
     switch (error.status) {
@@ -464,7 +464,7 @@ export function handleApiError(error) {
 }
 ```
 
-### Retry Logic och Exponential Backoff
+<!-- Retry Logic och Backoff: flyttad till fördjupning -->
 
 ```jsx
 const retryWithBackoff = async (fn, maxRetries = 3, baseDelay = 1000) => {
@@ -498,9 +498,9 @@ const fetchUserWithRetry = async (userId) => {
 };
 ```
 
-## Caching och Performance
+<!-- Caching och Performance: flyttad till fördjupning -->
 
-### Simple In-Memory Cache
+<!-- Simple In-Memory Cache -->
 
 ```jsx
 class ApiCache {
@@ -571,7 +571,7 @@ function useCachedApi(key, apiFunction, dependencies = []) {
 }
 ```
 
-### Request Deduplication
+<!-- Request Deduplication -->
 
 ```jsx
 // Förhindra duplicerade requests
@@ -593,7 +593,7 @@ const deduplicatedFetch = async (url, options) => {
 };
 ```
 
-## Real-time Data med WebSockets
+<!-- Real-time Data med WebSockets: flyttad till fördjupning -->
 
 ```jsx
 function useWebSocket(url) {
@@ -670,7 +670,23 @@ function ChatComponent() {
 }
 ```
 
-## Best Practices
+## Vanliga misstag och varför
+
+- Inte kolla `response.ok`: ett API kan svara 404 men ändå returnera HTML/JSON → kontrollera alltid och visa fel.
+- Uppdatera state efter unmount: avsluta fetch med `AbortController` i `useEffect`‑cleanup.
+- Gömda laddningar: visa alltid `loading` och en tom‑state när data saknas.
+
+## Mikro‑övning
+
+Bygg en komponent som hämtar en lista (t.ex. `/api/users`) och en detaljvy (`/api/users/:id`).
+- Lista: visa namn, klick navigerar till detaljvy.
+- Detalj: hämta användare, visa `loading`, `error` och “hittades inte”‑läge.
+- Använd `AbortController` i båda effekterna.
+
+Klar‑kriterier:
+- Inga konsolfel när du snabbnavigerar (avbrutna anrop hanteras).
+- Tom‑state när listan är tom.
+- Tydliga felmeddelanden vid nätverksfel eller 404.
 
 ### 1. Environment Configuration
 

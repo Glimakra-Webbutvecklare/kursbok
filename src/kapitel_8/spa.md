@@ -1,8 +1,6 @@
-# Single Page Application: Modern Webbapplikationsarkitektur
+# Single Page Application: Koncept och struktur
 
-En **Single Page Application (SPA)** är en webbapplikation som laddar en enda HTML-sida och dynamiskt uppdaterar innehållet när användaren interagerar med appen. Detta skiljer sig från traditionella webbsidor där varje klick resulterar i en ny sidladdning från servern.
-
-**Mål:** Förstå SPA-arkitektur, lära sig state management för större applikationer, optimera prestanda och förstå build- och deployment-processen.
+En **Single Page Application (SPA)** laddar appen en gång och uppdaterar sedan innehållet i webbläsaren vid navigering. Här fokuserar vi på koncept, trade‑offs och enkel struktur.
 
 ## SPA vs Traditionella Webbapplikationer
 
@@ -30,7 +28,7 @@ graph TB
     style B2 fill:#87ceeb
 ```
 
-### Fördelar med SPA
+### Fördelar med SPA (varför)
 
 **Användarupplevelse:**
 - Snabbare navigering efter initial laddning
@@ -43,7 +41,7 @@ graph TB
 - Återanvändbar API för flera klienter
 - Modern utvecklingsworkflow med hot reloading
 
-### Nackdelar med SPA
+### Nackdelar med SPA (varför inte alltid)
 
 **Initial Prestanda:**
 - Större initial JavaScript-bundle
@@ -55,47 +53,18 @@ graph TB
 - Komplexare routing-implementation
 - Potential för minnesläckor
 
-## SPA-arkitektur med React
+## Enkel struktur för en liten SPA
 
-### Grundläggande Applikationsstruktur
+Håll mappstrukturen enkel i början:
 
-```jsx
-// App.js - Huvudkomponent med routing
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './contexts/AuthContext';
-import { ThemeProvider } from './contexts/ThemeContext';
-import Layout from './components/Layout';
-import Home from './pages/Home';
-import About from './pages/About';
-import Products from './pages/Products';
-import ProductDetail from './pages/ProductDetail';
-import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
-import NotFound from './pages/NotFound';
-
-function App() {
-  return (
-    <AuthProvider>
-      <ThemeProvider>
-        <Router>
-          <Layout>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/products" element={<Products />} />
-              <Route path="/products/:id" element={<ProductDetail />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Layout>
-        </Router>
-      </ThemeProvider>
-    </AuthProvider>
-  );
-}
-
-export default App;
+```
+src/
+  components/   # Återanvändbara UI-byggstenar
+  pages/        # Sidor för routing
+  services/     # API-anrop (fetch)
+  hooks/        # Egen logik (valfritt)
+  App.jsx       # Router och layout
+  main.jsx      # Entrypoint
 ```
 
 ### Layout-komponent med Navigation
@@ -210,7 +179,7 @@ function Layout({ children }) {
 export default Layout;
 ```
 
-## State Management för Större Applikationer
+<!-- State management med reducer/context: flyttas till fördjupning. -->
 
 ### Context API för Global State
 
@@ -377,7 +346,7 @@ export function useApp() {
 }
 ```
 
-## Performance Optimization
+<!-- Prestandaoptimering (lazy, memo, virtualization) flyttas till fördjupning. -->
 
 ### Code Splitting och Lazy Loading
 
@@ -499,7 +468,7 @@ function VirtualizedProductList({ products }) {
 }
 ```
 
-## Build och Deployment
+## Build och deployment (översikt)
 
 ### Optimering för Produktion
 
@@ -512,7 +481,7 @@ npm install --save-dev webpack-bundle-analyzer
 npx webpack-bundle-analyzer build/static/js/*.js
 ```
 
-### Environment Variables
+### Miljövariabler
 
 ```bash
 # .env.local
@@ -559,7 +528,7 @@ export default config;
 - SEO-kritiska sidor, snabb First Contentful Paint, delning av länkar med preview.
 - Överväg Next.js för Server-Side Rendering (SSR) eller Static Site Generation (SSG) när det passar behovet.
 
-### Service Worker för Caching
+<!-- Service Worker: fördjupning -->
 
 ```jsx
 // public/sw.js
@@ -609,7 +578,19 @@ npm install --save-dev gh-pages
 npm run deploy
 ```
 
-## Monitoring och Analytics
+<!-- Monitoring och Analytics: fördjupning -->
+
+## Mikro‑övning
+
+Bygg en liten SPA med tre sidor (Hem, Om, Kontakt) och en sida som hämtar data (Produkter).
+- Navigera mellan sidor med React Router.
+- På Produkter: hämta en lista via Fetch och visa `loading`/`error`/tom‑state.
+- Lägg till en detaljsida med `:id`.
+
+Klar‑kriterier:
+- Ingen sidladdning vid navigering.
+- Tydliga laddnings‑ och felmeddelanden.
+- Detaljsidan visar id från URL:en.
 
 ### Error Tracking
 
