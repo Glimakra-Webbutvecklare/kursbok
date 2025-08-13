@@ -173,7 +173,7 @@ function App() {
 
 ```jsx
 // Wrapper-komponent som använder children
-function Card({ title, className = "" }) {
+function Card({ title, className = "", children }) {
   return (
     <div className={`card ${className}`}>
       <div className="card-header">
@@ -181,7 +181,7 @@ function Card({ title, className = "" }) {
       </div>
       <div className="card-body">
         {/* Här renderas children */}
-        {props.children}
+        {children}
       </div>
     </div>
   );

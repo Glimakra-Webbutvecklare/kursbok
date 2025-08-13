@@ -161,7 +161,8 @@ import axios from 'axios';
 
 // Grundkonfiguration
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:3001/api',
+  // CRA: process.env.REACT_APP_API_URL, Vite: import.meta.env.VITE_API_URL
+  baseURL: (typeof import.meta !== 'undefined' ? import.meta.env.VITE_API_URL : process.env.REACT_APP_API_URL) || 'http://localhost:3001/api',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
@@ -186,11 +187,27 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('authToken');
-      window.location.href = '/login';
+      // Undvik hård redirect här; signalera globalt istället
+      // window.location.href = '/login';
     }
     return Promise.reject(error);
   }
 );
+
+export default api;
+```
+
+#### Vite-specifik konfiguration
+
+```jsx
+// services/api-vite.js
+import axios from 'axios';
+
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3001/api',
+  timeout: 10000,
+  headers: { 'Content-Type': 'application/json' }
+});
 
 export default api;
 ```
@@ -295,6 +312,11 @@ function UserList() {
   );
 }
 ```
+
+### Säkerhetsnotis: Tokens och autentisering
+
+- lagring i `localStorage` är sårbar vid XSS. För skyddade sessioner i webben, föredra `httpOnly`-cookies från servern (tillsammans med CSRF-skydd, t.ex. CSRF-token eller SameSite-cookies).
+- Undvik hårda redirects i interceptors (t.ex. `window.location.href = '/login'`); signalera istället globalt och låt en central auth-hanterare/router sköta navigeringen.
 
 ### useResource Hook för CRUD-operationer
 

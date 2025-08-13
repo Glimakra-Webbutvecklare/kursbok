@@ -155,14 +155,14 @@ function Layout() {
   );
 }
 
-// Produktroutes som separata komponenter
+// Produktroutes som separata komponenter (v6, relativa paths)
 function ProductRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<ProductList />} />
-      <Route path="/:id" element={<ProductDetail />} />
-      <Route path="/categories" element={<ProductCategories />} />
-      <Route path="/categories/:category" element={<CategoryProducts />} />
+      <Route index element={<ProductList />} />
+      <Route path=":id" element={<ProductDetail />} />
+      <Route path="categories" element={<ProductCategories />} />
+      <Route path="categories/:category" element={<CategoryProducts />} />
     </Routes>
   );
 }
@@ -278,11 +278,10 @@ function Navigation() {
         Produkter
       </NavLink>
       
-      {/* Med custom active class */}
+      {/* Med custom active class (v6) */}
       <NavLink 
         to="/about"
-        className="nav-link"
-        activeClassName="current"
+        className={({ isActive }) => `nav-link ${isActive ? 'current' : ''}`}
       >
         Om oss
       </NavLink>

@@ -434,7 +434,8 @@ import { memo, useMemo, useCallback } from 'react';
 // Memoized list component
 const ProductList = memo(function ProductList({ products, onAddToCart }) {
   const sortedProducts = useMemo(() => {
-    return products.sort((a, b) => a.name.localeCompare(b.name));
+    // Undvik att mutera original-arrayen
+    return [...products].sort((a, b) => a.name.localeCompare(b.name));
   }, [products]);
 
   return (
@@ -532,6 +533,31 @@ const config = {
 
 export default config;
 ```
+
+### Vite miljövariabler
+
+```bash
+# .env
+VITE_API_URL=https://api.example.com
+VITE_GOOGLE_ANALYTICS_ID=GA_TRACKING_ID
+```
+
+```jsx
+// src/config/env.js (Vite)
+const config = {
+  apiUrl: import.meta.env.VITE_API_URL || 'http://localhost:3001',
+  googleAnalyticsId: import.meta.env.VITE_GOOGLE_ANALYTICS_ID,
+  isDevelopment: import.meta.env.DEV,
+  isProduction: import.meta.env.PROD
+};
+
+export default config;
+```
+
+### När SSR/SSG?
+
+- SEO-kritiska sidor, snabb First Contentful Paint, delning av länkar med preview.
+- Överväg Next.js för Server-Side Rendering (SSR) eller Static Site Generation (SSG) när det passar behovet.
 
 ### Service Worker för Caching
 

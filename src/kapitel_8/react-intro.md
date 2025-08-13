@@ -11,7 +11,7 @@ React är ett JavaScript-bibliotek (inte ett ramverk!) för att bygga användarg
 *   **Komponenter:** Återanvändbara byggblock för din UI
 *   **Deklarativ stil:** Beskriv *hur* UI:t ska se ut, inte *vad* som ska göras
 *   **Virtual DOM:** Effektiv uppdatering av den riktiga DOM:en
-*   **Unidirektionellt dataflöde:** Data flöder nedåt, events uppåt
+*   **Unidirektionellt dataflöde:** Data flödar nedåt, events uppåt
 
 ## Virtual DOM: Prestanda Under Huven
 
@@ -43,7 +43,25 @@ graph TB
 2. **Jämförelse (Diffing):** När något ändras jämför React den nya Virtual DOM med den föregående
 3. **Minimal uppdatering:** Bara de delar som faktiskt ändrats uppdateras i den riktiga DOM:en
 
-Detta gör React-applikationer mycket snabbare än traditionella metoder.
+Detta gör uppdateringar mer förutsägbara och ofta snabbare än traditionella manuella DOM-uppdateringar, särskilt i större applikationer.
+
+## UI som funktion av state
+
+Grunden i React är att se UI som en funktion av state: UI = f(state). Ett minimalt exempel:
+
+```jsx
+import { useState } from 'react';
+
+export default function Counter() {
+  const [count, setCount] = useState(0);
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(c => c + 1)}>+1</button>
+    </div>
+  );
+}
+```
 
 ## JSX: JavaScript och HTML i Harmoni
 
@@ -132,21 +150,29 @@ function DynamicComponent() {
 
 ## Utvecklingsmiljö: Kom Igång Snabbt
 
-### Alternativ 1: Create React App (Rekommenderat för nybörjare)
+### Snabbstart utan tooling
 
-```bash
-# Installera Create React App globalt (en gång)
-npm install -g create-react-app
+Vill du prova React direkt? Testa en minimal demo via CDN/online-sandbox (t.ex. StackBlitz):
 
-# Skapa nytt projekt
-npx create-react-app min-react-app
-cd min-react-app
+```html
+<!doctype html>
+<div id="root"></div>
+<script type="module">
+  import React from 'https://esm.sh/react';
+  import ReactDOM from 'https://esm.sh/react-dom/client';
 
-# Starta utvecklingsserver
-npm start
+  function App() {
+    return React.createElement('h1', null, 'Hej från React!');
+  }
+
+  const root = ReactDOM.createRoot(document.getElementById('root'));
+  root.render(React.createElement(App));
+
+  // För riktig utveckling: använd Vite (se nedan)
+}</script>
 ```
 
-### Alternativ 2: Vite (Snabbare, modern)
+### Alternativ 1: Vite (Rekommenderat)
 
 ```bash
 # Skapa nytt projekt med Vite
@@ -158,6 +184,17 @@ npm install
 
 # Starta utvecklingsserver
 npm run dev
+```
+
+### Alternativ 2: Create React App (historiskt)
+
+```bash
+# Skapa nytt projekt
+npx create-react-app min-react-app
+cd min-react-app
+
+# Starta utvecklingsserver
+npm start
 ```
 
 ### Projektstruktur (Create React App)
@@ -215,6 +252,10 @@ import './index.css';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App />);
 ```
+
+Notis:
+- Med den nya JSX-transformen (React 17+) behöver du inte längre `import React from 'react'` i varje komponentfil. Vissa mallar kan fortfarande inkludera importen – båda fungerar.
+- I React 18 kör `StrictMode` effekter två gånger i utvecklingsläge för att upptäcka biverkningar. Det påverkar inte produktion.
 
 ## React Developer Tools
 

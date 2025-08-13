@@ -182,28 +182,34 @@ function UserProfile({ userId }) {
     console.log('Component mounted');
   }, []); // Tom dependency array
 
-  // Pattern 3: Kör när specifika värden ändras
+  // Pattern 3: Kör när specifika värden ändras (med AbortController)
   useEffect(() => {
+    if (!userId) return;
+
+    const controller = new AbortController();
+    const { signal } = controller;
+
     const fetchUser = async () => {
       try {
         setLoading(true);
         setError(null);
         
-        const response = await fetch(`/api/users/${userId}`);
+        const response = await fetch(`/api/users/${userId}`, { signal });
         if (!response.ok) throw new Error('Användare hittades inte');
         
         const userData = await response.json();
         setUser(userData);
       } catch (err) {
-        setError(err.message);
+        if (err.name !== 'AbortError') {
+          setError(err.message);
+        }
       } finally {
         setLoading(false);
       }
     };
 
-    if (userId) {
-      fetchUser();
-    }
+    fetchUser();
+    return () => controller.abort();
   }, [userId]); // Kör när userId ändras
 
   // Pattern 4: Cleanup (componentWillUnmount)
@@ -286,6 +292,8 @@ function SearchComponent() {
   );
 }
 ```
+
+Observera: aktivera ESLint-regeln `react-hooks/exhaustive-deps` för att fånga saknade beroenden i hooks och undvika subtila buggar.
 
 ## Props Drilling: Problem och Lösningar
 
