@@ -2,7 +2,7 @@
 
 Modern React-applikationer separerar frontend från backend och kommunicerar via **API:er** (Application Programming Interfaces). Detta kapitel fokuserar på hur vi hämtar, skickar och hanterar data från externa tjänster.
 
-**Mål:** Lära sig använda Fetch API och Axios, skapa custom hooks för API-anrop, implementera robust error handling och förstå bästa praxis för datahantering.
+**Mål:** Lära sig använda Fetch API, skapa custom hooks för API-anrop, implementera robust error handling och förstå bästa praxis för datahantering. (Notis: Axios är ett populärt bibliotek om du vill ha extra funktioner.)
 
 ## Fetch API: Webbstandardens Sätt
 
@@ -132,7 +132,7 @@ const fetchWithAuth = async (url, options = {}) => {
   // Hantera unauthorized
   if (response.status === 401) {
     localStorage.removeItem('authToken');
-    window.location.href = '/login';
+    // Navigera till login via central hantering (ex. router)
     throw new Error('Unauthorized');
   }
 
@@ -146,114 +146,9 @@ const getProtectedData = async () => {
 };
 ```
 
-## Axios: Kraftfullare HTTP-klient
+## Notis: Axios
 
-**Axios** är ett populärt HTTP-bibliotek som erbjuder mer funktionalitet och bättre error handling än Fetch.
-
-### Installation och Setup
-
-```bash
-npm install axios
-```
-
-```jsx
-import axios from 'axios';
-
-// Grundkonfiguration
-const api = axios.create({
-  // CRA: process.env.REACT_APP_API_URL, Vite: import.meta.env.VITE_API_URL
-  baseURL: (typeof import.meta !== 'undefined' ? import.meta.env.VITE_API_URL : process.env.REACT_APP_API_URL) || 'http://localhost:3001/api',
-  timeout: 10000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-// Interceptors för automatisk token-hantering
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('authToken');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
-
-// Response interceptor för error handling
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem('authToken');
-      // Undvik hård redirect här; signalera globalt istället
-      // window.location.href = '/login';
-    }
-    return Promise.reject(error);
-  }
-);
-
-export default api;
-```
-
-#### Vite-specifik konfiguration
-
-```jsx
-// services/api-vite.js
-import axios from 'axios';
-
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3001/api',
-  timeout: 10000,
-  headers: { 'Content-Type': 'application/json' }
-});
-
-export default api;
-```
-
-### Axios API-anrop
-
-```jsx
-import api from '../services/api';
-
-// GET
-const getUsers = async () => {
-  try {
-    const response = await api.get('/users');
-    return response.data;
-  } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to fetch users');
-  }
-};
-
-// POST
-const createUser = async (userData) => {
-  try {
-    const response = await api.post('/users', userData);
-    return response.data;
-  } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to create user');
-  }
-};
-
-// Simultana requests
-const getInitialData = async () => {
-  try {
-    const [usersResponse, productsResponse] = await Promise.all([
-      api.get('/users'),
-      api.get('/products')
-    ]);
-
-    return {
-      users: usersResponse.data,
-      products: productsResponse.data
-    };
-  } catch (error) {
-    throw new Error('Failed to fetch initial data');
-  }
-};
-```
+Axios är ett populärt bibliotek för HTTP-anrop som erbjuder interceptors och några bekvämligheter. I denna kurs använder vi web standarden Fetch för alla exempel. Om du föredrar Axios kan du enkelt översätta våra fetch-anrop till `axios.get/post/...` och använda interceptors för t.ex. token-hantering.
 
 ## Custom Hooks för API-anrop
 
@@ -318,7 +213,7 @@ function UserList() {
 - lagring i `localStorage` är sårbar vid XSS. För skyddade sessioner i webben, föredra `httpOnly`-cookies från servern (tillsammans med CSRF-skydd, t.ex. CSRF-token eller SameSite-cookies).
 - Undvik hårda redirects i interceptors (t.ex. `window.location.href = '/login'`); signalera istället globalt och låt en central auth-hanterare/router sköta navigeringen.
 
-### useResource Hook för CRUD-operationer
+### useResource Hook för CRUD-operationer (Fetch)
 
 ```jsx
 function useResource(endpoint) {
@@ -326,13 +221,26 @@ function useResource(endpoint) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const fetchJson = async (url, options = {}) => {
+    const res = await fetch(url, {
+      headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+      ...options,
+    });
+    const text = await res.text();
+    const json = text ? JSON.parse(text) : null;
+    if (!res.ok) {
+      throw new Error(json?.message || res.statusText || 'Request failed');
+    }
+    return json;
+  };
+
   // GET - Hämta alla
   const fetchAll = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await api.get(endpoint);
-      setData(response.data);
+      const result = await fetchJson(endpoint);
+      setData(Array.isArray(result) ? result : (result?.data ?? []));
     } catch (err) {
       setError(err.message);
     } finally {
@@ -343,9 +251,12 @@ function useResource(endpoint) {
   // POST - Skapa ny
   const create = useCallback(async (newItem) => {
     try {
-      const response = await api.post(endpoint, newItem);
-      setData(prev => [...prev, response.data]);
-      return response.data;
+      const result = await fetchJson(endpoint, {
+        method: 'POST',
+        body: JSON.stringify(newItem)
+      });
+      setData(prev => [...prev, result]);
+      return result;
     } catch (err) {
       setError(err.message);
       throw err;
@@ -355,11 +266,12 @@ function useResource(endpoint) {
   // PUT - Uppdatera
   const update = useCallback(async (id, updatedItem) => {
     try {
-      const response = await api.put(`${endpoint}/${id}`, updatedItem);
-      setData(prev => 
-        prev.map(item => item.id === id ? response.data : item)
-      );
-      return response.data;
+      const result = await fetchJson(`${endpoint}/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(updatedItem)
+      });
+      setData(prev => prev.map(item => item.id === id ? result : item));
+      return result;
     } catch (err) {
       setError(err.message);
       throw err;
@@ -369,7 +281,7 @@ function useResource(endpoint) {
   // DELETE - Ta bort
   const remove = useCallback(async (id) => {
     try {
-      await api.delete(`${endpoint}/${id}`);
+      await fetchJson(`${endpoint}/${id}`, { method: 'DELETE' });
       setData(prev => prev.filter(item => item.id !== id));
     } catch (err) {
       setError(err.message);
@@ -492,10 +404,10 @@ class ApiErrorBoundary extends React.Component {
 }
 ```
 
-### Global Error Handler
+### Global Error Handler (Fetch)
 
 ```jsx
-// utils/errorHandler.js
+// utils/http.js
 export class ApiError extends Error {
   constructor(message, status, data) {
     super(message);
@@ -505,39 +417,51 @@ export class ApiError extends Error {
   }
 }
 
-export const handleApiError = (error) => {
-  if (error.response) {
-    // Server svarade med error status
-    const { status, data } = error.response;
-    
-    switch (status) {
-      case 400:
-        throw new ApiError('Felaktig förfrågan', status, data);
+export async function fetchJson(url, options = {}) {
+  const res = await fetch(url, {
+    headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+    ...options,
+  });
+
+  // Läs säkert ev. JSON-body
+  let data = null;
+  try {
+    const text = await res.text();
+    data = text ? JSON.parse(text) : null;
+  } catch (_) {
+    // Ignorera JSON-parse-fel
+  }
+
+  if (!res.ok) {
+    const message = data?.message || res.statusText || 'Request failed';
+    throw new ApiError(message, res.status, data);
+  }
+
+  return data;
+}
+
+// Exempel på central felhantering beroende på statuskod
+export function handleApiError(error) {
+  if (error instanceof ApiError) {
+    switch (error.status) {
       case 401:
         localStorage.removeItem('authToken');
-        window.location.href = '/login';
-        throw new ApiError('Du måste logga in', status, data);
+        // Navigera till login via din router/händelsebuss
+        break;
       case 403:
-        throw new ApiError('Du har inte behörighet', status, data);
+        // Visa "Access denied"-vy
+        break;
       case 404:
-        throw new ApiError('Resursen hittades inte', status, data);
-      case 500:
-        throw new ApiError('Serverfel, försök igen senare', status, data);
+        // Visa "Not found"-vy
+        break;
       default:
-        throw new ApiError(
-          data?.message || 'Något gick fel', 
-          status, 
-          data
-        );
+        // Visa generiskt felmeddelande
+        break;
     }
-  } else if (error.request) {
-    // Network error
-    throw new ApiError('Nätverksfel, kontrollera din anslutning');
   } else {
-    // Annan typ av fel
-    throw new ApiError(error.message);
+    // Nätverksfel eller oväntat fel
   }
-};
+}
 ```
 
 ### Retry Logic och Exponential Backoff
@@ -564,7 +488,10 @@ const retryWithBackoff = async (fn, maxRetries = 3, baseDelay = 1000) => {
 // Usage
 const fetchUserWithRetry = async (userId) => {
   return retryWithBackoff(
-    () => api.get(`/users/${userId}`),
+    () => fetch(`/api/users/${userId}`).then(r => {
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      return r.json();
+    }),
     3, // Max 3 försök
     1000 // Start med 1 sekund
   );
@@ -787,9 +714,18 @@ interface ApiResponse<T> {
 }
 
 // services/userService.ts
+async function fetchJson<T>(url: string, options: RequestInit = {}): Promise<T> {
+  const res = await fetch(url, {
+    headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+    ...options,
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json() as Promise<T>;
+}
+
 const getUsers = async (): Promise<User[]> => {
-  const response = await api.get<ApiResponse<User[]>>('/users');
-  return response.data.data;
+  const response = await fetchJson<ApiResponse<User[]>>('/users');
+  return response.data;
 };
 ```
 
