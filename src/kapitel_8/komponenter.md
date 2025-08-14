@@ -173,7 +173,7 @@ function App() {
 
 ```jsx
 // Wrapper-komponent som använder children
-function Card({ title, className = "" }) {
+function Card({ title, className = "", children }) {
   return (
     <div className={`card ${className}`}>
       <div className="card-header">
@@ -181,7 +181,7 @@ function Card({ title, className = "" }) {
       </div>
       <div className="card-body">
         {/* Här renderas children */}
-        {props.children}
+        {children}
       </div>
     </div>
   );
@@ -398,6 +398,18 @@ function BlogHeader({ post }) {
 ```
 
 ### 2. Använda PropTypes för Typkontroll (Optional)
+PropTypes är ett verktyg för typkontroll i React som hjälper dig att:
+
+1. **Hitta buggar tidigt:** Genom att validera props under utveckling upptäcks fel direkt istället för att de dyker upp i produktion.
+
+2. **Dokumentera komponenter:** PropTypes fungerar som självdokumenterande kod - andra utvecklare kan snabbt se vilka props en komponent förväntar sig.
+
+3. **Förbättra underhållbarhet:** När du ändrar en komponent varnar PropTypes om du råkar skicka fel datatyp eller glömmer en required prop.
+
+4. **Underlätta refaktorering:** Med tydliga kontrakt mellan komponenter blir det säkrare att göra större kodändringar.
+
+Exempel på vanliga PropTypes:
+
 
 ```jsx
 import PropTypes from 'prop-types';
@@ -425,6 +437,8 @@ ProductCard.defaultProps = {
   onSale: false
 };
 ```
+
+Ett vanligt alternativ till PropTypes är TypeScript som erbjuder statisk typkontroll under kompilering och ger bättre IDE-stöd med autocompletions och refaktoreringsmöjligheter. TypeScript är särskilt användbart i större projekt där PropTypes kan bli otillräckligt.
 
 ### 3. Komponentnamnskonventioner
 
