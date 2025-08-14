@@ -150,637 +150,366 @@ const getProtectedData = async () => {
 
 Axios är ett populärt bibliotek för HTTP-anrop som erbjuder interceptors och några bekvämligheter. I denna kurs använder vi web standarden Fetch för alla exempel. Om du föredrar Axios kan du enkelt översätta våra fetch-anrop till `axios.get/post/...` och använda interceptors för t.ex. token-hantering.
 
-## Custom Hooks för API-anrop
 
-Custom hooks abstraherar API-logik och gör den återanvändbar mellan komponenter.
+## Använd data från Pokemon API
 
-### useApi Hook
+Nu när vi har sett grunderna för hur man anropar ett API låt oss göra något roligare. [Pokemon API](https://pokeapi.co/) är ett öppet API som ger oss tillgång till data om alla Pokemon från spelen - perfekt för att öva på API-anrop!
+
+### Vad är Pokemon API?
+
+Pokemon API (PokeAPI) är ett RESTful API som innehåller information om:
+- Pokemon (namn, typ, statistik, bilder)
+- Moves (attacker)
+- Types (typer som Fire, Water, Electric)
+- Items (föremål)
+- Locations (platser)
+
+**Fördelar:**
+- Helt gratis att använda
+- Ingen API-nyckel krävs
+- Välstrukturerad JSON-data
+- Stöder CORS (fungerar direkt från webbläsaren)
+
+### Undersök datan
+
+Låt oss först utforska vad API:et ger oss. Öppna https://pokeapi.co/api/v2/pokemon/pikachu i webbläsaren eller testa med curl:
+
+```bash
+curl https://pokeapi.co/api/v2/pokemon/pikachu
+```
+
+**Viktiga endpoints:**
+```
+GET https://pokeapi.co/api/v2/pokemon/         # Lista första 20 Pokemon
+GET https://pokeapi.co/api/v2/pokemon/{id}     # Specifik Pokemon (ID eller namn)
+GET https://pokeapi.co/api/v2/type/{type}      # Pokemon av viss typ
+```
+
+**Exempel på data för Pikachu:**
+```json
+{
+  "id": 25,
+  "name": "pikachu",
+  "height": 4,
+  "weight": 60,
+  "types": [
+    {
+      "slot": 1,
+      "type": {
+        "name": "electric",
+        "url": "https://pokeapi.co/api/v2/type/13/"
+      }
+    }
+  ],
+  "sprites": {
+    "front_default": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+    "front_shiny": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/25.png"
+  },
+  "stats": [
+    {
+      "base_stat": 35,
+      "stat": {
+        "name": "hp"
+      }
+    }
+    // ... fler stats
+  ]
+}
+```
+
+### Bygg en Pokemon-app steg för steg
+
+Låt oss börja enkelt och bygga upp funktionaliteten bit för bit.
+
+#### Steg 1: Hämta och visa en Pokemon
+
+Först - låt oss bara hämta Pikachu och visa namnet:
 
 ```jsx
-import { useState, useEffect, useCallback } from 'react';
-
-function useApi(apiFunction, dependencies = []) {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  const execute = useCallback(async (...args) => {
-    try {
-      setLoading(true);
-      setError(null);
-      const result = await apiFunction(...args);
-      setData(result);
-      return result;
-    } catch (err) {
-      setError(err.message);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  }, dependencies);
+function PokemonApp() {
+  const [pokemon, setPokemon] = useState(null);
 
   useEffect(() => {
-    execute();
-  }, [execute]);
-
-  const refetch = useCallback(() => execute(), [execute]);
-
-  return { data, loading, error, refetch, execute };
-}
-
-// Användning
-function UserList() {
-  const { data: users, loading, error, refetch } = useApi(getUsers);
-
-  if (loading) return <div>Laddar...</div>;
-  if (error) return <div>Fel: {error}</div>;
+    fetch('https://pokeapi.co/api/v2/pokemon/pikachu')
+      .then(response => response.json())
+      .then(data => setPokemon(data));
+  }, []);
 
   return (
-    <div>
-      <button onClick={refetch}>Uppdatera</button>
-      <ul>
-        {users?.map(user => (
-          <li key={user.id}>{user.name}</li>
-        ))}
-      </ul>
+    <div className="pokemon-app">
+      <h1>Min Pokemon App</h1>
+      {pokemon && <h2>{pokemon.name}</h2>}
     </div>
   );
 }
 ```
 
-### Säkerhetsnotis: Tokens och autentisering
+**Testa detta först!** Öppna Network-fliken i utvecklarverktygen och se API-anropet.
 
-- lagring i `localStorage` är sårbar vid XSS. För skyddade sessioner i webben, föredra `httpOnly`-cookies från servern (tillsammans med CSRF-skydd, t.ex. CSRF-token eller SameSite-cookies).
-- Undvik hårda redirects i interceptors (t.ex. `window.location.href = '/login'`); signalera istället globalt och låt en central auth-hanterare/router sköta navigeringen.
-
-### useResource Hook för CRUD-operationer (Fetch)
+#### Steg 2: Lägg till bild och grundinfo
 
 ```jsx
-function useResource(endpoint) {
-  const [data, setData] = useState([]);
+function PokemonApp() {
+  const [pokemon, setPokemon] = useState(null);
+
+  useEffect(() => {
+    fetch('https://pokeapi.co/api/v2/pokemon/pikachu')
+      .then(response => response.json())
+      .then(data => setPokemon(data));
+  }, []);
+
+  return (
+    <div className="pokemon-app">
+      <h1>Min Pokemon App</h1>
+      
+      {pokemon && (
+        <div className="pokemon-card">
+          <h2>{pokemon.name}</h2>
+          <img src={pokemon.sprites.front_default} alt={pokemon.name} />
+          <p>Höjd: {pokemon.height / 10} m</p>
+          <p>Vikt: {pokemon.weight / 10} kg</p>
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+
+#### Steg 3: Lägg till sökfunktion
+
+Nu gör vi det interaktivt:
+
+```jsx
+function PokemonApp() {
+  const [pokemon, setPokemon] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const searchPokemon = () => {
+    fetch(`https://pokeapi.co/api/v2/pokemon/${searchTerm.toLowerCase()}`)
+      .then(response => response.json())
+      .then(data => setPokemon(data));
+  };
+
+  return (
+    <div className="pokemon-app">
+      <h1>Pokemon Sökare</h1>
+      
+      <div className="search-box">
+        <input 
+          type="text" 
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Skriv Pokemon namn..."
+          className="search-input"
+        />
+        <button onClick={searchPokemon} className="search-button">
+          Sök
+        </button>
+      </div>
+
+      {pokemon && (
+        <div className="pokemon-card">
+          <h2>{pokemon.name}</h2>
+          <img src={pokemon.sprites.front_default} alt={pokemon.name} />
+          <p>Höjd: {pokemon.height / 10} m</p>
+          <p>Vikt: {pokemon.weight / 10} kg</p>
+          <p>Typ: {pokemon.types.map(type => type.type.name).join(', ')}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+**Prova att söka på:** pikachu, charizard, bulbasaur, squirtle
+
+#### Steg 4: Hantera fel och loading
+
+Vad händer om vi söker på något som inte finns?
+
+```jsx
+function PokemonApp() {
+  const [pokemon, setPokemon] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchJson = async (url, options = {}) => {
-    const res = await fetch(url, {
-      headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
-      ...options,
-    });
-    const text = await res.text();
-    const json = text ? JSON.parse(text) : null;
-    if (!res.ok) {
-      throw new Error(json?.message || res.statusText || 'Request failed');
-    }
-    return json;
-  };
-
-  // GET - Hämta alla
-  const fetchAll = useCallback(async () => {
+  const searchPokemon = async () => {
+    setLoading(true);
+    setError(null);
+    
     try {
-      setLoading(true);
-      setError(null);
-      const result = await fetchJson(endpoint);
-      setData(Array.isArray(result) ? result : (result?.data ?? []));
+      const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${searchTerm.toLowerCase()}`);
+      
+      if (!response.ok) {
+        throw new Error('Pokemon hittades inte!');
+      }
+      
+      const data = await response.json();
+      setPokemon(data);
     } catch (err) {
       setError(err.message);
-    } finally {
-      setLoading(false);
+      setPokemon(null);
     }
-  }, [endpoint]);
-
-  // POST - Skapa ny
-  const create = useCallback(async (newItem) => {
-    try {
-      const result = await fetchJson(endpoint, {
-        method: 'POST',
-        body: JSON.stringify(newItem)
-      });
-      setData(prev => [...prev, result]);
-      return result;
-    } catch (err) {
-      setError(err.message);
-      throw err;
-    }
-  }, [endpoint]);
-
-  // PUT - Uppdatera
-  const update = useCallback(async (id, updatedItem) => {
-    try {
-      const result = await fetchJson(`${endpoint}/${id}`, {
-        method: 'PUT',
-        body: JSON.stringify(updatedItem)
-      });
-      setData(prev => prev.map(item => item.id === id ? result : item));
-      return result;
-    } catch (err) {
-      setError(err.message);
-      throw err;
-    }
-  }, [endpoint]);
-
-  // DELETE - Ta bort
-  const remove = useCallback(async (id) => {
-    try {
-      await fetchJson(`${endpoint}/${id}`, { method: 'DELETE' });
-      setData(prev => prev.filter(item => item.id !== id));
-    } catch (err) {
-      setError(err.message);
-      throw err;
-    }
-  }, [endpoint]);
-
-  useEffect(() => {
-    fetchAll();
-  }, [fetchAll]);
-
-  return {
-    data,
-    loading,
-    error,
-    create,
-    update,
-    remove,
-    refetch: fetchAll
-  };
-}
-
-// Användning
-function ProductManager() {
-  const { data: products, loading, error, create, update, remove } = useResource('/products');
-
-  const handleCreate = async (productData) => {
-    try {
-      await create(productData);
-      alert('Produkt skapad!');
-    } catch (error) {
-      alert('Fel vid skapande: ' + error.message);
-    }
+    
+    setLoading(false);
   };
 
   return (
-    <div>
-      {loading && <div>Laddar...</div>}
-      {error && <div>Fel: {error}</div>}
+    <div className="pokemon-app">
+      <h1>Pokemon Sökare</h1>
       
-      <ProductForm onSubmit={handleCreate} />
-      
-      <div className="products">
-        {products.map(product => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            onUpdate={(data) => update(product.id, data)}
-            onDelete={() => remove(product.id)}
-          />
-        ))}
+      <div className="search-box">
+        <input 
+          type="text" 
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Skriv Pokemon namn..."
+          className="search-input"
+        />
+        <button 
+          onClick={searchPokemon} 
+          disabled={loading}
+          className="search-button"
+        >
+          {loading ? 'Söker...' : 'Sök'}
+        </button>
       </div>
-    </div>
-  );
-}
-```
 
-<!-- Avancerad Error Handling flyttad till fördjupning; behåll enkel fetchJson i grunden -->
+      {error && <div className="error">Fel: {error}</div>}
 
-```mermaid
-graph TD
-    A[API Request] --> B{Response OK?}
-    B -->|Yes| C[Success State]
-    B -->|No| D[Error Analysis]
-    
-    D --> E{Error Type}
-    E -->|Network| F[Network Error UI]
-    E -->|401| G[Redirect to Login]
-    E -->|403| H[Access Denied UI]
-    E -->|404| I[Not Found UI]
-    E -->|500| J[Server Error UI]
-    E -->|Other| K[Generic Error UI]
-    
-    F --> L[Retry Option]
-    J --> L
-    K --> L
-    
-    style C fill:#98fb98
-    style F fill:#ffa07a
-    style G fill:#ffa07a
-    style H fill:#ffa07a
-    style I fill:#ffa07a
-    style J fill:#ffa07a
-    style K fill:#ffa07a
-```
-
-### Error Boundary för API-fel
-
-```jsx
-class ApiErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false, error: null };
-  }
-
-  static getDerivedStateFromError(error) {
-    return { hasError: true, error };
-  }
-
-  componentDidCatch(error, errorInfo) {
-    console.error('API Error:', error, errorInfo);
-    // Skicka till error tracking service
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className="api-error">
-          <h2>Något gick fel</h2>
-          <p>Vi har problem med att hämta data just nu.</p>
-          <button onClick={() => this.setState({ hasError: false, error: null })}>
-            Försök igen
-          </button>
+      {pokemon && (
+        <div className="pokemon-card">
+          <h2>{pokemon.name}</h2>
+          <img src={pokemon.sprites.front_default} alt={pokemon.name} />
+          <p>Höjd: {pokemon.height / 10} m</p>
+          <p>Vikt: {pokemon.weight / 10} kg</p>
+          <p>Typ: {pokemon.types.map(type => type.type.name).join(', ')}</p>
         </div>
-      );
-    }
-
-    return this.props.children;
-  }
-}
-```
-
-### Enkel global felhantering (Fetch)
-
-```jsx
-// utils/http.js
-export class ApiError extends Error {
-  constructor(message, status, data) {
-    super(message);
-    this.name = 'ApiError';
-    this.status = status;
-    this.data = data;
-  }
-}
-
-export async function fetchJson(url, options = {}) {
-  const res = await fetch(url, {
-    headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
-    ...options,
-  });
-
-  // Läs säkert ev. JSON-body
-  let data = null;
-  try {
-    const text = await res.text();
-    data = text ? JSON.parse(text) : null;
-  } catch (_) {
-    // Ignorera JSON-parse-fel
-  }
-
-  if (!res.ok) {
-    const message = data?.message || res.statusText || 'Request failed';
-    throw new ApiError(message, res.status, data);
-  }
-
-  return data;
-}
-
-// Exempel: enkel central felhantering beroende på statuskod
-export function handleApiError(error) {
-  if (error instanceof ApiError) {
-    switch (error.status) {
-      case 401:
-        localStorage.removeItem('authToken');
-        // Navigera till login via din router/händelsebuss
-        break;
-      case 403:
-        // Visa "Access denied"-vy
-        break;
-      case 404:
-        // Visa "Not found"-vy
-        break;
-      default:
-        // Visa generiskt felmeddelande
-        break;
-    }
-  } else {
-    // Nätverksfel eller oväntat fel
-  }
-}
-```
-
-<!-- Retry Logic och Backoff: flyttad till fördjupning -->
-
-```jsx
-const retryWithBackoff = async (fn, maxRetries = 3, baseDelay = 1000) => {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      return await fn();
-    } catch (error) {
-      if (attempt === maxRetries) {
-        throw error;
-      }
-
-      // Exponential backoff: 1s, 2s, 4s...
-      const delay = baseDelay * Math.pow(2, attempt - 1);
-      console.log(`Attempt ${attempt} failed, retrying in ${delay}ms...`);
-      
-      await new Promise(resolve => setTimeout(resolve, delay));
-    }
-  }
-};
-
-// Usage
-const fetchUserWithRetry = async (userId) => {
-  return retryWithBackoff(
-    () => fetch(`/api/users/${userId}`).then(r => {
-      if (!r.ok) throw new Error(`HTTP ${r.status}`);
-      return r.json();
-    }),
-    3, // Max 3 försök
-    1000 // Start med 1 sekund
-  );
-};
-```
-
-<!-- Caching och Performance: flyttad till fördjupning -->
-
-<!-- Simple In-Memory Cache -->
-
-```jsx
-class ApiCache {
-  constructor(ttl = 5 * 60 * 1000) { // 5 minuter default
-    this.cache = new Map();
-    this.ttl = ttl;
-  }
-
-  set(key, data) {
-    this.cache.set(key, {
-      data,
-      timestamp: Date.now()
-    });
-  }
-
-  get(key) {
-    const item = this.cache.get(key);
-    
-    if (!item) return null;
-    
-    if (Date.now() - item.timestamp > this.ttl) {
-      this.cache.delete(key);
-      return null;
-    }
-    
-    return item.data;
-  }
-
-  clear() {
-    this.cache.clear();
-  }
-}
-
-const apiCache = new ApiCache();
-
-// Cached API hook
-function useCachedApi(key, apiFunction, dependencies = []) {
-  const [data, setData] = useState(() => apiCache.get(key));
-  const [loading, setLoading] = useState(!data);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const cached = apiCache.get(key);
-      if (cached) {
-        setData(cached);
-        setLoading(false);
-        return;
-      }
-
-      try {
-        setLoading(true);
-        setError(null);
-        const result = await apiFunction();
-        apiCache.set(key, result);
-        setData(result);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [key, ...dependencies]);
-
-  return { data, loading, error };
-}
-```
-
-<!-- Request Deduplication -->
-
-```jsx
-// Förhindra duplicerade requests
-const pendingRequests = new Map();
-
-const deduplicatedFetch = async (url, options) => {
-  const requestKey = `${url}:${JSON.stringify(options)}`;
-  
-  if (pendingRequests.has(requestKey)) {
-    return pendingRequests.get(requestKey);
-  }
-
-  const promise = fetch(url, options).finally(() => {
-    pendingRequests.delete(requestKey);
-  });
-
-  pendingRequests.set(requestKey, promise);
-  return promise;
-};
-```
-
-<!-- Real-time Data med WebSockets: flyttad till fördjupning -->
-
-```jsx
-function useWebSocket(url) {
-  const [socket, setSocket] = useState(null);
-  const [lastMessage, setLastMessage] = useState(null);
-  const [connectionStatus, setConnectionStatus] = useState('Disconnected');
-
-  useEffect(() => {
-    const ws = new WebSocket(url);
-    
-    ws.onopen = () => {
-      setConnectionStatus('Connected');
-      setSocket(ws);
-    };
-
-    ws.onmessage = (event) => {
-      const message = JSON.parse(event.data);
-      setLastMessage(message);
-    };
-
-    ws.onclose = () => {
-      setConnectionStatus('Disconnected');
-      setSocket(null);
-    };
-
-    ws.onerror = (error) => {
-      console.error('WebSocket error:', error);
-      setConnectionStatus('Error');
-    };
-
-    return () => {
-      ws.close();
-    };
-  }, [url]);
-
-  const sendMessage = (message) => {
-    if (socket && socket.readyState === WebSocket.OPEN) {
-      socket.send(JSON.stringify(message));
-    }
-  };
-
-  return { lastMessage, connectionStatus, sendMessage };
-}
-
-// Usage
-function ChatComponent() {
-  const { lastMessage, connectionStatus, sendMessage } = useWebSocket('ws://localhost:8080');
-  const [messages, setMessages] = useState([]);
-
-  useEffect(() => {
-    if (lastMessage) {
-      setMessages(prev => [...prev, lastMessage]);
-    }
-  }, [lastMessage]);
-
-  return (
-    <div>
-      <div>Status: {connectionStatus}</div>
-      <div>
-        {messages.map((msg, index) => (
-          <div key={index}>{msg.text}</div>
-        ))}
-      </div>
-      <input
-        onKeyPress={(e) => {
-          if (e.key === 'Enter') {
-            sendMessage({ text: e.target.value });
-            e.target.value = '';
-          }
-        }}
-      />
+      )}
     </div>
   );
 }
 ```
 
-## Vanliga misstag och varför
+**Lägg till CSS:**
+```css
+.search-box {
+  margin: 20px 0;
+}
 
-- Inte kolla `response.ok`: ett API kan svara 404 men ändå returnera HTML/JSON → kontrollera alltid och visa fel.
-- Uppdatera state efter unmount: avsluta fetch med `AbortController` i `useEffect`‑cleanup.
-- Gömda laddningar: visa alltid `loading` och en tom‑state när data saknas.
+.search-input {
+  padding: 10px;
+  margin-right: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
 
-## Mikro‑övning
+.search-button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
 
-Bygg en komponent som hämtar en lista (t.ex. `/api/users`) och en detaljvy (`/api/users/:id`).
-- Lista: visa namn, klick navigerar till detaljvy.
-- Detalj: hämta användare, visa `loading`, `error` och “hittades inte”‑läge.
-- Använd `AbortController` i båda effekterna.
+.search-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
 
-Klar‑kriterier:
-- Inga konsolfel när du snabbnavigerar (avbrutna anrop hanteras).
-- Tom‑state när listan är tom.
-- Tydliga felmeddelanden vid nätverksfel eller 404.
+.error {
+  color: red;
+  margin: 10px 0;
+}
+```
 
-### 1. Environment Configuration
+**Testa fel:** Sök på "asdfgh" och se vad som händer!
+
+### Steg 5: Gör appen din egen! 🎯
+
+Nu har du en fungerande Pokemon-sökare. Dags att experimentera och lägga till egna funktioner!
+
+#### Enkla förbättringar att prova:
+
+**Random Pokemon-knapp:**
+```jsx
+// Lägg till i din searchPokemon-funktion
+const getRandomPokemon = () => {
+  const randomId = Math.floor(Math.random() * 1010) + 1;
+  setSearchTerm(randomId.toString());
+  // Sedan kan du kalla searchPokemon() eller göra fetch direkt
+};
+
+// Lägg till knappen i din JSX
+<button onClick={getRandomPokemon} className="random-button">
+  Slumpa Pokemon
+</button>
+```
+
+**Visa shiny-versionen:**
+```jsx
+// I din pokemon-card, lägg till:
+{pokemon.sprites.front_shiny && (
+  <div>
+    <p>Shiny version:</p>
+    <img src={pokemon.sprites.front_shiny} alt={`Shiny ${pokemon.name}`} />
+  </div>
+)}
+```
+
+**Visa Pokemon stats:**
+```jsx
+// Lägg till i pokemon-card:
+<div className="stats">
+  <h3>Stats:</h3>
+  {pokemon.stats.map(stat => (
+    <p key={stat.stat.name}>
+      {stat.stat.name}: {stat.base_stat}
+    </p>
+  ))}
+</div>
+```
+
+#### Medelsvåra utmaningar:
+
+- **Sök med Enter:** Gör så man kan trycka Enter i sökrutan
+- **Favoriter:** Spara favorit-Pokemon i `localStorage`
+- **Historik:** Visa de senaste sökta Pokemon
+- **Jämför Pokemon:** Visa två Pokemon sida vid sida
+
+#### Avancerade idéer:
+
+- **Pokemon Team Builder:** Bygg ett lag med max 6 Pokemon
+- **Type effectiveness:** Visa vilka typer som är starka/svaga mot varandra
+- **Evolution chain:** Visa hela evolution-kedjan
+- **Moves/attacker:** Lista Pokemon:s attacker
+
+#### Tips för utveckling:
 
 ```jsx
-// config/api.js
-const API_CONFIG = {
-  development: {
-    baseURL: 'http://localhost:3001/api',
-    timeout: 5000
-  },
-  production: {
-    baseURL: 'https://api.myapp.com',
-    timeout: 10000
-  },
-  test: {
-    baseURL: 'http://test-api.myapp.com',
-    timeout: 3000
+// Enter-tangent för sökning
+const handleKeyPress = (e) => {
+  if (e.key === 'Enter') {
+    searchPokemon();
   }
 };
 
-const currentConfig = API_CONFIG[process.env.NODE_ENV] || API_CONFIG.development;
+// Lägg till onKeyPress={handleKeyPress} på din input
 
-export default currentConfig;
-```
-
-### 2. Type Safety med TypeScript
-
-```typescript
-// types/api.ts
-interface User {
-  id: number;
-  name: string;
-  email: string;
-  role: 'admin' | 'user';
-}
-
-interface ApiResponse<T> {
-  data: T;
-  success: boolean;
-  message?: string;
-}
-
-// services/userService.ts
-async function fetchJson<T>(url: string, options: RequestInit = {}): Promise<T> {
-  const res = await fetch(url, {
-    headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
-    ...options,
-  });
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  return res.json() as Promise<T>;
-}
-
-const getUsers = async (): Promise<User[]> => {
-  const response = await fetchJson<ApiResponse<User[]>>('/users');
-  return response.data;
+// Spara i localStorage
+const saveFavorite = () => {
+  const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+  favorites.push(pokemon.name);
+  localStorage.setItem('favorites', JSON.stringify(favorites));
 };
 ```
 
-### 3. Loading States och Optimistic Updates
+**Experimentera och ha kul!** Det viktigaste är att du förstår hur API-anrop fungerar. Allt annat är bonus! 🎮
 
-```jsx
-function useOptimisticUpdate() {
-  const [optimisticData, setOptimisticData] = useState(null);
-  const [isOptimistic, setIsOptimistic] = useState(false);
+## Custom Hooks för API-anrop
 
-  const performOptimisticUpdate = async (optimisticValue, apiCall) => {
-    setOptimisticData(optimisticValue);
-    setIsOptimistic(true);
+Custom hooks gör API‑logik återanvändbar och ren. För en komplett genomgång med många exempel (useApi, useResource, caching, retry m.m.), se fördjupningslektionen: [Custom Hooks i React](./fordjupning/custom-hooks.md).
 
-    try {
-      const result = await apiCall();
-      setOptimisticData(result);
-      return result;
-    } catch (error) {
-      setOptimisticData(null);
-      throw error;
-    } finally {
-      setIsOptimistic(false);
-    }
-  };
-
-  return { optimisticData, isOptimistic, performOptimisticUpdate };
-}
-```
-
-## Sammanfattning
-
-API-integration är grundläggande för moderna React-applikationer:
-
-*   **Fetch API** är webstandarden för HTTP-requests
-*   **Axios** erbjuder mer funktionalitet och bättre error handling
-*   **Custom hooks** abstraherar API-logik för återanvändning
-*   **Error handling** är kritiskt för bra användarupplevelse
-*   **Caching** förbättrar prestanda och minskar server-belastning
-*   **WebSockets** möjliggör real-time kommunikation
-
-Nästa steg är att bygga kompletta applikationer med praktiska övningar.

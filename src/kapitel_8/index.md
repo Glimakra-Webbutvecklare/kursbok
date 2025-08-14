@@ -27,9 +27,6 @@ I detta kapitel kommer vi att:
 *   **Hantera state och interaktivitet:** useState, useEffect hooks och händelsehantering  
 *   **Bygga SPA:er:** React Router för navigation mellan vyer
 *   **Konsumera API:er:** Hämta och skicka data till backend-tjänster
-*   **Optimera prestanda:** Best practices för snabba och responsiva applikationer
-*   **Bygga för SEO:** När SSR/SSG (Next.js) är relevant
-*   **Praktiska projekt:** Bygga kompletta applikationer från grunden
 
 **Förutsättningar:** Du bör ha god kunskap i JavaScript (ES6+), HTML, CSS och grundläggande förståelse för API:er från tidigare kapitel.
 

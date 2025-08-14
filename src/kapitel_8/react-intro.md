@@ -219,7 +219,6 @@ Låt oss titta på en enkel komponent:
 
 ```jsx
 // src/App.js
-import React from 'react';
 import './App.css';
 
 function App() {
