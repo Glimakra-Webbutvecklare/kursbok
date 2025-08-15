@@ -1,5 +1,5 @@
 # Use a newer Rust image that supports the required versions
-FROM rust:1.75 as builder
+FROM rust:1.89 AS builder
 
 # Install specific versions that work (matching your local setup)
 RUN cargo install mdbook --version 0.4.48
