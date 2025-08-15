@@ -87,7 +87,7 @@ Contributions from other teachers are welcome! Here's how you can add or modify 
 
 *   Keep the language clear and concise, suitable for students.
 *   Provide practical code examples.
-*   Use diagrams (Mermaid) to illustrate complex concepts where appropriate.
+*   Use diagrams (Mermaid) to illustrate complex concepts where appropriate. Make sure mermaid use version 11.6.
 *   Explain security considerations relevant to the topics discussed.
 
 ### Lesson Structure Guideline
@@ -140,7 +140,9 @@ To maintain a consistent feel throughout the book, please try to follow these st
     *   *Example:* `crud-app.md` notes that understanding sessions, SQL, and basic PHP is assumed.
 
 11. **Use Swedish mostly**
-    The course is in Swedish but use English if it is a technical term. Provide the Swedish translation in parenthesis. E.g "Användaren skickar en HTTP request (förfrågan)".
-    Make sure all variable names are written in English.
+    *   The course is in Swedish but use English if it is a technical term. 
+    *   Do not create new compound swedish word if the word is not common in swedish language. The english phrase "descendant combinator" should be translated to separate words like "selektor för ättling".
+    *   Provide the Swedish translation in parenthesis. E.g "Användaren skickar en HTTP request (förfrågan)".
+    *   Make sure all variable names are written in English.
 
 Thank you for contributing!

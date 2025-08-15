@@ -10,6 +10,7 @@ title = "Glimåkra Webbutvecklare - Kursbok"
 [preprocessor.mermaid]
 command = "mdbook-mermaid"
 
+
 [output]
 
 [output.html]
