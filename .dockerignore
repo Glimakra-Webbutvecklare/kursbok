@@ -1,0 +1,7 @@
+.git
+.github
+.obsidian
+README.md
+book/
+target/
+.gitignore

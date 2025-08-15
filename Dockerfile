@@ -1,8 +1,9 @@
-# Use an official Rust image as base for building mdbook
-FROM rust:1.70 as builder
+# Use a newer Rust image that supports the required versions
+FROM rust:1.75 as builder
 
-# Install mdbook and mdbook-mermaid
-RUN cargo install mdbook mdbook-mermaid
+# Install specific versions that work (matching your local setup)
+RUN cargo install mdbook --version 0.4.48
+RUN cargo install mdbook-mermaid --version 0.15.0
 
 # Set working directory
 WORKDIR /app
