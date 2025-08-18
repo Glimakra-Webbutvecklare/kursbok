@@ -30,4 +30,30 @@ I detta kapitel kommer vi att:
 
 **Förutsättningar:** Du bör ha god kunskap i JavaScript (ES6+), HTML, CSS och grundläggande förståelse för API:er från tidigare kapitel.
 
+## Program som ska vara installerade
+
+Innan vi börjar behöver du ha följande verktyg installerade:
+
+### NVM (Node Version Manager)
+NVM används för att hantera olika versioner av Node.js. Det låter dig enkelt byta mellan olika Node.js-versioner.
+
+**Installation:**
+- Windows: Ladda ner och installera [nvm-windows](https://github.com/coreybutler/nvm-windows/releases)
+- macOS/Linux: Kör följande kommando i terminalen:
+  ```bash
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+  ```
+
+Efter installation, kör följande kommandon för att installera och använda senaste LTS-versionen av Node.js:
+```bash
+nvm install --lts # installera senaste long-term-support versionen
+nvm use --lts # använd den
+```
+
+
+Verifiera installationen genom att köra:
+```bash
+node --version # v22.18.0 eller högre
+````
+
 Låt oss börja vår resa in i modern frontend-utveckling!
