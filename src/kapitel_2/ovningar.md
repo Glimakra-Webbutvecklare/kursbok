@@ -86,7 +86,7 @@ Du har VS Code (eller annan editor), Git och en terminal installerad. Du har ock
 1. **Skapa repo på GitHub:**  
    Skapa ett nytt, tomt repository på GitHub (utan README, .gitignore eller license).
 
-2. **Koppla lokalt till fjärr:**  
+2. **Koppla lokalt till remote:**  
    Följ instruktionerna från GitHub ("…or push an existing repository").  
    Byt ut URL:en mot den från ditt repo:
    ```bash
@@ -116,6 +116,6 @@ Du har VS Code (eller annan editor), Git och en terminal installerad. Du har ock
 
 ## Sammanfattning och nästa steg
 
-Genom dessa övningar har du praktiskt skapat en enkel HTML-sida, strukturerat den semantiskt och använt Git för att spåra ändringar lokalt och synkronisera dem med ett fjärr-repository på GitHub. Detta är grunden för arbetsflödet vi kommer använda genom resten av kursen.
+Genom dessa övningar har du praktiskt skapat en enkel HTML-sida, strukturerat den semantiskt och använt Git för att spåra ändringar lokalt och synkronisera dem med ett remote-repository på GitHub. Detta är grunden för arbetsflödet vi kommer använda genom resten av kursen.
 
 I nästa kapitel introducerar vi CSS för att börja styla våra HTML-sidor och ge dem ett visuellt utseende.

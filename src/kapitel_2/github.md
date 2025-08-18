@@ -1,6 +1,6 @@
 # Arbeta med GitHub: Ditt projekt i molnet
 
-Vi har lärt oss hur Git fungerar lokalt på vår dator för att spåra ändringar. Men den verkliga styrkan med Git, särskilt för samarbete och säkerhetskopiering, kommer när vi kopplar vårt lokala repository till en **fjärrserver** (remote repository). Den mest populära plattformen för detta är **GitHub**.
+Vi har lärt oss hur Git fungerar lokalt på vår dator för att spåra ändringar. Men den verkliga styrkan med Git, särskilt för samarbete och säkerhetskopiering, kommer när vi kopplar vårt lokala repository till en **remoteserver**. Den mest populära plattformen för detta är **GitHub**.
 
 > **Mål:**  
 > Förstå hur du kopplar ett lokalt Git-repository till GitHub och använder de grundläggande kommandona för att skicka (`push`) och hämta (`pull`) ändringar.
@@ -22,7 +22,7 @@ GitHub är en webbaserad plattform för att lagra och hantera Git-repositories i
 
 ---
 
-## Skapa ett fjärr-repository på GitHub
+## Skapa ett Remote-repository på GitHub
 
 1. Logga in på ditt GitHub-konto.
 2. Klicka på "+"-ikonen uppe till höger och välj **New repository**.
@@ -38,12 +38,12 @@ GitHub är en webbaserad plattform för att lagra och hantera Git-repositories i
 
 När du har skapat repositoryt på GitHub visas instruktioner. Leta efter avsnittet "…or push an existing repository from the command line".
 
-### Steg 1: Lägg till fjärr-repository
+### Steg 1: Lägg till remote-repository
 
 ```bash
 git remote add origin https://github.com/ditt-anvandarnamn/mitt-projekt.git
 ```
-- `origin` är standardnamnet för din fjärrserver.
+- `origin` är standardnamnet för din remoteserver.
 - Byt ut URL:en mot den du får från GitHub.
 
 ### Steg 2: Byt namn på huvudbranch (om nödvändigt)
@@ -59,7 +59,7 @@ git branch -M main
 git push -u origin main
 ```
 - Skickar dina commits till GitHub.
-- `-u` kopplar din lokala branch till fjärr-branchen, så att du senare kan använda bara `git push` och `git pull`.
+- `-u` kopplar din lokala branch till remote-branchen, så att du senare kan använda bara `git push` och `git pull`.
 
 Du kan behöva logga in eller autentisera dig mot GitHub (t.ex. med en personlig access token).
 

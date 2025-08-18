@@ -23,7 +23,7 @@ Det är här **versionshantering** (version control) kommer in. Ett versionshant
    Git är designat för distribuerat arbete. Varje utvecklare har en komplett kopia av projektets historik. Plattformar som GitHub, GitLab och Bitbucket bygger på Git och gör det enkelt att dela kod, granska varandras ändringar (Pull Requests) och arbeta tillsammans i team.
 
 4. **Trygghet:**  
-   Genom att regelbundet spara dina ändringar (committa) och eventuellt skicka dem till en fjärrserver (som GitHub), minskar du risken att förlora arbete på grund av hårddiskkrascher eller misstag.
+   Genom att regelbundet spara dina ändringar (committa) och eventuellt skicka dem till en remote server (som GitHub), minskar du risken att förlora arbete på grund av hårddiskkrascher eller misstag.
 
 5. **Industristandard:**  
    Kunskap i Git är i princip ett krav för de flesta utvecklarjobb idag.
@@ -37,9 +37,9 @@ Det är här **versionshantering** (version control) kommer in. Ett versionshant
 - **Branch:** En oberoende utvecklingslinje. Standardgrenen heter ofta `main`.
 - **Checkout:** Processen att byta mellan olika branches eller återställa filer till en specifik commit.
 - **Merge:** Processen att kombinera ändringar från en branch till en annan.
-- **Clone:** Att skapa en lokal kopia av ett befintligt repository (ofta från en fjärrserver som GitHub).
-- **Push:** Att skicka dina lokala commits till ett fjärr-repository (t.ex. på GitHub).
-- **Pull:** Att hämta ändringar från ett fjärr-repository och integrera dem i din lokala branch.
+- **Clone:** Att skapa en lokal kopia av ett befintligt repository (ofta från en remote server som GitHub).
+- **Push:** Att skicka dina lokala commits till ett remote-repository (t.ex. på GitHub).
+- **Pull:** Att hämta ändringar från ett remote-repository och integrera dem i din lokala branch.
 - **Working directory:** De filer du ser i din projektmapp.
 - **Staging area (index):** Ett mellanläge där du förbereder vilka ändringar som ska inkluderas i nästa commit.
 
@@ -54,7 +54,7 @@ graph LR
         SA -- "git commit" --> LH["Local History/.git"];
     end
 
-    subgraph "Fjärr-Repository (t.ex. GitHub)"
+    subgraph "Remote-Repository (t.ex. GitHub)"
       RH["Remote History"]
     end
 
@@ -67,7 +67,7 @@ graph LR
 - **Working Directory:** Dina faktiska filer på datorn.
 - **Staging Area:** Här samlar du ihop de ändringar du vill spara i nästa commit.
 - **Local History (.git):** Här sparas alla commits och projektets historik.
-- **Remote History:** Fjärrkopian av projektet, t.ex. på GitHub.
+- **Remote History:** Remotekopian av projektet, t.ex. på GitHub.
 
 ---
 
