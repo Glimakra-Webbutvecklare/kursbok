@@ -30,6 +30,18 @@ Det är här **versionshantering** (version control) kommer in. Ett versionshant
 
 ---
 
+## Installera Git
+
+Börja med att kontrollera om Git redan finns installerat genom att köra `git --version` i en terminal (appen 'terminal' eller 'powershell' går bra). 
+
+På macOS är Git ofta tillgängligt via Xcode Command Line Tools; om det saknas får du en dialogruta eller installerar med `xcode-select --install` (alternativt via Homebrew: `brew install git`). 
+
+På Windows installerar du enklast via [Git for Windows](https://git-scm.com/download/win), vilket även inkluderar Git Bash. 
+
+På Linux använder du din pakethanterare, till exempel Ubuntu/Debian: `sudo apt install git`.
+
+Verifiera installationen genom att öppna upp en terminal och köra `git --version` igen.
+
 ## Grundläggande koncept i Git
 
 - **Repository (repo):** En "behållare" eller mapp som innehåller alla filer för ditt projekt samt hela dess ändringshistorik (i en dold mapp kallad `.git`).

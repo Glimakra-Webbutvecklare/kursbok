@@ -128,4 +128,4 @@ Det typiska arbetsflödet när du arbetar med Git lokalt ser ut så här:
 
 Du kan när som helst använda `git log` för att se historiken och `git status` för att se det aktuella läget.
 
-Dessa kommandon (`init`, `status`, `add`, `commit`, `log`) utgör grunden för att arbeta med Git. I nästa avsnitt tittar vi på hur vi kan koppla vårt lokala repository till en fjärrserver som GitHub.
+Dessa kommandon (`init`, `status`, `add`, `commit`, `log`) utgör grunden för att arbeta med Git. I nästa avsnitt tittar vi på hur vi kan koppla vårt lokala repository till en remote server som GitHub.
