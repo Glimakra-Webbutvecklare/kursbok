@@ -27,11 +27,15 @@ graph TD
     H --> L[SearchFilter]
     H --> M[CategoryFilter]
 
-    style A fill:#61dafb
-    style G fill:#ffd700
-    style I fill:#ffd700
-    style J fill:#ffd700
-    style K fill:#ffd700
+    style A fill:#e8f5e8,stroke:#388e3c,stroke-width:2px,color:#000
+    style B fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000
+    style C fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000
+    style D fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000
+    style G fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000
+    style H fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000
+    style I fill:#fce4ec,stroke:#c2185b,stroke-width:2px,color:#000
+    style J fill:#fce4ec,stroke:#c2185b,stroke-width:2px,color:#000
+    style K fill:#fce4ec,stroke:#c2185b,stroke-width:2px,color:#000
 ```
 
 *Diagram: Komponenthierarki för en e-handelsapplikation*
@@ -277,26 +281,32 @@ Komponenter går igenom olika faser under sin livstid. Med funktionella komponen
 
 ```mermaid
 graph LR
-    A[Mounting] --> B[Updating] 
-    B --> C[Unmounting]
+    A[Mounting<br/>🚀] --> B[Updating<br/>🔄] 
+    B --> C[Unmounting<br/>🗑️]
     B --> B
     
-    subgraph "Mounting (första gången)"
-        D[Constructor] --> E[render]
-        E --> F[componentDidMount]
+    subgraph mount ["Mounting (första gången)"]
+        direction TB
+        D["useState<br/>initialisering"] --> E["render<br/>JSX"]
+        E --> F["useEffect(() => {<br/>  // setup kod<br/>}, [])"]
     end
     
-    subgraph "Updating (vid ändringar)"
-        G[render] --> H[componentDidUpdate]
+    subgraph update ["Updating (vid state/props ändringar)"]
+        direction TB
+        G["render<br/>JSX"] --> H["useEffect(() => {<br/>  // uppdatering<br/>}, [dependency])"]
     end
     
-    subgraph "Unmounting (komponent tas bort)"
-        I[componentWillUnmount]
+    subgraph unmount ["Unmounting (komponent tas bort)"]
+        direction TB
+        I["useEffect cleanup<br/>return () => {<br/>  // städa upp<br/>}"]
     end
 
-    style A fill:#98fb98
-    style B fill:#ffd700  
-    style C fill:#ffa07a
+    style mount fill:#e8f5e8,stroke:#388e3c,stroke-width:2px,color:#000
+    style update fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000
+    style unmount fill:#ffebee,stroke:#d32f2f,stroke-width:2px,color:#000
+    style A fill:#c8e6c9,stroke:#388e3c,stroke-width:2px,color:#000
+    style B fill:#ffe0b2,stroke:#f57c00,stroke-width:2px,color:#000
+    style C fill:#ffcdd2,stroke:#d32f2f,stroke-width:2px,color:#000
 ```
 
 ### Funktionell Komponent med Lifecycle
@@ -305,55 +315,50 @@ graph LR
 import { useState, useEffect } from 'react';
 
 function Timer() {
-  const [seconds, setSeconds] = useState(0);
-  const [isRunning, setIsRunning] = useState(false);
+  // State: Vad komponenten "kommer ihåg"
+  const [seconds, setSeconds] = useState(0);        // Antal sekunder
+  const [isRunning, setIsRunning] = useState(false); // Om timern körs
 
-  // componentDidMount + componentDidUpdate
+  // useEffect: "Gör något när något ändras"
   useEffect(() => {
+    // Denna kod körs när isRunning ändras
     let interval = null;
     
     if (isRunning) {
+      // Starta timer - öka seconds varje sekund
       interval = setInterval(() => {
-        setSeconds(prev => prev + 1);
+        setSeconds(prevSeconds => prevSeconds + 1);
       }, 1000);
-    } else {
-      clearInterval(interval);
     }
-
-    // componentWillUnmount (cleanup)
+    
+    // Cleanup: Städa upp när komponenten uppdateras eller tas bort
     return () => {
       if (interval) {
-        clearInterval(interval);
+        clearInterval(interval); // Stoppa timern
       }
     };
-  }, [isRunning]); // Dependency array - kör när isRunning ändras
+  }, [isRunning]); // Kör denna effect när isRunning ändras
 
-  // Kör bara en gång (mounting)
-  useEffect(() => {
-    console.log('Timer component har monterats');
-    
-    // Cleanup (unmounting)
-    return () => {
-      console.log('Timer component avmonteras');
-    };
-  }, []); // Tom array = kör bara en gång
-
-  const toggleTimer = () => {
-    setIsRunning(!isRunning);
+  // Event handlers: Vad som händer när användaren klickar
+  const handleToggle = () => {
+    setIsRunning(!isRunning); // Växla mellan start/stopp
   };
 
-  const resetTimer = () => {
-    setSeconds(0);
-    setIsRunning(false);
+  const handleReset = () => {
+    setSeconds(0);           // Nollställ tiden
+    setIsRunning(false);     // Stoppa timern
   };
 
+  // Render: Vad som visas på skärmen
   return (
     <div className="timer">
       <h2>Timer: {seconds} sekunder</h2>
-      <button onClick={toggleTimer}>
+      
+      <button onClick={handleToggle}>
         {isRunning ? 'Pausa' : 'Starta'}
       </button>
-      <button onClick={resetTimer}>
+      
+      <button onClick={handleReset}>
         Återställ
       </button>
     </div>
