@@ -1,197 +1,124 @@
-# Variabler och Datatyper i JavaScript
+# Variabler i JavaScript
 
-För att kunna arbeta med information i ett program behöver vi ett sätt att lagra och referera till den. I JavaScript, precis som i de flesta programmeringsspråk, gör vi detta med **variabler**. En variabel är som en namngiven behållare där vi kan spara ett värde (som en siffra, en textsträng, etc.).
+Variabler är en grundläggande del av programmering. De används för att lagra och hantera data som kan ändras under programmets gång. I JavaScript kan du spara allt från siffror och text till objekt och listor i variabler.
 
-**Mål:** Lära oss hur man deklarerar variabler med `let` och `const`, förstå de grundläggande (primitiva) datatyperna i JavaScript, samt få en introduktion till de mer komplexa typerna Objekt och Arrayer.
+---
 
-## Deklarera Variabler: `let` och `const`
+## Vad är en variabel?
 
-I modern JavaScript (ES6 och senare) använder vi främst två nyckelord för att skapa (deklarera) variabler:
+En **variabel** är ett namn som pekar på ett värde i datorns minne. Du kan använda variabeln för att läsa, ändra eller använda värdet senare i programmet.
 
-**1. `let`:**
+---
 
-*   Används för att deklarera variabler vars värde **kan komma att ändras** senare i koden.
-*   Har **block-scope**, vilket betyder att variabeln bara är tillgänglig inom det kodblock (`{ ... }`) där den deklareras (t.ex. inuti en `if`-sats eller en loop).
+## Namngivning av variabler
 
-    ```javascript
-    let age = 30;
-    console.log("Ålder:", age); // Output: Ålder: 30
+När du skapar variabler i JavaScript är det viktigt att använda tydliga och beskrivande namn. Det rekommenderas att skriva variabelnamn på **engelska**, eftersom det är standard inom programmering och gör koden lättare att förstå för andra utvecklare.
 
-    age = 31; // Vi kan ändra värdet på en let-variabel
-    console.log("Ny ålder:", age); // Output: Ny ålder: 31
+JavaScript använder vanligtvis **camelCase** för variabelnamn. Det innebär att det första ordet skrivs med små bokstäver och varje nytt ord börjar med stor bokstav, till exempel `userName`, `totalAmount` eller `isActive`.
 
-    if (true) {
-      let message = "Inuti blocket";
-      console.log(message); // Output: Inuti blocket
-    }
-    // console.log(message); // Fel! message är inte tillgänglig här utanför blocket.
-    ```
+Att vara **konsekvent** med namngivningen gör koden mer lättläst och underlättar samarbeten. Undvik att blanda språk eller olika stilar i samma projekt.
 
-**2. `const` (Constant):**
+**Exempel på bra variabelnamn:**
+```javascript
+let userEmail = "anna@example.com";
+let itemCount = 5;
+let isLoggedIn = false;
+```
 
-*   Används för att deklarera variabler vars värde **inte ska ändras** efter att det har satts första gången. Man måste ge variabeln ett värde direkt vid deklarationen.
-*   Har också **block-scope**.
-*   **Använd `const` som standard!** Det gör din kod säkrare och lättare att förstå, eftersom det signalerar att värdet inte är tänkt att ändras. Använd bara `let` när du vet att du *behöver* kunna ändra värdet.
+**Exempel på mindre bra variabelnamn:**
+```javascript
+let användareNamn = "Anna"; // Blanda inte språk
+let Item_count = 10;        // Undvik underscore och stor bokstav i början
+let x = true;               // För kort och otydligt
+```
 
-    ```javascript
-    const name = "Alice";
-    console.log("Namn:", name); // Output: Namn: Alice
 
-    // name = "Bob"; // Fel! Försök att ändra en konstant ger ett TypeError.
 
-    const PI = 3.14159;
-    ```
+## Deklarera variabler
 
-**Vad hände med `var`?**
+I modern JavaScript används oftast `let` och `const` för att skapa variabler. Äldre kod kan använda `var`, men det rekommenderas inte längre.
 
-Du kanske ser äldre JavaScript-kod som använder `var` för att deklarera variabler. `var` fungerar annorlunda än `let` och `const` (den har *function-scope* eller global scope, inte block-scope, och har andra egenheter kring *hoisting*). **Undvik att använda `var` i ny kod.** Håll dig till `let` och `const`.
+- **`let`** – Skapar en variabel som kan ändras (reassignas).
+- **`const`** – Skapar en variabel som *inte* kan ändras (konstant). Värdet måste sättas direkt.
 
-## Primitiva Datatyper
+**Exempel:**
+```javascript
+let name = "Anna";
+let age = 25;
 
-JavaScript har flera inbyggda, grundläggande (primitiva) datatyper som representerar olika sorters enkla värden:
+const pi = 3.14159;
+```
 
-1.  **`string` (Sträng):**
-    *   Används för text.
-    *   Skrivs inom enkla (`'`) eller dubbla (`"`) citationstecken.
-    *   **Template Literals (Mallsträngar):** Använder backticks (`` ` ``) och tillåter enklare infogning av variabler (`${variabelNamn}`) och flerradig text.
-        ```javascript
-        let firstName = 'Bob';
-        let lastName = "Smith";
-        let greeting = `Hej, ${firstName} ${lastName}! 
-Välkommen.`; // Använder template literal
-        console.log(greeting);
-        // Output:
-        // Hej, Bob Smith! 
-        // Välkommen.
+---
 
-        console.log(typeof greeting); // Output: string
-        ```
+## Ändra värdet på en variabel
 
-2.  **`number` (Tal):**
-    *   Används för alla typer av numeriska värden, både heltal och decimaltal.
-    *   JavaScript skiljer inte på heltal (integers) och flyttal (floats) som vissa andra språk.
-    *   Speciella talvärden: `Infinity`, `-Infinity`, `NaN` (Not a Number - resultat av ogiltiga matematiska operationer, t.ex. `0 / 0`).
-        ```javascript
-        let count = 10;
-        let price = 99.50;
-        let temperature = -5;
-        console.log(typeof count); // Output: number
-        console.log(10 / 0); // Output: Infinity
-        console.log("text" * 2); // Output: NaN
-        ```
-
-3.  **`boolean` (Boolesk):**
-    *   Representerar ett logiskt värde: antingen `true` (sant) eller `false` (falskt).
-    *   Används ofta i villkorssatser (`if`) och loopar.
-        ```javascript
-        let isLoggedIn = true;
-        let hasPermission = false;
-        console.log(typeof isLoggedIn); // Output: boolean
-        ```
-
-4.  **`undefined`:**
-    *   Representerar ett värde som **inte har tilldelats ännu**. Variabler som deklareras med `let` men inte får ett värde direkt blir automatiskt `undefined`.
-        ```javascript
-        let data;
-        console.log(data); // Output: undefined
-        console.log(typeof data); // Output: undefined
-        ```
-
-5.  **`null`:**
-    *   Representerar avsiktlig **frånvaro av ett värde**. Det är ett värde man aktivt tilldelar för att indikera att en variabel inte har något (meningsfullt) värde just nu.
-        ```javascript
-        let error = null; // Inget fel har inträffat (än)
-        console.log(error); // Output: null
-        // OBS! typeof null ger "object" - detta är en historisk bugg i JS.
-        console.log(typeof error); // Output: object
-        ```
-
-6.  **`symbol` (ES6):**
-    *   Används för att skapa garanterat **unika identifierare**. Används mer sällan i vanlig applikationskod, oftare i bibliotek och ramverk för att undvika namnkonflikter.
-        ```javascript
-        const id1 = Symbol('desc');
-        const id2 = Symbol('desc');
-        console.log(id1 === id2); // Output: false (även om beskrivningen är samma)
-        console.log(typeof id1); // Output: symbol
-        ```
-
-7.  **`bigint` (ES2020):**
-    *   Används för att representera heltal som är för stora för att representeras säkert av den vanliga `number`-typen (större än \(2^{53}-1\)). Skapas genom att lägga till `n` i slutet av ett heltal eller använda `BigInt()`-funktionen.
-        ```javascript
-        const veryLargeNumber = 9007199254740991n;
-        const anotherLarge = BigInt("9007199254740992");
-        console.log(typeof veryLargeNumber); // Output: bigint
-        ```
-
-## Komplexa Datatyper: Objekt och Arrayer (Introduktion)
-
-Utöver de primitiva typerna finns två viktiga komplexa datatyper:
-
-**1. `object` (Objekt):**
-
-*   En samling av **egenskaper (properties)**, där varje egenskap är ett **nyckel-värde-par**. Nycklarna är oftast strängar, och värdena kan vara vilken datatyp som helst (inklusive andra objekt eller funktioner).
-*   Används för att representera mer komplexa entiteter med flera relaterade data.
-*   Skapas med måsvingar `{}`.
-
-    ```javascript
-    const person = {
-      firstName: "Carla", // Egenskap: nyckel='firstName', värde='Carla' (string)
-      lastName: "Gustavsson",
-      age: 28, // Egenskap: nyckel='age', värde=28 (number)
-      isStudent: false, // Egenskap: nyckel='isStudent', värde=false (boolean)
-      address: { // Egenskap: nyckel='address', värde=ett annat objekt
-        street: "Storgatan 1",
-        city: "Stockholm"
-      }
-    };
-
-    // Åtkomst till egenskaper med punktnotation
-    console.log(person.firstName); // Output: Carla
-    console.log(person.address.city); // Output: Stockholm
-
-    // Åtkomst med hakparentesnotation (användbart om nyckeln är en variabel)
-    console.log(person["lastName"]); // Output: Gustavsson
-    ```
-
-**2. `array` (Array/Fält):**
-
-*   En **ordnad lista** av värden. Varje värde i listan kallas ett **element**, och varje element har en **indexposition** (börjar från 0).
-*   Kan innehålla värden av olika datatyper.
-*   Används för att lagra sekvenser av data.
-*   Skapas med hakparenteser `[]`.
-
-    ```javascript
-    const colors = ["Röd", "Grön", "Blå"]; // En array med tre strängar
-    const mixedData = [10, "Text", true, null];
-
-    // Åtkomst till element via index (börjar från 0)
-    console.log(colors[0]); // Output: Röd
-    console.log(colors[1]); // Output: Grön
-
-    // Ändra ett element
-    colors[1] = "Gul";
-    console.log(colors); // Output: ["Röd", "Gul", "Blå"]
-
-    // Hitta antal element
-    console.log(colors.length); // Output: 3
-    ```
-*   Notera: `typeof` för en array ger också `"object"`. För att specifikt kolla om något är en array, använd `Array.isArray(dinVariabel)`.
-
-## Typomvandling (Type Coercion)
-
-JavaScript är ett *dynamiskt typat* språk, vilket betyder att du inte behöver specificera datatypen när du deklarerar en variabel. JavaScript försöker ofta automatiskt konvertera mellan datatyper när du använder operatorer, vilket kallas *typomvandling* (type coercion). Detta kan ibland leda till oväntade resultat.
+Variabler skapade med `let` kan få nya värden:
 
 ```javascript
-console.log("5" + 3); // Output: "53" (string - + fungerar som konkatenering)
-console.log("5" - 3); // Output: 2 (number - - försöker göra matematisk subtraktion)
-console.log("5" * 3); // Output: 15 (number)
-console.log(5 + null); // Output: 5 (null omvandlas till 0)
-console.log("hello" + undefined); // Output: "helloundefined"
+let score = 10;
+score = 15; // score är nu 15
 ```
-Var medveten om detta och var försiktig när du blandar datatyper.
+
+Variabler skapade med `const` kan *inte* ändras:
+
+```javascript
+const maxUsers = 100;
+// maxUsers = 200; // Fel! Går inte att ändra en const-variabel
+```
+
+---
+
+## Datatyper
+
+Variabler kan innehålla olika typer av data:
+
+- **String** (text): `"Hello"`, `'JavaScript'`
+- **Number** (tal): `42`, `3.14`
+- **Boolean** (sant/falskt): `true`, `false`
+- **Array** (lista): `[1, 2, 3]`
+- **Object** (objekt): `{ name: "Anna", age: 25 }`
+- **Null** (avsaknad av värde): `null`
+- **Undefined** (ej tilldelat värde): `undefined`
+
+**Exempel:**
+```javascript
+let text = "Hello!";
+let number = 123;
+let isActive = true;
+let list = [1, 2, 3];
+let person = { name: "Anna", age: 25 };
+let emptyValue = null;
+let unknown;
+```
+
+---
+
+## Namnge variabler
+
+- Variabelnamn får innehålla bokstäver, siffror, `_` och `$`, men får **inte** börja med en siffra.
+- Använd beskrivande namn (t.ex. `userName` istället för `x`).
+- JavaScript är **case sensitive**: `name` och `Name` är olika variabler.
+
+---
+
+## Utskrift och användning
+
+Du kan använda variabler i uttryck och skriva ut dem med `console.log`:
+
+```javascript
+let firstName = "Sara";
+console.log("Hello, " + firstName + "!");
+```
+
+---
 
 ## Sammanfattning
 
-Variabler (`let` och `const`) är namngivna behållare för data. `const` bör föredras. JavaScript har sju primitiva datatyper: `string`, `number`, `boolean`, `undefined`, `null`, `symbol` och `bigint`. För mer komplex data används `object` (nyckel-värde-par) och `array` (ordnade listor). JavaScript är dynamiskt typat och utför automatisk typomvandling, vilket man bör vara medveten om.
+- Variabler används för att lagra och hantera data i JavaScript.
+- Använd `let` för variabler som kan ändras, `const` för konstanter.
+- Variabler kan innehålla olika datatyper: text, tal, boolean, listor, objekt m.m.
+- Välj tydliga och beskrivande variabelnamn på engelska.
+- Variabler är grunden för att kunna skapa dynamiska och flexibla program.
 
-I nästa avsnitt ska vi titta på hur vi kan gruppera kod i återanvändbara block med hjälp av funktioner.
+Att förstå och använda variabler är ett av de första stegen mot att bli en skicklig programmerare

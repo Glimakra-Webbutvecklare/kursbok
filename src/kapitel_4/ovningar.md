@@ -1,125 +1,70 @@
-# Praktiska Övningar: Grundläggande JavaScript
+# Praktiska övningar: JavaScript och interaktivitet
 
-Det är dags att omsätta våra JavaScript-kunskaper i praktiken! Vi fortsätter att bygga på "Om Mig"-sidan och lägger till lite enkel interaktivitet.
+Att läsa teori är viktigt, men det är genom att skriva och testa kod som du verkligen lär dig JavaScript. Här hittar du övningar som hjälper dig att befästa kunskaperna från kapitlet om JavaScript, DOM-manipulation och händelser.
 
-**Mål:**
-*   Skapa och länka en extern JavaScript-fil.
-*   Använda `console.log` för felsökning.
-*   Använda variabler och grundläggande datatyper.
-*   Skriva en enkel funktion.
-*   Välja DOM-element med `querySelector`.
-*   Manipulera textinnehåll (`textContent`).
-*   Hantera en `click`-händelse med `addEventListener`.
-*   Manipulera CSS-klasser med `classList`.
+> **Mål:**  
+> Träna på att använda JavaScript för att skapa interaktivitet, manipulera DOM och hantera händelser på webbsidor.
 
-**Förutsättningar:** Projektet `om-mig-sida` från kapitel 3, med `index.html`, `style.css` och Git/GitHub-koppling.
+**Förutsättningar:**  
+Du har en HTML-fil att arbeta med och kan lägga till eller länka en JavaScript-fil. Du kan öppna sidan i en webbläsare och se resultatet av din kod.
 
-## Övning 1: Koppla Script och Logga Meddelande
+---
 
-1.  **Skapa JS-fil:** I din `om-mig-sida`-mapp, skapa en ny fil som heter `script.js`.
-2.  **Länka från HTML:** Öppna `index.html`. Lägg till en `<script>`-tagg precis **före** den avslutande `</body>`-taggen för att länka till din nya JS-fil:
-    ```html
-    <script src="script.js"></script>
-    </body>
-    ```
-3.  **Logga till Konsolen (i `script.js`):**
-    *   Lägg till en rad i `script.js` för att skriva ut ett meddelande till webbläsarens konsol:
-        ```javascript
-        console.log("Scriptet laddades!");
-        ```
-4.  **Commit:**
-    *   `git status`
-    *   `git add .`
-    *   `git commit -m "Lägg till och länka extern script.js, logga meddelande"`
-5.  **Visa och Kontrollera:** Öppna `index.html` i webbläsaren. Öppna sedan webbläsarens **utvecklarkonsol** (oftast genom att högerklicka -> Inspektera -> Console, eller trycka F12). Ser du meddelandet "Scriptet laddades!" där?
+## Övning 1: Skriv ut meddelande i konsolen
 
-## Övning 2: Byt ut Rubrik med JavaScript
+1. Skapa en fil `script.js` och koppla den till din HTML-fil med `<script src="script.js"></script>`.
+2. Skriv kod som skriver ut "Hello, JavaScript!" i webbläsarens konsol.
+3. Öppna webbsidan och kontrollera i konsolen (F12) att meddelandet syns.
 
-1.  **Välj Rubrik:** I `script.js`, använd `document.querySelector()` för att välja ut huvudsrubriken (`<h1>`). Spara referensen till elementet i en `const`-variabel.
-    ```javascript
-    console.log("Scriptet laddades!");
+---
 
-    const mainHeading = document.querySelector('h1');
-    console.log(mainHeading); // Bra att logga för att se att du valt rätt element
-    ```
-2.  **Ändra Textinnehåll:** Ändra rubrikens `textContent` till något nytt, t.ex. "Välkommen till [Ditt Namn]s sida!".
-    ```javascript
-    // ... (koden från steg 1)
+## Övning 2: Ändra text på sidan med JavaScript
 
-    if (mainHeading) { // Bra att kolla att elementet faktiskt hittades
-      mainHeading.textContent = "Välkommen till Alices sida!"; // Byt ut Alice mot ditt namn
-    } else {
-      console.error("Kunde inte hitta huvudrubriken (h1)!");
-    }
-    ```
-3.  **Commit:**
-    *   `git add .`
-    *   `git commit -m "Ändra huvudrubrikens text via JavaScript"`
-4.  **Visa:** Ladda om `index.html` i webbläsaren. Har rubriken ändrats?
+1. Lägg till ett element i din HTML, t.ex. `<p id="message">Detta ska ändras</p>`.
+2. Skriv JavaScript som ändrar texten i paragrafen till "Texten är nu ändrad!" när sidan laddas.
 
-## Övning 3: Interaktiv Knapp - Växla Mörkt Läge
+---
 
-Vi ska lägga till en knapp som växlar en CSS-klass på `<body>` för att simulera ett mörkt/ljust läge.
+## Övning 3: Byt färg på ett element vid knapptryck
 
-1.  **Lägg till Knapp i HTML:** Lägg till en knapp någonstans i `index.html`, t.ex. i `<header>` eller i början av `<main>`. Ge den ett ID så att vi lätt kan hitta den.
-    ```html
-    <button id="toggle-theme-btn">Växla Tema</button>
-    ```
-2.  **Lägg till CSS-klass för Mörkt Läge:** I `style.css`, lägg till en klass för mörkt läge som ändrar bakgrunds- och textfärg på `body`. Lägg den *utanför* eventuella media queries.
-    ```css
-    /* ... annan css ... */
+1. Lägg till en knapp: `<button id="colorBtn">Byt färg</button>` och ett text-element: `<p id="colorText">Färgtest</p>`.
+2. Skriv JavaScript som gör att texten i `colorText` byter färg (t.ex. till blå) när du klickar på knappen.
 
-    body.dark-mode {
-      background-color: #222;
-      color: #eee;
-    }
+---
 
-    /* Valfritt: Styla om rubriker/länkar i mörkt läge */
-    body.dark-mode h1,
-    body.dark-mode h2 {
-      color: lightcyan;
-    }
-    body.dark-mode a {
-      color: lightskyblue;
-    }
-    ```
-3.  **JavaScript - Hitta Knapp och Lyssna på Klick:** I `script.js`:
-    *   Välj knappen med `document.querySelector()` och dess ID.
-    *   Välj `body`-elementet (du kan använda `document.body`).
-    *   Lägg till en `addEventListener` för `'click'`-händelsen på knappen.
-    *   Inuti händelsehanteraren (callback-funktionen), använd `body.classList.toggle('dark-mode')` för att lägga till klassen om den inte finns, eller ta bort den om den finns.
+## Övning 4: Lägg till nya element i DOM
 
-    ```javascript
-    // ... (koden från övning 2)
+1. Lägg till en tom lista i HTML: `<ul id="myList"></ul>` och en knapp: `<button id="addBtn">Lägg till punkt</button>`.
+2. Skriv JavaScript som lägger till ett nytt `<li>`-element med valfri text i listan varje gång du klickar på knappen.
 
-    const themeButton = document.querySelector('#toggle-theme-btn');
-    const bodyElement = document.body;
+---
 
-    if (themeButton && bodyElement) {
-      themeButton.addEventListener('click', function() {
-        console.log("Temaknapp klickad!");
-        bodyElement.classList.toggle('dark-mode');
-      });
-    } else {
-      console.error("Kunde inte hitta temaknappen eller body!");
-    }
-    ```
-4.  **Commit:**
-    *   `git status` (bör visa ändringar i `index.html`, `style.css`, `script.js`)
-    *   `git add .`
-    *   `git commit -m "Lägg till knapp och JS för att växla mörkt/ljust tema"`
-5.  **Testa:** Ladda om sidan. Klicka på knappen "Växla Tema". Ändras utseendet mellan ljust och mörkt läge?
+## Övning 5: Enkel räknare
 
-## Övning 4: Pusha till GitHub
+1. Lägg till en knapp: `<button id="countBtn">Räkna</button>` och ett element för att visa räknaren: `<span id="counter">0</span>`.
+2. Skriv JavaScript som ökar värdet i `counter` med 1 varje gång du klickar på knappen.
 
-Glöm inte att pusha dina senaste ändringar till GitHub!
+---
 
-1.  `git pull` (för säkerhets skull)
-2.  `git push`
-3.  Verifiera på GitHub.
+## Övning 6: Formulär och validering
 
-## Sammanfattning och Nästa Steg
+1. Lägg till ett enkelt formulär i HTML:
+   ```html
+   <form id="myForm">
+     <input type="text" id="nameInput" placeholder="Skriv ditt namn">
+     <button type="submit">Skicka</button>
+   </form>
+   <p id="formMessage"></p>
+   ```
+2. Skriv JavaScript som:
+   - Förhindrar att sidan laddas om när formuläret skickas.
+   - Läser av värdet i `nameInput`.
+   - Skriver ut ett meddelande i `formMessage`, t.ex. "Hej, [namn]!", om fältet inte är tomt. Om det är tomt, visa ett felmeddelande.
 
-Du har nu lagt till din första interaktivitet med JavaScript! Du har länkat ett script, använt konsolen, valt och manipulerat DOM-element, och reagerat på en användarhändelse (`click`) för att ändra sidans utseende dynamiskt. Detta är grunderna för att bygga mer komplexa frontend-applikationer.
+---
 
-I nästa kapitel, "Fortsättning JavaScript", kommer vi att utforska mer avancerade koncept som asynkron programmering, hur man hämtar data från externa källor (API:er), och mer kraftfulla sätt att arbeta med arrayer och objekt.
+## Sammanfattning och nästa steg
+
+Genom att göra dessa övningar får du praktisk erfarenhet av att använda JavaScript för att manipulera DOM och hantera händelser. Fortsätt experimentera – prova att lägga till fler funktioner, kombinera övningarna eller skapa egna små projekt!
+
+I nästa kapitel lär du dig mer om hur du strukturerar och återanvänder kod med funktioner och moduler, samt hur du arbetar med mer avancerade datatyper och asynkrona operationer.

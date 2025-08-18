@@ -1,24 +1,32 @@
-# Kapitel 4: Grundläggande JavaScript - Gör Webbplatser Interaktiva
+# Kapitel 4: JavaScript – Gör webben interaktiv
 
-Hittills har vi byggt strukturen (HTML) och definierat utseendet (CSS) för våra webbsidor. De ser kanske bra ut, men de är fortfarande statiska - de reagerar inte på användarens handlingar. Hur skapar vi knappar som gör något när man klickar på dem? Hur validerar vi formulär innan de skickas? Hur uppdaterar vi innehållet på sidan utan att behöva ladda om den helt?
+I de tidigare kapitlen har vi lärt oss att bygga upp webbsidor med HTML, ge dem struktur och semantik, samt styla dem med CSS. Men webben är mer än bara statiskt innehåll och utseende – det är interaktivitet, dynamik och möjligheten att reagera på användarens handlingar. Det är här **JavaScript** kommer in.
 
-Svaret är **JavaScript (JS)**. JavaScript är ett **programmeringsspråk** som körs direkt i användarens webbläsare (klientsidan). Det låter oss manipulera HTML och CSS, reagera på händelser (som klick och tangenttryckningar), kommunicera med servrar, och mycket mer. Det är JavaScript som gör webben dynamisk och interaktiv.
+**JavaScript** är det språk som ger liv åt webbsidor. Med JavaScript kan du:
+- Hantera händelser som en användare initierar.
+- Ändra innehåll och stil på sidan utan att ladda om den.
+- Hämta och visa data från andra tjänster (API:er).
+- Skapa spel, animationer och mycket mer.
 
-**Varför är JavaScript viktigt?**
+> **Motivation:**  
+> JavaScript är ett av världens mest använda programmeringsspråk och är oumbärligt för modern webbutveckling. Nästan alla interaktiva funktioner du ser på webben bygger på JavaScript.
 
-*   **Interaktivitet:** Gör det möjligt för användare att interagera med sidan (formulärvalidering, spel, interaktiva kartor, etc.).
-*   **Dynamiskt Innehåll:** Uppdatera delar av en sida utan att behöva ladda om hela sidan (t.ex. ladda nya inlägg i ett flöde).
-*   **Användarupplevelse:** Skapa smidigare och mer engagerande gränssnitt (animationer, drag-and-drop, etc.).
-*   **Frontend-Ramverk:** Är grunden för alla moderna frontend-ramverk och bibliotek som React, Angular och Vue.js.
-*   **Fullstack:** Med Node.js kan JavaScript även användas på serversidan (backend).
+**Språkpolicy:**  
+Svenska används i förklaringar, men engelska tekniska termer anges i parentes första gången de nämns. Variabel- och funktionsnamn skrivs på engelska.
 
-I detta kapitel kommer vi att:
+---
 
-*   **Introducera JavaScript:** Förstå vad det är, dess roll i webbutveckling, och hur man inkluderar det i HTML.
-*   **Utforska Variabler och Datatyper:** Lära oss hur man lagrar och hanterar olika typer av information (siffror, text, booleans, etc.).
-*   **Arbeta med Funktioner och Scope:** Förstå hur man skriver återanvändbara kodblock (funktioner) och hur variablers synlighet (scope) fungerar.
-*   **Använda Kontrollstrukturer och Loopar:** Lära oss hur man styr kodens flöde med `if/else`-satser och upprepar kod med loopar (`for`, `while`).
-*   **Manipulera DOM och Hantera Events:** Upptäcka hur JavaScript kan interagera med HTML-strukturen (Document Object Model - DOM) och reagera på användarhändelser (Events) som klick och formulärinskickningar.
-*   **Genomföra Praktiska Övningar:** Lägga till enkel interaktivitet på vår "Om Mig"-sida.
+## Vad kommer du att lära dig i detta kapitel?
 
-Låt oss ge våra webbsidor liv med JavaScript!
+- **Introduktion till JavaScript:** Vad är JavaScript och hur används det i webbläsaren?
+- **Grunderna i programmering:** Variabler, datatyper, operatorer och uttryck.
+- **Villkor och logik:** If-satser och jämförelser.
+- **Loopar:** Hur du upprepar kod med for- och while-loopar.
+- **Funktioner:** Hur du organiserar och återanvänder kod.
+- **Interaktion med HTML (DOM):** Hur JavaScript kan läsa och ändra innehåll på sidan.
+- **Händelser:** Hur du reagerar på användarens handlingar, t.ex. klick och tangenttryckningar.
+- **Praktiska övningar:** Du får skriva och testa JavaScript-kod direkt på dina egna webbsidor.
+
+---
+
+Nu är det dags att ta steget från statiska sidor

@@ -483,3 +483,203 @@ try {
 - **Fråga om krav** - klargör vad som förväntas innan du börjar koda
 - **Börja enkelt** - löss grundproblemet först, lägg till features sedan
 - **Hantera edge cases** - diskutera vad som händer med oväntad input
+
+# Tekniska intervjufrågor: CSS och responsiv design
+
+Detta avsnitt innehåller exempel på tekniska intervjufrågor som kan dyka upp gällande CSS och responsiv webbutveckling. Frågorna är utformade för att testa både teoretisk förståelse och praktisk kunskap.
+
+Använd dessa frågor för att testa din kunskap och förbereda dig för tekniska intervjuer.
+
+---
+
+## Fråga 1: CSS grundsyntax och inkludering
+
+**Fråga:**  
+Förklara skillnaden mellan inline CSS, intern CSS och extern CSS. Vilken metod rekommenderas och varför?
+
+**Svar:**  
+- **Inline CSS:** Skrivs direkt i HTML-elementets `style`-attribut, t.ex. `<p style="color: red;">Text</p>`.
+- **Intern CSS:** Skrivs i en `<style>`-tagg i HTML-dokumentets `<head>`.
+- **Extern CSS:** Skrivs i en separat `.css`-fil som länkas in med `<link rel="stylesheet" href="style.css">`.
+
+Extern CSS rekommenderas eftersom det separerar struktur och utseende, gör det lättare att återanvända och underhålla stilar, samt förbättrar prestanda genom cache.
+
+---
+
+## Fråga 2: CSS-selektorer
+
+**Fråga:**  
+Förklara skillnaden mellan dessa selektorer och ge exempel på när du skulle använda var och en:
+```css
+p { }
+.highlight { }
+#header { }
+nav ul li { }
+```
+
+**Svar:**  
+- `p` – Elementselektor: Väljer alla `<p>`-element. Används för grundläggande styling av paragrafer.
+- `.highlight` – Klassselektor: Väljer alla element med klassen `highlight`. Används för återanvändbara stilar.
+- `#header` – ID-selektor: Väljer elementet med id `header`. Används för unika element.
+- `nav ul li` – Ättlingselektor: Väljer alla `<li>`-element inuti en `<ul>` som ligger i en `<nav>`. Används för att styla specifika strukturer.
+
+---
+
+## Fråga 3: Specificitet och kaskaden
+
+**Fråga:**  
+Vilken färg får texten i detta exempel och varför?
+```html
+<p id="viktigt" class="highlight">Text</p>
+```
+```css
+p { color: black; }
+.highlight { color: blue; }
+#viktigt { color: red; }
+p.highlight { color: green; }
+```
+
+**Svar:**  
+Texten blir **röd** eftersom ID-selektorn `#viktigt` har högst specificitet och därför vinner över de andra reglerna.
+
+---
+
+## Fråga 4: Box model
+
+**Fråga:**  
+Förklara CSS box model. Om ett element har `width: 200px`, `padding: 20px`, `border: 5px solid black` och `margin: 10px`, vad blir elementets totala bredd?
+
+**Svar:**  
+Box model består av content, padding, border och margin.  
+Total bredd = width + (padding × 2) + (border × 2) = 200 + 40 + 10 = **250px** (margin räknas utanför detta).
+
+---
+
+## Fråga 5: Display-egenskaper
+
+**Fråga:**  
+Vad är skillnaden mellan `display: block`, `display: inline` och `display: inline-block`?
+
+**Svar:**  
+- `block`: Elementet tar hela raden, respekterar width/height, börjar på ny rad.
+- `inline`: Elementet tar bara så mycket plats som behövs, ignorerar width/height, bryter inte rad.
+- `inline-block`: Som inline, men respekterar width/height.
+
+---
+
+## Fråga 6: CSS-positionering
+
+**Fråga:**  
+Förklara skillnaden mellan `position: relative`, `position: absolute` och `position: fixed`. Ge exempel på användningsfall.
+
+**Svar:**  
+- `relative`: Elementet flyttas relativt sin ursprungliga plats, påverkar inte andra element.
+- `absolute`: Positioneras relativt närmaste positionerade förälder, tas ur flödet.
+- `fixed`: Positioneras relativt till fönstret, stannar kvar vid scroll.
+
+---
+
+## Fråga 7: Färger och typografi
+
+**Fråga:**  
+Förklara skillnaden mellan dessa färgformat och när du skulle använda dem:
+```css
+color: red;
+color: #FF0000;
+color: rgb(255, 0, 0);
+color: rgba(255, 0, 0, 0.5);
+```
+
+**Svar:**  
+- `red`: Namngiven färg, enkel men begränsad.
+- `#FF0000`: HEX, vanligt för webben.
+- `rgb(255, 0, 0)`: RGB, bra för exakta färger.
+- `rgba(255, 0, 0, 0.5)`: RGB med transparens (alpha).
+
+---
+
+## Fråga 8: Responsiv design – Media Queries
+
+**Fråga:**  
+Vad är skillnaden mellan dessa två Media Queries och vilken strategi representerar de?
+```css
+@media (max-width: 768px) { ... }
+@media (min-width: 768px) { ... }
+```
+
+**Svar:**  
+- `max-width`: Desktop-first, ändrar stilar för mindre skärmar.
+- `min-width`: Mobile-first, lägger till/förbättrar stilar för större skärmar.  
+Mobile-first rekommenderas idag.
+
+---
+
+## Fråga 9: Mobile-first design
+
+**Fråga:**  
+Varför rekommenderas mobile-first design och hur implementerar du det i CSS?
+
+**Svar:**  
+Mobile-first prioriterar prestanda och tillgänglighet för mobila användare.  
+Implementeras genom att skriva grundstilar utan media queries och lägga till förbättringar med `@media (min-width: ...)`.
+
+---
+
+## Fråga 10: Flexibla enheter
+
+**Fråga:**  
+Förklara skillnaden mellan `px`, `em`, `rem` och `%`. När skulle du använda respektive enhet?
+
+**Svar:**  
+- `px`: Absolut, exakt storlek.
+- `em`: Relativ till förälderns font-size.
+- `rem`: Relativ till root-elementets font-size.
+- `%`: Relativ till förälderns storlek.  
+Använd `rem` för typografi, `%` för layouter, `px` för detaljer.
+
+---
+
+## Fråga 11: Flexbox layout
+
+**Fråga:**  
+Förklara hur Flexbox fungerar. Vad är skillnaden mellan `justify-content` och `align-items`? Ge ett exempel.
+
+**Svar:**  
+Flexbox är för endimensionella layouter.  
+- `justify-content`: Justerar längs huvudaxeln (t.ex. horisontellt).
+- `align-items`: Justerar längs tväraxeln (t.ex. vertikalt).
+
+Exempel:
+```css
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+```
+
+---
+
+## Fråga 12: CSS Grid layout
+
+**Fråga:**  
+Vad är skillnaden mellan CSS Grid och Flexbox? Visa hur du skapar en enkel 3-kolumns layout med Grid.
+
+**Svar:**  
+Grid är tvådimensionellt (rader och kolumner), Flexbox är endimensionellt.  
+Exempel:
+```css
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+```
+
+---
+
+## Tips för tekniska intervjuer
+
+- Rita gärna box model eller layout-flöde.
+- Förklara varför du väljer en viss lösning.
+- Ge exempel från egna projekt.
+- Visa att du kan felsöka och resonera kring CSS-problem.
