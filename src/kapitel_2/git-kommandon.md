@@ -13,6 +13,72 @@ Alla Git-kommandon börjar med `git`. Kommandona körs i terminalen **inuti din 
 
 ---
 
+## 0. Förstå hur man använder terminalen
+
+Terminalen är ett textbaserat gränssnitt där du kör kommandon i den aktuella mappen. Här är grundkommandon du behöver:
+
+### Grundläggande kommandon
+
+- **pwd** – visar din nuvarande mapp (path).
+  ```
+  pwd
+  ```
+
+- **cd** – byt mapp (change directory).
+  - `cd projekt` – gå in i mappen `projekt`
+  - `cd ..` – gå upp en nivå
+  - `cd ~` – gå till hemkatalogen
+  - `cd -` – hoppa till föregående mapp
+
+- **ls** – lista filer och mappar.
+  - `ls` – enkel lista
+  - `ls -la` – detaljerad lista, inkl. dolda filer
+  - `ls -lh` – läsbar storlek
+
+- **mkdir** – skapa mapp.
+  - `mkdir ny-mapp`
+  - `mkdir -p a/b/c` – skapa kedjade undermappar
+
+- **touch** – skapa tom fil eller uppdatera tidsstämpel.
+  - `touch index.html`
+
+- **clear** – rensa terminalfönstret.
+  - `clear` eller Ctrl+L
+
+- **rm** – ta bort filer/mappar (var försiktig!).
+  - `rm fil.txt`
+  - `rm -r mapp/` – ta bort mapp rekursivt
+
+- **mv** – flytta eller byta namn.
+  - `mv gammalt.txt nytt.txt`
+  - `mv fil.txt mapp/`
+
+- **cp** – kopiera filer eller mappar.
+  - `cp fil.txt kopia.txt`
+  - `cp -r src/ backup-src/`
+
+- **cat** – visa innehåll i en fil.
+  - `cat README.md`
+
+### Snabb övning
+```bash
+mkdir demo        # Skapa en ny mapp som heter 'demo'
+cd demo          # Gå in i demo-mappen
+pwd              # Visa nuvarande sökväg/mapp
+touch index.html # Skapa en tom fil som heter 'index.html'
+ls -la          # Lista alla filer (även dolda) med detaljerad information
+mkdir -p src/components  # Skapa mapparna 'src' och 'components' på en gång
+mv index.html src/      # Flytta index.html till src-mappen
+cp -r src src-backup   # Kopiera hela src-mappen rekursivt till en backup
+clear                  # Rensa terminalfönstret
+```
+
+### Windows-notis
+- I Git Bash på Windows fungerar kommandona ovan som i macOS/Linux.
+- I PowerShell: `ls` fungerar (alias), `pwd` fungerar, `clear` kan skrivas `cls`, `touch` kan ersättas med `New-Item filnamn`.
+
+Tips: Använd Tab för autocompletion, pilar upp/ner för historik och Ctrl+C för att avbryta.
+
 ## 1. Skapa ett repository: `git init`
 
 Det allra första steget för ett *nytt* projekt är att initiera ett Git-repository.
