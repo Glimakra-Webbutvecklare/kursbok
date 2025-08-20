@@ -1,127 +1,280 @@
-# State och Props: Hantera Data och Interaktivitet
+# Lägga till Interaktivitet: Props, State och Events
 
-State är vad som gör React-applikationer levande och interaktiva. Medan props låter oss skicka data nedåt i komponenthierarkin, ger state komponenter möjligheten att "komma ihåg" och reagera på förändringar.
+Komponenter behöver ofta interagera med varandra och reagera på användarinteraktion. React använder **props** för att skicka data och **state** för att komma ihåg saker. Tillsammans gör de dina komponenter interaktiva!
 
-**Mål:** Bemästra useState och useEffect hooks, förstå skillnaden mellan state och props, lära sig hantera props drilling och implementera Context API för global state.
+**Mål:** Lära sig skicka data med props, hantera användarinteraktion med events och ge komponenter minne med state.
 
-## State vs Props: Fundamentala Skillnader
+## Skicka Data med Props
 
-```mermaid
-graph TB
-    subgraph "Props (Read-only)"
-        A[Parent Component] -->|"data ➤"| B[Child Component]
-        A -->|"callback ➤"| B
-        B -->|"event ↑"| A
-    end
-    
-    subgraph "State (Mutable)"
-        C[Component] --> D[useState]
-        D --> E[State Value]
-        D --> F[Setter Function]
-        F --> E
-        E --> G[Re-render]
-        G --> C
-    end
-    
-    style E fill:#98fb98
-    style F fill:#ffd700
-    style G fill:#ffa07a
+React-komponenter använder **props** för att kommunicera med varandra. Varje föräldrakomponent kan skicka information till sina barnkomponenter genom att ge dem props.
+
+### Grundläggande Props
+
+```jsx
+// Komponent som tar emot props
+function Avatar({ person, size }) {
+  return (
+    <img
+      className="avatar"
+      src={person.imageUrl}
+      alt={person.name}
+      width={size}
+      height={size}
+    />
+  );
+}
+
+// Föräldrakomponent som skickar props
+function Profile() {
+  return (
+    <Avatar
+      size={100}
+      person={{ 
+        name: 'Katsuko Saruhashi', 
+        imageUrl: 'https://i.imgur.com/YfeOqp2s.jpg' 
+      }}
+    />
+  );
+}
 ```
 
-| Aspect | Props | State |
-|--------|-------|-------|
-| **Ägare** | Föräldrakomponent | Komponenten själv |
-| **Mutabilitet** | Read-only | Kan ändras |
-| **Syfte** | Skicka data till komponenter | Hantera lokal komponentdata |
-| **Re-rendering** | Utlöses när props ändras | Utlöses när state ändras |
+### Props kan vara vilken datatyp som helst
 
-## useState Hook: Lokal State Management
+```jsx
+function Card({ title, children, isHighlighted, tags, onClose }) {
+  return (
+    <div className={`card ${isHighlighted ? 'highlighted' : ''}`}>
+      <div className="card-header">
+        <h3>{title}</h3>
+        <button onClick={onClose}>×</button>
+      </div>
+      <div className="card-body">
+        {children}
+      </div>
+      <div className="card-footer">
+        {tags.map(tag => (
+          <span key={tag} className="tag">{tag}</span>
+        ))}
+      </div>
+    </div>
+  );
+}
 
-`useState` är grunden för att hantera state i funktionella komponenter.
+// Användning - skicka olika datatyper som props
+function App() {
+  return (
+    <Card
+      title="Min artikel"                    // string
+      isHighlighted={true}                   // boolean
+      tags={['react', 'javascript', 'web']} // array
+      onClose={() => alert('Stänger!')}     // function
+    >
+      <p>Detta är innehållet i kortet.</p>   {/* children */}
+    </Card>
+  );
+}
+```
 
-### Grundläggande Användning
+## Reagera på Events
+
+Du kan reagera på events genom att deklarera **event handler**-funktioner inuti dina komponenter:
+
+```jsx
+function Button() {
+  function handleClick() {
+    alert('Du klickade på mig!');
+  }
+
+  return (
+    <button onClick={handleClick}>
+      Klicka mig
+    </button>
+  );
+}
+```
+
+Observera att `onClick={handleClick}` inte har parenteser i slutet! Anropa inte event handler-funktionen: du behöver bara **skicka den nedåt**. React kommer att anropa din event handler när användaren klickar på knappen.
+
+### Event Handlers kan vara inline
+
+```jsx
+function Button() {
+  return (
+    <button onClick={() => alert('Du klickade på mig!')}>
+      Klicka mig
+    </button>
+  );
+}
+```
+
+### Skicka Event Handlers som Props
+
+Ofta vill du att föräldrakomponenten ska specificera en barnkomponents event handler:
+
+```jsx
+function Button({ onClick, children }) {
+  return (
+    <button onClick={onClick}>
+      {children}
+    </button>
+  );
+}
+
+function PlayButton({ movieName }) {
+  function handlePlayClick() {
+    alert(`Spelar ${movieName}!`);
+  }
+
+  return (
+    <Button onClick={handlePlayClick}>
+      Spela "{movieName}"
+    </Button>
+  );
+}
+
+function UploadButton() {
+  return (
+    <Button onClick={() => alert('Laddar upp!')}>
+      Ladda upp bild
+    </Button>
+  );
+}
+```
+
+## State: En Komponents Minne
+
+Komponenter behöver ofta ändra vad som visas på skärmen som resultat av interaktion. Att skriva i formuläret bör uppdatera input-fältet, att klicka på "nästa" i en bildkarusell bör ändra vilken bild som visas, att klicka på "köp" bör lägga en produkt i kundvagnen. Komponenter behöver "komma ihåg" saker: det aktuella input-värdet, den aktuella bilden, kundvagnen. I React kallas denna typ av komponentspecifikt minne **state**.
+
+### Lägga till State i en Komponent
+
+För att lägga till state i en komponent, importera `useState` från React:
 
 ```jsx
 import { useState } from 'react';
 
-function Counter() {
-  // useState returnerar en array med [värde, setter-funktion]
-  const [count, setCount] = useState(0); // 0 är initial value
-  
-  const increment = () => setCount(count + 1);
-  const decrement = () => setCount(count - 1);
-  const reset = () => setCount(0);
+function MyButton() {
+  const [count, setCount] = useState(0);
+
+  function handleClick() {
+    setCount(count + 1);
+  }
 
   return (
-    <div className="counter">
-      <h2>Räknare: {count}</h2>
-      <button onClick={increment}>+</button>
-      <button onClick={decrement}>-</button>
-      <button onClick={reset}>Reset</button>
+    <button onClick={handleClick}>
+      Klickad {count} gånger
+    </button>
+  );
+}
+```
+
+`useState` returnerar två saker:
+1. **Det aktuella state-värdet** (`count`)
+2. **En funktion för att uppdatera det** (`setCount`)
+
+Du kan ge dem vilka namn du vill, men konventionen är att skriva `[something, setSomething]`.
+
+### State är isolerat och privat
+
+State är lokalt för en komponentinstans på skärmen. Med andra ord, **om du renderar samma komponent två gånger får varje kopia sin egen state**:
+
+```jsx
+function MyApp() {
+  return (
+    <div>
+      <h1>Räknare som uppdateras oberoende</h1>
+      <MyButton />
+      <MyButton />
     </div>
   );
 }
 ```
 
+Observera hur varje knapp "kommer ihåg" sin egen `count`-state och inte påverkar den andra.
+
 ### Olika Typer av State
 
+State kan innehålla vilken typ av JavaScript-värde som helst:
+
 ```jsx
-function UserForm() {
-  // Primitiva värden
-  const [name, setName] = useState('');
-  const [age, setAge] = useState(0);
-  const [isSubscribed, setIsSubscribed] = useState(false);
+import { useState } from 'react';
+
+function Form() {
+  // Olika typer av state
+  const [name, setName] = useState('');           // string
+  const [age, setAge] = useState(0);              // number  
+  const [isSubscribed, setIsSubscribed] = useState(false); // boolean
+  const [hobbies, setHobbies] = useState([]);     // array
   
-  // Arrays
-  const [hobbies, setHobbies] = useState([]);
-  
-  // Objekt
-  const [user, setUser] = useState({
-    firstName: '',
-    lastName: '',
-    email: ''
-  });
-
-  // Funktioner som initial value (för tunga beräkningar)
-  const [expensiveValue, setExpensiveValue] = useState(() => {
-    return someExpensiveCalculation();
-  });
-
-  const addHobby = (hobby) => {
-    setHobbies([...hobbies, hobby]); // Skapa ny array
-  };
-
-  const updateUser = (field, value) => {
-    setUser(prevUser => ({
-      ...prevUser,    // Kopiera befintliga värden
-      [field]: value  // Uppdatera specifikt fält
-    }));
-  };
-
   return (
-    <form>
-      <input
-        type="text"
-        value={user.firstName}
-        onChange={(e) => updateUser('firstName', e.target.value)}
-        placeholder="Förnamn"
+    <div>
+      <input 
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        placeholder="Ditt namn"
       />
-      <input
-        type="text"
-        value={user.lastName}
-        onChange={(e) => updateUser('lastName', e.target.value)}
-        placeholder="Efternamn"
+      <p>Hej {name}!</p>
+      
+      <input 
+        type="number"
+        value={age}
+        onChange={(e) => setAge(Number(e.target.value))}
+        placeholder="Din ålder"
       />
-      <input
-        type="email"
-        value={user.email}
-        onChange={(e) => updateUser('email', e.target.value)}
-        placeholder="E-post"
-      />
-    </form>
+      <p>Du är {age} år gammal.</p>
+      
+      <label>
+        <input 
+          type="checkbox"
+          checked={isSubscribed}
+          onChange={(e) => setIsSubscribed(e.target.checked)}
+        />
+        Prenumerera på nyhetsbrev
+      </label>
+      <p>{isSubscribed ? 'Du är prenumerant!' : 'Du är inte prenumerant.'}</p>
+    </div>
   );
 }
 ```
+
+### State och Props Tillsammans
+
+Ofta använder du state och props tillsammans. Här är ett exempel där en föräldrakomponent håller state och skickar det till barnkomponenter via props:
+
+```jsx
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  function handleIncrement() {
+    setCount(count + 1);
+  }
+
+  return (
+    <div>
+      <h2>Räknare</h2>
+      <CounterDisplay count={count} />
+      <CounterButton onClick={handleIncrement} />
+    </div>
+  );
+}
+
+function CounterDisplay({ count }) {
+  return <p>Aktuellt värde: {count}</p>;
+}
+
+function CounterButton({ onClick }) {
+  return (
+    <button onClick={onClick}>
+      Öka med 1
+    </button>
+  );
+}
+```
+
+I detta exempel:
+- `Counter` äger state (`count`)
+- `CounterDisplay` får `count` via props
+- `CounterButton` får `onClick` funktionen via props
+- När knappen klickas uppdateras state, vilket orsakar en re-render
 
 ### State Batching och Funktionella Updates
 
@@ -677,13 +830,27 @@ const [state, setState] = useState({
 
 ## Sammanfattning
 
-State och props är grunden för interaktiva React-applikationer:
+Nu kan du skapa interaktiva React-komponenter:
 
-*   **useState** hanterar lokal komponentstate
-*   **useEffect** hanterar side effects och lifecycle
-*   **Props drilling** kan lösas med **Context API**
-*   **Custom hooks** abstraherar återanvändbar state-logik
-*   Håll state så lokalt som möjligt
-*   Normalisera komplex data-strukturer
+*   **Props** skickar data från föräldra- till barnkomponenter
+*   **Event handlers** låter komponenter reagera på användarinteraktion  
+*   **State** ger komponenter minne med `useState`
+*   **State är privat** - varje komponentinstans har sin egen state
+*   **State + Props** skapar dataflöde mellan komponenter
 
-I nästa avsnitt lär vi oss bygga Single Page Applications med routing.
+## Vad händer härnäst?
+
+Nu när dina komponenter kan ta emot data och reagera på interaktion är det dags att bygga riktiga applikationer! I nästa avsnitt lär du dig:
+
+* **Formulär** - hantera användarinput på ett kontrollerat sätt
+* **API-integration** - hämta data från servrar
+* **Routing** - navigera mellan olika vyer
+* **Deployment** - publicera din app på internet
+
+**Redo för nästa steg?** Gå vidare till **Formulär i React** för att lära dig hantera användarinput!
+
+---
+
+## Fördjupning: Avancerade State-patterns
+
+*Denna sektion täcker mer avancerade ämnen som du kan hoppa över först och komma tillbaka till senare.*

@@ -22,11 +22,14 @@ Detta kapitel introducerar dig till komponentsbaserad utveckling och Single Page
 
 I detta kapitel kommer vi att:
 
-*   **Förstå React-fundamenten:** Komponenter, JSX, Virtual DOM och utvecklingsmiljö (Vite först)
-*   **Lära oss komponentbaserad arkitektur:** Funktionella komponenter, props, och component lifecycle
-*   **Hantera state och interaktivitet:** useState, useEffect hooks och händelsehantering  
-*   **Bygga SPA:er:** React Router för navigation mellan vyer
-*   **Konsumera API:er:** Hämta och skicka data till backend-tjänster
+*   **Din första komponent:** Lära dig skapa och organisera React-komponenter
+*   **Skriva markup med JSX:** Kombinera JavaScript och HTML-liknande syntax
+*   **Props och interaktivitet:** Skicka data mellan komponenter och hantera events
+*   **State:** Ge komponenter minne för att reagera på förändringar
+*   **Formulär:** Hantera användarinput på ett kontrollerat sätt
+*   **API-integration:** Hämta och skicka data till backend-tjänster
+*   **Routing:** Bygga Single Page Applications med navigation
+*   **Deployment:** Publicera din app på internet
 
 **Förutsättningar:** Du bör ha god kunskap i JavaScript (ES6+), HTML, CSS och grundläggande förståelse för API:er från tidigare kapitel.
 
