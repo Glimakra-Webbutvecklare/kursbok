@@ -31,14 +31,16 @@ I React kontrollerar vi formulär-värden med `useState` och hanterar ändringar
 
 ### Steg 1: Ett enkelt textfält
 
-Låt oss börja med det mest grundläggande - ett textfält som visar vad användaren skriver:
+Låt oss börja med det allra enklaste - en komponent som visar vad användaren skriver medan de skriver:
 
 ```jsx
+import { useState } from 'react';
+
 function SimpleForm() {
   const [name, setName] = useState('');
 
   return (
-    <div className="form-container">
+    <div>
       <h2>Hej, {name || 'okänd person'}!</h2>
       
       <input 
@@ -46,7 +48,6 @@ function SimpleForm() {
         value={name}
         onChange={(e) => setName(e.target.value)}
         placeholder="Skriv ditt namn..."
-        className="text-input"
       />
       
       <p>Du har skrivit: "{name}"</p>
@@ -55,7 +56,7 @@ function SimpleForm() {
 }
 ```
 
-**Testa detta:** Skriv i fältet och se hur texten uppdateras direkt!
+**Prova detta:** Skriv i fältet och se hur texten uppdateras direkt medan du skriver!
 
 **Viktiga delar:**
 - `value={name}` - React kontrollerar vad som visas

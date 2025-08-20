@@ -67,6 +67,7 @@
   - [React Router](./kapitel_8/routing.md)
   - [Formulär](./kapitel_8/forms.md)
   - [API Integration](./kapitel_8/api-integration.md)
+  - [Hosta React med Dokploy](./kapitel_8/hosta-react-app.md)
   - [Single Page Application](./kapitel_8/spa.md)
   - [Praktiska övningar](./kapitel_8/ovningar.md)
   - [Teknisk Intervju](./kapitel_8/teknisk-intervju.md)
