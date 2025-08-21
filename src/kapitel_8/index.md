@@ -6,7 +6,7 @@ Detta kapitel introducerar dig till komponentsbaserad utveckling och Single Page
 
 **Vad är React?** React är ett JavaScript-bibliotek utvecklat av Facebook (Meta) för att bygga användargränssnitt. Det fokuserar på att skapa återanvändbara komponenter och hanterar effektivt uppdateringar av DOM:en genom sitt Virtual DOM-system.
 
-**Varför React?** 
+## Varför React? 
 
 1. **Komponentbaserad arkitektur:** Bygg applikationer som LEGO-block där varje komponent har sitt eget ansvar
 2. **Återanvändbarhet:** Skriv en gång, använd överallt
@@ -19,6 +19,38 @@ Detta kapitel introducerar dig till komponentsbaserad utveckling och Single Page
 - Navigering sker utan att hela sidan laddas om
 - Snabbare användarupplevelse efter initial laddning
 - Tydlig separation mellan frontend och backend
+
+## Vad är en Komponentbaserad arkitektur?
+
+En **komponent** är en JavaScript-funktion eller klass som returnerar JSX och representerar en del av användargränssnittet. Tänk på det som en anpassad HTML-tagg som du själv definierar.
+
+```mermaid
+graph TD
+    A[App] --> B[Header]
+    A --> C[Main]
+    A --> D[Footer]
+    
+    B --> E[Logo]
+    B --> F[Navigation]
+    
+    C --> G[ProductList]
+    C --> H[Sidebar]
+    
+    G --> I[ProductCard]
+    G --> J[ProductCard]
+    G --> K[ProductCard]
+    
+    H --> L[SearchFilter]
+    H --> M[CategoryFilter]
+
+    style A fill:#4CAF50
+    style G fill:#FF5722
+    style I fill:#FF5722 
+    style J fill:#FF5722
+    style K fill:#FF5722
+```
+
+*Diagram: Komponenthierarki för en e-handelsapplikation*
 
 I detta kapitel kommer vi att:
 
