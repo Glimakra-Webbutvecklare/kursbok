@@ -25,17 +25,31 @@ Varje låda i CSS består av fyra lager, utifrån och in:
 
 ---
 
-## Visualisering
+## Visualisering av CSS Box Model
 
 ```mermaid
-graph TD
-    Margin -.-> Border -.-> Padding -.-> Content
-    style Margin fill:#fff,stroke:#aaa,stroke-width:2px,stroke-dasharray: 5 5
-    style Border fill:#fdd,stroke:#f00,stroke-width:2px
-    style Padding fill:#dfd,stroke:#0a0,stroke-width:2px
-    style Content fill:#ddf,stroke:#00f,stroke-width:2px
+block-beta
+    columns 1
+    block:margin["Margin (marginal)"]
+        block:border["Border (kantlinje)"]
+            block:padding["Padding (utfyllnad)"]
+                block:content["Content (innehåll)<br/>width × height"]
+            end
+        end
+    end
+    
+    classDef marginStyle fill:#f9f9f9,stroke:#999,stroke-width:2px,stroke-dasharray: 5 5
+    classDef borderStyle fill:#ffe6e6,stroke:#cc0000,stroke-width:3px
+    classDef paddingStyle fill:#e6ffe6,stroke:#009900,stroke-width:2px
+    classDef contentStyle fill:#e6e6ff,stroke:#0000cc,stroke-width:2px
+    
+    class margin marginStyle
+    class border borderStyle
+    class padding paddingStyle
+    class content contentStyle
 ```
-*Diagram: Visualisering av CSS box model.*
+
+*Diagram: CSS box model visar hur varje element består av fyra lager som omsluter varandra.*
 
 ---
 
@@ -185,6 +199,9 @@ Tänk dig box model som en flyttkartong:
 
 # Blockelement och inline-element i CSS
 
+> **Motivation:**  
+> När du bygger webbsidor behöver du förstå hur olika HTML-element beter sig i layouten. Vissa element tar upp hela bredden (block), medan andra bara tar den plats de behöver (inline). Denna kunskap är grundläggande för att kunna skapa välstrukturerade och snygga webbsidor.
+
 ## Vad är blockelement?
 
 Blockelement (block elements) är HTML-element som automatiskt tar upp hela bredden av sin förälder och börjar på en ny rad. Exempel på blockelement är `<div>`, `<p>`, `<h1>`, `<ul>`, och `<li>`. De används för att bygga sidans struktur.
@@ -230,9 +247,38 @@ Inline-element (inline elements) är HTML-element som bara tar upp så mycket pl
 | `width`/`height` | Ja                  | Nej                   |
 | `margin`/`padding` | Ja                | Endast horisontellt   |
 
+### Visualisering: Block vs Inline
+
+```mermaid
+flowchart TD
+    subgraph container1 ["Container med block-element"]
+        block1["📦 Block element<br/>tar hela bredden av containern"]
+        block2["📦 Nästa block element<br/>börjar på ny rad"]
+    end
+    
+    subgraph container2 ["Container med inline-element"]
+        inline1["📝 Inline"] ~~~ inline2["📝 Inline"] ~~~ inline3["📝 Inline"]
+        note["↑ Alla ligger på samma rad"]
+    end
+    
+    style container1 fill:#f8f9fa,stroke:#6c757d,stroke-width:2px
+    style container2 fill:#f8f9fa,stroke:#6c757d,stroke-width:2px
+    style block1 fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    style block2 fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    style inline1 fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    style inline2 fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    style inline3 fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    style note fill:#f1f3f4,stroke:#9aa0a6,stroke-width:1px
+```
+
+*Diagram: Block-element tar upp hela bredden och börjar på ny rad, medan inline-element ligger på samma rad.*
+
 ---
 
 # Positionering av element med CSS
+
+> **Motivation:**  
+> Ibland räcker det inte med det normala flödet av element på en webbsida. Du kanske vill placera en meny som följer med när användaren scrollar, eller positionera en popup exakt där du vill ha den. CSS positionering ger dig full kontroll över var element hamnar på sidan.
 
 CSS erbjuder flera sätt att positionera element på en webbsida. Här är de vanligaste positioneringsmetoderna:
 
@@ -326,25 +372,99 @@ Med `position: fixed;` placeras elementet i förhållande till webbläsarfönstr
 
 ```mermaid
 flowchart TD
-    A[Normalt sidflöde]
-    B[Blockelement<br>(position: static)]
-    C[Relativt flyttat<br>(position: relative;<br>top/left)]
-    D[Absolut placerat<br>(position: absolute;<br>top/left)]
-    E[Fast placerat<br>(position: fixed;<br>bottom/right)]
-    F[Klistrigt<br>(position: sticky;<br>top: 0)]
+    A["🌐 Normalt sidflöde<br/>(Document flow)"]
+    B["📦 Static<br/>position: static<br/><i>Standard beteende</i>"]
+    C["📍 Relative<br/>position: relative<br/><i>Flyttas från ursprunglig plats</i>"]
+    D["🎯 Absolute<br/>position: absolute<br/><i>Positioneras mot närmaste relative-förälder</i>"]
+    E["📌 Fixed<br/>position: fixed<br/><i>Följer webbläsarfönstret</i>"]
+    F["🔗 Sticky<br/>position: sticky<br/><i>Static tills scroll-gräns nås</i>"]
 
     A --> B
-    B -. Flyttas från ursprunglig plats .-> C
-    A -. Tas ur sidflödet .-> D
-    A -. Följer fönstret .-> E
-    A -. Bete sig som static tills scroll .-> F
+    B -.-> C
+    A -.-> D
+    A -.-> E
+    B -.-> F
+
+    style A fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
+    style B fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    style C fill:#e8f5e8,stroke:#388e3c,stroke-width:2px
+    style D fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    style E fill:#ffebee,stroke:#d32f2f,stroke-width:2px
+    style F fill:#f1f8e9,stroke:#689f38,stroke-width:2px
 ```
+
+*Diagram: Olika positioneringsmetoder i CSS och hur de förhåller sig till det normala sidflödet.*
+
+---
+
+## Praktiskt exempel: Skapa en enkel header med navigation
+
+Här är ett praktiskt exempel som kombinerar box model, block/inline-element och positionering:
+
+```css
+/* Header som följer med när man scrollar */
+.header {
+  position: sticky;
+  top: 0;
+  background: #2c3e50;
+  padding: 16px 24px;
+  margin: 0;
+  border-bottom: 3px solid #3498db;
+  box-sizing: border-box;
+}
+
+/* Logo som blockelement */
+.logo {
+  display: inline-block;
+  color: white;
+  font-size: 24px;
+  margin: 0;
+  padding: 8px 0;
+}
+
+/* Navigation med inline-element */
+.nav {
+  float: right;
+}
+
+.nav a {
+  display: inline-block;
+  color: white;
+  text-decoration: none;
+  padding: 12px 16px;
+  margin: 0 4px;
+  border-radius: 4px;
+}
+
+.nav a:hover {
+  background: #34495e;
+}
+```
+
+```html
+<header class="header">
+  <h1 class="logo">Min Webbsida</h1>
+  <nav class="nav">
+    <a href="#hem">Hem</a>
+    <a href="#om">Om oss</a>
+    <a href="#kontakt">Kontakt</a>
+  </nav>
+</header>
+```
+
+**Förklaring av exemplet:**
+- `position: sticky` gör att headern följer med när användaren scrollar
+- `box-sizing: border-box` inkluderar padding och border i den totala bredden
+- Logo använder `display: inline-block` för att kunna styra storlek men ligga på samma rad som navigationen
+- Navigation-länkar använder `padding` för klickbar yta och `margin` för avstånd mellan länkar
 
 ---
 
 ## Sammanfattning
 
-- **Blockelement** bygger sidans grundstruktur och tar upp hela bredden.
-- **Inline-element** ligger kvar på samma rad och tar bara upp så mycket plats som behövs.
-- Med **position** kan du styra exakt var element hamnar på sidan.
-- Kombinera block/inline och positionering för att skapa flexibla och responsiva layouter.
+- **Box model** styr hur HTML-element tar plats och placeras på sidan
+- **Blockelement** bygger sidans grundstruktur och tar upp hela bredden
+- **Inline-element** ligger kvar på samma rad och tar bara upp så mycket plats som behövs
+- Med **position** kan du styra exakt var element hamnar på sidan
+- Kombinera dessa tekniker för att skapa flexibla och responsiva layouter
+- Använd `box-sizing: border-box` för enklare storleksberäkningar i moderna webbsidor
