@@ -4,16 +4,15 @@ Nu när vi har lärt oss React-fundamenten är det dags att sätta samman allt i
 
 **Mål:** Tillämpa React-kunskaper i verkliga projekt, integrera API:er, hantera state management och skapa användbara applikationer.
 
-## Övning 1: Todo-lista med useState + localStorage
+## Övning 1: Todo-lista med useState
 
 - Bygg en enkel todo-app med möjligheter att lägga till, toggla och ta bort todos.
-- Persistera listan i `localStorage` via en custom hook (`useLocalStorage`).
 - Visa antal kvarvarande todos och filtrering (alla/aktiva/klara).
 
 Klar-kriterier:
 - Todo-listan överlever sidladdning.
 - Varje todo har stabil `key` (t.ex. id).
-- Inga muterande operationer på state-arrayer (använd spridning eller immutabla metoder).
+- Inga muterande operationer på state-arrayer (använd spread operator ... ).
 
 ## Övning 2: Konsumera publikt API + Routing
 

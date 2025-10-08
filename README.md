@@ -1,6 +1,5 @@
-# PHP Course Material (mdBook)
-
-This repository contains course material for learning PHP, built using `mdBook`.
+# Glimakra Webbutvecklare - Kursboken 
+This repository contains course material for Glimakra Webbutvecklare.
 
 ## Project Goal
 
@@ -12,7 +11,7 @@ The primary goal is to provide a comprehensive and easy-to-follow resource for s
 *   **Markdown:** The primary format for writing content.
 *   **mdbook-mermaid:** A preprocessor for `mdBook` to render Mermaid diagrams. [https://github.com/badboy/mdbook-mermaid](https://github.com/badboy/mdbook-mermaid)
 *   **Mermaid:** A JavaScript-based diagramming and charting tool that uses Markdown-inspired text definitions. [https://mermaid.js.org/](https://mermaid.js.org/)
-*   **GitHub Actions:** Used for automatically building and deploying the book to GitHub Pages.
+
 
 ## Structure
 

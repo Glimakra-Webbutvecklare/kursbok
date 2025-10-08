@@ -1,40 +1,65 @@
-# Komponentbaserad Arkitektur: Byggstenar för Moderna Applikationer
+# Komponenter: Återanvändbara UI-byggstenar
 
-Komponenter är hjärtat i React. Istället för att bygga monolitiska webbsidor, delar vi upp användargränssnittet i små, återanvändbara bitar som kan kombineras för att skapa komplexa applikationer.
+Komponenter låter dig dela upp UI:t i oberoende, återanvändbara delar och tänka på varje del isolerat. Den här sidan ger en introduktion till idén om komponenter.
 
-**Mål:** Förstå komponentkonceptet, lära sig skillnaden mellan funktionella och klasskomponenter, bemästra props och children, samt förstå komponentlivscykeln.
+**Mål:** Lära dig skapa, organisera och återanvända komponenter för att bygga skalbar React-kod.
 
-## Vad är en Komponent?
+## Definiera en Komponent
 
-En **komponent** är en JavaScript-funktion eller klass som returnerar JSX och representerar en del av användargränssnittet. Tänk på det som en anpassad HTML-tagg som du själv definierar.
+React-komponenter är JavaScript-funktioner som returnerar markup:
 
-```mermaid
-graph TD
-    A[App] --> B[Header]
-    A --> C[Main]
-    A --> D[Footer]
-    
-    B --> E[Logo]
-    B --> F[Navigation]
-    
-    C --> G[ProductList]
-    C --> H[Sidebar]
-    
-    G --> I[ProductCard]
-    G --> J[ProductCard]
-    G --> K[ProductCard]
-    
-    H --> L[SearchFilter]
-    H --> M[CategoryFilter]
-
-    style A fill:#61dafb
-    style G fill:#ffd700
-    style I fill:#ffd700
-    style J fill:#ffd700
-    style K fill:#ffd700
+```jsx
+function MyButton() {
+  return (
+    <button>Jag är en knapp</button>
+  );
+}
 ```
 
-*Diagram: Komponenthierarki för en e-handelsapplikation*
+Nu när du har deklarerat `MyButton` kan du nästla den i en annan komponent:
+
+```jsx
+function MyApp() {
+  return (
+    <div>
+      <h1>Välkommen till min app</h1>
+      <MyButton />
+    </div>
+  );
+}
+```
+
+Observera att `<MyButton />` börjar med stor bokstav. Så här vet du att det är en React-komponent. React-komponentnamn måste alltid börja med stor bokstav, medan HTML-taggar måste vara små bokstäver.
+
+## Komponenter inom komponenter
+
+Komponenter är vanliga JavaScript-funktioner, så du kan hålla flera komponenter i samma fil:
+
+```jsx
+function Avatar() {
+  return (
+    <img
+      className="avatar"
+      src="https://i.imgur.com/1bX5QH6.jpg"
+      alt="Lin Lanying"
+      width={100}
+      height={100}
+    />
+  );
+}
+
+function Profile() {
+  return (
+    <div>
+      <Avatar />
+      <Avatar />
+      <Avatar />
+    </div>
+  );
+}
+```
+
+I detta exempel har `Profile`-komponenten tre `Avatar`-komponenter.
 
 ## Funktionella Komponenter: Det Moderna Sättet
 
@@ -81,146 +106,81 @@ function UserProfile() {
 }
 ```
 
-## Props: Data till Komponenter
+## Exportera och Importera Komponenter
 
-**Props** (properties) är hur vi skickar data från en föräldrakomponent till en barnkomponent. Det är Reacts sätt att göra komponenter flexibla och återanvändbara.
+Magin med komponenter ligger i deras återanvändbarhet: du kan skapa komponenter som består av andra komponenter. Men när du nästlar fler och fler komponenter är det ofta vettigt att börja dela upp dem i olika filer. Detta låter dig hålla dina filer lätta att skanna och återanvända komponenter på fler ställen.
 
 ```jsx
-// Komponent som tar emot props
-function ProductCard({ name, price, image, onSale }) {
+// Gallery.js
+import Profile from './Profile.js';
+
+function Gallery() {
   return (
-    <div className="product-card">
-      <img src={image} alt={name} />
-      <h3>{name}</h3>
-      <p className={onSale ? "sale-price" : "regular-price"}>
-        {price} kr {onSale && "🏷️ REA!"}
-      </p>
-    </div>
+    <section>
+      <h1>Fantastiska forskare</h1>
+      <Profile />
+      <Profile />
+      <Profile />
+    </section>
   );
 }
 
-// Föräldrakomponent som skickar props
-function ProductList() {
-  const products = [
-    { id: 1, name: "T-shirt", price: 199, image: "/tshirt.jpg", onSale: true },
-    { id: 2, name: "Jeans", price: 599, image: "/jeans.jpg", onSale: false },
-    { id: 3, name: "Sneakers", price: 899, image: "/shoes.jpg", onSale: true }
-  ];
-
-  return (
-    <div className="product-list">
-      {products.map(product => (
-        <ProductCard
-          key={product.id}
-          name={product.name}
-          price={product.price}
-          image={product.image}
-          onSale={product.onSale}
-        />
-      ))}
-    </div>
-  );
-}
+export default Gallery;
 ```
 
-### Props Destructuring och Default Values
+```jsx
+// Profile.js
+function Profile() {
+  return (
+    <img
+      src="https://i.imgur.com/QIrZWGIs.jpg"
+      alt="Alan L. Hart"
+    />
+  );
+}
+
+export default Profile;
+```
 
 ```jsx
-// Destructuring i funktionsparametern
-function Button({ text, type = "button", onClick, disabled = false }) {
-  return (
-    <button 
-      type={type}
-      onClick={onClick}
-      disabled={disabled}
-      className={`btn btn-${type}`}
-    >
-      {text}
-    </button>
-  );
-}
+// App.js
+import Gallery from './Gallery.js';
 
-// Alternativ: destructuring i funktionskroppen
-function Button(props) {
-  const { text, type = "button", onClick, disabled = false } = props;
-  
-  return (
-    <button 
-      type={type}
-      onClick={onClick}
-      disabled={disabled}
-    >
-      {text}
-    </button>
-  );
-}
-
-// Användning
 function App() {
   return (
-    <div>
-      <Button text="Klicka här" onClick={() => alert('Klickad!')} />
-      <Button text="Skicka" type="submit" />
-      <Button text="Inaktiv" disabled={true} />
-    </div>
+    <Gallery />
   );
 }
+
+export default App;
 ```
 
-## Props Children: Flexibel Komponentsammansättning
+## Komponentens Anatomi
 
-**props.children** är en speciell prop som innehåller allt som placeras mellan komponentens öppnings- och stängningstaggar.
+En React-komponent består av några viktiga delar:
 
 ```jsx
-// Wrapper-komponent som använder children
-function Card({ title, className = "", children }) {
+// 1. Import-statements (om du använder andra komponenter)
+import { useState } from 'react';
+import './Button.css';
+
+// 2. Komponentfunktionen
+function Button() {
+  // 3. Logik (variabler, funktioner)
+  const handleClick = () => {
+    alert('Knappen klickades!');
+  };
+  
+  // 4. Return-statement med JSX
   return (
-    <div className={`card ${className}`}>
-      <div className="card-header">
-        <h3>{title}</h3>
-      </div>
-      <div className="card-body">
-        {/* Här renderas children */}
-        {children}
-      </div>
-    </div>
+    <button onClick={handleClick}>
+      Klicka mig
+    </button>
   );
 }
 
-// Med children parameter
-function Card({ title, className = "", children }) {
-  return (
-    <div className={`card ${className}`}>
-      <div className="card-header">
-        <h3>{title}</h3>
-      </div>
-      <div className="card-body">
-        {children}
-      </div>
-    </div>
-  );
-}
-
-// Användning - allt mellan <Card> och </Card> blir children
-function Dashboard() {
-  return (
-    <div className="dashboard">
-      <Card title="Användarstatistik">
-        <p>Totalt antal användare: 1,234</p>
-        <p>Aktiva användare: 856</p>
-        <button>Visa mer</button>
-      </Card>
-
-      <Card title="Senaste beställningar" className="orders-card">
-        <ul>
-          <li>Beställning #1001 - 599 kr</li>
-          <li>Beställning #1002 - 299 kr</li>
-          <li>Beställning #1003 - 899 kr</li>
-        </ul>
-      </Card>
-    </div>
-  );
-}
+// 5. Export-statement
+export default Button;
 ```
 
 ## Klasskomponenter: Det Äldre Sättet
@@ -271,93 +231,101 @@ class ClassCounter extends Component {
 }
 ```
 
-## Component Lifecycle: Komponentens Livscykel
+## Organisera Komponenter
 
-Komponenter går igenom olika faser under sin livstid. Med funktionella komponenter hanteras detta via **useEffect** hook.
+När din app växer är det viktigt att organisera komponenter på ett smart sätt:
 
-```mermaid
-graph LR
-    A[Mounting] --> B[Updating] 
-    B --> C[Unmounting]
-    B --> B
-    
-    subgraph "Mounting (första gången)"
-        D[Constructor] --> E[render]
-        E --> F[componentDidMount]
-    end
-    
-    subgraph "Updating (vid ändringar)"
-        G[render] --> H[componentDidUpdate]
-    end
-    
-    subgraph "Unmounting (komponent tas bort)"
-        I[componentWillUnmount]
-    end
+### Fil-per-komponent (Rekommenderat)
 
-    style A fill:#98fb98
-    style B fill:#ffd700  
-    style C fill:#ffa07a
+```
+src/
+  components/
+    Button/
+      Button.jsx
+      Button.css
+      Button.test.js
+    Avatar/
+      Avatar.jsx
+      Avatar.css
+    Card/
+      Card.jsx
+      Card.css
+  pages/
+    Home.jsx
+    About.jsx
+  App.jsx
 ```
 
-### Funktionell Komponent med Lifecycle
+### Flera komponenter per fil (För små, relaterade komponenter)
 
 ```jsx
-import { useState, useEffect } from 'react';
-
-function Timer() {
-  const [seconds, setSeconds] = useState(0);
-  const [isRunning, setIsRunning] = useState(false);
-
-  // componentDidMount + componentDidUpdate
-  useEffect(() => {
-    let interval = null;
-    
-    if (isRunning) {
-      interval = setInterval(() => {
-        setSeconds(prev => prev + 1);
-      }, 1000);
-    } else {
-      clearInterval(interval);
-    }
-
-    // componentWillUnmount (cleanup)
-    return () => {
-      if (interval) {
-        clearInterval(interval);
-      }
-    };
-  }, [isRunning]); // Dependency array - kör när isRunning ändras
-
-  // Kör bara en gång (mounting)
-  useEffect(() => {
-    console.log('Timer component har monterats');
-    
-    // Cleanup (unmounting)
-    return () => {
-      console.log('Timer component avmonteras');
-    };
-  }, []); // Tom array = kör bara en gång
-
-  const toggleTimer = () => {
-    setIsRunning(!isRunning);
-  };
-
-  const resetTimer = () => {
-    setSeconds(0);
-    setIsRunning(false);
-  };
-
+// components/UI.jsx
+export function Button({ children, onClick, type = "button" }) {
   return (
-    <div className="timer">
-      <h2>Timer: {seconds} sekunder</h2>
-      <button onClick={toggleTimer}>
-        {isRunning ? 'Pausa' : 'Starta'}
-      </button>
-      <button onClick={resetTimer}>
-        Återställ
-      </button>
+    <button type={type} onClick={onClick} className="btn">
+      {children}
+    </button>
+  );
+}
+
+export function Input({ placeholder, value, onChange }) {
+  return (
+    <input 
+      className="input"
+      placeholder={placeholder}
+      value={value}
+      onChange={onChange}
+    />
+  );
+}
+
+export function Card({ children }) {
+  return (
+    <div className="card">
+      {children}
     </div>
   );
+}
+```
+
+## Komponent-komposition
+
+En av Reacts starkaste funktioner är **komposition** - att bygga komplexa komponenter från enklare komponenter:
+
+```jsx
+function WelcomeMessage({ name }) {
+  return <h1>Hej {name}!</h1>;
+}
+
+function UserAvatar({ imageUrl, name }) {
+  return (
+    <img 
+      src={imageUrl} 
+      alt={name}
+      className="avatar" 
+    />
+  );
+}
+
+function UserCard({ user }) {
+  return (
+    <div className="user-card">
+      <UserAvatar imageUrl={user.avatar} name={user.name} />
+      <WelcomeMessage name={user.name} />
+      <p>E-post: {user.email}</p>
+    </div>
+  );
+}
+
+// Användning
+function App() {
+  const user = {
+    name: "Anna Andersson",
+    email: "anna@example.com", 
+    avatar: "/anna.jpg"
+  };
+
+  return <UserCard user={user} />;
 }
 ```
 
@@ -460,12 +428,20 @@ function ErrorMessage() { }   // Bättre än Error()
 
 ## Sammanfattning
 
-Komponentbaserad arkitektur är grunden för skalbar React-utveckling:
+Komponenter är byggstenen i React-applikationer:
 
-*   **Funktionella komponenter** är det moderna sättet att bygga komponenter
-*   **Props** gör komponenter flexibla och återanvändbara
-*   **Props.children** möjliggör flexibel komponentsammansättning
-*   **Lifecycle** hanteras med useEffect i funktionella komponenter
-*   **Småkomponenter** är lättare att förstå, testa och underhålla
+*   **Komponenter** är JavaScript-funktioner som returnerar JSX
+*   **Komponentnamn** måste börja med stor bokstav
+*   **Import/Export** låter dig organisera komponenter i separata filer
+*   **Komposition** bygger komplexa UI från enkla komponenter
+*   **Håll komponenter små** och fokuserade på en sak
 
-I nästa avsnitt ska vi lära oss hantera state och interaktivitet med React hooks.
+## Vad händer härnäst?
+
+Nu när du kan skapa komponenter är det dags att göra dem interaktiva! I nästa avsnitt lär du dig:
+
+* **Props** - skicka data mellan komponenter
+* **State** - ge komponenter minne
+* **Events** - reagera på användarinteraktion
+
+Gå vidare till **State och Props** för att lära dig hur du gör dina komponenter levande!

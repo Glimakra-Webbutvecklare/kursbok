@@ -6,7 +6,7 @@ Detta kapitel introducerar dig till komponentsbaserad utveckling och Single Page
 
 **Vad är React?** React är ett JavaScript-bibliotek utvecklat av Facebook (Meta) för att bygga användargränssnitt. Det fokuserar på att skapa återanvändbara komponenter och hanterar effektivt uppdateringar av DOM:en genom sitt Virtual DOM-system.
 
-**Varför React?** 
+## Varför React? 
 
 1. **Komponentbaserad arkitektur:** Bygg applikationer som LEGO-block där varje komponent har sitt eget ansvar
 2. **Återanvändbarhet:** Skriv en gång, använd överallt
@@ -20,14 +20,75 @@ Detta kapitel introducerar dig till komponentsbaserad utveckling och Single Page
 - Snabbare användarupplevelse efter initial laddning
 - Tydlig separation mellan frontend och backend
 
+## Vad är en Komponentbaserad arkitektur?
+
+En **komponent** är en JavaScript-funktion eller klass som returnerar JSX och representerar en del av användargränssnittet. Tänk på det som en anpassad HTML-tagg som du själv definierar.
+
+```mermaid
+graph TD
+    A[App] --> B[Header]
+    A --> C[Main]
+    A --> D[Footer]
+    
+    B --> E[Logo]
+    B --> F[Navigation]
+    
+    C --> G[ProductList]
+    C --> H[Sidebar]
+    
+    G --> I[ProductCard]
+    G --> J[ProductCard]
+    G --> K[ProductCard]
+    
+    H --> L[SearchFilter]
+    H --> M[CategoryFilter]
+
+    style A fill:#4CAF50
+    style G fill:#FF5722
+    style I fill:#FF5722 
+    style J fill:#FF5722
+    style K fill:#FF5722
+```
+
+*Diagram: Komponenthierarki för en e-handelsapplikation*
+
 I detta kapitel kommer vi att:
 
-*   **Förstå React-fundamenten:** Komponenter, JSX, Virtual DOM och utvecklingsmiljö (Vite först)
-*   **Lära oss komponentbaserad arkitektur:** Funktionella komponenter, props, och component lifecycle
-*   **Hantera state och interaktivitet:** useState, useEffect hooks och händelsehantering  
-*   **Bygga SPA:er:** React Router för navigation mellan vyer
-*   **Konsumera API:er:** Hämta och skicka data till backend-tjänster
+*   **Din första komponent:** Lära dig skapa och organisera React-komponenter
+*   **Skriva markup med JSX:** Kombinera JavaScript och HTML-liknande syntax
+*   **Props och interaktivitet:** Skicka data mellan komponenter och hantera events
+*   **State:** Ge komponenter minne för att reagera på förändringar
+*   **Formulär:** Hantera användarinput på ett kontrollerat sätt
+*   **API-integration:** Hämta och skicka data till backend-tjänster
+*   **Routing:** Bygga Single Page Applications med navigation
+*   **Deployment:** Publicera din app på internet
 
 **Förutsättningar:** Du bör ha god kunskap i JavaScript (ES6+), HTML, CSS och grundläggande förståelse för API:er från tidigare kapitel.
+
+## Program som ska vara installerade
+
+Innan vi börjar behöver du ha följande verktyg installerade:
+
+### NVM (Node Version Manager)
+NVM används för att hantera olika versioner av Node.js. Det låter dig enkelt byta mellan olika Node.js-versioner.
+
+**Installation:**
+- Windows: Ladda ner och installera [nvm-windows](https://github.com/coreybutler/nvm-windows/releases)
+- macOS/Linux: Kör följande kommando i terminalen:
+  ```bash
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+  ```
+
+Efter installation, kör följande kommandon för att installera och använda senaste LTS-versionen av Node.js:
+```bash
+nvm install --lts # installera senaste long-term-support versionen
+nvm use --lts # använd den
+```
+
+
+Verifiera installationen genom att köra:
+```bash
+node --version # v22.18.0 eller högre
+````
 
 Låt oss börja vår resa in i modern frontend-utveckling!

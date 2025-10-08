@@ -43,38 +43,30 @@ Om du inte redan har ett projekt:
 ```bash
 npm create vite@latest my-project
 cd my-project
-npm install
 ```
 
 ### 2. Installera Tailwind CSS
 Installera Tailwind och dess peer-dependencies:
 ```bash
-npm install -D tailwindcss postcss autoprefixer
-npx tailwindcss init -p
+npm install tailwindcss @tailwindcss/vite
 ```
 
 ### 3. Konfigurera Tailwind
-Skapa eller uppdatera `tailwind.config.js`:
+Skapa eller uppdatera `tailwind.config.js` (Viktigt att den filen ligger i root-folder av projektet):
 ```javascript
-/** @type {import('tailwindcss').Config} */
-export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
+import { defineConfig } from 'vite'
+import tailwindcss from '@tailwindcss/vite'
+export default defineConfig({
+  plugins: [
+    tailwindcss(),
   ],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
-}
+})
 ```
 
 ### 4. Lägg till Tailwind i CSS
-Skapa eller uppdatera din huvudsakliga CSS-fil (t.ex. `src/index.css`):
+Skapa eller uppdatera din huvudsakliga CSS-fil (t.ex. `src/index.css`). Om det redan ligger massa CSS där kommentera ut den eller ta bort.:
 ```css
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 ```
 
 ### 5. Uppdatera HTML/JSX
@@ -98,6 +90,16 @@ För att verifiera att Tailwind fungerar, kontrollera att:
 1. Utility-klasserna fungerar i webbläsaren
 2. Du ser Tailwind-specifik syntax-highlighting i din editor
 3. Du får autocompletion för Tailwind-klasser (installera relevant editor-tillägg om det behövs)
+
+---
+
+## Kicka igång tailwind om utvecklingsservern varit avstängd
+1. Öppna en terminal
+2. Navigera till rätt folder
+3. Skriv in kommandot:
+```bash
+npm run dev
+```
 
 ---
 
