@@ -81,6 +81,7 @@
     - [TypeScript i React](./kapitel_8/fordjupning/typescript.md)
 - [Backend-utveckling med Node.js](./kapitel_9/index.md)
   - [Node.js introduktion](./kapitel_9/node-intro.md)
+  - [Webbserver med http](./kapitel_9/http-webserver.md)
   - [Express](./kapitel_9/expressjs.md)
   - [RESTful API:er](./kapitel_9/rest-api.md)
   - [MongoDB](./kapitel_9/mongodb.md)

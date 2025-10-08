@@ -1,6 +1,8 @@
-# Introduktion till Nodejs
+# Introduktion till Node.js
+
 ## Vad är Node.js?
-Node.js är en öppen källkod JavaScript-runtime-miljö som körs på serversidan. Den är byggd på Chrome’s V8 JavaScript-motor och möjliggör för utvecklare att köra JavaScript-kod utanför webbläsaren. Detta innebär att du kan bygga skalbara nätverksapplikationer och servrar med samma programmeringsspråk som du använder på klientsidan.
+
+Node.js är en öppen källkod JavaScript-runtime-miljö som körs på serversidan. Den är byggd på Chrome's V8 JavaScript-motor och möjliggör för utvecklare att köra JavaScript-kod utanför webbläsaren. Detta innebär att du kan bygga skalbara nätverksapplikationer och servrar med samma programmeringsspråk som du använder på klientsidan.
 
 ## Historia och bakgrund
 Node.js skapades av Ryan Dahl 2009. Innan Node.js var JavaScript främst begränsat till webbläsaren, men med introduktionen av Node.js blev det möjligt att använda JavaScript för server-side-programmering, alltså utanför en webbläsare. Detta öppnade upp för enhetlig utveckling där både frontend och backend kunde skrivas i samma språk. Node.js har sedan dess utvecklats och har nu en stor och aktiv community som bidrar till dess ekosystem.
@@ -31,25 +33,110 @@ Du bör se `Hello, World!` skrivet i terminalen.
 
 ## Grundläggande koncept i Node.js
 
-### Globala objekt
+### Globala objekt och modulsystem-skillnader
 
 Node.js har flera globala objekt som är tillgängliga överallt i din applikation:
-- global: Motsvarigheten till window i webbläsaren.
-- process: Ger information om och kontroll över den aktuella Node.js-processen.
-- __dirname: Ger den fullständiga sökvägen till den katalog där den aktuella filen befinner sig. (i CommonJS)
-- __filename: Ger den fullständiga sökvägen till den aktuella filen. (i CommonJS)
+
+**Tillgängliga i både CommonJS och ES6 Modules:**
+- `global`: Motsvarigheten till `window` i webbläsaren
+- `process`: Ger information om och kontroll över den aktuella Node.js-processen
+- `console`: För utskrift och debugging
+- `Buffer`: För hantering av binär data
+
+**Endast i CommonJS:**
+- `__dirname`: Ger den fullständiga sökvägen till den katalog där den aktuella filen befinner sig
+- `__filename`: Ger den fullständiga sökvägen till den aktuella filen
+- `require`: För att importera moduler
+- `module`: Information om den aktuella modulen
+- `exports`: För att exportera från modulen
+
+**ES6 Modules alternativ:**
+```js
+// I ES6 modules, använd import.meta för liknande funktionalitet
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+console.log('Current file:', __filename);
+console.log('Current directory:', __dirname);
+```
 
 
-### Importera moduler
-Node.js använder modulsystemet CommonJS för att hantera beroenden som default. Det innebär att `require('packet-name')` används för att importera moduler:
+### Modulsystem i Node.js
+
+Node.js stöder två huvudsakliga modulsystem:
+
+#### CommonJS (traditionellt)
 ```js
 const fs = require('fs');
+const path = require('path');
 ```
-I modern Node.js (med ES6-stöd) kan du använda import:
+
+#### ES6 Modules (modernt och rekommenderat)
 ```js
 import fs from 'fs';
+import path from 'path';
 ```
-__Notera__ att för att använda import behöver du vanligtvis ställa in `"type": "module"` i din `package.json`.
+
+### Varför ES6 Modules är bättre
+
+ES6 Modules (ECMAScript Modules) är den moderna standarden för JavaScript-moduler och har flera fördelar:
+
+**1. Standardiserat och framtidssäkert**
+- Del av JavaScript-standarden (ECMAScript)
+- Samma syntax i både Node.js och webbläsare
+- Bättre långsiktig kompatibilitet
+
+**2. Statisk analys**
+```js
+// ES6 imports kan analyseras vid byggtid
+import { readFile, writeFile } from 'fs/promises';
+
+// CommonJS require() körs vid runtime
+const { readFile, writeFile } = require('fs/promises');
+```
+
+**3. Bättre prestanda**
+- Tree shaking (oanvänd kod kan tas bort)
+- Optimering vid byggtid
+- Mindre bundle-storlek
+
+**4. Tydligare syntax**
+```js
+// ES6 - tydligt vad som importeras
+import { createServer } from 'http';
+import express from 'express';
+
+// CommonJS - mindre tydligt
+const { createServer } = require('http');
+const express = require('express');
+```
+
+**5. Asynkron laddning**
+```js
+// Dynamisk import (ES6)
+const module = await import('./myModule.js');
+
+// Top-level await stöds i ES6 modules
+const data = await fetch('/api/data');
+```
+
+### Konfigurera ES6 Modules
+
+För att använda ES6 modules i Node.js, lägg till i din `package.json`:
+```json
+{
+  "type": "module"
+}
+```
+
+Eller använd `.mjs` filextension:
+```bash
+# Filer med .mjs använder automatiskt ES6 modules
+node app.mjs
+```
 
 ## Inbyggda moduler
 
@@ -81,9 +168,9 @@ fs.writeFile('output.txt', 'Detta är en testfil.', (err) => {
 
 Används för att skapa en HTTP-server.
 ```js
-const http = require('http');
+import { createServer } from 'http';
 
-const server = http.createServer((req, res) => {
+const server = createServer((req, res) => {
   res.statusCode = 200;
   res.setHeader('Content-Type', 'text/plain');
   res.end('Hello, World!\n');
@@ -99,9 +186,19 @@ server.listen(3000, () => {
 Används för att hantera fil- och sökvägar.
 ```js
 import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+// I ES6 modules behöver vi skapa __dirname manuellt
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const fullPath = path.join(__dirname, 'folder', 'file.txt');
 console.log(fullPath);
+
+// Alternativt, använd path.resolve för absoluta sökvägar
+const absolutePath = path.resolve('folder', 'file.txt');
+console.log(absolutePath);
 ```
 ### os
 
@@ -123,7 +220,7 @@ TODO: Lägg till bild av - Illustration av Node.js Event Loop
 
 EventEmitter är en klass i Node.js som tillåter skapandet och hanteringen av anpassade händelser.
 ```js
-const EventEmitter from events;
+import { EventEmitter } from 'events';
 
 class MyEmitter extends EventEmitter {}
 
@@ -136,6 +233,42 @@ myEmitter.on('event', () => {
 
 // Utlösa händelsen
 myEmitter.emit('event');
+```
+
+**Praktiskt exempel med EventEmitter:**
+```js
+import { EventEmitter } from 'events';
+
+class FileProcessor extends EventEmitter {
+  processFile(filename) {
+    this.emit('start', filename);
+    
+    // Simulera filbearbetning
+    setTimeout(() => {
+      this.emit('progress', 50);
+      
+      setTimeout(() => {
+        this.emit('complete', filename);
+      }, 1000);
+    }, 1000);
+  }
+}
+
+const processor = new FileProcessor();
+
+processor.on('start', (filename) => {
+  console.log(`Börjar bearbeta: ${filename}`);
+});
+
+processor.on('progress', (percent) => {
+  console.log(`Framsteg: ${percent}%`);
+});
+
+processor.on('complete', (filename) => {
+  console.log(`Klar med: ${filename}`);
+});
+
+processor.processFile('document.pdf');
 ```
 
 ## Asynkron programmering i Node.js
@@ -289,22 +422,70 @@ Du kan sedan ansluta till debuggern via Chrome DevTools genom att öppna chrome:
 
 Skapa en applikation som läser från en textfil input.txt och skriver ut innehållet i terminalen.
 
-const fs from 'fs';
+```js
+import fs from 'fs';
 
 fs.readFile('input.txt', 'utf8', (err, data) => {
-  if (err) throw err;
+  if (err) {
+    console.error('Fel vid läsning av fil:', err.message);
+    return;
+  }
   console.log(data);
 });
+```
+
+**Alternativ med Promises (rekommenderat):**
+```js
+import { readFile } from 'fs/promises';
+
+try {
+  const data = await readFile('input.txt', 'utf8');
+  console.log(data);
+} catch (err) {
+  console.error('Fel vid läsning av fil:', err.message);
+}
+```
 
 ### Övning 2: Bygga en HTTP-server
 
 Utveckla en enkel webbsida som serveras via Node.js inbyggda http-modul.
 ```js
-const http from 'http';
+import { createServer } from 'http';
 
-const server = http.createServer((req, res) => {
-  res.writeHead(200, {'Content-Type': 'text/html'});
+const server = createServer((req, res) => {
+  res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'});
   res.write('<h1>Välkommen till min webbserver!</h1>');
+  res.end();
+});
+
+server.listen(3000, () => {
+  console.log('Servern körs på http://localhost:3000/');
+});
+```
+
+**Utökad version med routing:**
+```js
+import { createServer } from 'http';
+import { parse } from 'url';
+
+const server = createServer((req, res) => {
+  const parsedUrl = parse(req.url, true);
+  const path = parsedUrl.pathname;
+  
+  res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'});
+  
+  switch (path) {
+    case '/':
+      res.write('<h1>Startsida</h1><p>Välkommen!</p>');
+      break;
+    case '/about':
+      res.write('<h1>Om oss</h1><p>Detta är en enkel Node.js server.</p>');
+      break;
+    default:
+      res.writeHead(404);
+      res.write('<h1>404 - Sidan hittades inte</h1>');
+  }
+  
   res.end();
 });
 
@@ -316,6 +497,80 @@ server.listen(3000, () => {
 
 Använd fs-modulen för att läsa och skriva data asynkront med Promises.
 
+```js
+import { readFile, writeFile } from 'fs/promises';
+import { existsSync } from 'fs';
+
+async function processFiles() {
+  try {
+    // Kontrollera om filen finns
+    if (!existsSync('input.txt')) {
+      console.log('input.txt finns inte, skapar en ny fil...');
+      await writeFile('input.txt', 'Detta är ursprungsdata\nRad 2\nRad 3');
+    }
+    
+    // Läs från fil
+    const data = await readFile('input.txt', 'utf8');
+    console.log('Läst data:', data);
+    
+    // Bearbeta data (lägg till tidsstämpel)
+    const processedData = data + `\nBearbetad: ${new Date().toISOString()}`;
+    
+    // Skriv till ny fil
+    await writeFile('output.txt', processedData);
+    console.log('Data har bearbetats och sparats till output.txt');
+    
+  } catch (error) {
+    console.error('Fel vid filhantering:', error.message);
+  }
+}
+
+processFiles();
+```
+
+**Bonus: Hantera flera filer parallellt**
+```js
+import { readFile, writeFile } from 'fs/promises';
+
+async function processMultipleFiles() {
+  const files = ['file1.txt', 'file2.txt', 'file3.txt'];
+  
+  try {
+    // Läs alla filer parallellt
+    const fileContents = await Promise.all(
+      files.map(file => readFile(file, 'utf8').catch(() => `Fel: ${file} kunde inte läsas`))
+    );
+    
+    // Kombinera innehållet
+    const combined = fileContents.join('\n---\n');
+    
+    // Skriv till resultatfil
+    await writeFile('combined.txt', combined);
+    console.log('Alla filer har kombinerats till combined.txt');
+    
+  } catch (error) {
+    console.error('Fel vid bearbetning:', error.message);
+  }
+}
+```
+
 ## Sammanfattning
 
-I denna introduktion har vi gått igenom grunderna i Node.js, inklusive installation, grundläggande koncept, inbyggda moduler och asynkron programmering. Vi har också tittat på hur man använder NPM för att hantera paket och hur man kan skapa enkla applikationer både i terminalen och på webben.
+I denna introduktion har vi gått igenom grunderna i Node.js och fokuserat på moderna utvecklingsmetoder:
+
+**Vad vi har lärt oss:**
+- Node.js som JavaScript-runtime för serversidan
+- Skillnaden mellan CommonJS och ES6 Modules
+- Varför ES6 Modules är det moderna valet
+- Inbyggda moduler som `fs`, `http`, `path` och `os`
+- Event-driven programmering med EventEmitter
+- Asynkron programmering med callbacks, Promises och async/await
+- NPM för pakethantering
+- Praktiska exempel och övningar
+
+**Viktiga takeaways:**
+- Använd ES6 Modules (`import`/`export`) för nya projekt
+- Konfigurera `"type": "module"` i `package.json`
+- Föredra `fs/promises` över callback-baserade fs-metoder
+- Använd `async/await` för tydligare asynkron kod
+- EventEmitter är kraftfullt för event-driven arkitektur
