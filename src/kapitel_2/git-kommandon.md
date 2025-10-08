@@ -13,6 +13,72 @@ Alla Git-kommandon börjar med `git`. Kommandona körs i terminalen **inuti din 
 
 ---
 
+## 0. Förstå hur man använder terminalen
+
+Terminalen är ett textbaserat gränssnitt där du kör kommandon i den aktuella mappen. Här är grundkommandon du behöver:
+
+### Grundläggande kommandon
+
+- **pwd** – visar din nuvarande mapp (path).
+  ```
+  pwd
+  ```
+
+- **cd** – byt mapp (change directory).
+  - `cd projekt` – gå in i mappen `projekt`
+  - `cd ..` – gå upp en nivå
+  - `cd ~` – gå till hemkatalogen
+  - `cd -` – hoppa till föregående mapp
+
+- **ls** – lista filer och mappar.
+  - `ls` – enkel lista
+  - `ls -la` – detaljerad lista, inkl. dolda filer
+  - `ls -lh` – läsbar storlek
+
+- **mkdir** – skapa mapp.
+  - `mkdir ny-mapp`
+  - `mkdir -p a/b/c` – skapa kedjade undermappar
+
+- **touch** – skapa tom fil eller uppdatera tidsstämpel.
+  - `touch index.html`
+
+- **clear** – rensa terminalfönstret.
+  - `clear` eller Ctrl+L
+
+- **rm** – ta bort filer/mappar (var försiktig!).
+  - `rm fil.txt`
+  - `rm -r mapp/` – ta bort mapp rekursivt
+
+- **mv** – flytta eller byta namn.
+  - `mv gammalt.txt nytt.txt`
+  - `mv fil.txt mapp/`
+
+- **cp** – kopiera filer eller mappar.
+  - `cp fil.txt kopia.txt`
+  - `cp -r src/ backup-src/`
+
+- **cat** – visa innehåll i en fil.
+  - `cat README.md`
+
+### Snabb övning
+```bash
+mkdir demo        # Skapa en ny mapp som heter 'demo'
+cd demo          # Gå in i demo-mappen
+pwd              # Visa nuvarande sökväg/mapp
+touch index.html # Skapa en tom fil som heter 'index.html'
+ls -la          # Lista alla filer (även dolda) med detaljerad information
+mkdir -p src/components  # Skapa mapparna 'src' och 'components' på en gång
+mv index.html src/      # Flytta index.html till src-mappen
+cp -r src src-backup   # Kopiera hela src-mappen rekursivt till en backup
+clear                  # Rensa terminalfönstret
+```
+
+### Windows-notis
+- I Git Bash på Windows fungerar kommandona ovan som i macOS/Linux.
+- I PowerShell: `ls` fungerar (alias), `pwd` fungerar, `clear` kan skrivas `cls`, `touch` kan ersättas med `New-Item filnamn`.
+
+Tips: Använd Tab för autocompletion, pilar upp/ner för historik och Ctrl+C för att avbryta.
+
 ## 1. Skapa ett repository: `git init`
 
 Det allra första steget för ett *nytt* projekt är att initiera ett Git-repository.
@@ -116,6 +182,106 @@ För att se listan över alla commits som gjorts i projektet.
 
 ---
 
+## 6. Ångra dig: `git reset`
+
+Ibland behöver du ångra ändringar eller återställa ditt repository till ett tidigare tillstånd. `git reset` är ett kraftfullt verktyg för detta.
+
+> **Varning:** `git reset` kan ta bort ändringar permanent. Var försiktig, särskilt med `--hard` flaggan.
+
+### Återställa filer från Staging Area
+
+Om du har lagt till en fil i Staging Area med `git add` men vill ta bort den därifrån:
+
+```bash
+# Ta bort specifik fil från Staging Area (behåll ändringar i Working Directory)
+git reset index.html
+
+# Ta bort alla filer från Staging Area
+git reset
+```
+
+**Användningsfall:** Du addade fel fil eller vill inte committa alla ändringar än.
+
+### Återställa till en tidigare commit
+
+```bash
+# Visa commit-historik för att hitta rätt commit
+git log --oneline
+
+# Återställ till en specifik commit (behåll ändringar som ostaged)
+git reset abc1234
+
+# Återställ till en specifik commit och ta bort alla ändringar (FÖRSIKTIGT!)
+git reset --hard abc1234
+
+# Återställ till föregående commit
+git reset HEAD~1
+
+# Återställ till 3 commits bakåt
+git reset HEAD~3
+```
+
+### Återställa en specifik fil till tidigare version
+
+```bash
+# Återställ en fil till senaste committed version
+git checkout HEAD -- index.html
+
+# Återställ en fil till en specifik commit
+git checkout abc1234 -- index.html
+```
+
+### De tre reset-lägena
+
+```bash
+# --soft: Flyttar bara HEAD, behåller Staging Area och Working Directory
+git reset --soft HEAD~1
+
+# --mixed (default): Återställer Staging Area, behåller Working Directory  
+git reset HEAD~1
+git reset --mixed HEAD~1  # samma som ovan
+
+# --hard: Återställer allt - RADERAR ändringar i Working Directory
+git reset --hard HEAD~1
+```
+
+**Minnesregel:**
+- `--soft`: Ångrar bara commit, behåller allt annat
+- `--mixed`: Ångrar commit + staging, behåller filer
+- `--hard`: Ångrar allt, raderar ändringar
+
+### Praktiska exempel
+
+**Scenario 1:** Du committade för tidigt och vill lägga till mer:
+```bash
+# Ångra senaste commit men behåll ändringar
+git reset --soft HEAD~1
+
+# Lägg till fler ändringar
+git add ny-fil.js
+
+# Committa igen med allt
+git commit -m "Komplett feature med alla filer"
+```
+
+**Scenario 2:** Du vill kasta bort alla ändringar och börja om:
+```bash
+# Kasta bort allt och återgå till senaste commit
+git reset --hard HEAD
+
+# Återgå till en specifik commit och kasta allt
+git reset --hard abc1234
+```
+
+**Scenario 3:** Du råkade lägga till fel fil i staging:
+```bash
+# Ta bort specifik fil från staging
+git reset config/secret.txt
+
+# Filen finns kvar men är inte längre staged för commit
+```
+
+
 ## Sammanfattning: Det grundläggande arbetsflödet
 
 Det typiska arbetsflödet när du arbetar med Git lokalt ser ut så här:
@@ -128,4 +294,4 @@ Det typiska arbetsflödet när du arbetar med Git lokalt ser ut så här:
 
 Du kan när som helst använda `git log` för att se historiken och `git status` för att se det aktuella läget.
 
-Dessa kommandon (`init`, `status`, `add`, `commit`, `log`) utgör grunden för att arbeta med Git. I nästa avsnitt tittar vi på hur vi kan koppla vårt lokala repository till en fjärrserver som GitHub.
+Dessa kommandon (`init`, `status`, `add`, `commit`, `log`) utgör grunden för att arbeta med Git. I nästa avsnitt tittar vi på hur vi kan koppla vårt lokala repository till en remote server som GitHub.
