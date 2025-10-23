@@ -269,7 +269,7 @@ import poemRoutes from './routes/poems';
 process.loadEnvFile()
 
 // Skapa Express-applikationen
-const app = express();
+const server = express();
 
 // Middleware
 server.use(cors());
