@@ -254,23 +254,7 @@ Vi börjar med att implementera och testa __poems__-rutterna och använder cURL 
 
 ## Projektmapp
 
-1. Skapa Projektmapp och Installera Dependencies
-
-Skapa en ny mapp för ditt projekt och initiera npm:
-```bash
-mkdir backend
-cd backend
-npm init -y
-```
-
-Installera nödvändiga paket:
-```bash
-npm install express mongoose cors
-npm install --save-dev nodemon
-```
-2. Konfigurera Servern
-
-Skapa en fil server.js i backend-mappen:
+1. Skapa en fil server.js i backend-mappen:
 ```bash
 touch server.js
 ```
@@ -279,6 +263,7 @@ Lägg till följande kod i server.js:
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
+import poemRoutes from './routes/poems';
 
 // Konfigurera miljövariabler
 process.loadEnvFile()
@@ -289,9 +274,6 @@ const app = express();
 // Middleware
 server.use(cors());
 server.use(express.json());
-
-// Importera routes
-const poemRoutes = require('./routes/poems');
 
 // Använd routes
 server.use('/api/poems', poemRoutes);
