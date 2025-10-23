@@ -12,7 +12,38 @@ Teknologier som används:
 - Node.js med Express, skriven med ES2015 (ES6) syntax som använder import istället för require.
 - Databas: MongoDB med Mongoose för lagring av användare, dikter och kommentarer.
 
-Illustration av applikationens arkitektur
+```mermaid
+graph TB
+    subgraph "Frontend (React)"
+        A[React App] --> B[React Router]
+        A --> C[Components]
+        C --> D[Navbar]
+        C --> E[Home]
+        C --> F[Login/Register]
+        C --> G[PoemDetail]
+        C --> H[AddPoem]
+    end
+    
+    subgraph "Backend (Node.js/Express)"
+        I[Express Server] --> J[Auth Routes]
+        I --> K[Poem Routes]
+        I --> L[Comment Routes]
+        I --> M[JWT Middleware]
+    end
+    
+    subgraph "Database (MongoDB)"
+        N[(MongoDB)]
+        N --> O[Users Collection]
+        N --> P[Poems Collection]
+        N --> Q[Comments Collection]
+    end
+    
+    A -->|HTTP Requests| I
+    J -->|User Auth| O
+    K -->|CRUD Operations| P
+    L -->|Comments| Q
+    M -->|Token Verification| J
+```
 
 ## Mappstruktur
 
@@ -32,7 +63,50 @@ Skript i package.json:
 - "frontend-dev": Startar utvecklingsservern för frontend.
 - "backend-dev": Startar utvecklingsservern för backend.
 
-Visualisering av mappstrukturen
+```mermaid
+graph TD
+    A[Projekt/] --> B[frontend/]
+    A --> C[backend/]
+    A --> D[package.json]
+    
+    B --> E[src/]
+    B --> F[public/]
+    B --> G[package.json]
+    B --> H[node_modules/]
+    
+    E --> I[components/]
+    E --> J[pages/]
+    E --> K[utils/]
+    E --> L[App.js]
+    
+    I --> M[Navbar.jsx]
+    I --> N[AddComment.jsx]
+    
+    J --> O[Home.jsx]
+    J --> P[Login.jsx]
+    J --> Q[Register.jsx]
+    J --> R[PoemDetail.jsx]
+    J --> S[AddPoem.jsx]
+    
+    K --> T[api.js]
+    
+    C --> U[models/]
+    C --> V[routes/]
+    C --> W[middleware/]
+    C --> X[server.js]
+    C --> Y[package.json]
+    C --> Z[.env]
+    
+    U --> AA[User.js]
+    U --> BB[Poem.js]
+    U --> CC[Comment.js]
+    
+    V --> DD[auth.js]
+    V --> EE[poems.js]
+    V --> FF[comments.js]
+    
+    W --> GG[auth.js]
+```
 
 ## Planering och arkitektur
 
@@ -68,7 +142,36 @@ Vi använder MongoDB för att lagra data. Här är en översikt av databasschema
 - poem: ObjectId (referens till en dikt)
 - createdAt: Date (standardvärde: aktuellt datum)
 
-ER-diagram över databasschemat
+```mermaid
+erDiagram
+    USER {
+        ObjectId _id PK
+        string username UK
+        string email UK
+        string password
+        date createdAt
+    }
+    
+    POEM {
+        ObjectId _id PK
+        string title
+        string content
+        ObjectId author FK
+        date createdAt
+    }
+    
+    COMMENT {
+        ObjectId _id PK
+        string content
+        ObjectId author FK
+        ObjectId poem FK
+        date createdAt
+    }
+    
+    USER ||--o{ POEM : "writes"
+    USER ||--o{ COMMENT : "writes"
+    POEM ||--o{ COMMENT : "has"
+```
 
 ## Setup av projektmiljö
 
@@ -112,7 +215,7 @@ npm init -y
 
 2.	Installera beroenden:
 ```bash
-npm install express mongoose dotenv bcrypt jsonwebtoken cors
+npm install express mongoose bcrypt jsonwebtoken cors
 ```
 
 3.	Installera utvecklingsberoenden:
@@ -162,7 +265,7 @@ npm init -y
 
 Installera nödvändiga paket:
 ```bash
-npm install express mongoose cors dotenv
+npm install express mongoose cors
 npm install --save-dev nodemon
 ```
 2. Konfigurera Servern
@@ -176,10 +279,9 @@ Lägg till följande kod i server.js:
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
-import dotenv from 'dotenv';
 
 // Konfigurera miljövariabler
-dotenv.config();
+process.loadEnvFile()
 
 // Skapa Express-applikationen
 const app = express();
@@ -415,7 +517,43 @@ För att skydda routes använder vi middleware, som vi kan kalla `authMiddleware
 - Identifiera användaren
 - Neka åtkomst för ogiltiga tokens
 
-TODO: Illustration av autentiseringsprocessen
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant F as Frontend
+    participant B as Backend
+    participant D as Database
+    
+    Note over U,D: Registrering
+    U->>F: Fyller i registreringsformulär
+    F->>B: POST /api/auth/register
+    B->>D: Kontrollera om email finns
+    D-->>B: Email finns inte
+    B->>B: Hasha lösenord
+    B->>D: Spara användare
+    D-->>B: Användare sparad
+    B->>B: Skapa JWT token
+    B-->>F: Returnera token + user info
+    F->>F: Spara token i localStorage
+    
+    Note over U,D: Inloggning
+    U->>F: Fyller i inloggningsformulär
+    F->>B: POST /api/auth/login
+    B->>D: Hitta användare via email
+    D-->>B: Returnera användare
+    B->>B: Verifiera lösenord
+    B->>B: Skapa JWT token
+    B-->>F: Returnera token + user info
+    F->>F: Spara token i localStorage
+    
+    Note over U,D: Skyddad API-anrop
+    F->>B: API-anrop med Authorization header
+    B->>B: Verifiera JWT token
+    B->>B: Extrahera user ID från token
+    B->>D: Utför operation
+    D-->>B: Returnera data
+    B-->>F: Returnera svar
+```
 
 1. Installera Nödvändiga Paket
 ```bash
@@ -932,7 +1070,58 @@ export default Home;
 ```
 
 
-TODO: Skiss av frontend-komponenternas hierarki
+```mermaid
+graph TD
+    A[App.js] --> B[Router]
+    A --> C[Navbar]
+    
+    B --> D[Home]
+    B --> E[Login]
+    B --> F[Register]
+    B --> G[PoemDetail]
+    B --> H[AddPoem]
+    
+    C --> I[Login Link]
+    C --> J[Register Link]
+    C --> K[Logout Button]
+    C --> L[Add Poem Link]
+    
+    D --> M[Poem List]
+    M --> N[Poem Card]
+    N --> O[Poem Title Link]
+    N --> P[Poem Preview]
+    
+    E --> Q[Login Form]
+    Q --> R[Email Input]
+    Q --> S[Password Input]
+    Q --> T[Submit Button]
+    
+    F --> U[Register Form]
+    U --> V[Username Input]
+    U --> W[Email Input]
+    U --> X[Password Input]
+    U --> Y[Submit Button]
+    
+    G --> Z[Poem Content]
+    G --> AA[Comments Section]
+    AA --> BB[Comment List]
+    AA --> CC[Add Comment Form]
+    BB --> DD[Comment Item]
+    
+    H --> EE[Add Poem Form]
+    EE --> FF[Title Input]
+    EE --> GG[Content Textarea]
+    EE --> HH[Submit Button]
+    
+    style A fill:#e1f5fe
+    style B fill:#f3e5f5
+    style C fill:#fff3e0
+    style D fill:#e8f5e8
+    style E fill:#e8f5e8
+    style F fill:#e8f5e8
+    style G fill:#e8f5e8
+    style H fill:#e8f5e8
+```
 
 ## Testning och felsökning
 
@@ -952,7 +1141,74 @@ TODO: Skiss av frontend-komponenternas hierarki
 - Felaktig token: Kontrollera att token lagras och skickas korrekt.
 - Databasanslutningsproblem: Verifiera MongoDB-anslutningssträngen och att databasen körs.
 
-TODO: Flödesschema över felsökningsprocessen
+```mermaid
+flowchart TD
+    A[Problem upptäckt] --> B{Typ av problem?}
+    
+    B -->|Frontend| C[Kontrollera webbläsarens utvecklarverktyg]
+    B -->|Backend| D[Kontrollera serverloggar]
+    B -->|Database| E[Kontrollera databasanslutning]
+    
+    C --> C1[Inspektera Console för fel]
+    C --> C2[Kontrollera Network tab]
+    C --> C3[Kontrollera React DevTools]
+    
+    C1 --> F{JavaScript fel?}
+    F -->|Ja| F1[Kontrollera syntax och imports]
+    F -->|Nej| C2
+    
+    C2 --> G{CORS fel?}
+    G -->|Ja| G1[Verifiera cors() middleware i backend]
+    G -->|Nej| H{API-anrop misslyckas?}
+    
+    H -->|Ja| H1[Kontrollera API-endpoints]
+    H -->|Nej| C3
+    
+    D --> D1[Kontrollera server.js konfiguration]
+    D --> D2[Verifiera miljövariabler]
+    D --> D3[Kontrollera routes och middleware]
+    
+    D1 --> I{Server startar inte?}
+    I -->|Ja| I1[Kontrollera port och dependencies]
+    I -->|Nej| D2
+    
+    D2 --> J{Miljövariabler saknas?}
+    J -->|Ja| J1[Kontrollera .env fil]
+    J -->|Nej| D3
+    
+    E --> E1[Verifiera MongoDB URI]
+    E --> E2[Kontrollera databasstatus]
+    E --> E3[Testa anslutning]
+    
+    E1 --> K{URI korrekt?}
+    K -->|Nej| K1[Uppdatera MONGODB_URI]
+    K -->|Ja| E2
+    
+    E2 --> L{Databas körs?}
+    L -->|Nej| L1[Starta MongoDB]
+    L -->|Ja| E3
+    
+    F1 --> M[Testa lösning]
+    G1 --> M
+    H1 --> M
+    I1 --> M
+    J1 --> M
+    K1 --> M
+    L1 --> M
+    
+    M --> N{Lösning fungerar?}
+    N -->|Ja| O[Problem löst!]
+    N -->|Nej| P[Gå tillbaka till relevant steg]
+    
+    P --> B
+    
+    style A fill:#ffebee
+    style O fill:#e8f5e8
+    style B fill:#fff3e0
+    style C fill:#e3f2fd
+    style D fill:#e3f2fd
+    style E fill:#e3f2fd
+```
 
 ## Deploying till produktion
 
@@ -980,7 +1236,57 @@ npm run build
 
 - Automatiserad deployment: Använd GitHub Actions eller liknande för att automatisera bygg och deployment vid varje push till huvudgrenen.
 
-TODO: Diagram över deployment-arkitekturen
+```mermaid
+graph TB
+    subgraph "Development"
+        A[Local Development] --> B[Git Repository]
+    end
+    
+    subgraph "CI/CD Pipeline"
+        B --> C[GitHub Actions]
+        C --> D[Build & Test]
+        D --> E[Deploy to Production]
+    end
+    
+    subgraph "Production Environment"
+        E --> F[Frontend Hosting]
+        E --> G[Backend Hosting]
+        E --> H[Database Hosting]
+        
+        F --> I[Netlify/Vercel]
+        G --> J[Heroku/DigitalOcean]
+        H --> K[MongoDB Atlas]
+    end
+    
+    subgraph "Domain & Security"
+        L[Domain Name] --> M[SSL Certificate]
+        M --> N[HTTPS]
+        N --> F
+        N --> G
+    end
+    
+    subgraph "Monitoring & Analytics"
+        O[Application Monitoring]
+        P[Error Tracking]
+        Q[Performance Analytics]
+        
+        F --> O
+        G --> O
+        F --> P
+        G --> P
+        F --> Q
+        G --> Q
+    end
+    
+    style A fill:#e8f5e8
+    style B fill:#e3f2fd
+    style C fill:#fff3e0
+    style F fill:#f3e5f5
+    style G fill:#f3e5f5
+    style H fill:#f3e5f5
+    style L fill:#ffebee
+    style O fill:#e0f2f1
+```
 
 Genom att följa denna guide har vi byggt en fullständig webbapplikation med en modern tech stack. Projektet täcker viktiga koncept som:
 - Fullstack-utveckling med Node.js, Express och React.
