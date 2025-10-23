@@ -263,7 +263,8 @@ Lägg till följande kod i server.js:
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
-import poemRoutes from './routes/poems';
+// TODO: Använd routes
+//import poemRoutes from './routes/poems';
 
 // Konfigurera miljövariabler
 process.loadEnvFile()
@@ -275,8 +276,13 @@ const server = express();
 server.use(cors());
 server.use(express.json());
 
-// Använd routes
-server.use('/api/poems', poemRoutes);
+// Test route
+server.get('/', (req, res) => {
+  res.json({message: "Hello from poem app!"});
+})
+
+// TODO: Använd routes
+//server.use('/api/poems', poemRoutes);
 
 // Anslut till MongoDB och starta servern
 const PORT = process.env.PORT || 5000;
@@ -312,6 +318,11 @@ Lägg till följande skript i din package.json:
 Starta servern i utvecklingsläge:
 ```bash
 npm run dev
+```
+
+Testa serverns test route:
+```bash
+curl localhost:3000 # Borde ge svaret {"message": "Hello from poem app!"}
 ```
 Skapa Poem Model
 
@@ -370,7 +381,10 @@ router.post('/', async (req, res) => {
 
 export default router;
 ```
-Nu har vi två routes för poems:
+
+**Nu kan du kommentera in `poemRoutes` i `server.js`.**
+
+Då har vi två routes för poems:
 - `GET /api/poems`: hämtar alla dikter i databasen
 - `POST /api/poems`: skapar en ny dikt med title och content
 
