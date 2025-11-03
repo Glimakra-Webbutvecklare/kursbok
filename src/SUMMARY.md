@@ -85,6 +85,7 @@
   - [Express](./kapitel_9/expressjs.md)
   - [RESTful API:er](./kapitel_9/rest-api.md)
   - [MongoDB](./kapitel_9/mongodb.md)
+  - [Testning med Jest](./kapitel_9/testning.md)
   - [Middleware och autentisering](./kapitel_9/middleware.md)
   - [Sessionshantering](./kapitel_9/sessions.md)
   - [Demo App](./kapitel_9/demo.md)
