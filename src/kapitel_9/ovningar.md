@@ -9,39 +9,80 @@ Nu är det dags att tillämpa allt du lärt dig! Dessa fyra projekt bygger progr
 **Vad du kommer lära dig**:
 - Express routing och middleware
 - MongoDB-integration med Mongoose
-- CRUD-operationer
+- CRUD-operationer med testning
 - Felhantering och validering
-- API-design och -testning
+- API-design och automatiserad testning med Jest
 
-### Setup och grund
+### Steg 1: Projekt-setup
+
+Börja med att skapa projektet och installera alla dependencies (beroenden) du behöver.
 
 ```bash
 mkdir todo-api
 cd todo-api
 npm init -y
-
-# Installera dependencies
-npm install express mongoose cors helmet morgan
-npm install --save-dev nodemon
 ```
 
-**package.json scripts**:
+**Din uppgift**: Installera dependencies. Tänk på:
+- Express för servern
+- Mongoose för MongoDB
+- Middleware: cors, helmet, morgan
+- dotenv för miljövariabler
+- Jest och supertest för testning (som utvecklingsberoenden)
+- nodemon för automatisk omstart (som utvecklingsberoende)
+
+<details>
+<summary>Visa lösning</summary>
+
+```bash
+npm install express mongoose cors helmet morgan dotenv
+npm install --save-dev jest supertest nodemon
+```
+</details>
+
+Nu behöver du konfigurera `package.json` för ES6-moduler och lägga till scripts.
+
+**Din uppgift**: Uppdatera `package.json`:
+1. Lägg till `"type": "module"` för att aktivera ES6-moduler
+2. Lägg till scripts för `start`, `dev` och `test`
+3. För test-scriptet, använd flaggan `--experimental-vm-modules` (se `testning.md`)
+
+<details>
+<summary>Visa lösning</summary>
+
 ```json
 {
+  "name": "todo-api",
+  "version": "1.0.0",
+  "type": "module",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^7.0.0",
+    "cors": "^2.8.5",
+    "helmet": "^6.0.0",
+    "morgan": "^1.10.0",
+    "dotenv": "^16.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0",
+    "supertest": "^6.0.0",
+    "nodemon": "^2.0.0"
   }
 }
 ```
+</details>
 
-### Projektstruktur
+Skapa projektstrukturen:
 
 ```
 todo-api/
 ├── server.js
-├── config/
-│   └── database.js
 ├── models/
 │   └── Todo.js
 ├── controllers/
@@ -49,16 +90,44 @@ todo-api/
 ├── routes/
 │   └── todos.js
 ├── middleware/
-│   ├── errorHandler.js
-│   └── validation.js
+│   └── errorHandler.js
 └── .env
 ```
 
-### Implementation
+### Steg 2: Skapa Todo-modellen
 
-**models/Todo.js**:
+Skapa filen `models/Todo.js`. Börja med grundläggande schema-definition:
+
 ```javascript
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
+
+const todoSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: [true, 'Titel krävs'],
+    trim: true
+    // TODO: Lägg till maxlength-validering (100 tecken)
+  },
+  // TODO: Lägg till fält för description, completed, priority
+});
+```
+
+**Din uppgift**: 
+1. Komplettera schemat med:
+   - `description`: String, trim, maxlength 500 tecken
+   - `completed`: Boolean med default `false`
+   - `priority`: String, enum ['low', 'medium', 'high'], default 'medium'
+   - `dueDate`: Date (valfritt)
+   - `category`: String, trim (valfritt)
+   - `createdAt`: Date med default `Date.now`
+   - `updatedAt`: Date med default `Date.now`
+2. Lägg till maxlength-validering för title (100 tecken)
+
+<details>
+<summary>Visa lösning</summary>
+
+```javascript
+import mongoose from 'mongoose';
 
 const todoSchema = new mongoose.Schema({
   title: {
@@ -98,6 +167,20 @@ const todoSchema = new mongoose.Schema({
   }
 });
 
+export default mongoose.model('Todo', todoSchema);
+```
+</details>
+
+Nu lägger vi till pre-hook (krok) för att automatiskt uppdatera `updatedAt`:
+
+**Din uppgift**: Lägg till en `pre('save')` hook som uppdaterar `updatedAt` när dokumentet modifieras (men inte när det skapas första gången).
+
+Tips: Använd `this.isModified()` och `this.isNew` för att kontrollera.
+
+<details>
+<summary>Visa lösning</summary>
+
+```javascript
 // Uppdatera updatedAt före sparning
 todoSchema.pre('save', function(next) {
   if (this.isModified() && !this.isNew) {
@@ -105,7 +188,20 @@ todoSchema.pre('save', function(next) {
   }
   next();
 });
+```
+</details>
 
+Lägg till en virtual (beräknat fält) för att räkna ut antal dagar kvar till `dueDate`:
+
+**Din uppgift**: Skapa en virtual `daysUntilDue` som:
+- Returnerar `null` om `dueDate` saknas
+- Annars räknar ut antal dagar (kan vara negativt om datumet har passerat)
+- Inkludera virtuals när JSON konverteras med `todoSchema.set('toJSON', { virtuals: true })`
+
+<details>
+<summary>Visa lösning</summary>
+
+```javascript
 // Virtual för att räkna ut hur många dagar kvar
 todoSchema.virtual('daysUntilDue').get(function() {
   if (!this.dueDate) return null;
@@ -118,75 +214,160 @@ todoSchema.virtual('daysUntilDue').get(function() {
 
 // Inkludera virtuals när JSON konverteras
 todoSchema.set('toJSON', { virtuals: true });
+```
+</details>
 
-module.exports = mongoose.model('Todo', todoSchema);
+### Steg 3: Testa Todo-modellen
+
+Innan vi bygger API:et ska vi testa modellen direkt. Skapa `models/Todo.test.js`:
+
+```javascript
+import mongoose from 'mongoose';
+import Todo from './Todo.js';
+
+// Anslut till testdatabas
+beforeAll(async () => {
+  await mongoose.connect('mongodb://localhost:27017/todo-api-test');
+});
+
+afterAll(async () => {
+  await mongoose.connection.close();
+});
+
+describe('Todo Model', () => {
+  beforeEach(async () => {
+    await Todo.deleteMany({});
+  });
+
+  test('skapar todo med required fields', async () => {
+    // TODO: Skapa en todo med endast title
+    // TODO: Verifiera att den sparades korrekt
+    // TODO: Verifiera att completed är false (default)
+    // TODO: Verifiera att priority är 'medium' (default)
+  });
+});
 ```
 
-**controllers/todoController.js**:
+**Din uppgift**: 
+1. Skriv testet som skapar en todo med endast `title` och verifierar att den sparades korrekt med defaults
+2. Lägg till test som verifierar att `title` är required (förväntat fel när du försöker spara utan title)
+3. Lägg till test som verifierar maxlength för title (försök spara med för lång title)
+4. Lägg till test som verifierar att `daysUntilDue` virtual fungerar
+
+<details>
+<summary>Visa lösning</summary>
+
 ```javascript
-const Todo = require('../models/Todo');
+import mongoose from 'mongoose';
+import Todo from './Todo.js';
+
+beforeAll(async () => {
+  await mongoose.connect('mongodb://localhost:27017/todo-api-test');
+});
+
+afterAll(async () => {
+  await mongoose.connection.close();
+});
+
+describe('Todo Model', () => {
+  beforeEach(async () => {
+    await Todo.deleteMany({});
+  });
+
+  test('skapar todo med required fields', async () => {
+    const todo = new Todo({ title: 'Test todo' });
+    const savedTodo = await todo.save();
+    
+    expect(savedTodo.title).toBe('Test todo');
+    expect(savedTodo.completed).toBe(false);
+    expect(savedTodo.priority).toBe('medium');
+    expect(savedTodo).toHaveProperty('createdAt');
+    expect(savedTodo).toHaveProperty('_id');
+  });
+
+  test('kräver title', async () => {
+    const todo = new Todo({});
+    await expect(todo.save()).rejects.toThrow();
+  });
+
+  test('validerar maxlength för title', async () => {
+    const longTitle = 'a'.repeat(101);
+    const todo = new Todo({ title: longTitle });
+    await expect(todo.save()).rejects.toThrow();
+  });
+
+  test('beräknar daysUntilDue korrekt', async () => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    const todo = new Todo({ 
+      title: 'Test',
+      dueDate: tomorrow 
+    });
+    const savedTodo = await todo.save();
+    
+    expect(savedTodo.daysUntilDue).toBe(1);
+  });
+});
+```
+</details>
+
+### Steg 4: Skapa Todo Controller - Grundläggande CRUD
+
+Börja med `controllers/todoController.js`. Vi bygger metod för metod och testar varje.
+
+```javascript
+import Todo from '../models/Todo.js';
 
 class TodoController {
-  // GET /api/todos - Hämta alla todos med filtering och sortering
+  // TODO: Implementera getAllTodos
   static async getAllTodos(req, res, next) {
     try {
-      const { 
-        completed, 
-        priority, 
-        category,
-        sortBy = 'createdAt',
-        order = 'desc',
-        page = 1,
-        limit = 10,
-        search
-      } = req.query;
-
-      // Bygg filter
-      const filter = {};
-      if (completed !== undefined) filter.completed = completed === 'true';
-      if (priority) filter.priority = priority;
-      if (category) filter.category = new RegExp(category, 'i');
-      if (search) {
-        filter.$or = [
-          { title: new RegExp(search, 'i') },
-          { description: new RegExp(search, 'i') }
-        ];
-      }
-
-      // Bygg sortering
-      const sort = {};
-      sort[sortBy] = order === 'desc' ? -1 : 1;
-
-      // Pagination
-      const skip = (page - 1) * limit;
-
-      const [todos, totalCount] = await Promise.all([
-        Todo.find(filter)
-          .sort(sort)
-          .skip(skip)
-          .limit(parseInt(limit)),
-        Todo.countDocuments(filter)
-      ]);
-
-      res.json({
-        todos,
-        pagination: {
-          page: parseInt(page),
-          limit: parseInt(limit),
-          total: totalCount,
-          pages: Math.ceil(totalCount / limit),
-          hasNext: page * limit < totalCount,
-          hasPrev: page > 1
-        },
-        filters: { completed, priority, category, search }
-      });
-
+      // TODO: Hämta alla todos med Todo.find()
+      // TODO: Skicka tillbaka som JSON
     } catch (error) {
       next(error);
     }
   }
 
-  // GET /api/todos/:id - Hämta specifik todo
+  // TODO: Implementera getTodoById
+  static async getTodoById(req, res, next) {
+    try {
+      // TODO: Hitta todo med Todo.findById(req.params.id)
+      // TODO: Returnera 404 om inte hittad
+      // TODO: Returnera todo som JSON
+    } catch (error) {
+      next(error);
+    }
+  }
+}
+
+export default TodoController;
+```
+
+**Din uppgift**: 
+1. Implementera `getAllTodos` som hämtar alla todos
+2. Implementera `getTodoById` som:
+   - Hämtar todo med `req.params.id`
+   - Returnerar 404 med felmeddelande om den inte finns
+   - Returnerar todo som JSON om den finns
+
+<details>
+<summary>Visa lösning</summary>
+
+```javascript
+import Todo from '../models/Todo.js';
+
+class TodoController {
+  static async getAllTodos(req, res, next) {
+    try {
+      const todos = await Todo.find();
+      res.json(todos);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   static async getTodoById(req, res, next) {
     try {
       const todo = await Todo.findById(req.params.id);
@@ -200,118 +381,429 @@ class TodoController {
       next(error);
     }
   }
+}
 
-  // POST /api/todos - Skapa ny todo
-  static async createTodo(req, res, next) {
-    try {
-      const todo = new Todo(req.body);
-      const savedTodo = await todo.save();
+export default TodoController;
+```
+</details>
 
-      res.status(201)
-         .location(`/api/todos/${savedTodo._id}`)
-         .json(savedTodo);
+Nu lägger vi till `createTodo`:
 
-    } catch (error) {
-      next(error);
-    }
+**Din uppgift**: Implementera `createTodo` som:
+- Skapar ny todo från `req.body`
+- Sparar den
+- Returnerar 201 status med Location-header och todo som JSON
+
+<details>
+<summary>Visa lösning</summary>
+
+```javascript
+static async createTodo(req, res, next) {
+  try {
+    const todo = new Todo(req.body);
+    const savedTodo = await todo.save();
+
+    res.status(201)
+       .location(`/api/todos/${savedTodo._id}`)
+       .json(savedTodo);
+  } catch (error) {
+    next(error);
   }
+}
+```
+</details>
 
-  // PUT /api/todos/:id - Uppdatera todo
-  static async updateTodo(req, res, next) {
-    try {
-      const todo = await Todo.findByIdAndUpdate(
-        req.params.id,
-        req.body,
-        { new: true, runValidators: true }
-      );
+Lägg till `updateTodo` och `deleteTodo`:
 
-      if (!todo) {
-        return res.status(404).json({ error: 'Todo inte hittad' });
-      }
+**Din uppgift**: 
+1. Implementera `updateTodo` med `findByIdAndUpdate` (använd `{ new: true, runValidators: true }`)
+2. Implementera `deleteTodo` med `findByIdAndDelete`
+3. Båda ska returnera 404 om todo inte finns
+4. `deleteTodo` ska returnera 204 status (inget innehåll)
 
-      res.json(todo);
-    } catch (error) {
-      next(error);
+<details>
+<summary>Visa lösning</summary>
+
+```javascript
+static async updateTodo(req, res, next) {
+  try {
+    const todo = await Todo.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+
+    if (!todo) {
+      return res.status(404).json({ error: 'Todo inte hittad' });
     }
-  }
 
-  // PATCH /api/todos/:id/toggle - Växla completed status
-  static async toggleTodo(req, res, next) {
-    try {
-      const todo = await Todo.findById(req.params.id);
-      
-      if (!todo) {
-        return res.status(404).json({ error: 'Todo inte hittad' });
-      }
-
-      todo.completed = !todo.completed;
-      await todo.save();
-
-      res.json(todo);
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  // DELETE /api/todos/:id - Ta bort todo
-  static async deleteTodo(req, res, next) {
-    try {
-      const todo = await Todo.findByIdAndDelete(req.params.id);
-
-      if (!todo) {
-        return res.status(404).json({ error: 'Todo inte hittad' });
-      }
-
-      res.status(204).send();
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  // GET /api/todos/stats - Hämta statistik
-  static async getTodoStats(req, res, next) {
-    try {
-      const stats = await Todo.aggregate([
-        {
-          $group: {
-            _id: null,
-            total: { $sum: 1 },
-            completed: { $sum: { $cond: ['$completed', 1, 0] } },
-            pending: { $sum: { $cond: ['$completed', 0, 1] } },
-            highPriority: { $sum: { $cond: [{ $eq: ['$priority', 'high'] }, 1, 0] } }
-          }
-        }
-      ]);
-
-      const priorityStats = await Todo.aggregate([
-        { $group: { _id: '$priority', count: { $sum: 1 } } }
-      ]);
-
-      res.json({
-        overview: stats[0] || { total: 0, completed: 0, pending: 0, highPriority: 0 },
-        byPriority: priorityStats
-      });
-
-    } catch (error) {
-      next(error);
-    }
+    res.json(todo);
+  } catch (error) {
+    next(error);
   }
 }
 
-module.exports = TodoController;
+static async deleteTodo(req, res, next) {
+  try {
+    const todo = await Todo.findByIdAndDelete(req.params.id);
+
+    if (!todo) {
+      return res.status(404).json({ error: 'Todo inte hittad' });
+    }
+
+    res.status(204).send();
+  } catch (error) {
+    next(error);
+  }
+}
+```
+</details>
+
+### Steg 5: Testa Controller med Supertest
+
+Skapa `controllers/todoController.test.js`. Börja med att sätta upp testmiljön:
+
+```javascript
+import request from 'supertest';
+import express from 'express';
+import mongoose from 'mongoose';
+import Todo from '../models/Todo.js';
+import TodoController from './todoController.js';
+
+const app = express();
+app.use(express.json());
+
+// Routes - vi lägger till dessa senare, för nu testar vi direkt
+// app.use('/api/todos', todoRoutes);
+
+beforeAll(async () => {
+  await mongoose.connect('mongodb://localhost:27017/todo-api-test');
+});
+
+afterAll(async () => {
+  await mongoose.connection.close();
+});
+
+describe('TodoController', () => {
+  beforeEach(async () => {
+    await Todo.deleteMany({});
+  });
+
+  // TODO: Skriv tester här
+});
 ```
 
-**server.js**:
-```javascript
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const helmet = require('helmet');
-const morgan = require('morgan');
-require('dotenv').config();
+**Din uppgift**: Skriv tester för:
+1. `createTodo` - verifiera att todo skapas korrekt
+2. `getAllTodos` - verifiera att alla todos returneras
+3. `getTodoById` - verifiera att specifik todo returneras och 404 om inte hittad
+4. `updateTodo` - verifiera att todo uppdateras
+5. `deleteTodo` - verifiera att todo tas bort
 
-const todoRoutes = require('./routes/todos');
-const errorHandler = require('./middleware/errorHandler');
+Tips: Du behöver skapa routes först för att testa. Vi gör det i nästa steg, men du kan testa controller-metoderna direkt också.
+
+<details>
+<summary>Visa lösning</summary>
+
+För att testa controllers behöver vi routes. Vi gör en enkel route-fil först:
+
+```javascript
+// routes/todos.js (temporär för tester)
+import express from 'express';
+import TodoController from '../controllers/todoController.js';
+
+const router = express.Router();
+
+router.get('/', TodoController.getAllTodos);
+router.get('/:id', TodoController.getTodoById);
+router.post('/', TodoController.createTodo);
+router.put('/:id', TodoController.updateTodo);
+router.delete('/:id', TodoController.deleteTodo);
+
+export default router;
+```
+
+```javascript
+// controllers/todoController.test.js
+import request from 'supertest';
+import express from 'express';
+import mongoose from 'mongoose';
+import Todo from '../models/Todo.js';
+import todosRouter from '../routes/todos.js';
+
+const app = express();
+app.use(express.json());
+app.use('/api/todos', todosRouter);
+
+beforeAll(async () => {
+  await mongoose.connect('mongodb://localhost:27017/todo-api-test');
+});
+
+afterAll(async () => {
+  await mongoose.connection.close();
+});
+
+describe('TodoController', () => {
+  beforeEach(async () => {
+    await Todo.deleteMany({});
+  });
+
+  describe('POST /api/todos', () => {
+    test('skapar ny todo', async () => {
+      const newTodo = {
+        title: 'Test todo',
+        description: 'Test description',
+        priority: 'high'
+      };
+
+      const response = await request(app)
+        .post('/api/todos')
+        .send(newTodo)
+        .expect(201);
+
+      expect(response.body.title).toBe('Test todo');
+      expect(response.body.priority).toBe('high');
+      expect(response.body).toHaveProperty('_id');
+    });
+  });
+
+  describe('GET /api/todos', () => {
+    test('returnerar alla todos', async () => {
+      await Todo.create([
+        { title: 'Todo 1' },
+        { title: 'Todo 2' }
+      ]);
+
+      const response = await request(app)
+        .get('/api/todos')
+        .expect(200);
+
+      expect(response.body).toHaveLength(2);
+    });
+  });
+
+  describe('GET /api/todos/:id', () => {
+    test('returnerar specifik todo', async () => {
+      const created = await Todo.create({ title: 'Test todo' });
+
+      const response = await request(app)
+        .get(`/api/todos/${created._id}`)
+        .expect(200);
+
+      expect(response.body.title).toBe('Test todo');
+    });
+
+    test('returnerar 404 om todo inte finns', async () => {
+      const fakeId = new mongoose.Types.ObjectId();
+      
+      await request(app)
+        .get(`/api/todos/${fakeId}`)
+        .expect(404);
+    });
+  });
+});
+```
+</details>
+
+### Steg 6: Avancerade Controller-funktioner
+
+Nu lägger vi till filtering, sortering och pagination i `getAllTodos`:
+
+**Din uppgift**: Utöka `getAllTodos` för att hantera query-parametrar:
+- `completed` - filtrera på completed status
+- `priority` - filtrera på priority
+- `sortBy` - sortera på fält (default 'createdAt')
+- `order` - 'asc' eller 'desc' (default 'desc')
+- `page` - sidnummer för pagination (default 1)
+- `limit` - antal per sida (default 10)
+
+<details>
+<summary>Visa lösning</summary>
+
+```javascript
+static async getAllTodos(req, res, next) {
+  try {
+    const { 
+      completed, 
+      priority, 
+      sortBy = 'createdAt',
+      order = 'desc',
+      page = 1,
+      limit = 10
+    } = req.query;
+
+    // Bygg filter
+    const filter = {};
+    if (completed !== undefined) filter.completed = completed === 'true';
+    if (priority) filter.priority = priority;
+
+    // Bygg sortering
+    const sort = {};
+    sort[sortBy] = order === 'desc' ? -1 : 1;
+
+    // Pagination
+    const skip = (page - 1) * limit;
+
+    const [todos, totalCount] = await Promise.all([
+      Todo.find(filter)
+        .sort(sort)
+        .skip(skip)
+        .limit(parseInt(limit)),
+      Todo.countDocuments(filter)
+    ]);
+
+    res.json({
+      todos,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total: totalCount,
+        pages: Math.ceil(totalCount / limit),
+        hasNext: page * limit < totalCount,
+        hasPrev: page > 1
+      }
+    });
+
+  } catch (error) {
+    next(error);
+  }
+}
+```
+</details>
+
+Lägg till search-funktionalitet:
+
+**Din uppgift**: Utöka `getAllTodos` med `search` query-parameter som söker i `title` och `description` med case-insensitive matchning.
+
+<details>
+<summary>Visa lösning</summary>
+
+```javascript
+// I filter-delen, lägg till:
+if (search) {
+  filter.$or = [
+    { title: new RegExp(search, 'i') },
+    { description: new RegExp(search, 'i') }
+  ];
+}
+```
+</details>
+
+Lägg till `toggleTodo`-metod:
+
+**Din uppgift**: Implementera `toggleTodo` som växlar `completed` status för en todo.
+
+<details>
+<summary>Visa lösning</summary>
+
+```javascript
+static async toggleTodo(req, res, next) {
+  try {
+    const todo = await Todo.findById(req.params.id);
+    
+    if (!todo) {
+      return res.status(404).json({ error: 'Todo inte hittad' });
+    }
+
+    todo.completed = !todo.completed;
+    await todo.save();
+
+    res.json(todo);
+  } catch (error) {
+    next(error);
+  }
+}
+```
+</details>
+
+### Steg 7: Routes och Server
+
+Skapa `routes/todos.js`:
+
+**Din uppgift**: Skapa router med routes för alla controller-metoder:
+- GET `/` - getAllTodos
+- GET `/:id` - getTodoById
+- POST `/` - createTodo
+- PUT `/:id` - updateTodo
+- PATCH `/:id/toggle` - toggleTodo
+- DELETE `/:id` - deleteTodo
+
+<details>
+<summary>Visa lösning</summary>
+
+```javascript
+import express from 'express';
+import TodoController from '../controllers/todoController.js';
+
+const router = express.Router();
+
+router.get('/', TodoController.getAllTodos);
+router.get('/stats', TodoController.getTodoStats);
+router.get('/:id', TodoController.getTodoById);
+router.post('/', TodoController.createTodo);
+router.put('/:id', TodoController.updateTodo);
+router.patch('/:id/toggle', TodoController.toggleTodo);
+router.delete('/:id', TodoController.deleteTodo);
+
+export default router;
+```
+</details>
+
+Skapa `middleware/errorHandler.js`:
+
+**Din uppgift**: Skapa en error handler middleware som:
+- Hanterar Mongoose validation errors
+- Hanterar Mongoose cast errors (ogiltigt ID)
+- Returnerar lämpliga status codes och felmeddelanden
+
+<details>
+<summary>Visa lösning</summary>
+
+```javascript
+const errorHandler = (err, req, res, next) => {
+  if (err.name === 'ValidationError') {
+    const messages = Object.values(err.errors).map(e => e.message);
+    return res.status(400).json({ error: messages.join(', ') });
+  }
+  
+  if (err.name === 'CastError') {
+    return res.status(400).json({ error: 'Ogiltigt ID-format' });
+  }
+
+  res.status(500).json({ 
+    error: err.message || 'Serverfel' 
+  });
+};
+
+export default errorHandler;
+```
+</details>
+
+Skapa `server.js`:
+
+**Din uppgift**: Skapa Express-server som:
+- Importerar routes och middleware
+- Ansluter till MongoDB (använd `MONGODB_URI` från `.env` eller default)
+- Lägger till middleware: helmet, cors, morgan, express.json
+- Lägger till routes under `/api/todos`
+- Har health check endpoint `/api/health`
+- Hanterar 404 för `/api/*`
+- Använder error handler
+
+<details>
+<summary>Visa lösning</summary>
+
+```javascript
+import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import dotenv from 'dotenv';
+import todosRouter from './routes/todos.js';
+import errorHandler from './middleware/errorHandler.js';
+
+dotenv.config();
 
 const app = express();
 
@@ -325,7 +817,7 @@ app.use(express.json({ limit: '10mb' }));
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/todo-api');
 
 // Routes
-app.use('/api/todos', todoRoutes);
+app.use('/api/todos', todosRouter);
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -349,19 +841,67 @@ app.listen(PORT, () => {
   console.log(`Todo API körs på port ${PORT}`);
 });
 ```
+</details>
 
-### Testning
+### Steg 8: Utmaning - Statistik-endpoint
 
-**Testskript för cURL**:
+**Din uppgift**: Implementera `getTodoStats` i controller som använder MongoDB aggregation för att räkna:
+- Totalt antal todos
+- Antal completed
+- Antal pending
+- Antal high priority
+- Fördelning per priority (low/medium/high)
+
+Tips: Använd `Todo.aggregate()` med `$group` för att räkna.
+
+<details>
+<summary>Visa lösning</summary>
+
+```javascript
+static async getTodoStats(req, res, next) {
+  try {
+    const stats = await Todo.aggregate([
+      {
+        $group: {
+          _id: null,
+          total: { $sum: 1 },
+          completed: { $sum: { $cond: ['$completed', 1, 0] } },
+          pending: { $sum: { $cond: ['$completed', 0, 1] } },
+          highPriority: { $sum: { $cond: [{ $eq: ['$priority', 'high'] }, 1, 0] } }
+        }
+      }
+    ]);
+
+    const priorityStats = await Todo.aggregate([
+      { $group: { _id: '$priority', count: { $sum: 1 } } }
+    ]);
+
+    res.json({
+      overview: stats[0] || { total: 0, completed: 0, pending: 0, highPriority: 0 },
+      byPriority: priorityStats
+    });
+
+  } catch (error) {
+    next(error);
+  }
+}
+```
+</details>
+
+### Steg 9: Testa hela API:et
+
+Skapa ett testskript eller använd Postman/Insomnia för att testa alla endpoints manuellt.
+
+**Alternativt - Testa med cURL**:
+
 ```bash
-#!/bin/bash
+# Starta servern först
+npm run dev
 
+# I ett annat terminalfönster:
 BASE_URL="http://localhost:3000/api"
 
-echo "=== Testing Todo API ==="
-
 # Skapa todos
-echo "Creating todos..."
 curl -X POST "$BASE_URL/todos" \
   -H "Content-Type: application/json" \
   -d '{"title":"Lär dig Node.js","priority":"high","category":"development"}'
@@ -371,17 +911,16 @@ curl -X POST "$BASE_URL/todos" \
   -d '{"title":"Handla mat","priority":"medium","category":"personal"}'
 
 # Hämta alla todos
-echo -e "\n\nFetching all todos..."
 curl "$BASE_URL/todos"
 
 # Hämta statistik
-echo -e "\n\nFetching stats..."
 curl "$BASE_URL/todos/stats"
 
 # Filtrera todos
-echo -e "\n\nFiltering by priority..."
 curl "$BASE_URL/todos?priority=high"
 ```
+
+Grattis! Du har nu byggt en komplett REST API med testning. I nästa övning lägger vi till autentisering.
 
 ---
 
@@ -1082,213 +1621,6 @@ module.exports = InventoryService;
 
 ---
 
-## Övning 4: Real-time Chat API med Socket.io
-
-**Mål**: Bygga ett real-time chat-system med Socket.io, Redis och avancerad funktionalitet.
-
-**Funktioner**:
-- Real-time meddelanden
-- Rum/kanaler
-- Användarstatus (online/offline)
-- Meddelandehistorik
-- Filuppladdning
-- Typing indicators
-
-### Setup
-
-```bash
-npm install socket.io redis ioredis multer sharp
-```
-
-**server.js**:
-```javascript
-const express = require('express');
-const http = require('http');
-const socketIo = require('socket.io');
-const Redis = require('ioredis');
-const jwt = require('jsonwebtoken');
-const User = require('./models/User');
-const Room = require('./models/Room');
-const Message = require('./models/Message');
-
-const app = express();
-const server = http.createServer(app);
-const io = socketIo(server, {
-  cors: {
-    origin: process.env.CLIENT_URL || "http://localhost:3000",
-    methods: ["GET", "POST"]
-  }
-});
-
-const redis = new Redis(process.env.REDIS_URL);
-
-// Socket.io middleware för autentisering
-io.use(async (socket, next) => {
-  try {
-    const token = socket.handshake.auth.token;
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.id);
-    
-    if (!user) {
-      return next(new Error('User not found'));
-    }
-    
-    socket.userId = user._id.toString();
-    socket.user = user;
-    next();
-  } catch (error) {
-    next(new Error('Authentication error'));
-  }
-});
-
-class ChatService {
-  static async joinRoom(socket, roomId) {
-    try {
-      const room = await Room.findById(roomId);
-      if (!room) {
-        socket.emit('error', { message: 'Rum inte hittat' });
-        return;
-      }
-      
-      // Kontrollera behörighet
-      if (room.isPrivate && !room.members.includes(socket.userId)) {
-        socket.emit('error', { message: 'Ingen åtkomst till rummet' });
-        return;
-      }
-      
-      socket.join(roomId);
-      
-      // Lägg till användare till rum om inte redan medlem
-      if (!room.members.includes(socket.userId)) {
-        room.members.push(socket.userId);
-        await room.save();
-      }
-      
-      // Sätt användare som online i rummet
-      await redis.sadd(`room:${roomId}:online`, socket.userId);
-      
-      // Hämta och skicka senaste meddelanden
-      const messages = await Message.find({ room: roomId })
-        .populate('sender', 'username avatar')
-        .sort({ createdAt: -1 })
-        .limit(50);
-      
-      socket.emit('room-joined', {
-        room,
-        messages: messages.reverse()
-      });
-      
-      // Meddela andra i rummet
-      socket.to(roomId).emit('user-joined', {
-        user: socket.user,
-        timestamp: new Date()
-      });
-      
-    } catch (error) {
-      socket.emit('error', { message: 'Kunde inte gå med i rum' });
-    }
-  }
-  
-  static async sendMessage(socket, data) {
-    try {
-      const { roomId, content, type = 'text' } = data;
-      
-      const message = new Message({
-        sender: socket.userId,
-        room: roomId,
-        content,
-        type
-      });
-      
-      await message.save();
-      await message.populate('sender', 'username avatar');
-      
-      // Skicka till alla i rummet
-      io.to(roomId).emit('new-message', message);
-      
-      // Uppdatera rum med senaste meddelande
-      await Room.findByIdAndUpdate(roomId, {
-        lastMessage: message._id,
-        lastActivity: new Date()
-      });
-      
-    } catch (error) {
-      socket.emit('error', { message: 'Kunde inte skicka meddelande' });
-    }
-  }
-  
-  static async handleTyping(socket, data) {
-    const { roomId, isTyping } = data;
-    
-    if (isTyping) {
-      await redis.sadd(`room:${roomId}:typing`, socket.userId);
-    } else {
-      await redis.srem(`room:${roomId}:typing`, socket.userId);
-    }
-    
-    const typingUsers = await redis.smembers(`room:${roomId}:typing`);
-    socket.to(roomId).emit('typing-update', {
-      typingUsers: typingUsers.filter(id => id !== socket.userId)
-    });
-  }
-  
-  static async handleDisconnect(socket) {
-    // Ta bort från alla typing-listor
-    const keys = await redis.keys('room:*:typing');
-    for (const key of keys) {
-      await redis.srem(key, socket.userId);
-    }
-    
-    // Ta bort från online-listor
-    const onlineKeys = await redis.keys('room:*:online');
-    for (const key of onlineKeys) {
-      await redis.srem(key, socket.userId);
-      
-      // Meddela andra i rummet
-      const roomId = key.split(':')[1];
-      socket.to(roomId).emit('user-left', {
-        userId: socket.userId,
-        timestamp: new Date()
-      });
-    }
-  }
-}
-
-io.on('connection', (socket) => {
-  console.log(`User ${socket.user.username} connected`);
-  
-  socket.on('join-room', (data) => {
-    ChatService.joinRoom(socket, data.roomId);
-  });
-  
-  socket.on('send-message', (data) => {
-    ChatService.sendMessage(socket, data);
-  });
-  
-  socket.on('typing', (data) => {
-    ChatService.handleTyping(socket, data);
-  });
-  
-  socket.on('disconnect', () => {
-    ChatService.handleDisconnect(socket);
-  });
-});
-
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-  console.log(`Chat server körs på port ${PORT}`);
-});
-```
-
-### Utmaningar för vidareutveckling
-
-1. **Lägg till filuppladdning** med Multer och Sharp för bildbehandling
-2. **Implementera push-notifikationer** för offline-användare  
-3. **Skapa admin-panel** för moderering av rum och meddelanden
-4. **Lägg till end-to-end-kryptering** för privata meddelanden
-5. **Implementera voice/video calls** med WebRTC
-6. **Skapa bot-funktionalitet** för automatiska svar
-
 ## Sammanfattning
 
 Dessa fyra övningar tar dig från grundläggande Express-applikationer till avancerade real-time system. Varje projekt bygger på kunskaperna från föregående och introducerar nya koncept:
@@ -1296,14 +1628,11 @@ Dessa fyra övningar tar dig från grundläggande Express-applikationer till ava
 1. **Todo API**: Grundläggande CRUD, MongoDB, felhantering
 2. **Blog API**: JWT-autentisering, användarsystem, behörigheter  
 3. **E-handel API**: Komplex datamodellering, transaktioner, inventoriehantering
-4. **Chat API**: Real-time kommunikation, Socket.io, Redis, skalbarhet
 
 Efter att ha genomfört dessa projekt har du en solid grund i modern backend-utveckling med Node.js!
 
 ## Nästa steg
 
-- **Testa dina API:er** med Postman eller Insomnia
-- **Skriv enhetstester** med Jest eller Mocha
 - **Deploiera till produktion** med Docker och cloud services
 - **Implementera CI/CD** för automatisk testning och deployment
 - **Lägg till monitoring** och logging för produktion
