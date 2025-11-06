@@ -346,57 +346,57 @@ myForm.addEventListener("submit", function(event) {
 
 ## Övning 7: Enkel funktion
 
-Skapa en funktion `greet` som tar emot ett namn som parameter och skriver ut "Hej, [namn]!" i konsolen. Anropa funktionen med ditt eget namn.
+Skapa en funktion `createProduct` som tar emot ett namn och pris som parameter och skriver ut "Detta är: [productName]! Den kostar [price] SEK." i konsolen. Anropa funktionen med eget produktnamn och pris.
 
 <details>
 <summary>Lösningsförslag</summary>
 
 ```javascript
 // Skapar en funktion som heter greet och tar emot en parameter 'name'
-function greet(name) {
+function createProduct(productName, price) {
   // Skriver ut hälsningen med namnet som skickades in
-  console.log("Hej, " + name + "!");
+  console.log("Detta är:" + name + "! Den kostar " + price + " SEK.);
 }
 
 // Anropar funktionen med olika namn
-greet("Anna");
-greet("Erik");
-greet("Sara");
+createProduct("iPhone 13 Pro", 7500);
+createProduct("50 tums LG TV", 3000);
+createProduct("Tesla Model S", 120000);
 ```
 
 **Förklaring:**
-- `function greet(name)` deklarerar en funktion med namnet `greet` som tar en parameter `name`
+- `function createProduct(productName, price)` deklarerar en funktion med namnet `createProduct` som tar en parameter `productName` och `price`
 - Inuti funktionen används `console.log()` för att skriva ut meddelandet
-- Funktionen anropas genom att skriva `greet("Anna")` där "Anna" är argumentet som skickas in
+- Funktionen anropas genom att skriva `createProduct("iPhone 13 Pro", 7500)` där "iPhone 13 Pro" och 7500 är argumenten som skickas in
 </details>
 
 ---
 
 ## Övning 8: Funktion med return
 
-Skapa en funktion `multiply` som tar två tal som parametrar och returnerar deras produkt. Använd funktionen för att beräkna 5 × 7 och skriv ut resultatet i konsolen.
+Skapa en funktion `getDiscountedPrice` som tar två tal som parametrar och returnerar deras produkt. Använd funktionen för att beräkna 500 × 0.7 (70% rabatt) och skriv ut resultatet i konsolen.
 
 <details>
 <summary>Lösningsförslag</summary>
 
 ```javascript
-// Skapar en funktion som multiplicerar två tal
-function multiply(a, b) {
+// Skapar en funktion som räknar ut det rabatterade priset
+function getDiscountedPrice(originalPrice, discount) {
   // Returnerar produkten av a och b
-  return a * b;
+  return originalPrice * discount;
 }
 
-// Anropar funktionen med 5 och 7, sparar resultatet i variabeln result
-let result = multiply(5, 7);
+// Anropar funktionen med 500 och 70% rabatt, sparar resultatet i variabeln newPrice
+let newPrice = getDiscountedPrice(500, 0.7);
 
 // Skriver ut resultatet
-console.log(result); // Skriver ut: 35
+console.log(newPrice); // Skriver ut: 350
 ```
 
 **Förklaring:**
-- `function multiply(a, b)` tar två parametrar: `a` och `b`
-- `return a * b` returnerar produkten av de två talen
-- När funktionen anropas med `multiply(5, 7)`, returneras värdet 35
+- `function getDiscountedPrice(originalPrice, discount)` tar två parametrar: `a` och `b`
+- `return originalPrice * discount` returnerar produkten av de två talen
+- När funktionen anropas med `getDiscountedPrice(500, 0.7)`, returneras värdet 350
 - Det returnerade värdet kan sparas i en variabel eller användas direkt
 </details>
 
