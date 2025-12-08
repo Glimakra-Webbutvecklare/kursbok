@@ -28,15 +28,15 @@ Multiplayer-spel låter flera spelare (players) delta samtidigt i samma speluppl
 
 ```mermaid
 graph TB
-    A[Multiplayer-arkitekturer] --> B[Client-Server<br/>Klient-Server]
-    A --> C[Peer-to-Peer<br/>P2P]
-    A --> D[Hybrid<br/>Blandad]
+    A[Multiplayer-arkitekturer] --> B["Client-Server\nKlient-Server"]
+    A --> C["Peer-to-Peer\nP2P"]
+    A --> D["Hybrid\nBlandad"]
     
-    B --> B1[Authoritative Server<br/>Auktoritativ server]
-    B --> B2[Listen Server<br/>Lyssnarserver]
+    B --> B1["Authoritative Server\nAuktoritativ server"]
+    B --> B2["Listen Server\nLyssnarserver"]
     
-    C --> C1[Pure P2P<br/>Ren P2P]
-    C --> C2[P2P med Relay<br/>P2P med vidarebefordran]
+    C --> C1["Pure P2P\nRen P2P"]
+    C --> C2["P2P med Relay\nP2P med vidarebefordran"]
     
     D --> D1[Server för kritisk data]
     D --> D2[P2P för ljud/video]

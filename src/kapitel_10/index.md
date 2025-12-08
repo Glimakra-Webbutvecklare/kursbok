@@ -85,7 +85,7 @@ const peerConnection = new RTCPeerConnection();
 ### Game Loop - hjärtat i alla spel
 
 ```mermaid
-flowchart LR
+graph LR
     A[Start] --> B[Input Handling]
     B --> C[Update Game State]
     C --> D[Render/Draw]
@@ -234,29 +234,8 @@ class MultiplayerGame {
 }
 ```
 
-## Kapitelets struktur och progression
 
-I detta kapitel kommer du att lära dig:
 
-```mermaid
-flowchart TD
-    A[Canvas Fundamentals] --> B[2D Graphics & Animation]
-    B --> C[Game Objects & OOP]
-    C --> D[Input & Collision Detection]
-    D --> E[WebSockets & Real-time]
-    E --> F[Multiplayer Architecture]
-    F --> G[Advanced Game Features]
-    G --> H[Complete Game Projects]
-    
-    A1[Drawing API<br/>Coordinates<br/>Basic Shapes] --> A
-    B1[Sprites<br/>Animation Loops<br/>requestAnimationFrame] --> B
-    C1[Classes<br/>Inheritance<br/>Game Architecture] --> C
-    D1[Keyboard/Mouse<br/>Collision Algorithms<br/>Physics] --> D
-    E1[WebSockets<br/>Real-time Updates<br/>Event Handling] --> E
-    F1[Client-Server<br/>State Sync<br/>Latency] --> F
-    G1[Sound<br/>Particles<br/>AI<br/>Save System] --> G
-    H1[Pong<br/>Platform Game<br/>Battle Arena<br/>MMO Basics] --> H
-```
 
 ### Kapitelinnehåll
 
