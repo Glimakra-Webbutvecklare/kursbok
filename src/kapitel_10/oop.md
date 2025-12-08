@@ -190,37 +190,27 @@ class Player {
 ### Hierarki av spelobjekt
 
 ```mermaid
-classDiagram
-    GameObject <|-- Character
-    GameObject <|-- Projectile
-    GameObject <|-- Item
+graph TD
+    GameObject --> Character
+    GameObject --> Projectile
+    GameObject --> Item
     
-    Character <|-- Player
-    Character <|-- Enemy
+    Character --> Player
+    Character --> Enemy
     
-    Enemy <|-- BasicEnemy
-    Enemy <|-- BossEnemy
+    Enemy --> BasicEnemy
+    Enemy --> BossEnemy
     
-    Projectile <|-- PlayerBullet
-    Projectile <|-- EnemyBullet
+    Projectile --> PlayerBullet
+    Projectile --> EnemyBullet
     
-    Item <|-- PowerUp
-    Item <|-- Weapon
+    Item --> PowerUp
+    Item --> Weapon
     
-    class GameObject {
-        +x: number
-        +y: number
-        +velocity: Vector2
-        +update()
-        +render()
-        +collidesWith()
-    }
-    
-    class Character {
-        +health: number
-        +takeDamage()
-        +die()
-    }
+    style GameObject fill:#FF6B6B,stroke:#FF5252,color:#fff
+    style Character fill:#4ECDC4,stroke:#26A69A,color:#fff
+    style Player fill:#45B7D1,stroke:#2196F3,color:#fff
+    style Enemy fill:#FFA726,stroke:#F57C00,color:#fff
 ```
 
 ### Implementering av arv
