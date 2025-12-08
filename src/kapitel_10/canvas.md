@@ -125,7 +125,7 @@ Fördelar med requestAnimationFrame:
 ## Vad är en sprite?
 En sprite är en liten bild som används i animationer. Den består av en serie olika bilder som visas i en sekvens. Såhär kan en sprite se ut:
 
-![Sprite](./sprite.png)
+![Sprite](./sprite.svg)
 
 ## Sprite handling
 Vanligtvis vill man använda sprites i sina animationer. Detta gör man genom att ladda in en bild och sedan rita ut den på canvasen.
@@ -170,7 +170,7 @@ Bredden bilden ska ritas ut med på canvas. Möjliggör skalning.
 Höjden bilden ska ritas ut med på canvas. Möjliggör skalning.
 
 
-![drawImage](./canvas_drawimage.jpg)
+![drawImage](./canvas_drawimage.svg)
 
 Man använder sx, sy, sWidth och sHeight för att rita ut rätt frame i sprite sheet på canvasen.
 

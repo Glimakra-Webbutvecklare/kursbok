@@ -382,7 +382,7 @@ Skapa en funktion `getDiscountedPrice` som tar två tal som parametrar och retur
 ```javascript
 // Skapar en funktion som räknar ut det rabatterade priset
 function getDiscountedPrice(originalPrice, discount) {
-  // Returnerar produkten av a och b
+  // Returnerar produkten av originalPrice och discount
   return originalPrice * discount;
 }
 

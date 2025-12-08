@@ -1,319 +1,672 @@
-# Praktiska övningar och spelprojekt
+# Praktiska övningar
 
-Detta kapitel innehåller fyra progressiva spelprojekt som tillsammans täcker alla viktiga koncept inom webbaserad spelutveckling. Varje projekt bygger vidare på kunskaperna från det föregående och introducerar nya tekniker och utmaningar.
+Detta kapitel innehåller många små övningar som täcker alla viktiga koncept inom webbaserad spelutveckling och WebSockets. Varje övning innehåller utförliga instruktioner om vad som behöver göras, så du kan lära dig steg för steg utan att bli överväldigad.
 
-## Projektöversikt
+## Canvas API - Grundläggande ritning
 
-```mermaid
-flowchart TD
-    A[Projekt 1: Pong Classic] --> B[Projekt 2: Space Invaders]
-    B --> C[Projekt 3: Multiplayer Snake]
-    C --> D[Projekt 4: Real-time Battle Arena]
+### Övning 1: Rita en enkel cirkel
+**Mål**: Lär dig använda Canvas API för att rita grundläggande former
+
+**Instruktioner**: 
+Skapa en HTML-fil med en canvas-element. I JavaScript ska du hämta canvas-elementet och få dess 2D-ritkontext. Använd arc-metoden för att rita en cirkel i mitten av canvasen. Cirkeln ska ha en radie på 50 pixlar och vara fylld med blå färg. Canvasen ska vara 400x400 pixlar stor, och cirkeln ska placeras exakt i mitten (koordinater 200, 200).
+
+<details>
+<summary>Lösningsförslag</summary>
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Canvas Cirkel</title>
+</head>
+<body>
+    <canvas id="myCanvas" width="400" height="400"></canvas>
     
-    A1[Canvas basics<br/>Collision detection<br/>Game loop] --> A
-    B1[OOP design<br/>Sprites & Animation<br/>Sound effects] --> B
-    C1[WebSockets<br/>Multiplayer sync<br/>Room management] --> C
-    D1[Advanced multiplayer<br/>Real-time combat<br/>Player progression] --> D
-    
-    style A fill:#FF6B6B,stroke:#FF5252,color:#fff
-    style B fill:#4ECDC4,stroke:#26A69A,color:#fff
-    style C fill:#45B7D1,stroke:#2196F3,color:#fff
-    style D fill:#9C27B0,stroke:#7B1FA2,color:#fff
+    <script>
+        const canvas = document.getElementById('myCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Rita en cirkel
+        ctx.beginPath();
+        ctx.arc(200, 200, 50, 0, Math.PI * 2);
+        ctx.fillStyle = 'blue';
+        ctx.fill();
+    </script>
+</body>
+</html>
 ```
+</details>
 
 ---
 
-## Projekt 1: Pong Classic 🏓
+### Övning 2: Animera en boll
+**Mål**: Använda requestAnimationFrame för animation
 
-**Mål**: Lär dig Canvas fundamentals, grundläggande speloop och kollisionsdetektering
-**Tid**: 3-4 timmar
-**Svårighetsgrad**: Nybörjare
+**Instruktioner**: 
+Skapa en HTML-fil med en canvas. Implementera en animation-loop med requestAnimationFrame där en röd boll rör sig från vänster till höger över canvasen. Bollen ska ha en radie på 20 pixlar och röra sig med en konstant hastighet. Varje frame ska canvasen rensas innan bollen ritas på nytt. När bollen når högerkanten av canvasen ska den börja om från vänsterkanten. Animationen ska köras kontinuerligt.
 
-### Projektbeskrivning
+<details>
+<summary>Lösningsförslag</summary>
 
-Skapa det klassiska Pong-spelet där två spelare styr racket för att studsa en boll fram och tillbaka. Detta projekt introducerar grundläggande spelkoncepten utan alltför komplex kod.
-
-### Teknikfokus
-- Canvas API för ritning
-- Grundläggande game loop
-- Kollisionsdetektering
-- Tangentbordsinput
-- Score-system
-
-### Steg-för-steg implementation
-
-**Steg 1: Grundstruktur**
-```javascript
-class PongGame {
-  constructor() {
-    this.canvas = document.getElementById('gameCanvas');
-    this.ctx = this.canvas.getContext('2d');
-    this.canvas.width = 800;
-    this.canvas.height = 400;
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Animerad Boll</title>
+</head>
+<body>
+    <canvas id="myCanvas" width="800" height="400"></canvas>
     
-    // Spelstatus
-    this.running = false;
-    this.score = { player1: 0, player2: 0 };
-    
-    this.initializeGame();
-  }
-  
-  initializeGame() {
-    // Spelare (rackets)
-    this.player1 = {
-      x: 20,
-      y: this.canvas.height / 2 - 40,
-      width: 10,
-      height: 80,
-      speed: 300
-    };
-    
-    this.player2 = {
-      x: this.canvas.width - 30,
-      y: this.canvas.height / 2 - 40,
-      width: 10,
-      height: 80,
-      speed: 300
-    };
-    
-    // Boll
-    this.ball = {
-      x: this.canvas.width / 2,
-      y: this.canvas.height / 2,
-      radius: 8,
-      velocityX: 200,
-      velocityY: 100
-    };
-  }
-}
+    <script>
+        const canvas = document.getElementById('myCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        let x = 0;
+        const speed = 2;
+        
+        function animate() {
+            // Rensa canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Rita bollen
+            ctx.beginPath();
+            ctx.arc(x, 200, 20, 0, Math.PI * 2);
+            ctx.fillStyle = 'red';
+            ctx.fill();
+            
+            // Uppdatera position
+            x += speed;
+            
+            // Börja om när bollen når kanten
+            if (x > canvas.width) {
+                x = 0;
+            }
+            
+            requestAnimationFrame(animate);
+        }
+        
+        animate();
+    </script>
+</body>
+</html>
 ```
-
-**Steg 2: Input-hantering**
-```javascript
-setupInput() {
-  this.keys = {};
-  
-  document.addEventListener('keydown', (e) => {
-    this.keys[e.key] = true;
-  });
-  
-  document.addEventListener('keyup', (e) => {
-    this.keys[e.key] = false;
-  });
-}
-
-handleInput(deltaTime) {
-  const speed = 300 * (deltaTime / 1000);
-  
-  // Player 1 (W/S tangenter)
-  if (this.keys['w'] && this.player1.y > 0) {
-    this.player1.y -= speed;
-  }
-  if (this.keys['s'] && this.player1.y < this.canvas.height - this.player1.height) {
-    this.player1.y += speed;
-  }
-  
-  // Player 2 (Piltangenter)
-  if (this.keys['ArrowUp'] && this.player2.y > 0) {
-    this.player2.y -= speed;
-  }
-  if (this.keys['ArrowDown'] && this.player2.y < this.canvas.height - this.player2.height) {
-    this.player2.y += speed;
-  }
-}
-```
-
-**Steg 3: Bollphysik och kollision**
-```javascript
-updateBall(deltaTime) {
-  const dt = deltaTime / 1000;
-  
-  // Uppdatera bollposition
-  this.ball.x += this.ball.velocityX * dt;
-  this.ball.y += this.ball.velocityY * dt;
-  
-  // Kollision med topp/botten
-  if (this.ball.y <= this.ball.radius || 
-      this.ball.y >= this.canvas.height - this.ball.radius) {
-    this.ball.velocityY = -this.ball.velocityY;
-  }
-  
-  // Kollision med rackets
-  if (this.checkPaddleCollision(this.player1) || 
-      this.checkPaddleCollision(this.player2)) {
-    this.ball.velocityX = -this.ball.velocityX;
-    // Lägg till lite variation baserat på var bollen träffar
-    this.ball.velocityY += (Math.random() - 0.5) * 100;
-  }
-  
-  // Poäng när bollen går utanför
-  if (this.ball.x < 0) {
-    this.score.player2++;
-    this.resetBall();
-  } else if (this.ball.x > this.canvas.width) {
-    this.score.player1++;
-    this.resetBall();
-  }
-}
-
-checkPaddleCollision(paddle) {
-  return this.ball.x - this.ball.radius < paddle.x + paddle.width &&
-         this.ball.x + this.ball.radius > paddle.x &&
-         this.ball.y - this.ball.radius < paddle.y + paddle.height &&
-         this.ball.y + this.ball.radius > paddle.y;
-}
-```
-
-### Utmaningar att lösa
-1. **AI-spelare**: Implementera en datorspelare för single-player läge
-2. **Power-ups**: Lägg till power-ups som ändrar bollhastighet eller racketstorlek
-3. **Partikeleffekter**: Skapa visuella effekter när bollen träffar någonting
-4. **Ljud**: Lägg till ljudeffekter för kollisioner och poäng
+</details>
 
 ---
 
-## Projekt 2: Space Invaders 👾
+### Övning 3: Rita en rektangel med tangentbordsinput
+**Mål**: Hantera tangentbordsinput och uppdatera canvas
 
-**Mål**: Använda OOP-design, sprites, animationer och ljudeffekter
-**Tid**: 6-8 timmar
-**Svårighetsgrad**: Medel
+**Instruktioner**: 
+Skapa en HTML-fil med en canvas och en röd rektangel som kan styras med tangentbordet. Rektangeln ska vara 50x50 pixlar stor och initialt placerad på position (100, 100). Implementera event listeners för keydown och keyup för att spåra vilka tangenter som hålls nedtryckta. Använd piltangenterna (ArrowUp, ArrowDown, ArrowLeft, ArrowRight) för att flytta rektangeln. Rektangeln ska inte kunna flyttas utanför canvasens gränser. Implementera en game loop som kontinuerligt uppdaterar rektangelns position baserat på vilka tangenter som är nedtryckta och sedan ritar om canvasen.
 
-### Projektbeskrivning
+<details>
+<summary>Lösningsförslag</summary>
 
-Skapa en modern version av Space Invaders med objektorienterad design, sprites, animationer och progressiv svårighet. Detta projekt fokuserar på god kodstruktur och visuell polering.
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rörlig Rektangel</title>
+</head>
+<body>
+    <canvas id="myCanvas" width="800" height="400"></canvas>
+    
+    <script>
+        const canvas = document.getElementById('myCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        const rect = {
+            x: 100,
+            y: 100,
+            width: 50,
+            height: 50,
+            speed: 5
+        };
+        
+        const keys = {};
+        
+        document.addEventListener('keydown', (e) => {
+            keys[e.key] = true;
+        });
+        
+        document.addEventListener('keyup', (e) => {
+            keys[e.key] = false;
+        });
+        
+        function update() {
+            if (keys['ArrowLeft'] && rect.x > 0) {
+                rect.x -= rect.speed;
+            }
+            if (keys['ArrowRight'] && rect.x < canvas.width - rect.width) {
+                rect.x += rect.speed;
+            }
+            if (keys['ArrowUp'] && rect.y > 0) {
+                rect.y -= rect.speed;
+            }
+            if (keys['ArrowDown'] && rect.y < canvas.height - rect.height) {
+                rect.y += rect.speed;
+            }
+        }
+        
+        function render() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'red';
+            ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
+        }
+        
+        function gameLoop() {
+            update();
+            render();
+            requestAnimationFrame(gameLoop);
+        }
+        
+        gameLoop();
+    </script>
+</body>
+</html>
+```
+</details>
 
-### Teknikfokus
-- ES6 klasser och arv
-- Sprite-hantering och animation
-- Ljud-integration
-- Partikeleffekter
-- Game states (menu, playing, game over)
+---
 
-### Huvudklasser
+### Övning 4: Skapa en enkel partikeleffekt
+**Mål**: Hantera flera objekt samtidigt
+
+**Instruktioner**: 
+Skapa en HTML-fil med en canvas och implementera ett partikelsystem med 20 partiklar. Varje partikel ska vara en blå cirkel som faller från toppen av canvasen. Partiklarna ska ha olika hastigheter (slumpmässigt mellan 1-4 pixlar per frame) och olika storlekar (slumpmässigt mellan 2-7 pixlar radie). Varje partikel ska starta på en slumpmässig x-position längs canvasens bredd. När en partikel når botten av canvasen ska den börja om från toppen på en ny slumpmässig x-position. Skapa en Particle-klass med update- och render-metoder. I game loopen ska alla partiklar uppdateras och ritas varje frame.
+
+<details>
+<summary>Lösningsförslag</summary>
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Partiklar</title>
+</head>
+<body>
+    <canvas id="myCanvas" width="800" height="400"></canvas>
+    
+    <script>
+        const canvas = document.getElementById('myCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = 0;
+                this.speed = Math.random() * 3 + 1;
+                this.size = Math.random() * 5 + 2;
+            }
+            
+            update() {
+                this.y += this.speed;
+                
+                // Börja om när partikeln når botten
+                if (this.y > canvas.height) {
+                    this.y = 0;
+                    this.x = Math.random() * canvas.width;
+                }
+            }
+            
+            render() {
+                ctx.fillStyle = 'blue';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+        
+        const particles = [];
+        for (let i = 0; i < 20; i++) {
+            particles.push(new Particle());
+        }
+        
+        function gameLoop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            particles.forEach(particle => {
+                particle.update();
+                particle.render();
+            });
+            
+            requestAnimationFrame(gameLoop);
+        }
+        
+        gameLoop();
+    </script>
+</body>
+</html>
+```
+</details>
+
+---
+
+## OOP för spel
+
+### Övning 5: Skapa en GameObject-klass
+**Mål**: Förstå grundläggande OOP-struktur för spel
+
+**Instruktioner**: 
+Skapa en GameObject-klass i JavaScript som fungerar som basklass för alla objekt i spelet. Klassen ska ha en konstruktor som tar emot x, y, width och height som parametrar och sparar dessa som instansvariabler. Klassen ska ha två metoder: en update-metod som tar deltaTime som parameter (men som standard inte gör något) och en render-metod som tar en canvas context som parameter. Render-metoden ska rita en grå rektangel på objektets position med objektets storlek. Testa klassen genom att skapa en instans och anropa render-metoden med en canvas context.
+
+<details>
+<summary>Lösningsförslag</summary>
 
 ```javascript
-// Basklasser
 class GameObject {
-  constructor(x, y, width, height) {
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
-    this.isDead = false;
-  }
-  
-  update(deltaTime) {}
-  render(ctx) {}
-  
-  collidesWith(other) {
-    return this.x < other.x + other.width &&
-           this.x + this.width > other.x &&
-           this.y < other.y + other.height &&
-           this.y + this.height > other.y;
-  }
+    constructor(x, y, width, height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+    }
+    
+    update(deltaTime) {
+        // Grundläggande update-logik
+    }
+    
+    render(ctx) {
+        ctx.fillStyle = 'gray';
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+    }
+}
+
+// Test
+const canvas = document.getElementById('myCanvas');
+const ctx = canvas.getContext('2d');
+
+const obj = new GameObject(100, 100, 50, 50);
+obj.render(ctx);
+```
+</details>
+
+---
+
+### Övning 6: Skapa en Player-klass som ärver från GameObject
+**Mål**: Förstå arv i JavaScript
+
+**Instruktioner**: 
+Skapa en Player-klass som ärver från GameObject-klassen från övning 5. Player-klassen ska i sin konstruktor anropa super-konstruktorn med x, y och fasta värden för width och height (t.ex. 40x40). Lägg till två nya instansvariabler: health (satt till 100) och score (satt till 0). Överskriv render-metoden så att spelaren ritas som en blå rektangel istället för grå. Lägg också till en health-bar som ritas ovanför spelaren som en röd rektangel vars bredd är proportionell mot health-värdet. Skapa en takeDamage-metod som tar en amount-parameter och minskar health med det värdet, men säkerställ att health aldrig går under 0.
+
+<details>
+<summary>Lösningsförslag</summary>
+
+```javascript
+class GameObject {
+    constructor(x, y, width, height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+    }
+    
+    update(deltaTime) {}
+    
+    render(ctx) {
+        ctx.fillStyle = 'gray';
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+    }
 }
 
 class Player extends GameObject {
-  constructor(x, y) {
-    super(x, y, 48, 32);
-    this.lives = 3;
-    this.score = 0;
-    this.speed = 250;
-    this.lastShot = 0;
-    this.shotCooldown = 250; // ms
-  }
-  
-  shoot() {
-    const now = Date.now();
-    if (now - this.lastShot > this.shotCooldown) {
-      const bullet = new PlayerBullet(
-        this.x + this.width / 2 - 2,
-        this.y
-      );
-      game.addEntity(bullet);
-      this.lastShot = now;
-      
-      // Spela skjutljud
-      audioManager.play('playerShoot');
+    constructor(x, y) {
+        super(x, y, 40, 40);
+        this.health = 100;
+        this.score = 0;
     }
-  }
-}
-
-class Invader extends GameObject {
-  constructor(x, y, type) {
-    super(x, y, 32, 24);
-    this.type = type;
-    this.points = type * 10;
-    this.animationFrame = 0;
-    this.animationTime = 0;
-  }
-  
-  update(deltaTime) {
-    // Animation
-    this.animationTime += deltaTime;
-    if (this.animationTime > 500) {
-      this.animationFrame = (this.animationFrame + 1) % 2;
-      this.animationTime = 0;
+    
+    render(ctx) {
+        ctx.fillStyle = 'blue';
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+        
+        // Visa health
+        ctx.fillStyle = 'red';
+        ctx.fillRect(this.x, this.y - 10, this.health / 2, 5);
     }
-  }
+    
+    takeDamage(amount) {
+        this.health -= amount;
+        if (this.health <= 0) {
+            this.health = 0;
+        }
+    }
 }
+
+// Test
+const player = new Player(100, 100);
+player.takeDamage(30);
+console.log(player.health); // 70
 ```
-
-### Game State Management
-
-```javascript
-class GameStateManager {
-  constructor() {
-    this.currentState = 'menu';
-    this.states = {
-      menu: new MenuState(),
-      playing: new PlayingState(),
-      gameOver: new GameOverState()
-    };
-  }
-  
-  changeState(newState) {
-    this.states[this.currentState].exit();
-    this.currentState = newState;
-    this.states[this.currentState].enter();
-  }
-  
-  update(deltaTime) {
-    this.states[this.currentState].update(deltaTime);
-  }
-  
-  render(ctx) {
-    this.states[this.currentState].render(ctx);
-  }
-}
-```
-
-### Utmaningar att lösa
-1. **Formation Movement**: Få invaders att röra sig i formation
-2. **Boss Battles**: Lägg till boss-fiender med speciella angreppsmönster
-3. **Weapon Upgrades**: Implementera olika vapentyper
-4. **High Score System**: Spara och visa high scores
+</details>
 
 ---
 
-## Projekt 3: Multiplayer Snake 🐍
+### Övning 7: Implementera kollisionsdetektering
+**Mål**: Förstå AABB (Axis-Aligned Bounding Box) kollision
 
-**Mål**: Implementera WebSocket-baserad multiplayer med room-hantering
-**Tid**: 8-10 timmar
-**Svårighetsgrad**: Avancerad
+**Instruktioner**: 
+Lägg till en collidesWith-metod i GameObject-klassen som tar ett annat GameObject som parameter och returnerar true om de två objekten kolliderar, annars false. Använd AABB (Axis-Aligned Bounding Box) kollisionsdetektering, vilket innebär att du kontrollerar om rektanglarna överlappar varandra. Två rektanglar kolliderar om den vänstra kanten av den ena är till vänster om den högra kanten av den andra, och vice versa, samt om den övre kanten av den ena är ovanför den nedre kanten av den andra, och vice versa. Metoden ska returnera true om alla dessa villkor är uppfyllda. Testa metoden genom att skapa två GameObject-instanser och kontrollera om de kolliderar.
 
-### Projektbeskrivning
+<details>
+<summary>Lösningsförslag</summary>
 
-Skapa en multiplayer-version av Snake där spelare kan skapa och gå med i spelrum. Inkluderar real-time synchronization, spectator-läge och turn-based gameplay.
+```javascript
+class GameObject {
+    constructor(x, y, width, height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+    }
+    
+    collidesWith(other) {
+        return this.x < other.x + other.width &&
+               this.x + this.width > other.x &&
+               this.y < other.y + other.height &&
+               this.y + this.height > other.y;
+    }
+    
+    render(ctx) {
+        ctx.fillStyle = 'gray';
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+    }
+}
 
-### Teknikfokus
-- WebSockets och realtidssynkronisering
-- Client-server arkitektur
-- Room management
-- State synchronization
-- Lobby system
+// Test
+const obj1 = new GameObject(100, 100, 50, 50);
+const obj2 = new GameObject(120, 120, 50, 50);
 
-### Server-implementation
+if (obj1.collidesWith(obj2)) {
+    console.log('Kollision!');
+}
+```
+</details>
+
+---
+
+### Övning 8: Skapa en Enemy-klass med AI
+**Mål**: Implementera enkel AI-beteende
+
+**Instruktioner**: 
+Skapa en Enemy-klass som ärver från GameObject. I konstruktorn ska den ta emot x, y och ett target-objekt (t.ex. en Player-instans). Lägg till en speed-egenskap (t.ex. 50 pixlar per sekund). Överskriv update-metoden så att fienden automatiskt rör sig mot target-objektet. Beräkna riktningen genom att hitta skillnaden i x- och y-koordinater mellan fienden och målet. Normalisera riktningsvektorn genom att dividera med avståndet (använd Pythagoras sats för att beräkna avståndet). Multiplicera den normaliserade riktningen med speed och deltaTime (konverterat till sekunder) för att uppdatera fiendens position. Överskriv render-metoden så att fienden ritas som en röd rektangel. I game loopen ska fienden uppdateras med deltaTime varje frame.
+
+<details>
+<summary>Lösningsförslag</summary>
+
+```javascript
+class Enemy extends GameObject {
+    constructor(x, y, target) {
+        super(x, y, 30, 30);
+        this.target = target;
+        this.speed = 50; // pixels per sekund
+    }
+    
+    update(deltaTime) {
+        if (!this.target) return;
+        
+        const dt = deltaTime / 1000; // konvertera till sekunder
+        
+        // Beräkna riktning mot målet
+        const dx = this.target.x - this.x;
+        const dy = this.target.y - this.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (distance > 0) {
+            // Normalisera och multiplicera med hastighet
+            this.x += (dx / distance) * this.speed * dt;
+            this.y += (dy / distance) * this.speed * dt;
+        }
+    }
+    
+    render(ctx) {
+        ctx.fillStyle = 'red';
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+    }
+}
+
+// Användning i game loop
+let lastTime = 0;
+function gameLoop(currentTime) {
+    const deltaTime = currentTime - lastTime;
+    lastTime = currentTime;
+    
+    enemy.update(deltaTime);
+    enemy.render(ctx);
+    
+    requestAnimationFrame(gameLoop);
+}
+```
+</details>
+
+---
+
+## Game Loop och Animation
+
+### Övning 9: Skapa en grundläggande game loop
+**Mål**: Förstå hur en game loop fungerar
+
+**Instruktioner**: 
+Skapa en Game-klass som hanterar hela spelets game loop. Klassen ska ha en konstruktor som hämtar canvas-elementet och dess 2D-context, samt initialiserar en running-flagga (satt till true) och lastTime-variabel (satt till 0). Skapa en gameLoop-metod som använder requestAnimationFrame och tar currentTime som parameter. I gameLoop ska du beräkna deltaTime genom att subtrahera lastTime från currentTime, och sedan uppdatera lastTime. Anropa en update-metod med deltaTime som parameter, och sedan en render-metod. Render-metoden ska först rensa canvasen med clearRect. Om running är true, anropa requestAnimationFrame igen med gameLoop. Skapa en start-metod som initierar game loopen och en stop-metod som sätter running till false.
+
+<details>
+<summary>Lösningsförslag</summary>
+
+```javascript
+class Game {
+    constructor() {
+        this.running = true;
+        this.lastTime = 0;
+        this.canvas = document.getElementById('gameCanvas');
+        this.ctx = this.canvas.getContext('2d');
+    }
+    
+    gameLoop = (currentTime) => {
+        const deltaTime = currentTime - this.lastTime;
+        this.lastTime = currentTime;
+        
+        this.update(deltaTime);
+        this.render();
+        
+        if (this.running) {
+            requestAnimationFrame(this.gameLoop);
+        }
+    }
+    
+    update(deltaTime) {
+        // Uppdatera spellogik här
+    }
+    
+    render() {
+        // Rensa canvas
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        // Rita spelet här
+    }
+    
+    start() {
+        requestAnimationFrame(this.gameLoop);
+    }
+    
+    stop() {
+        this.running = false;
+    }
+}
+
+// Starta spelet
+const game = new Game();
+game.start();
+```
+</details>
+
+---
+
+### Övning 10: Implementera FPS-räknare
+**Mål**: Förstå performance-mätning
+
+**Instruktioner**: 
+Lägg till FPS-räkning i Game-klassen från övning 9. Skapa instansvariabler för frameCount (satt till 0), fps (satt till 0) och fpsUpdateTime (satt till 0). I gameLoop-metoden, öka frameCount med 1 och lägg till deltaTime till fpsUpdateTime. När fpsUpdateTime når eller överstiger 1000 millisekunder (1 sekund), sätt fps till frameCount, nollställ frameCount och fpsUpdateTime. I render-metoden, rita FPS-värdet på canvasen med fillText. Använd en tydlig font (t.ex. '20px Arial') och vit färg, och placera texten i övre vänstra hörnet (t.ex. position 10, 30).
+
+<details>
+<summary>Lösningsförslag</summary>
+
+```javascript
+class Game {
+    constructor() {
+        this.lastTime = 0;
+        this.frameCount = 0;
+        this.fps = 0;
+        this.fpsUpdateTime = 0;
+    }
+    
+    gameLoop = (currentTime) => {
+        const deltaTime = currentTime - this.lastTime;
+        this.lastTime = currentTime;
+        
+        // Uppdatera FPS varje sekund
+        this.fpsUpdateTime += deltaTime;
+        this.frameCount++;
+        
+        if (this.fpsUpdateTime >= 1000) {
+            this.fps = this.frameCount;
+            this.frameCount = 0;
+            this.fpsUpdateTime = 0;
+        }
+        
+        this.update(deltaTime);
+        this.render();
+        
+        requestAnimationFrame(this.gameLoop);
+    }
+    
+    render() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        // Visa FPS
+        this.ctx.fillStyle = 'white';
+        this.ctx.font = '20px Arial';
+        this.ctx.fillText(`FPS: ${this.fps}`, 10, 30);
+    }
+}
+```
+</details>
+
+---
+
+## WebSockets - Grundläggande
+
+### Övning 11: Skapa en enkel WebSocket-anslutning
+**Mål**: Förstå grundläggande WebSocket-anslutning
+
+**Instruktioner**: 
+Skapa en HTML-sida med ett div-element för att visa anslutningsstatus och ett div-element för att visa mottagna meddelanden. I JavaScript, skapa en WebSocket-anslutning till 'ws://localhost:3000'. Implementera event handlers för WebSocket: när anslutningen öppnas (onopen), uppdatera status-div:en med texten "Ansluten!" och ändra färgen till grön. När ett meddelande tas emot (onmessage), skapa ett nytt div-element, sätt dess textContent till det mottagna meddelandet med prefix "Mottaget: ", och lägg till det i messages-div:en. När ett fel uppstår (onerror), uppdatera status-div:en med "Fel uppstod" och ändra färgen till röd, samt logga felet till konsolen. När anslutningen stängs (onclose), uppdatera status-div:en med "Frånkopplad" och ändra färgen till grå.
+
+<details>
+<summary>Lösningsförslag</summary>
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Test</title>
+</head>
+<body>
+    <div id="status">Ansluter...</div>
+    <div id="messages"></div>
+    
+    <script>
+        const socket = new WebSocket('ws://localhost:3000');
+        const statusDiv = document.getElementById('status');
+        const messagesDiv = document.getElementById('messages');
+        
+        socket.onopen = () => {
+            statusDiv.textContent = 'Ansluten!';
+            statusDiv.style.color = 'green';
+        };
+        
+        socket.onmessage = (event) => {
+            const message = document.createElement('div');
+            message.textContent = `Mottaget: ${event.data}`;
+            messagesDiv.appendChild(message);
+        };
+        
+        socket.onerror = (error) => {
+            statusDiv.textContent = 'Fel uppstod';
+            statusDiv.style.color = 'red';
+            console.error('WebSocket error:', error);
+        };
+        
+        socket.onclose = () => {
+            statusDiv.textContent = 'Frånkopplad';
+            statusDiv.style.color = 'gray';
+        };
+    </script>
+</body>
+</html>
+```
+</details>
+
+---
+
+### Övning 12: Skicka meddelanden via WebSocket
+**Mål**: Förstå hur man skickar data via WebSocket
+
+**Instruktioner**: 
+Utöka HTML-sidan från övning 11 med ett formulär som innehåller ett textfält för meddelanden och en submit-knapp. Lägg till en event listener på formuläret för submit-händelsen. I event handler-funktionen, förhindra standardformulärbeteendet med preventDefault. Kontrollera att WebSocket-anslutningen är öppen (readyState === WebSocket.OPEN) och att textfältet inte är tomt. Om båda villkoren är uppfyllda, skicka textfältets värde via socket.send() och töm sedan textfältet. Behåll funktionaliteten från övning 11 så att mottagna meddelanden fortfarande visas i messages-div:en.
+
+<details>
+<summary>Lösningsförslag</summary>
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Chat</title>
+</head>
+<body>
+    <div id="messages"></div>
+    <form id="messageForm">
+        <input type="text" id="messageInput" placeholder="Skriv ett meddelande...">
+        <button type="submit">Skicka</button>
+    </form>
+    
+    <script>
+        const socket = new WebSocket('ws://localhost:3000');
+        const messagesDiv = document.getElementById('messages');
+        const messageForm = document.getElementById('messageForm');
+        const messageInput = document.getElementById('messageInput');
+        
+        socket.onmessage = (event) => {
+            const message = document.createElement('div');
+            message.textContent = event.data;
+            messagesDiv.appendChild(message);
+        };
+        
+        messageForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            if (socket.readyState === WebSocket.OPEN && messageInput.value) {
+                socket.send(messageInput.value);
+                messageInput.value = '';
+            }
+        });
+    </script>
+</body>
+</html>
+```
+</details>
+
+---
+
+### Övning 13: Skapa en enkel WebSocket-server
+**Mål**: Förstå server-sidan av WebSockets
+
+**Instruktioner**: 
+Skapa en Node.js-server med Express och WebSocket-stöd. Använd express för att serva statiska filer från en 'public'-mapp. Skapa en HTTP-server med http.createServer och en WebSocket-server med WebSocket.Server som använder HTTP-servern. Implementera en connection-händelse på WebSocket-servern. När en klient ansluter, logga "Ny anslutning" till konsolen. Skicka ett välkomstmeddelande till klienten direkt efter anslutning. Implementera en message-händelse på WebSocket-anslutningen som loggar det mottagna meddelandet till konsolen och sedan skickar tillbaka meddelandet med prefix "Echo: ". Implementera en close-händelse som loggar "Anslutning stängd". Starta servern på port 3000. Skapa en package.json-fil och installera express och ws som dependencies.
+
+<details>
+<summary>Lösningsförslag</summary>
 
 ```javascript
 // server.js
@@ -321,377 +674,229 @@ const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
 
-class SnakeServer {
-  constructor() {
-    this.app = express();
-    this.server = http.createServer(this.app);
-    this.wss = new WebSocket.Server({ server: this.server });
-    this.rooms = new Map();
-    this.clients = new Map(); // ws -> playerInfo
+const app = express();
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
+
+app.use(express.static('public'));
+
+wss.on('connection', (ws) => {
+    console.log('Ny anslutning');
     
-    this.setupWebSocketHandlers();
-  }
-  
-  setupWebSocketHandlers() {
-    this.wss.on('connection', (ws) => {
-      console.log('Player connected');
-      
-      ws.on('message', (message) => {
+    ws.on('message', (message) => {
+        console.log('Mottaget:', message.toString());
+        
+        // Echo tillbaka meddelandet
+        ws.send(`Echo: ${message.toString()}`);
+    });
+    
+    ws.on('close', () => {
+        console.log('Anslutning stängd');
+    });
+    
+    // Skicka välkomstmeddelande
+    ws.send('Välkommen till servern!');
+});
+
+server.listen(3000, () => {
+    console.log('Server körs på port 3000');
+});
+```
+
+Installera dependencies:
+```bash
+npm init -y
+npm install express ws
+```
+</details>
+
+---
+
+### Övning 14: Broadcast meddelanden till alla klienter
+**Mål**: Förstå hur man skickar meddelanden till alla anslutna klienter
+
+**Instruktioner**: 
+Modifiera WebSocket-servern från övning 13 så att när en klient skickar ett meddelande, skickas det till alla anslutna klienter (inklusive avsändaren). I message-händelsen, istället för att bara echoa tillbaka till avsändaren, loopa igenom alla klienter i wss.clients. För varje klient, kontrollera att dess readyState är WebSocket.OPEN innan du skickar meddelandet. Detta säkerställer att du bara skickar till aktiva anslutningar. Skicka det ursprungliga meddelandet (som sträng) till alla anslutna klienter. Behåll loggningen av mottagna meddelanden och close-händelsen från övning 13.
+
+<details>
+<summary>Lösningsförslag</summary>
+
+```javascript
+// server.js
+const express = require('express');
+const http = require('http');
+const WebSocket = require('ws');
+
+const app = express();
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
+
+app.use(express.static('public'));
+
+wss.on('connection', (ws) => {
+    console.log('Ny anslutning');
+    
+    ws.on('message', (message) => {
+        console.log('Mottaget:', message.toString());
+        
+        // Broadcast till alla anslutna klienter
+        wss.clients.forEach((client) => {
+            if (client.readyState === WebSocket.OPEN) {
+                client.send(message.toString());
+            }
+        });
+    });
+    
+    ws.on('close', () => {
+        console.log('Anslutning stängd');
+    });
+});
+
+server.listen(3000, () => {
+    console.log('Server körs på port 3000');
+});
+```
+</details>
+
+---
+
+## Chat-applikationer
+
+### Övning 15: Lägg till användarnamn i chatten
+**Mål**: Förstå hur man hanterar användaridentitet i WebSocket-applikationer
+
+**Instruktioner**: 
+Modifiera både klienten och servern från övning 14 för att hantera användarnamn. På klienten, skapa ett inloggningsformulär med ett textfält för användarnamn och en knapp för att ansluta. Dölj chat-gränssnittet tills användaren har anslutit. När användaren klickar på anslut-knappen, skapa WebSocket-anslutningen. När anslutningen öppnas, skicka ett JSON-meddelande med typen 'setUsername' och användarnamnet. Visa sedan chat-gränssnittet och dölj inloggningsformuläret. När meddelanden skickas, skicka dem som JSON med typen 'message' och meddelandetexten. När meddelanden tas emot, parsa JSON och visa användarnamnet tillsammans med meddelandet. På servern, spara användarnamnet för varje WebSocket-anslutning (börja med 'Anonym' som standard). När ett meddelande med typen 'setUsername' tas emot, uppdatera användarnamnet och skicka ett välkomstmeddelande tillbaka. När ett meddelande med typen 'message' tas emot, broadcasta ett JSON-objekt som innehåller användarnamnet och meddelandetexten till alla klienter. I close-händelsen, logga användarnamnet när någon kopplar från.
+
+<details>
+<summary>Lösningsförslag</summary>
+
+**Client-side (HTML/JavaScript)**:
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat med Användarnamn</title>
+</head>
+<body>
+    <div id="login">
+        <input type="text" id="usernameInput" placeholder="Ange ditt namn...">
+        <button id="connectBtn">Anslut</button>
+    </div>
+    
+    <div id="chat" style="display: none;">
+        <div id="messages"></div>
+        <form id="messageForm">
+            <input type="text" id="messageInput" placeholder="Skriv ett meddelande...">
+            <button type="submit">Skicka</button>
+        </form>
+    </div>
+    
+    <script>
+        let socket = null;
+        let username = '';
+        
+        const loginDiv = document.getElementById('login');
+        const chatDiv = document.getElementById('chat');
+        const usernameInput = document.getElementById('usernameInput');
+        const connectBtn = document.getElementById('connectBtn');
+        const messagesDiv = document.getElementById('messages');
+        const messageForm = document.getElementById('messageForm');
+        const messageInput = document.getElementById('messageInput');
+        
+        connectBtn.addEventListener('click', () => {
+            username = usernameInput.value.trim();
+            if (username) {
+                socket = new WebSocket('ws://localhost:3000');
+                
+                socket.onopen = () => {
+                    // Skicka användarnamn till servern
+                    socket.send(JSON.stringify({
+                        type: 'setUsername',
+                        username: username
+                    }));
+                    
+                    loginDiv.style.display = 'none';
+                    chatDiv.style.display = 'block';
+                };
+                
+                socket.onmessage = (event) => {
+                    const data = JSON.parse(event.data);
+                    const message = document.createElement('div');
+                    message.innerHTML = `<strong>${data.username}:</strong> ${data.message}`;
+                    messagesDiv.appendChild(message);
+                };
+            }
+        });
+        
+        messageForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            if (socket && socket.readyState === WebSocket.OPEN && messageInput.value) {
+                socket.send(JSON.stringify({
+                    type: 'message',
+                    message: messageInput.value
+                }));
+                messageInput.value = '';
+            }
+        });
+    </script>
+</body>
+</html>
+```
+
+**Server-side (Node.js)**:
+```javascript
+// server.js
+const express = require('express');
+const http = require('http');
+const WebSocket = require('ws');
+
+const app = express();
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
+
+app.use(express.static('public'));
+
+wss.on('connection', (ws) => {
+    let username = 'Anonym';
+    
+    ws.on('message', (message) => {
         try {
-          const data = JSON.parse(message);
-          
-          switch (data.type) {
-            case 'createRoom':
-              const roomId = this.generateRoomId();
-              const room = new GameRoom(roomId, data.maxPlayers);
-              this.rooms.set(roomId, room);
-              this.joinRoom(ws, roomId, data.playerName);
-              break;
-              
-            case 'joinRoom':
-              this.joinRoom(ws, data.roomId, data.playerName);
-              break;
-              
-            case 'playerInput':
-              const playerRoom = this.findPlayerRoom(ws);
-              if (playerRoom) {
-                playerRoom.handlePlayerInput(ws, data.input);
-              }
-              break;
-          }
+            const data = JSON.parse(message);
+            
+            if (data.type === 'setUsername') {
+                username = data.username;
+                ws.send(JSON.stringify({
+                    type: 'system',
+                    message: `Välkommen, ${username}!`
+                }));
+            } else if (data.type === 'message') {
+                // Broadcast till alla klienter
+                const broadcastData = {
+                    type: 'message',
+                    username: username,
+                    message: data.message
+                };
+                
+                wss.clients.forEach((client) => {
+                    if (client.readyState === WebSocket.OPEN) {
+                        client.send(JSON.stringify(broadcastData));
+                    }
+                });
+            }
         } catch (error) {
-          console.error('Error parsing message:', error);
+            console.error('Error parsing message:', error);
         }
-      });
-      
-      ws.on('close', () => {
-        this.handlePlayerDisconnect(ws);
-      });
     });
-  }
-}
+    
+    ws.on('close', () => {
+        console.log(`${username} kopplade från`);
+    });
+});
 
-class GameRoom {
-  constructor(id, maxPlayers) {
-    this.id = id;
-    this.maxPlayers = maxPlayers;
-    this.players = new Map();
-    this.gameState = 'waiting';
-    this.board = this.createBoard();
-    this.currentTurn = 0;
-    this.turnTimer = null;
-  }
-  
-  handlePlayerInput(playerWs, input) {
-    if (this.gameState !== 'playing') return;
-    
-    const currentPlayerWs = this.getCurrentPlayerWs();
-    if (currentPlayerWs !== playerWs) return;
-    
-    const player = this.players.get(playerWs);
-    if (this.isValidMove(player, input.direction)) {
-      this.movePlayer(player, input.direction);
-      this.nextTurn();
-    }
-  }
-  
-  broadcast(eventName, data) {
-    const message = JSON.stringify({
-      type: eventName,
-      data: data
-    });
-    
-    this.players.forEach((player, ws) => {
-      if (ws.readyState === WebSocket.OPEN) {
-        ws.send(message);
-      }
-    });
-  }
-}
+server.listen(3000, () => {
+    console.log('Server körs på port 3000');
+});
 ```
-
-### Client-implementation
-
-```javascript
-class MultiplayerSnake {
-  constructor() {
-    this.socket = null;
-    this.gameState = 'lobby';
-    this.playerId = null;
-    this.room = null;
-    
-    this.connectToServer();
-    this.setupUI();
-  }
-  
-  connectToServer() {
-    this.socket = new WebSocket('ws://localhost:3000');
-    
-    this.socket.onopen = () => {
-      console.log('Ansluten till servern');
-      this.playerId = Math.random().toString(36).substr(2, 9);
-    };
-    
-    this.socket.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        this.handleServerMessage(data);
-      } catch (error) {
-        console.error('Error parsing server message:', error);
-      }
-    };
-    
-    this.socket.onclose = () => {
-      console.log('Frånkopplad från servern');
-      this.gameState = 'disconnected';
-    };
-    
-    this.socket.onerror = (error) => {
-      console.error('WebSocket-fel:', error);
-    };
-  }
-  
-  handleServerMessage(data) {
-    switch (data.type) {
-      case 'roomJoined':
-        this.room = data.data;
-        this.gameState = 'room';
-        this.updateUI();
-        break;
-        
-      case 'gameStarted':
-        this.gameState = 'playing';
-        this.board = data.data.board;
-        this.players = data.data.players;
-        this.startGameLoop();
-        break;
-        
-      case 'gameUpdate':
-        this.updateGameState(data.data);
-        break;
-        
-      case 'turnChanged':
-        this.currentTurn = data.data.playerId;
-        this.turnTimeLeft = data.data.timeLeft;
-        break;
-    }
-  }
-  
-  sendMove(direction) {
-    if (this.gameState === 'playing' && this.currentTurn === this.playerId) {
-      if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-        this.socket.send(JSON.stringify({
-          type: 'playerInput',
-          input: { direction }
-        }));
-      }
-    }
-  }
-}
-```
-
-### Utmaningar att lösa
-1. **Reconnection**: Hantera när spelare kopplar från och ansluter igen
-2. **Spectator Mode**: Låt andra spelare titta på pågående spel
-3. **Tournament Mode**: Skapa bracket-system för turneringar
-4. **Custom Game Rules**: Låt rum-skapare välja olika spelvarianterar
-
----
-
-## Projekt 4: Real-time Battle Arena ⚔️
-
-**Mål**: Avancerad multiplayer med real-time combat och character progression
-**Tid**: 12-15 timmar
-**Svårighetsgrad**: Expert
-
-### Projektbeskrivning
-
-Skapa en top-down battle arena där spelare kan välja karaktärer med olika förmågor, kämpas i real-time och få progression genom spelet. Detta är det mest avancerade projektet som kombinerar alla tidigare koncept.
-
-### Teknikfokus
-- Avancerad multiplayer arkitektur
-- Real-time combat system
-- Character abilities och cooldowns
-- Skill trees och progression
-- Matchmaking system
-- Anti-cheat och input validation
-
-### Avancerade system
-
-**Character System**
-```javascript
-class Character {
-  constructor(type, playerId) {
-    this.type = type;
-    this.playerId = playerId;
-    this.stats = this.getBaseStats(type);
-    this.abilities = this.getAbilities(type);
-    this.level = 1;
-    this.experience = 0;
-  }
-  
-  getBaseStats(type) {
-    const statTemplates = {
-      warrior: { health: 150, damage: 25, speed: 100, armor: 10 },
-      mage: { health: 80, damage: 40, speed: 120, armor: 2 },
-      archer: { health: 100, damage: 30, speed: 140, armor: 5 }
-    };
-    return { ...statTemplates[type] };
-  }
-  
-  useAbility(abilityIndex, targetPosition) {
-    const ability = this.abilities[abilityIndex];
-    if (this.canUseAbility(ability)) {
-      this.castAbility(ability, targetPosition);
-      ability.lastUsed = Date.now();
-      return true;
-    }
-    return false;
-  }
-}
-```
-
-**Real-time Combat**
-```javascript
-class CombatSystem {
-  constructor(gameWorld) {
-    this.gameWorld = gameWorld;
-    this.projectiles = [];
-    this.effects = [];
-  }
-  
-  processCombat(deltaTime) {
-    // Uppdatera projektiler
-    this.projectiles.forEach(projectile => {
-      projectile.update(deltaTime);
-      
-      // Kontrollera träffar
-      this.gameWorld.players.forEach(player => {
-        if (projectile.playerId !== player.id && 
-            projectile.collidesWith(player)) {
-          this.applyDamage(player, projectile.damage);
-          projectile.destroy();
-        }
-      });
-    });
-    
-    // Ta bort döda projektiler
-    this.projectiles = this.projectiles.filter(p => !p.isDead);
-  }
-  
-  applyDamage(target, damage) {
-    const finalDamage = Math.max(1, damage - target.armor);
-    target.health -= finalDamage;
-    
-    // Skicka damage event till alla klienter
-    this.gameWorld.broadcast('playerDamaged', {
-      playerId: target.id,
-      damage: finalDamage,
-      health: target.health
-    });
-    
-    if (target.health <= 0) {
-      this.handlePlayerDeath(target);
-    }
-  }
-}
-```
-
-**Netcode optimering**
-```javascript
-class NetworkOptimizer {
-  constructor() {
-    this.updateRate = 20; // 20 updates per sekund
-    this.priorityQueue = [];
-    this.clientStates = new Map();
-  }
-  
-  optimizeUpdate(gameState, clientId) {
-    const clientState = this.clientStates.get(clientId);
-    const optimizedState = {
-      timestamp: Date.now(),
-      players: this.getRelevantPlayers(gameState, clientId),
-      projectiles: this.getVisibleProjectiles(gameState, clientId),
-      effects: this.getLocalEffects(gameState, clientId)
-    };
-    
-    // Delta compression - skicka bara ändringar
-    const deltaState = this.createDelta(clientState, optimizedState);
-    this.clientStates.set(clientId, optimizedState);
-    
-    return deltaState;
-  }
-  
-  getRelevantPlayers(gameState, clientId) {
-    const client = gameState.players.get(clientId);
-    if (!client) return [];
-    
-    // Skicka bara spelare inom synfält
-    return gameState.players.filter(player => {
-      const distance = this.calculateDistance(client, player);
-      return distance < client.viewDistance;
-    });
-  }
-}
-```
-
-### Utmaningar att lösa
-1. **Skill Trees**: Implementera progression system med unlockable abilities
-2. **Team Battles**: Stödja team-based combat
-3. **Spectator System**: Real-time spectating med camera controls
-4. **Leaderboards**: Global ranking system
-5. **Replay System**: Spara och spela upp matcher
-
----
-
-## Bedömningskriterier och feedback
-
-### För varje projekt
-**Grundfunktionalitet (40%)**:
-- ✅ Alla grundläggande features implementerade
-- ✅ Spelet är spelbart från start till slut
-- ✅ Inga större buggar eller crashes
-
-**Kodkvalitet (30%)**:
-- ✅ Väl strukturerad och kommenterad kod
-- ✅ Rätt användning av OOP-principer
-- ✅ Separation of concerns
-
-**Användarupplevelse (20%)**:
-- ✅ Responsiv kontroller
-- ✅ Tydlig visuell feedback
-- ✅ Lämplig svårighet och progression
-
-**Innovation (10%)**:
-- ✅ Extra features eller förbättringar
-- ✅ Kreativa lösningar på problem
-- ✅ Polish och detaljer
-
-### Portfoliopresentation
-
-Efter att ha slutfört alla projekt, skapa en portfolio-sida som visar:
-
-1. **Live demos** av alla spel
-2. **Kod-genomgångar** som förklarar viktiga tekniska beslut
-3. **Reflektion** över vad du lärt dig från varje projekt
-4. **Future improvements** - vad du skulle göra annorlunda
-
-## Resurser för vidareutveckling
-
-### Grafik och ljud
-- **Kenney Assets**: Gratis sprites och ljud för spel
-- **Freesound**: Gratis ljudeffekter
-- **Piskel**: Online pixelart editor
-
-### Avancerade tekniker
-- **Three.js**: För 3D webspel
-- **Matter.js**: Fysikmotor för 2D spel
-- **Phaser**: Komplett spelframework
-- **ws library**: Native WebSocket server för Node.js
-
-### Deployment
-- **Netlify/Vercel**: För frontend hosting
-- **Heroku/Railway**: För backend deployment
-- **MongoDB Atlas**: För cloud database
-
-Lycka till med dina spelprojekt! 🎮
+</details>
