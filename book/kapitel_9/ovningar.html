@@ -1,0 +1,1745 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Praktiska övningar - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="praktiska-Övningar---backend-utveckling"><a class="header" href="#praktiska-Övningar---backend-utveckling">Praktiska Övningar - Backend-utveckling</a></h1>
+<p>Nu är det dags att tillämpa allt du lärt dig! Dessa fyra projekt bygger progressivt på varandra - från grundläggande Express-applikationer till fullständiga backend-system med autentisering och databasintegration.</p>
+<h2 id="Övning-1-todo-api-med-express-och-mongodb"><a class="header" href="#Övning-1-todo-api-med-express-och-mongodb">Övning 1: Todo API med Express och MongoDB</a></h2>
+<p><strong>Mål</strong>: Bygga en fullständig RESTful API för todo-hantering med MongoDB-integration.</p>
+<p><strong>Vad du kommer lära dig</strong>:</p>
+<ul>
+<li>Express routing och middleware</li>
+<li>MongoDB-integration med Mongoose</li>
+<li>CRUD-operationer med testning</li>
+<li>Felhantering och validering</li>
+<li>API-design och automatiserad testning med Jest</li>
+</ul>
+<h3 id="steg-1-projekt-setup"><a class="header" href="#steg-1-projekt-setup">Steg 1: Projekt-setup</a></h3>
+<p>Börja med att skapa projektet och installera alla dependencies (beroenden) du behöver.</p>
+<pre><code class="language-bash">mkdir todo-api
+cd todo-api
+npm init -y
+</code></pre>
+<p><strong>Din uppgift</strong>: Installera dependencies. Tänk på:</p>
+<ul>
+<li>Express för servern</li>
+<li>Mongoose för MongoDB</li>
+<li>Middleware: cors, helmet, morgan</li>
+<li>dotenv för miljövariabler</li>
+<li>Jest och supertest för testning (som utvecklingsberoenden)</li>
+<li>nodemon för automatisk omstart (som utvecklingsberoende)</li>
+</ul>
+<details>
+<summary>Visa lösning</summary>
+<pre><code class="language-bash">npm install express mongoose cors helmet morgan dotenv
+npm install --save-dev jest supertest nodemon
+</code></pre>
+</details>
+<p>Nu behöver du konfigurera <code>package.json</code> för ES6-moduler och lägga till scripts.</p>
+<p><strong>Din uppgift</strong>: Uppdatera <code>package.json</code>:</p>
+<ol>
+<li>Lägg till <code>"type": "module"</code> för att aktivera ES6-moduler</li>
+<li>Lägg till scripts för <code>start</code>, <code>dev</code> och <code>test</code></li>
+<li>För test-scriptet, använd flaggan <code>--experimental-vm-modules</code> (se <code>testning.md</code>)</li>
+</ol>
+<details>
+<summary>Visa lösning</summary>
+<pre><code class="language-json">{
+  "name": "todo-api",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^7.0.0",
+    "cors": "^2.8.5",
+    "helmet": "^6.0.0",
+    "morgan": "^1.10.0",
+    "dotenv": "^16.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0",
+    "supertest": "^6.0.0",
+    "nodemon": "^2.0.0"
+  }
+}
+</code></pre>
+</details>
+<p>Skapa projektstrukturen:</p>
+<pre><code>todo-api/
+├── server.js
+├── models/
+│   └── Todo.js
+├── controllers/
+│   └── todoController.js
+├── routes/
+│   └── todos.js
+├── middleware/
+│   └── errorHandler.js
+└── .env
+</code></pre>
+<h3 id="steg-2-skapa-todo-modellen"><a class="header" href="#steg-2-skapa-todo-modellen">Steg 2: Skapa Todo-modellen</a></h3>
+<p>Skapa filen <code>models/Todo.js</code>. Börja med grundläggande schema-definition:</p>
+<pre><code class="language-javascript">import mongoose from 'mongoose';
+
+const todoSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: [true, 'Titel krävs'],
+    trim: true
+    // TODO: Lägg till maxlength-validering (100 tecken)
+  },
+  // TODO: Lägg till fält för description, completed, priority
+});
+</code></pre>
+<p><strong>Din uppgift</strong>:</p>
+<ol>
+<li>Komplettera schemat med:
+<ul>
+<li><code>description</code>: String, trim, maxlength 500 tecken</li>
+<li><code>completed</code>: Boolean med default <code>false</code></li>
+<li><code>priority</code>: String, enum ['low', 'medium', 'high'], default 'medium'</li>
+<li><code>dueDate</code>: Date (valfritt)</li>
+<li><code>category</code>: String, trim (valfritt)</li>
+<li><code>createdAt</code>: Date med default <code>Date.now</code></li>
+<li><code>updatedAt</code>: Date med default <code>Date.now</code></li>
+</ul>
+</li>
+<li>Lägg till maxlength-validering för title (100 tecken)</li>
+</ol>
+<details>
+<summary>Visa lösning</summary>
+<pre><code class="language-javascript">import mongoose from 'mongoose';
+
+const todoSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: [true, 'Titel krävs'],
+    trim: true,
+    maxlength: [100, 'Titel kan inte överstiga 100 tecken']
+  },
+  description: {
+    type: String,
+    trim: true,
+    maxlength: [500, 'Beskrivning kan inte överstiga 500 tecken']
+  },
+  completed: {
+    type: Boolean,
+    default: false
+  },
+  priority: {
+    type: String,
+    enum: ['low', 'medium', 'high'],
+    default: 'medium'
+  },
+  dueDate: {
+    type: Date
+  },
+  category: {
+    type: String,
+    trim: true
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now
+  }
+});
+
+export default mongoose.model('Todo', todoSchema);
+</code></pre>
+</details>
+<p>Nu lägger vi till pre-hook (krok) för att automatiskt uppdatera <code>updatedAt</code>:</p>
+<p><strong>Din uppgift</strong>: Lägg till en <code>pre('save')</code> hook som uppdaterar <code>updatedAt</code> när dokumentet modifieras (men inte när det skapas första gången).</p>
+<p>Tips: Använd <code>this.isModified()</code> och <code>this.isNew</code> för att kontrollera.</p>
+<details>
+<summary>Visa lösning</summary>
+<pre><code class="language-javascript">// Uppdatera updatedAt före sparning
+todoSchema.pre('save', function(next) {
+  if (this.isModified() &amp;&amp; !this.isNew) {
+    this.updatedAt = Date.now();
+  }
+  next();
+});
+</code></pre>
+</details>
+<p>Lägg till en virtual (beräknat fält) för att räkna ut antal dagar kvar till <code>dueDate</code>:</p>
+<p><strong>Din uppgift</strong>: Skapa en virtual <code>daysUntilDue</code> som:</p>
+<ul>
+<li>Returnerar <code>null</code> om <code>dueDate</code> saknas</li>
+<li>Annars räknar ut antal dagar (kan vara negativt om datumet har passerat)</li>
+<li>Inkludera virtuals när JSON konverteras med <code>todoSchema.set('toJSON', { virtuals: true })</code></li>
+</ul>
+<details>
+<summary>Visa lösning</summary>
+<pre><code class="language-javascript">// Virtual för att räkna ut hur många dagar kvar
+todoSchema.virtual('daysUntilDue').get(function() {
+  if (!this.dueDate) return null;
+  const today = new Date();
+  const dueDate = new Date(this.dueDate);
+  const diffTime = dueDate - today;
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return diffDays;
+});
+
+// Inkludera virtuals när JSON konverteras
+todoSchema.set('toJSON', { virtuals: true });
+</code></pre>
+</details>
+<h3 id="steg-3-testa-todo-modellen"><a class="header" href="#steg-3-testa-todo-modellen">Steg 3: Testa Todo-modellen</a></h3>
+<p>Innan vi bygger API:et ska vi testa modellen direkt. Skapa <code>models/Todo.test.js</code>:</p>
+<pre><code class="language-javascript">import mongoose from 'mongoose';
+import Todo from './Todo.js';
+
+// Anslut till testdatabas
+beforeAll(async () =&gt; {
+  await mongoose.connect('mongodb://localhost:27017/todo-api-test');
+});
+
+afterAll(async () =&gt; {
+  await mongoose.connection.close();
+});
+
+describe('Todo Model', () =&gt; {
+  beforeEach(async () =&gt; {
+    await Todo.deleteMany({});
+  });
+
+  test('skapar todo med required fields', async () =&gt; {
+    // TODO: Skapa en todo med endast title
+    // TODO: Verifiera att den sparades korrekt
+    // TODO: Verifiera att completed är false (default)
+    // TODO: Verifiera att priority är 'medium' (default)
+  });
+});
+</code></pre>
+<p><strong>Din uppgift</strong>:</p>
+<ol>
+<li>Skriv testet som skapar en todo med endast <code>title</code> och verifierar att den sparades korrekt med defaults</li>
+<li>Lägg till test som verifierar att <code>title</code> är required (förväntat fel när du försöker spara utan title)</li>
+<li>Lägg till test som verifierar maxlength för title (försök spara med för lång title)</li>
+<li>Lägg till test som verifierar att <code>daysUntilDue</code> virtual fungerar</li>
+</ol>
+<details>
+<summary>Visa lösning</summary>
+<pre><code class="language-javascript">import mongoose from 'mongoose';
+import Todo from './Todo.js';
+
+beforeAll(async () =&gt; {
+  await mongoose.connect('mongodb://localhost:27017/todo-api-test');
+});
+
+afterAll(async () =&gt; {
+  await mongoose.connection.close();
+});
+
+describe('Todo Model', () =&gt; {
+  beforeEach(async () =&gt; {
+    await Todo.deleteMany({});
+  });
+
+  test('skapar todo med required fields', async () =&gt; {
+    const todo = new Todo({ title: 'Test todo' });
+    const savedTodo = await todo.save();
+    
+    expect(savedTodo.title).toBe('Test todo');
+    expect(savedTodo.completed).toBe(false);
+    expect(savedTodo.priority).toBe('medium');
+    expect(savedTodo).toHaveProperty('createdAt');
+    expect(savedTodo).toHaveProperty('_id');
+  });
+
+  test('kräver title', async () =&gt; {
+    const todo = new Todo({});
+    await expect(todo.save()).rejects.toThrow();
+  });
+
+  test('validerar maxlength för title', async () =&gt; {
+    const longTitle = 'a'.repeat(101);
+    const todo = new Todo({ title: longTitle });
+    await expect(todo.save()).rejects.toThrow();
+  });
+
+  test('beräknar daysUntilDue korrekt', async () =&gt; {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    const todo = new Todo({ 
+      title: 'Test',
+      dueDate: tomorrow 
+    });
+    const savedTodo = await todo.save();
+    
+    expect(savedTodo.daysUntilDue).toBe(1);
+  });
+});
+</code></pre>
+</details>
+<h3 id="steg-4-skapa-todo-controller---grundläggande-crud"><a class="header" href="#steg-4-skapa-todo-controller---grundläggande-crud">Steg 4: Skapa Todo Controller - Grundläggande CRUD</a></h3>
+<p>Börja med <code>controllers/todoController.js</code>. Vi bygger metod för metod och testar varje.</p>
+<pre><code class="language-javascript">import Todo from '../models/Todo.js';
+
+class TodoController {
+  // TODO: Implementera getAllTodos
+  static async getAllTodos(req, res, next) {
+    try {
+      // TODO: Hämta alla todos med Todo.find()
+      // TODO: Skicka tillbaka som JSON
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // TODO: Implementera getTodoById
+  static async getTodoById(req, res, next) {
+    try {
+      // TODO: Hitta todo med Todo.findById(req.params.id)
+      // TODO: Returnera 404 om inte hittad
+      // TODO: Returnera todo som JSON
+    } catch (error) {
+      next(error);
+    }
+  }
+}
+
+export default TodoController;
+</code></pre>
+<p><strong>Din uppgift</strong>:</p>
+<ol>
+<li>Implementera <code>getAllTodos</code> som hämtar alla todos</li>
+<li>Implementera <code>getTodoById</code> som:
+<ul>
+<li>Hämtar todo med <code>req.params.id</code></li>
+<li>Returnerar 404 med felmeddelande om den inte finns</li>
+<li>Returnerar todo som JSON om den finns</li>
+</ul>
+</li>
+</ol>
+<details>
+<summary>Visa lösning</summary>
+<pre><code class="language-javascript">import Todo from '../models/Todo.js';
+
+class TodoController {
+  static async getAllTodos(req, res, next) {
+    try {
+      const todos = await Todo.find();
+      res.json(todos);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async getTodoById(req, res, next) {
+    try {
+      const todo = await Todo.findById(req.params.id);
+      
+      if (!todo) {
+        return res.status(404).json({ error: 'Todo inte hittad' });
+      }
+
+      res.json(todo);
+    } catch (error) {
+      next(error);
+    }
+  }
+}
+
+export default TodoController;
+</code></pre>
+</details>
+<p>Nu lägger vi till <code>createTodo</code>:</p>
+<p><strong>Din uppgift</strong>: Implementera <code>createTodo</code> som:</p>
+<ul>
+<li>Skapar ny todo från <code>req.body</code></li>
+<li>Sparar den</li>
+<li>Returnerar 201 status med Location-header och todo som JSON</li>
+</ul>
+<details>
+<summary>Visa lösning</summary>
+<pre><code class="language-javascript">static async createTodo(req, res, next) {
+  try {
+    const todo = new Todo(req.body);
+    const savedTodo = await todo.save();
+
+    res.status(201)
+       .location(`/api/todos/${savedTodo._id}`)
+       .json(savedTodo);
+  } catch (error) {
+    next(error);
+  }
+}
+</code></pre>
+</details>
+<p>Lägg till <code>updateTodo</code> och <code>deleteTodo</code>:</p>
+<p><strong>Din uppgift</strong>:</p>
+<ol>
+<li>Implementera <code>updateTodo</code> med <code>findByIdAndUpdate</code> (använd <code>{ new: true, runValidators: true }</code>)</li>
+<li>Implementera <code>deleteTodo</code> med <code>findByIdAndDelete</code></li>
+<li>Båda ska returnera 404 om todo inte finns</li>
+<li><code>deleteTodo</code> ska returnera 204 status (inget innehåll)</li>
+</ol>
+<details>
+<summary>Visa lösning</summary>
+<pre><code class="language-javascript">static async updateTodo(req, res, next) {
+  try {
+    const todo = await Todo.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+
+    if (!todo) {
+      return res.status(404).json({ error: 'Todo inte hittad' });
+    }
+
+    res.json(todo);
+  } catch (error) {
+    next(error);
+  }
+}
+
+static async deleteTodo(req, res, next) {
+  try {
+    const todo = await Todo.findByIdAndDelete(req.params.id);
+
+    if (!todo) {
+      return res.status(404).json({ error: 'Todo inte hittad' });
+    }
+
+    res.status(204).send();
+  } catch (error) {
+    next(error);
+  }
+}
+</code></pre>
+</details>
+<h3 id="steg-5-testa-controller-med-supertest"><a class="header" href="#steg-5-testa-controller-med-supertest">Steg 5: Testa Controller med Supertest</a></h3>
+<p>Skapa <code>controllers/todoController.test.js</code>. Börja med att sätta upp testmiljön:</p>
+<pre><code class="language-javascript">import request from 'supertest';
+import express from 'express';
+import mongoose from 'mongoose';
+import Todo from '../models/Todo.js';
+import TodoController from './todoController.js';
+
+const app = express();
+app.use(express.json());
+
+// Routes - vi lägger till dessa senare, för nu testar vi direkt
+// app.use('/api/todos', todoRoutes);
+
+beforeAll(async () =&gt; {
+  await mongoose.connect('mongodb://localhost:27017/todo-api-test');
+});
+
+afterAll(async () =&gt; {
+  await mongoose.connection.close();
+});
+
+describe('TodoController', () =&gt; {
+  beforeEach(async () =&gt; {
+    await Todo.deleteMany({});
+  });
+
+  // TODO: Skriv tester här
+});
+</code></pre>
+<p><strong>Din uppgift</strong>: Skriv tester för:</p>
+<ol>
+<li><code>createTodo</code> - verifiera att todo skapas korrekt</li>
+<li><code>getAllTodos</code> - verifiera att alla todos returneras</li>
+<li><code>getTodoById</code> - verifiera att specifik todo returneras och 404 om inte hittad</li>
+<li><code>updateTodo</code> - verifiera att todo uppdateras</li>
+<li><code>deleteTodo</code> - verifiera att todo tas bort</li>
+</ol>
+<p>Tips: Du behöver skapa routes först för att testa. Vi gör det i nästa steg, men du kan testa controller-metoderna direkt också.</p>
+<details>
+<summary>Visa lösning</summary>
+<p>För att testa controllers behöver vi routes. Vi gör en enkel route-fil först:</p>
+<pre><code class="language-javascript">// routes/todos.js (temporär för tester)
+import express from 'express';
+import TodoController from '../controllers/todoController.js';
+
+const router = express.Router();
+
+router.get('/', TodoController.getAllTodos);
+router.get('/:id', TodoController.getTodoById);
+router.post('/', TodoController.createTodo);
+router.put('/:id', TodoController.updateTodo);
+router.delete('/:id', TodoController.deleteTodo);
+
+export default router;
+</code></pre>
+<pre><code class="language-javascript">// controllers/todoController.test.js
+import request from 'supertest';
+import express from 'express';
+import mongoose from 'mongoose';
+import Todo from '../models/Todo.js';
+import todosRouter from '../routes/todos.js';
+
+const app = express();
+app.use(express.json());
+app.use('/api/todos', todosRouter);
+
+beforeAll(async () =&gt; {
+  await mongoose.connect('mongodb://localhost:27017/todo-api-test');
+});
+
+afterAll(async () =&gt; {
+  await mongoose.connection.close();
+});
+
+describe('TodoController', () =&gt; {
+  beforeEach(async () =&gt; {
+    await Todo.deleteMany({});
+  });
+
+  describe('POST /api/todos', () =&gt; {
+    test('skapar ny todo', async () =&gt; {
+      const newTodo = {
+        title: 'Test todo',
+        description: 'Test description',
+        priority: 'high'
+      };
+
+      const response = await request(app)
+        .post('/api/todos')
+        .send(newTodo)
+        .expect(201);
+
+      expect(response.body.title).toBe('Test todo');
+      expect(response.body.priority).toBe('high');
+      expect(response.body).toHaveProperty('_id');
+    });
+  });
+
+  describe('GET /api/todos', () =&gt; {
+    test('returnerar alla todos', async () =&gt; {
+      await Todo.create([
+        { title: 'Todo 1' },
+        { title: 'Todo 2' }
+      ]);
+
+      const response = await request(app)
+        .get('/api/todos')
+        .expect(200);
+
+      expect(response.body).toHaveLength(2);
+    });
+  });
+
+  describe('GET /api/todos/:id', () =&gt; {
+    test('returnerar specifik todo', async () =&gt; {
+      const created = await Todo.create({ title: 'Test todo' });
+
+      const response = await request(app)
+        .get(`/api/todos/${created._id}`)
+        .expect(200);
+
+      expect(response.body.title).toBe('Test todo');
+    });
+
+    test('returnerar 404 om todo inte finns', async () =&gt; {
+      const fakeId = new mongoose.Types.ObjectId();
+      
+      await request(app)
+        .get(`/api/todos/${fakeId}`)
+        .expect(404);
+    });
+  });
+});
+</code></pre>
+</details>
+<h3 id="steg-6-avancerade-controller-funktioner"><a class="header" href="#steg-6-avancerade-controller-funktioner">Steg 6: Avancerade Controller-funktioner</a></h3>
+<p>Nu lägger vi till filtering, sortering och pagination i <code>getAllTodos</code>:</p>
+<p><strong>Din uppgift</strong>: Utöka <code>getAllTodos</code> för att hantera query-parametrar:</p>
+<ul>
+<li><code>completed</code> - filtrera på completed status</li>
+<li><code>priority</code> - filtrera på priority</li>
+<li><code>sortBy</code> - sortera på fält (default 'createdAt')</li>
+<li><code>order</code> - 'asc' eller 'desc' (default 'desc')</li>
+<li><code>page</code> - sidnummer för pagination (default 1)</li>
+<li><code>limit</code> - antal per sida (default 10)</li>
+</ul>
+<details>
+<summary>Visa lösning</summary>
+<pre><code class="language-javascript">static async getAllTodos(req, res, next) {
+  try {
+    const { 
+      completed, 
+      priority, 
+      sortBy = 'createdAt',
+      order = 'desc',
+      page = 1,
+      limit = 10
+    } = req.query;
+
+    // Bygg filter
+    const filter = {};
+    if (completed !== undefined) filter.completed = completed === 'true';
+    if (priority) filter.priority = priority;
+
+    // Bygg sortering
+    const sort = {};
+    sort[sortBy] = order === 'desc' ? -1 : 1;
+
+    // Pagination
+    const skip = (page - 1) * limit;
+
+    const [todos, totalCount] = await Promise.all([
+      Todo.find(filter)
+        .sort(sort)
+        .skip(skip)
+        .limit(parseInt(limit)),
+      Todo.countDocuments(filter)
+    ]);
+
+    res.json({
+      todos,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total: totalCount,
+        pages: Math.ceil(totalCount / limit),
+        hasNext: page * limit &lt; totalCount,
+        hasPrev: page &gt; 1
+      }
+    });
+
+  } catch (error) {
+    next(error);
+  }
+}
+</code></pre>
+</details>
+<p>Lägg till search-funktionalitet:</p>
+<p><strong>Din uppgift</strong>: Utöka <code>getAllTodos</code> med <code>search</code> query-parameter som söker i <code>title</code> och <code>description</code> med case-insensitive matchning.</p>
+<details>
+<summary>Visa lösning</summary>
+<pre><code class="language-javascript">// I filter-delen, lägg till:
+if (search) {
+  filter.$or = [
+    { title: new RegExp(search, 'i') },
+    { description: new RegExp(search, 'i') }
+  ];
+}
+</code></pre>
+</details>
+<p>Lägg till <code>toggleTodo</code>-metod:</p>
+<p><strong>Din uppgift</strong>: Implementera <code>toggleTodo</code> som växlar <code>completed</code> status för en todo.</p>
+<details>
+<summary>Visa lösning</summary>
+<pre><code class="language-javascript">static async toggleTodo(req, res, next) {
+  try {
+    const todo = await Todo.findById(req.params.id);
+    
+    if (!todo) {
+      return res.status(404).json({ error: 'Todo inte hittad' });
+    }
+
+    todo.completed = !todo.completed;
+    await todo.save();
+
+    res.json(todo);
+  } catch (error) {
+    next(error);
+  }
+}
+</code></pre>
+</details>
+<h3 id="steg-7-routes-och-server"><a class="header" href="#steg-7-routes-och-server">Steg 7: Routes och Server</a></h3>
+<p>Skapa <code>routes/todos.js</code>:</p>
+<p><strong>Din uppgift</strong>: Skapa router med routes för alla controller-metoder:</p>
+<ul>
+<li>GET <code>/</code> - getAllTodos</li>
+<li>GET <code>/:id</code> - getTodoById</li>
+<li>POST <code>/</code> - createTodo</li>
+<li>PUT <code>/:id</code> - updateTodo</li>
+<li>PATCH <code>/:id/toggle</code> - toggleTodo</li>
+<li>DELETE <code>/:id</code> - deleteTodo</li>
+</ul>
+<details>
+<summary>Visa lösning</summary>
+<pre><code class="language-javascript">import express from 'express';
+import TodoController from '../controllers/todoController.js';
+
+const router = express.Router();
+
+router.get('/', TodoController.getAllTodos);
+router.get('/stats', TodoController.getTodoStats);
+router.get('/:id', TodoController.getTodoById);
+router.post('/', TodoController.createTodo);
+router.put('/:id', TodoController.updateTodo);
+router.patch('/:id/toggle', TodoController.toggleTodo);
+router.delete('/:id', TodoController.deleteTodo);
+
+export default router;
+</code></pre>
+</details>
+<p>Skapa <code>middleware/errorHandler.js</code>:</p>
+<p><strong>Din uppgift</strong>: Skapa en error handler middleware som:</p>
+<ul>
+<li>Hanterar Mongoose validation errors</li>
+<li>Hanterar Mongoose cast errors (ogiltigt ID)</li>
+<li>Returnerar lämpliga status codes och felmeddelanden</li>
+</ul>
+<details>
+<summary>Visa lösning</summary>
+<pre><code class="language-javascript">const errorHandler = (err, req, res, next) =&gt; {
+  if (err.name === 'ValidationError') {
+    const messages = Object.values(err.errors).map(e =&gt; e.message);
+    return res.status(400).json({ error: messages.join(', ') });
+  }
+  
+  if (err.name === 'CastError') {
+    return res.status(400).json({ error: 'Ogiltigt ID-format' });
+  }
+
+  res.status(500).json({ 
+    error: err.message || 'Serverfel' 
+  });
+};
+
+export default errorHandler;
+</code></pre>
+</details>
+<p>Skapa <code>server.js</code>:</p>
+<p><strong>Din uppgift</strong>: Skapa Express-server som:</p>
+<ul>
+<li>Importerar routes och middleware</li>
+<li>Ansluter till MongoDB (använd <code>MONGODB_URI</code> från <code>.env</code> eller default)</li>
+<li>Lägger till middleware: helmet, cors, morgan, express.json</li>
+<li>Lägger till routes under <code>/api/todos</code></li>
+<li>Har health check endpoint <code>/api/health</code></li>
+<li>Hanterar 404 för <code>/api/*</code></li>
+<li>Använder error handler</li>
+</ul>
+<details>
+<summary>Visa lösning</summary>
+<pre><code class="language-javascript">import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import dotenv from 'dotenv';
+import todosRouter from './routes/todos.js';
+import errorHandler from './middleware/errorHandler.js';
+
+dotenv.config();
+
+const app = express();
+
+// Middleware
+app.use(helmet());
+app.use(cors());
+app.use(morgan('combined'));
+app.use(express.json({ limit: '10mb' }));
+
+// Anslut till MongoDB
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/todo-api');
+
+// Routes
+app.use('/api/todos', todosRouter);
+
+// Health check
+app.get('/api/health', (req, res) =&gt; {
+  res.json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
+  });
+});
+
+// 404 handler
+app.use('/api/*', (req, res) =&gt; {
+  res.status(404).json({ error: 'Endpoint finns inte' });
+});
+
+// Error handler
+app.use(errorHandler);
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () =&gt; {
+  console.log(`Todo API körs på port ${PORT}`);
+});
+</code></pre>
+</details>
+<h3 id="steg-8-utmaning---statistik-endpoint"><a class="header" href="#steg-8-utmaning---statistik-endpoint">Steg 8: Utmaning - Statistik-endpoint</a></h3>
+<p><strong>Din uppgift</strong>: Implementera <code>getTodoStats</code> i controller som använder MongoDB aggregation för att räkna:</p>
+<ul>
+<li>Totalt antal todos</li>
+<li>Antal completed</li>
+<li>Antal pending</li>
+<li>Antal high priority</li>
+<li>Fördelning per priority (low/medium/high)</li>
+</ul>
+<p>Tips: Använd <code>Todo.aggregate()</code> med <code>$group</code> för att räkna.</p>
+<details>
+<summary>Visa lösning</summary>
+<pre><code class="language-javascript">static async getTodoStats(req, res, next) {
+  try {
+    const stats = await Todo.aggregate([
+      {
+        $group: {
+          _id: null,
+          total: { $sum: 1 },
+          completed: { $sum: { $cond: ['$completed', 1, 0] } },
+          pending: { $sum: { $cond: ['$completed', 0, 1] } },
+          highPriority: { $sum: { $cond: [{ $eq: ['$priority', 'high'] }, 1, 0] } }
+        }
+      }
+    ]);
+
+    const priorityStats = await Todo.aggregate([
+      { $group: { _id: '$priority', count: { $sum: 1 } } }
+    ]);
+
+    res.json({
+      overview: stats[0] || { total: 0, completed: 0, pending: 0, highPriority: 0 },
+      byPriority: priorityStats
+    });
+
+  } catch (error) {
+    next(error);
+  }
+}
+</code></pre>
+</details>
+<h3 id="steg-9-testa-hela-apiet"><a class="header" href="#steg-9-testa-hela-apiet">Steg 9: Testa hela API:et</a></h3>
+<p>Skapa ett testskript eller använd Postman/Insomnia för att testa alla endpoints manuellt.</p>
+<p><strong>Alternativt - Testa med cURL</strong>:</p>
+<pre><code class="language-bash"># Starta servern först
+npm run dev
+
+# I ett annat terminalfönster:
+BASE_URL="http://localhost:3000/api"
+
+# Skapa todos
+curl -X POST "$BASE_URL/todos" \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Lär dig Node.js","priority":"high","category":"development"}'
+
+curl -X POST "$BASE_URL/todos" \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Handla mat","priority":"medium","category":"personal"}'
+
+# Hämta alla todos
+curl "$BASE_URL/todos"
+
+# Hämta statistik
+curl "$BASE_URL/todos/stats"
+
+# Filtrera todos
+curl "$BASE_URL/todos?priority=high"
+</code></pre>
+<p>Grattis! Du har nu byggt en komplett REST API med testning. I nästa övning lägger vi till autentisering.</p>
+<hr />
+<h2 id="Övning-2-blog-api-med-jwt-autentisering"><a class="header" href="#Övning-2-blog-api-med-jwt-autentisering">Övning 2: Blog API med JWT-autentisering</a></h2>
+<p><strong>Mål</strong>: Utöka kunskaperna med användarautentisering, roller och skyddade routes.</p>
+<p><strong>Vad du kommer lära dig</strong>:</p>
+<ul>
+<li>JWT-implementation</li>
+<li>Användarhantering och roller</li>
+<li>Protected routes</li>
+<li>Middleware för autentisering</li>
+<li>Lösenordshashing med bcrypt</li>
+</ul>
+<h3 id="projektstruktur"><a class="header" href="#projektstruktur">Projektstruktur</a></h3>
+<pre><code>blog-api/
+├── server.js
+├── config/
+│   ├── database.js
+│   └── jwt.js
+├── models/
+│   ├── User.js
+│   └── Post.js
+├── controllers/
+│   ├── authController.js
+│   └── postController.js
+├── middleware/
+│   ├── auth.js
+│   ├── validation.js
+│   └── errorHandler.js
+├── routes/
+│   ├── auth.js
+│   └── posts.js
+└── .env
+</code></pre>
+<h3 id="modeller"><a class="header" href="#modeller">Modeller</a></h3>
+<p><strong>models/User.js</strong>:</p>
+<pre><code class="language-javascript">const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
+
+const userSchema = new mongoose.Schema({
+  username: {
+    type: String,
+    required: [true, 'Användarnamn krävs'],
+    unique: true,
+    trim: true,
+    minlength: [3, 'Användarnamn måste vara minst 3 tecken'],
+    maxlength: [30, 'Användarnamn kan inte överstiga 30 tecken']
+  },
+  email: {
+    type: String,
+    required: [true, 'E-post krävs'],
+    unique: true,
+    lowercase: true,
+    validate: {
+      validator: function(v) {
+        return /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v);
+      },
+      message: 'Ogiltig e-postadress'
+    }
+  },
+  password: {
+    type: String,
+    required: [true, 'Lösenord krävs'],
+    minlength: [6, 'Lösenord måste vara minst 6 tecken'],
+    select: false // Inkludera inte i queries som standard
+  },
+  role: {
+    type: String,
+    enum: ['user', 'admin'],
+    default: 'user'
+  },
+  profile: {
+    firstName: String,
+    lastName: String,
+    bio: String,
+    avatar: String
+  },
+  isActive: {
+    type: Boolean,
+    default: true
+  },
+  lastLogin: {
+    type: Date
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
+});
+
+// Hash lösenord före sparning
+userSchema.pre('save', async function(next) {
+  if (!this.isModified('password')) return next();
+  
+  try {
+    const salt = await bcrypt.genSalt(12);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Metod för att verifiera lösenord
+userSchema.methods.comparePassword = async function(candidatePassword) {
+  return await bcrypt.compare(candidatePassword, this.password);
+};
+
+module.exports = mongoose.model('User', userSchema);
+</code></pre>
+<p><strong>models/Post.js</strong>:</p>
+<pre><code class="language-javascript">const mongoose = require('mongoose');
+
+const postSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: [true, 'Titel krävs'],
+    trim: true,
+    maxlength: [200, 'Titel kan inte överstiga 200 tecken']
+  },
+  content: {
+    type: String,
+    required: [true, 'Innehåll krävs'],
+    minlength: [10, 'Innehåll måste vara minst 10 tecken']
+  },
+  excerpt: {
+    type: String,
+    maxlength: [300, 'Excerpt kan inte överstiga 300 tecken']
+  },
+  slug: {
+    type: String,
+    unique: true
+  },
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  status: {
+    type: String,
+    enum: ['draft', 'published', 'archived'],
+    default: 'draft'
+  },
+  tags: [String],
+  featured: {
+    type: Boolean,
+    default: false
+  },
+  publishedAt: {
+    type: Date
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now
+  }
+});
+
+// Generera slug från titel
+postSchema.pre('save', function(next) {
+  if (this.isModified('title')) {
+    this.slug = this.title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '');
+  }
+  
+  // Generera excerpt om det inte finns
+  if (this.isModified('content') &amp;&amp; !this.excerpt) {
+    this.excerpt = this.content.substring(0, 150) + '...';
+  }
+  
+  // Sätt publishedAt när status ändras till published
+  if (this.isModified('status') &amp;&amp; this.status === 'published' &amp;&amp; !this.publishedAt) {
+    this.publishedAt = new Date();
+  }
+  
+  this.updatedAt = Date.now();
+  next();
+});
+
+module.exports = mongoose.model('Post', postSchema);
+</code></pre>
+<h3 id="autentisering"><a class="header" href="#autentisering">Autentisering</a></h3>
+<p><strong>middleware/auth.js</strong>:</p>
+<pre><code class="language-javascript">const jwt = require('jsonwebtoken');
+const User = require('../models/User');
+
+const authenticateToken = async (req, res, next) =&gt; {
+  try {
+    const authHeader = req.headers.authorization;
+    const token = authHeader &amp;&amp; authHeader.split(' ')[1];
+
+    if (!token) {
+      return res.status(401).json({ error: 'Access token krävs' });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id);
+
+    if (!user || !user.isActive) {
+      return res.status(401).json({ error: 'Ogiltig token' });
+    }
+
+    req.user = user;
+    next();
+  } catch (error) {
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).json({ error: 'Token har gått ut' });
+    }
+    res.status(403).json({ error: 'Ogiltig token' });
+  }
+};
+
+const authorize = (roles = []) =&gt; {
+  return (req, res, next) =&gt; {
+    if (!req.user) {
+      return res.status(401).json({ error: 'Autentisering krävs' });
+    }
+
+    if (roles.length &amp;&amp; !roles.includes(req.user.role)) {
+      return res.status(403).json({ error: 'Otillåten åtkomst' });
+    }
+
+    next();
+  };
+};
+
+const optionalAuth = async (req, res, next) =&gt; {
+  try {
+    const authHeader = req.headers.authorization;
+    const token = authHeader &amp;&amp; authHeader.split(' ')[1];
+
+    if (token) {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const user = await User.findById(decoded.id);
+      if (user &amp;&amp; user.isActive) {
+        req.user = user;
+      }
+    }
+    
+    next();
+  } catch (error) {
+    // Ignorera fel för optional auth
+    next();
+  }
+};
+
+module.exports = { authenticateToken, authorize, optionalAuth };
+</code></pre>
+<p><strong>controllers/authController.js</strong>:</p>
+<pre><code class="language-javascript">const jwt = require('jsonwebtoken');
+const User = require('../models/User');
+
+const generateToken = (id) =&gt; {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN || '7d'
+  });
+};
+
+class AuthController {
+  static async register(req, res, next) {
+    try {
+      const { username, email, password, profile } = req.body;
+
+      const user = new User({
+        username,
+        email,
+        password,
+        profile
+      });
+
+      await user.save();
+
+      const token = generateToken(user._id);
+
+      res.status(201).json({
+        message: 'Användare registrerad framgångsrikt',
+        token,
+        user: {
+          id: user._id,
+          username: user.username,
+          email: user.email,
+          role: user.role
+        }
+      });
+
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async login(req, res, next) {
+    try {
+      const { email, password } = req.body;
+
+      // Hitta användare och inkludera lösenord
+      const user = await User.findOne({ email }).select('+password');
+
+      if (!user || !(await user.comparePassword(password))) {
+        return res.status(401).json({ error: 'Ogiltiga inloggningsuppgifter' });
+      }
+
+      if (!user.isActive) {
+        return res.status(401).json({ error: 'Kontot är inaktiverat' });
+      }
+
+      // Uppdatera senaste inloggning
+      user.lastLogin = new Date();
+      await user.save();
+
+      const token = generateToken(user._id);
+
+      res.json({
+        message: 'Inloggning lyckades',
+        token,
+        user: {
+          id: user._id,
+          username: user.username,
+          email: user.email,
+          role: user.role
+        }
+      });
+
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async getProfile(req, res, next) {
+    try {
+      const user = await User.findById(req.user.id);
+      res.json(user);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async updateProfile(req, res, next) {
+    try {
+      const allowedUpdates = ['profile.firstName', 'profile.lastName', 'profile.bio'];
+      const updates = {};
+
+      Object.keys(req.body).forEach(key =&gt; {
+        if (allowedUpdates.includes(key)) {
+          updates[key] = req.body[key];
+        }
+      });
+
+      const user = await User.findByIdAndUpdate(
+        req.user.id,
+        { $set: updates },
+        { new: true }
+      );
+
+      res.json(user);
+    } catch (error) {
+      next(error);
+    }
+  }
+}
+
+module.exports = AuthController;
+</code></pre>
+<hr />
+<h2 id="Övning-3-e-handel-api-med-beställningshantering"><a class="header" href="#Övning-3-e-handel-api-med-beställningshantering">Övning 3: E-handel API med beställningshantering</a></h2>
+<p><strong>Mål</strong>: Bygga en komplex e-handelsbackend med produkter, beställningar och lagerhantering.</p>
+<p><strong>Projektstruktur</strong>:</p>
+<pre><code>ecommerce-api/
+├── models/
+│   ├── Product.js
+│   ├── Category.js
+│   ├── Order.js
+│   └── Cart.js
+├── controllers/
+│   ├── productController.js
+│   ├── orderController.js
+│   └── cartController.js
+└── services/
+    ├── inventoryService.js
+    └── paymentService.js
+</code></pre>
+<h3 id="produktmodell"><a class="header" href="#produktmodell">Produktmodell</a></h3>
+<p><strong>models/Product.js</strong>:</p>
+<pre><code class="language-javascript">const mongoose = require('mongoose');
+
+const productSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: [true, 'Produktnamn krävs'],
+    trim: true,
+    maxlength: [100, 'Produktnamn kan inte överstiga 100 tecken']
+  },
+  description: {
+    type: String,
+    required: [true, 'Beskrivning krävs'],
+    maxlength: [1000, 'Beskrivning kan inte överstiga 1000 tecken']
+  },
+  price: {
+    type: Number,
+    required: [true, 'Pris krävs'],
+    min: [0, 'Pris måste vara positivt']
+  },
+  comparePrice: {
+    type: Number,
+    validate: {
+      validator: function(v) {
+        return v == null || v &gt; this.price;
+      },
+      message: 'Jämförelsepris måste vara högre än ordinarie pris'
+    }
+  },
+  category: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Category',
+    required: true
+  },
+  images: [{
+    url: String,
+    alt: String,
+    isPrimary: { type: Boolean, default: false }
+  }],
+  sku: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  inventory: {
+    quantity: { type: Number, default: 0 },
+    reserved: { type: Number, default: 0 },
+    lowStockThreshold: { type: Number, default: 10 }
+  },
+  attributes: {
+    weight: Number,
+    dimensions: {
+      length: Number,
+      width: Number,
+      height: Number
+    },
+    color: String,
+    size: String,
+    material: String
+  },
+  seo: {
+    title: String,
+    description: String,
+    keywords: [String]
+  },
+  isActive: {
+    type: Boolean,
+    default: true
+  },
+  isFeatured: {
+    type: Boolean,
+    default: false
+  },
+  rating: {
+    average: { type: Number, default: 0 },
+    count: { type: Number, default: 0 }
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now
+  }
+});
+
+// Virtual för tillgänglig kvantitet
+productSchema.virtual('availableQuantity').get(function() {
+  return this.inventory.quantity - this.inventory.reserved;
+});
+
+// Virtual för rabatt
+productSchema.virtual('discount').get(function() {
+  if (!this.comparePrice) return null;
+  const discount = ((this.comparePrice - this.price) / this.comparePrice) * 100;
+  return Math.round(discount);
+});
+
+// Virtual för lågt lager
+productSchema.virtual('isLowStock').get(function() {
+  return this.availableQuantity &lt;= this.inventory.lowStockThreshold;
+});
+
+productSchema.set('toJSON', { virtuals: true });
+
+module.exports = mongoose.model('Product', productSchema);
+</code></pre>
+<h3 id="beställningshantering"><a class="header" href="#beställningshantering">Beställningshantering</a></h3>
+<p><strong>models/Order.js</strong>:</p>
+<pre><code class="language-javascript">const mongoose = require('mongoose');
+
+const orderSchema = new mongoose.Schema({
+  orderNumber: {
+    type: String,
+    unique: true
+  },
+  customer: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  items: [{
+    product: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Product',
+      required: true
+    },
+    quantity: {
+      type: Number,
+      required: true,
+      min: 1
+    },
+    price: {
+      type: Number,
+      required: true
+    },
+    total: {
+      type: Number,
+      required: true
+    }
+  }],
+  shipping: {
+    address: {
+      street: { type: String, required: true },
+      city: { type: String, required: true },
+      postalCode: { type: String, required: true },
+      country: { type: String, required: true, default: 'Sweden' }
+    },
+    method: {
+      type: String,
+      enum: ['standard', 'express', 'overnight'],
+      default: 'standard'
+    },
+    cost: {
+      type: Number,
+      default: 0
+    }
+  },
+  payment: {
+    method: {
+      type: String,
+      enum: ['card', 'paypal', 'klarna'],
+      required: true
+    },
+    status: {
+      type: String,
+      enum: ['pending', 'completed', 'failed', 'refunded'],
+      default: 'pending'
+    },
+    transactionId: String,
+    paidAt: Date
+  },
+  totals: {
+    subtotal: { type: Number, required: true },
+    shipping: { type: Number, default: 0 },
+    tax: { type: Number, default: 0 },
+    total: { type: Number, required: true }
+  },
+  status: {
+    type: String,
+    enum: ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'],
+    default: 'pending'
+  },
+  notes: String,
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now
+  }
+});
+
+// Generera ordernummer före sparning
+orderSchema.pre('save', function(next) {
+  if (!this.orderNumber) {
+    const timestamp = Date.now().toString();
+    this.orderNumber = `ORD-${timestamp.slice(-8)}`;
+  }
+  this.updatedAt = Date.now();
+  next();
+});
+
+module.exports = mongoose.model('Order', orderSchema);
+</code></pre>
+<h3 id="inventory-service"><a class="header" href="#inventory-service">Inventory Service</a></h3>
+<p><strong>services/inventoryService.js</strong>:</p>
+<pre><code class="language-javascript">const Product = require('../models/Product');
+
+class InventoryService {
+  static async reserveItems(items) {
+    const reservations = [];
+    
+    try {
+      for (const item of items) {
+        const product = await Product.findById(item.product);
+        
+        if (!product) {
+          throw new Error(`Produkt ${item.product} finns inte`);
+        }
+        
+        if (product.availableQuantity &lt; item.quantity) {
+          throw new Error(`Otillräckligt lager för ${product.name}`);
+        }
+        
+        // Reservera lager
+        product.inventory.reserved += item.quantity;
+        await product.save();
+        
+        reservations.push({
+          product: item.product,
+          quantity: item.quantity
+        });
+      }
+      
+      return reservations;
+      
+    } catch (error) {
+      // Rulla tillbaka reservationer vid fel
+      await this.releaseReservations(reservations);
+      throw error;
+    }
+  }
+  
+  static async releaseReservations(reservations) {
+    for (const reservation of reservations) {
+      await Product.findByIdAndUpdate(
+        reservation.product,
+        { $inc: { 'inventory.reserved': -reservation.quantity } }
+      );
+    }
+  }
+  
+  static async confirmReservations(reservations) {
+    for (const reservation of reservations) {
+      await Product.findByIdAndUpdate(
+        reservation.product,
+        { 
+          $inc: { 
+            'inventory.quantity': -reservation.quantity,
+            'inventory.reserved': -reservation.quantity 
+          } 
+        }
+      );
+    }
+  }
+  
+  static async checkLowStock() {
+    return await Product.find({
+      $expr: {
+        $lte: [
+          { $subtract: ['$inventory.quantity', '$inventory.reserved'] },
+          '$inventory.lowStockThreshold'
+        ]
+      },
+      isActive: true
+    });
+  }
+}
+
+module.exports = InventoryService;
+</code></pre>
+<hr />
+<h2 id="sammanfattning"><a class="header" href="#sammanfattning">Sammanfattning</a></h2>
+<p>Dessa fyra övningar tar dig från grundläggande Express-applikationer till avancerade real-time system. Varje projekt bygger på kunskaperna från föregående och introducerar nya koncept:</p>
+<ol>
+<li><strong>Todo API</strong>: Grundläggande CRUD, MongoDB, felhantering</li>
+<li><strong>Blog API</strong>: JWT-autentisering, användarsystem, behörigheter</li>
+<li><strong>E-handel API</strong>: Komplex datamodellering, transaktioner, inventoriehantering</li>
+</ol>
+<p>Efter att ha genomfört dessa projekt har du en solid grund i modern backend-utveckling med Node.js!</p>
+<h2 id="nästa-steg"><a class="header" href="#nästa-steg">Nästa steg</a></h2>
+<ul>
+<li><strong>Deploiera till produktion</strong> med Docker och cloud services</li>
+<li><strong>Implementera CI/CD</strong> för automatisk testning och deployment</li>
+<li><strong>Lägg till monitoring</strong> och logging för produktion</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_9/demo.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_9/teknisk-intervju.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_9/demo.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_9/teknisk-intervju.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

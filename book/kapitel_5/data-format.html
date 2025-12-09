@@ -1,0 +1,357 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Hantera data - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="dataformat-json"><a class="header" href="#dataformat-json">Dataformat: JSON</a></h1>
+<p>När vi hämtar data från ett API med <code>fetch</code>, eller när vi vill skicka data till ett API, behöver vi ett standardiserat format för att representera den datan som text. Det absolut vanligaste formatet för detta på webben idag är <strong>JSON (JavaScript Object Notation)</strong>.</p>
+<p><strong>Varför JSON?</strong></p>
+<ul>
+<li><strong>Läsbart:</strong> Det är relativt lätt för människor att läsa och skriva.</li>
+<li><strong>Lättviktigt:</strong> Det är ett kompakt textformat, vilket är effektivt för dataöverföring.</li>
+<li><strong>JavaScript-vänligt:</strong> Som namnet antyder är syntaxen väldigt lik JavaScripts objektsyntax, vilket gör det extremt enkelt att arbeta med i JavaScript.</li>
+</ul>
+<p><strong>Alternativet: XML</strong></p>
+<p>Tidigare var <strong>XML (eXtensible Markup Language)</strong> ett vanligt format för datautbyte. XML använder taggar, liknande HTML, för att strukturera data.</p>
+<pre><code class="language-xml">&lt;!-- Exempel på data i XML-format --&gt;
+&lt;post&gt;
+  &lt;userId&gt;1&lt;/userId&gt;
+  &lt;id&gt;1&lt;/id&gt;
+  &lt;title&gt;Detta är titeln&lt;/title&gt;
+  &lt;body&gt;Detta är innehållet.&lt;/body&gt;
+&lt;/post&gt;
+</code></pre>
+<p>Även om du kan stöta på XML i vissa äldre system eller specifika branscher, är JSON det dominerande formatet för webb-API:er idag. Att parsa (tolka) XML i JavaScript kräver oftast separata bibliotek eller mer komplex kod än att hantera JSON.</p>
+<h2 id="json-syntax"><a class="header" href="#json-syntax">JSON Syntax</a></h2>
+<p>JSON-data representeras som text och följer några enkla regler:</p>
+<ul>
+<li><strong>Objekt:</strong> Representeras med krullparenteser <code>{}</code>. Innehåller nyckel-värde-par.
+<ul>
+<li>Nycklar <em>måste</em> vara strängar inom dubbla citationstecken (<code>"key"</code>).</li>
+<li>Värden kan vara strängar, nummer, booleans (<code>true</code>/<code>false</code>), <code>null</code>, arrayer, eller andra JSON-objekt.</li>
+<li>Nyckel och värde separeras av ett kolon <code>:</code>. Paren separeras av kommatecken <code>,</code>.</li>
+</ul>
+</li>
+<li><strong>Arrayer:</strong> Representeras med hakparenteser <code>[]</code>. Innehåller en ordnad lista av värden, separerade av kommatecken.</li>
+<li><strong>Strängar:</strong> <em>Måste</em> använda dubbla citationstecken (<code>"text"</code>).</li>
+<li><strong>Nummer:</strong> Vanliga tal (heltal eller decimaltal).</li>
+<li><strong>Booleans:</strong> <code>true</code> eller <code>false</code> (små bokstäver).</li>
+<li><strong>Null:</strong> <code>null</code> (små bokstäver).</li>
+</ul>
+<p><strong>Viktigt:</strong> JSON tillåter <em>inte</em> funktioner, <code>undefined</code>, kommentarer, eller avslutande kommatecken (trailing commas).</p>
+<pre><code class="language-json">// Exempel på JSON-data (som text)
+{
+  "userId": 1,
+  "id": 1,
+  "title": "Exempeltitel",
+  "body": "Detta är innehållet i posten.",
+  "tags": ["webbutveckling", "javascript", "json"],
+  "metadata": {
+    "published": true,
+    "views": 1050,
+    "author": null
+  }
+}
+</code></pre>
+<h2 id="arbeta-med-json-i-javascript"><a class="header" href="#arbeta-med-json-i-javascript">Arbeta med JSON i JavaScript</a></h2>
+<p>JavaScript har ett inbyggt globalt <code>JSON</code>-objekt med två huvudsakliga metoder för att konvertera mellan JSON-text och JavaScript-objekt/-värden.</p>
+<h3 id="jsonstringify---från-javascript-till-json-sträng"><a class="header" href="#jsonstringify---från-javascript-till-json-sträng"><code>JSON.stringify()</code> - Från JavaScript till JSON-sträng</a></h3>
+<p>Denna metod tar ett JavaScript-värde (oftast ett objekt eller en array) och omvandlar det till en JSON-formaterad sträng. Detta används när du ska skicka data till ett API (t.ex. i <code>body</code> för en <code>fetch</code> POST-request).</p>
+<pre><code class="language-javascript">const postData = {
+  title: "Min Nya Bloggpost",
+  body: "Detta är innehållet.",
+  userId: 1,
+  published: false, // JavaScript boolean
+  tags: ['ny', 'test'] // JavaScript array
+};
+
+// Konvertera till JSON-sträng
+const jsonString = JSON.stringify(postData);
+
+console.log(jsonString);
+// Output: "{"title":"Min Nya Bloggpost","body":"Detta är innehållet.","userId":1,"published":false,"tags":["ny","test"]}"
+
+// Snyggare formatering (indentering)
+const prettyJsonString = JSON.stringify(postData, null, 2); // Använd 2 mellanslag för indentering
+console.log("\nSnygg JSON:");
+console.log(prettyJsonString);
+/* Output:
+{
+  "title": "Min Nya Bloggpost",
+  "body": "Detta är innehållet.",
+  "userId": 1,
+  "published": false,
+  "tags": [
+    "ny",
+    "test"
+  ]
+}
+*/
+
+// Vad händer med otillåtna värden?
+const complexObject = {
+  name: "Test",
+  id: 123,
+  action: function() { console.log('Hej!'); }, // Funktioner ignoreras
+  value: undefined // undefined blir ignorerat (eller null i arrayer)
+};
+console.log("\nKomplext objekt:", JSON.stringify(complexObject));
+// Output: "{"name":"Test","id":123}"
+</code></pre>
+<h3 id="jsonparse---från-json-sträng-till-javascript"><a class="header" href="#jsonparse---från-json-sträng-till-javascript"><code>JSON.parse()</code> - Från JSON-sträng till JavaScript</a></h3>
+<p>Denna metod tar en JSON-formaterad sträng och omvandlar den tillbaka till ett motsvarande JavaScript-värde (objekt, array, sträng, nummer, boolean, null). Detta används när du har tagit emot data från ett API (t.ex. resultatet från <code>response.json()</code> i <code>fetch</code>).</p>
+<pre><code class="language-javascript">const receivedJsonString = '{\n  "postId": 101,\n  "title": "Data från servern",\n  "tags": ["api", "data"],\n  "isPublic": true\n}';
+
+try {
+  // Försök att parsa JSON-strängen
+  const jsObject = JSON.parse(receivedJsonString);
+
+  console.log("Parsat objekt:", jsObject);
+  console.log("Titel:", jsObject.title); // "Data från servern"
+  console.log("Första taggen:", jsObject.tags[0]); // "api"
+  console.log("Är publik:", jsObject.isPublic); // true
+
+} catch (error) {
+  // Felhantering om JSON-strängen är ogiltig
+  console.error("Kunde inte parsa JSON:", error);
+}
+
+// Exempel med ogiltig JSON
+const invalidJsonString = '{\n  "name": "Test",\n  "value": 123, // Ogiltigt: avslutande kommatecken
+}';
+
+try {
+  const invalidObject = JSON.parse(invalidJsonString);
+  console.log("Ogiltigt objekt:", invalidObject);
+} catch (error) {
+  console.error("\nFel vid parsning av ogiltig JSON:", error.message);
+  // Output: Fel vid parsning av ogiltig JSON: Unexpected token } in JSON at position ...
+}
+</code></pre>
+<p><strong>Viktigt med Felhantering:</strong> Eftersom JSON-data ofta kommer från externa källor, kan den vara felaktigt formaterad. Det är därför viktigt att alltid omsluta <code>JSON.parse()</code> i ett <code>try...catch</code>-block för att hantera eventuella <code>SyntaxError</code> som kan kastas om parsningen misslyckas.</p>
+<h2 id="data-transformation-och-validering"><a class="header" href="#data-transformation-och-validering">Data Transformation och Validering</a></h2>
+<p>När du har parsat JSON-data till ett JavaScript-objekt, är det ofta bara det första steget. Därefter kan du behöva:</p>
+<ul>
+<li><strong>Transformera datan:</strong> Ändra strukturen, filtrera bort onödig information, kombinera med annan data, etc. Här kommer ofta de avancerade array-metoderna (som vi ska titta på härnäst) till stor nytta.</li>
+<li><strong>Validera datan:</strong> Kontrollera att datan du fick faktiskt innehåller de fält och datatyper du förväntar dig innan du använder den i din applikation. Detta skyddar mot oväntade fel om API:et ändras eller skickar oväntad data.</li>
+</ul>
+<p>Att förstå JSON är fundamentalt för att kunna bygga webbapplikationer som kommunicerar med omvärlden.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_5/fetch.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_5/array-metoder.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_5/fetch.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_5/array-metoder.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

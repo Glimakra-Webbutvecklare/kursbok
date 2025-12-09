@@ -1,0 +1,390 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Tailwind CSS - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="tailwind-css--kort-beskrivning-och-installationsguide"><a class="header" href="#tailwind-css--kort-beskrivning-och-installationsguide">Tailwind CSS – Kort beskrivning och installationsguide</a></h1>
+<h2 id="vad-är-tailwind-css"><a class="header" href="#vad-är-tailwind-css">Vad är Tailwind CSS?</a></h2>
+<p><a href="https://tailwindcss.com/">Tailwind CSS</a> är ett modernt <strong>utility-first CSS-ramverk</strong> som revolutionerar hur vi skriver CSS. Istället för traditionell CSS där vi skapar anpassade klasser, använder Tailwind färdiga utility-klasser direkt i HTML/JSX. Detta innebär att du kan styla dina element med klasser som:</p>
+<ul>
+<li><code>flex</code> för flexbox-layout</li>
+<li><code>mt-4</code> för margin-top</li>
+<li><code>text-center</code> för text-centrering</li>
+<li><code>bg-blue-500</code> för bakgrundsfärg</li>
+<li><code>hover:scale-105</code> för hover-effekter</li>
+</ul>
+<h3 id="varför-använda-tailwind-css"><a class="header" href="#varför-använda-tailwind-css">Varför använda Tailwind CSS?</a></h3>
+<ul>
+<li>
+<p>🚀 <strong>Snabbare utveckling</strong></p>
+<ul>
+<li>Skriv styling direkt i HTML/JSX utan att växla mellan filer</li>
+<li>Slipp hitta på klassnamn och återanvända CSS</li>
+<li>Få direkt visuell feedback när du arbetar</li>
+</ul>
+</li>
+<li>
+<p>🎨 <strong>Konsekvent design</strong></p>
+<ul>
+<li>Fördefinierat design-system med färger, spacing och typografi</li>
+<li>Enkelt att hålla en konsekvent look genom hela projektet</li>
+<li>Anpassningsbart via <code>tailwind.config.js</code></li>
+</ul>
+</li>
+<li>
+<p>📱 <strong>Effektiv responsiv design</strong></p>
+<ul>
+<li>Använd breakpoints som <code>sm:</code>, <code>md:</code>, <code>lg:</code> direkt i klasserna</li>
+<li>Snabb och intuitiv mobilanpassning</li>
+<li>Inga mediaqueries behövs</li>
+</ul>
+</li>
+<li>
+<p>🛠️ <strong>Optimerat för produktion</strong></p>
+<ul>
+<li>Automatisk eliminering av oanvänd CSS</li>
+<li>Mindre filstorlek i produktion</li>
+<li>Bättre prestanda</li>
+</ul>
+</li>
+<li>
+<p>🌍 <strong>Stark community &amp; ekosystem</strong></p>
+<ul>
+<li>Omfattande dokumentation</li>
+<li>Färdiga komponentbibliotek</li>
+<li>Stort urval av plugins och verktyg</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h2 id="installationsguide"><a class="header" href="#installationsguide">Installationsguide</a></h2>
+<h3 id="1-skapa-nytt-projekt"><a class="header" href="#1-skapa-nytt-projekt">1. Skapa nytt projekt</a></h3>
+<p>Om du inte redan har ett projekt:</p>
+<pre><code class="language-bash">npm create vite@latest my-project
+cd my-project
+</code></pre>
+<h3 id="2-installera-tailwind-css"><a class="header" href="#2-installera-tailwind-css">2. Installera Tailwind CSS</a></h3>
+<p>Installera Tailwind och dess peer-dependencies:</p>
+<pre><code class="language-bash">npm install tailwindcss @tailwindcss/vite
+</code></pre>
+<h3 id="3-konfigurera-tailwind"><a class="header" href="#3-konfigurera-tailwind">3. Konfigurera Tailwind</a></h3>
+<p>Skapa eller uppdatera <code>tailwind.config.js</code> (Viktigt att den filen ligger i root-folder av projektet):</p>
+<pre><code class="language-javascript">import { defineConfig } from 'vite'
+import tailwindcss from '@tailwindcss/vite'
+export default defineConfig({
+  plugins: [
+    tailwindcss(),
+  ],
+})
+</code></pre>
+<h3 id="4-lägg-till-tailwind-i-css"><a class="header" href="#4-lägg-till-tailwind-i-css">4. Lägg till Tailwind i CSS</a></h3>
+<p>Skapa eller uppdatera din huvudsakliga CSS-fil (t.ex. <code>src/index.css</code>). Om det redan ligger massa CSS där kommentera ut den eller ta bort.:</p>
+<pre><code class="language-css">@import "tailwindcss";
+</code></pre>
+<h3 id="5-uppdatera-htmljsx"><a class="header" href="#5-uppdatera-htmljsx">5. Uppdatera HTML/JSX</a></h3>
+<p>Nu kan du börja använda Tailwind i dina komponenter. Exempel:</p>
+<pre><code class="language-html">&lt;div class="flex min-h-screen items-center justify-center bg-gray-100"&gt;
+  &lt;div class="rounded-lg bg-white p-8 shadow-lg"&gt;
+    &lt;h1 class="text-2xl font-bold text-gray-800"&gt;Hello Tailwind!&lt;/h1&gt;
+    &lt;p class="mt-2 text-gray-600"&gt;Welcome to your new project&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<h3 id="6-starta-utvecklingsservern"><a class="header" href="#6-starta-utvecklingsservern">6. Starta utvecklingsservern</a></h3>
+<pre><code class="language-bash">npm run dev
+</code></pre>
+<h3 id="verifiering"><a class="header" href="#verifiering">Verifiering</a></h3>
+<p>För att verifiera att Tailwind fungerar, kontrollera att:</p>
+<ol>
+<li>Utility-klasserna fungerar i webbläsaren</li>
+<li>Du ser Tailwind-specifik syntax-highlighting i din editor</li>
+<li>Du får autocompletion för Tailwind-klasser (installera relevant editor-tillägg om det behövs)</li>
+</ol>
+<hr />
+<h2 id="kicka-igång-tailwind-om-utvecklingsservern-varit-avstängd"><a class="header" href="#kicka-igång-tailwind-om-utvecklingsservern-varit-avstängd">Kicka igång tailwind om utvecklingsservern varit avstängd</a></h2>
+<ol>
+<li>Öppna en terminal</li>
+<li>Navigera till rätt folder</li>
+<li>Skriv in kommandot:</li>
+</ol>
+<pre><code class="language-bash">npm run dev
+</code></pre>
+<hr />
+<h2 id="anpassa-tailwind-och-lägga-till-ett-eget-tema"><a class="header" href="#anpassa-tailwind-och-lägga-till-ett-eget-tema">Anpassa Tailwind och lägga till ett eget tema</a></h2>
+<h3 id="utöka-standardtemat"><a class="header" href="#utöka-standardtemat">Utöka standardtemat</a></h3>
+<p>Du kan lägga till egna färger, typsnitt eller andra designparametrar genom att uppdatera <code>tailwind.config.js</code>. Här är ett exempel på hur du lägger till egna färger och typsnitt:</p>
+<pre><code class="language-javascript">// filepath: tailwind.config.js
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        brand: {
+          light: '#3AB0FF',
+          DEFAULT: '#007BFF',
+          dark: '#0056B3',
+        },
+      },
+      fontFamily: {
+        custom: ['"Open Sans"', 'sans-serif'],
+      },
+    },
+  },
+  plugins: [],
+}
+</code></pre>
+<h3 id="använd-dina-anpassningar"><a class="header" href="#använd-dina-anpassningar">Använd dina anpassningar</a></h3>
+<p>När du har lagt till dina egna färger och typsnitt kan du använda dem direkt i dina komponenter:</p>
+<pre><code class="language-html">&lt;div class="p-4 bg-brand text-white font-custom"&gt;
+  Detta är en komponent med anpassade färger och typsnitt.
+&lt;/div&gt;
+</code></pre>
+<h3 id="lägg-till-fler-anpassningar"><a class="header" href="#lägg-till-fler-anpassningar">Lägg till fler anpassningar</a></h3>
+<p>Du kan också utöka andra delar av temat, som spacing, border-radius eller skuggor:</p>
+<pre><code class="language-javascript">extend: {
+  spacing: {
+    '72': '18rem',
+    '84': '21rem',
+    '96': '24rem',
+  },
+  borderRadius: {
+    'xl': '1.5rem',
+  },
+  boxShadow: {
+    'custom': '0 4px 6px rgba(0, 0, 0, 0.1)',
+  },
+}
+</code></pre>
+<hr />
+<h2 id="tips-för-vs-code"><a class="header" href="#tips-för-vs-code">Tips för VS Code</a></h2>
+<p>Installera dessa tillägg för bättre Tailwind-stöd:</p>
+<ul>
+<li>Tailwind CSS IntelliSense</li>
+<li>PostCSS Language Support</li>
+</ul>
+<hr />
+<h2 id="dokumentation"><a class="header" href="#dokumentation">Dokumentation</a></h2>
+<p><a href="https://tailwindcss.com/docs/installation/using-vite">Tailwind CSS</a></p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../css-frontend-ramverk/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../css-frontend-ramverk/tailwind-flex-grid.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../css-frontend-ramverk/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../css-frontend-ramverk/tailwind-flex-grid.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

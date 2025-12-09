@@ -1,0 +1,272 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Webbens historia och framtid - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="webbens-historia-och-framtid"><a class="header" href="#webbens-historia-och-framtid">Webbens Historia och Framtid</a></h1>
+<p>För att verkligen förstå webbutveckling idag är det värdefullt att känna till dess rötter och vart den är på väg. Webben, som vi känner den, är inte så gammal, men dess utveckling har varit explosionsartad.</p>
+<h2 id="från-akademiskt-projekt-till-global-plattform"><a class="header" href="#från-akademiskt-projekt-till-global-plattform">Från Akademiskt Projekt till Global Plattform</a></h2>
+<ul>
+<li>
+<p><strong>Början (1989-1991):</strong> Allt startade vid CERN, det europeiska partikelfysiklaboratoriet. Forskaren Tim Berners-Lee ville skapa ett bättre sätt för forskare att dela information. Han uppfann de grundläggande teknologierna:</p>
+<ul>
+<li><strong>HTML (HyperText Markup Language):</strong> För att strukturera dokument.</li>
+<li><strong>HTTP (HyperText Transfer Protocol):</strong> För att överföra dokumenten.</li>
+<li><strong>URL (Uniform Resource Locator):</strong> För att ge varje dokument en unik adress.
+Han skapade också den första webbläsaren och webbservern. 1991 lanserades den allra första webbplatsen.</li>
+</ul>
+</li>
+<li>
+<p><strong>De Tidiga Åren (1990-talet):</strong> Webben växte långsamt först, främst inom akademiska kretsar. De första webbläsarna som Mosaic och senare Netscape Navigator gjorde webben tillgänglig för en bredare publik. Webbplatserna var mestadels <em>statiska</em> – enkla HTML-sidor med text och bilder, länkade till varandra. CSS introducerades för att separera utseende från struktur, och JavaScript började användas för enkel interaktivitet.</p>
+</li>
+<li>
+<p><strong>Web 2.0 och Dynamik (Sent 90-tal - 2000-tal):</strong> Behovet av mer interaktiva och dynamiska webbplatser växte. Detta ledde till utvecklingen av <em>backend</em>-språk (som PHP, ASP) och databaser. Nu kunde webbplatser:</p>
+<ul>
+<li>Lagra användardata.</li>
+<li>Skapa innehåll dynamiskt.</li>
+<li>Möjliggöra användarinteraktion (kommentarer, forum, e-handel).
+Detta var eran för "Web 2.0", med fokus på sociala medier, bloggar och användargenererat innehåll.</li>
+</ul>
+</li>
+<li>
+<p><strong>Mobilens Era och Ramverk (2010-talet):</strong> Smarttelefonernas framväxt revolutionerade webben igen. <em>Responsiv design</em> blev avgörande – webbplatser måste anpassa sig till olika skärmstorlekar. Samtidigt utvecklades kraftfulla <em>frontend</em>-ramverk (som React, Angular, Vue.js) och <em>backend</em>-ramverk (som Laravel, Express) för att göra det enklare och snabbare att bygga komplexa webbapplikationer.</p>
+</li>
+</ul>
+<h2 id="nutid-och-framtid"><a class="header" href="#nutid-och-framtid">Nutid och Framtid</a></h2>
+<p>Webbutvecklingen står aldrig stilla. Några trender som formar webben idag och imorgon inkluderar:</p>
+<ul>
+<li><strong>Progressive Web Apps (PWA):</strong> Webbapplikationer som beter sig mer som native mobilappar (kan installeras, skicka notiser, fungera offline).</li>
+<li><strong>Single Page Applications (SPA):</strong> Webbapplikationer där innehållet uppdateras dynamiskt utan att hela sidan behöver laddas om, vilket ger en snabbare och smidigare användarupplevelse (ofta byggda med frontend-ramverk).</li>
+<li><strong>API-driven utveckling:</strong> Backend fokuserar på att skapa API:er som olika klienter (webb, mobilappar) kan konsumera.</li>
+<li><strong>WebAssembly (Wasm):</strong> Tillåter kod skriven i andra språk (som C++, Rust) att köras i webbläsaren med nära native prestanda, vilket öppnar för mer krävande applikationer som spel och videoredigering.</li>
+<li><strong>AI och Machine Learning:</strong> Integration av AI-funktioner direkt i webbapplikationer (chatbots, rekommendationssystem, bildanalys).</li>
+<li><strong>Fokus på prestanda och säkerhet:</strong> Ständig utveckling för att göra webben snabbare och säkrare.</li>
+<li><strong>Tillgänglighet (Accessibility):</strong> Ökad medvetenhet och krav på att webbplatser ska vara användbara för alla, oavsett funktionsvariationer.</li>
+</ul>
+<h2 id="lär-dig-följa-gällande-standard"><a class="header" href="#lär-dig-följa-gällande-standard">Lär dig följa gällande standard</a></h2>
+<p>När webben var ung så var det inte ovanligt att vissa webbplatser fungerade endast om man använde speciella webbläsare. Som webbutvecklare är det viktigt att följa standarder som anger hur ny funktionalitet implementeras.</p>
+<p>W3C är en organisation som publicerar gällande riktilinjer för webbens framtida utveckling. Det är bra att ibland läsa den dokumentation som finns tillgänglig för en viss webbstandard. Se mer här:<br />
+<a href="https://www.w3.org/TR/" target="_blank">https://www.w3.org/TR/</a></p>
+<img src="https://www.w3.org/assets/logos/w3c/w3c-no-bars.svg" alt="W3C logotype">
+<h2 id="sammanfattning"><a class="header" href="#sammanfattning">Sammanfattning</a></h2>
+<p>Webben har utvecklats från enkla, statiska textsidor till komplexa, dynamiska och interaktiva applikationer som är centrala i våra liv. Resan har gått via införandet av CSS och JavaScript, backend-teknologier, mobilanpassning och kraftfulla ramverk. Framtiden pekar mot ännu mer integrerade, intelligenta och högpresterande webbupplevelser.</p>
+<p>Att förstå denna utveckling ger perspektiv på varför vi använder de verktyg och tekniker vi gör idag. Nästa avsnitt ger en översikt över den moderna webbutvecklarens verktygslåda.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_1/vad-ar-webbutveckling.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_1/webbutvecklarens-verktygslada.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_1/vad-ar-webbutveckling.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_1/webbutvecklarens-verktygslada.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

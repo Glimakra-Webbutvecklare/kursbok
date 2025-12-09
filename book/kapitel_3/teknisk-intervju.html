@@ -1,0 +1,559 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Teknisk Intervju - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="tekniska-intervjufrågor-css-och-responsiv-design"><a class="header" href="#tekniska-intervjufrågor-css-och-responsiv-design">Tekniska intervjufrågor: CSS och responsiv design</a></h1>
+<p>Detta avsnitt innehåller exempel på tekniska intervjufrågor som kan dyka upp gällande CSS och responsiv webbutveckling. Frågorna är utformade för att testa både teoretisk förståelse och praktisk kunskap.</p>
+<p>Använd dessa frågor för att testa din kunskap och förbereda dig för tekniska intervjuer.</p>
+<hr />
+<h2 id="fråga-1-css-grundsyntax-och-inkludering"><a class="header" href="#fråga-1-css-grundsyntax-och-inkludering">Fråga 1: CSS grundsyntax och inkludering</a></h2>
+<p><strong>Fråga:</strong><br />
+Förklara skillnaden mellan inline CSS, intern CSS och extern CSS. Vilken metod rekommenderas och varför?</p>
+<p><strong>Förslag till svar:</strong></p>
+<ul>
+<li><strong>Inline CSS:</strong> <code>style</code>-attribut direkt på HTML-element, t.ex. <code>&lt;p style="color: red;"&gt;Text&lt;/p&gt;</code>.</li>
+<li><strong>Intern CSS:</strong> CSS i <code>&lt;style&gt;</code>-taggar i HTML:s <code>&lt;head&gt;</code>.</li>
+<li><strong>Extern CSS:</strong> Separat <code>.css</code>-fil länkad med <code>&lt;link rel="stylesheet" href="style.css"&gt;</code>.</li>
+</ul>
+<p><strong>Extern CSS rekommenderas eftersom:</strong></p>
+<ul>
+<li><strong>Separation:</strong> Håller struktur (HTML) och stil (CSS) åtskilda.</li>
+<li><strong>Underhåll:</strong> Enkelt att ändra hela webbplatsens utseende från en fil.</li>
+<li><strong>Prestanda:</strong> Webbläsaren kan cacha (spara) CSS-filen.</li>
+<li><strong>Återanvändbarhet:</strong> Samma stilar kan användas på flera sidor.</li>
+</ul>
+<p><strong>Inline CSS bör undvikas</strong> då det är svårt att underhålla och har högst specificitet.</p>
+<hr />
+<h2 id="fråga-2-css-selektorer"><a class="header" href="#fråga-2-css-selektorer">Fråga 2: CSS-selektorer</a></h2>
+<p><strong>Fråga:</strong><br />
+Förklara skillnaden mellan dessa selektorer och ge exempel på när du skulle använda var och en:</p>
+<pre><code class="language-css">p { }
+.highlight { }
+#header { }
+nav ul li { }
+</code></pre>
+<p><strong>Förslag till svar:</strong></p>
+<ul>
+<li><strong><code>p</code></strong> – Elementselektor (type selector): Väljer alla <code>&lt;p&gt;</code>-element. Används för grundstilar på elementtyper.</li>
+<li><strong><code>.highlight</code></strong> – Klassselektor (class selector): Väljer alla element med <code>class="highlight"</code>. Återanvändbar stil för flera element.</li>
+<li><strong><code>#header</code></strong> – ID-selektor (ID selector): Väljer elementet med <code>id="header"</code>. Unikt per sida, högst specificitet.</li>
+<li><strong><code>nav ul li</code></strong> – Selektor för ättling (descendant combinator): Väljer <code>&lt;li&gt;</code>-element inuti <code>&lt;ul&gt;</code> som är inuti <code>&lt;nav&gt;</code>. Specifik kontextuell styling.</li>
+</ul>
+<p><strong>Bästa praxis:</strong> Använd klasser för återanvändbara stilar, ID:n sparsamt för unika element, och elementselektorer för grundstilar.</p>
+<hr />
+<h2 id="fråga-3-specificitet-och-kaskaden"><a class="header" href="#fråga-3-specificitet-och-kaskaden">Fråga 3: Specificitet och kaskaden</a></h2>
+<p><strong>Fråga:</strong><br />
+Vilken färg får texten i detta exempel och varför?</p>
+<pre><code class="language-html">&lt;p id="viktigt" class="highlight"&gt;Text&lt;/p&gt;
+</code></pre>
+<pre><code class="language-css">p { color: black; }
+.highlight { color: blue; }
+#viktigt { color: red; }
+p.highlight { color: green; }
+</code></pre>
+<p><strong>Förslag till svar:</strong><br />
+Texten blir <strong>röd</strong> eftersom <code>#viktigt</code> (ID-selektor) har högst specificitet.</p>
+<p><strong>Specificitetsordning (högst till lägst):</strong></p>
+<ol>
+<li>Inline-stilar (<code>style</code>-attribut)</li>
+<li>ID-selektorer (<code>#viktigt</code>)</li>
+<li>Klass-, attribut- och pseudoselektorer (<code>.highlight</code>, <code>p.highlight</code>)</li>
+<li>Elementselektorer (<code>p</code>)</li>
+</ol>
+<p><code>p.highlight</code> (kombinerad selektor) har högre specificitet än <code>.highlight</code> ensam, men lägre än <code>#viktigt</code>.</p>
+<hr />
+<h2 id="fråga-4-box-model"><a class="header" href="#fråga-4-box-model">Fråga 4: Box model</a></h2>
+<p><strong>Fråga:</strong><br />
+Förklara CSS box model. Om ett element har <code>width: 200px</code>, <code>padding: 20px</code>, <code>border: 5px solid black</code> och <code>margin: 10px</code>, vad blir elementets totala bredd?</p>
+<p><strong>Förslag till svar:</strong>
+<strong>Box model består av (utifrån och in):</strong></p>
+<ol>
+<li><strong>Margin:</strong> Genomskinligt utrymme utanför elementet.</li>
+<li><strong>Border:</strong> Elementets kantlinje.</li>
+<li><strong>Padding:</strong> Genomskinligt utrymme mellan border och content.</li>
+<li><strong>Content:</strong> Själva innehållet.</li>
+</ol>
+<p><strong>Standardberäkning (<code>box-sizing: content-box</code>):</strong></p>
+<ul>
+<li>Content: 200px</li>
+<li>Padding: 20px × 2 = 40px</li>
+<li>Border: 5px × 2 = 10px</li>
+<li><strong>Total bredd: 250px</strong> (margin räknas inte in i elementets bredd, men påverkar avståndet till andra element)</li>
+</ul>
+<p><strong>Med <code>box-sizing: border-box</code>:</strong> Padding och border inkluderas i width, så content-området blir 150px bred.</p>
+<hr />
+<h2 id="fråga-5-display-egenskaper"><a class="header" href="#fråga-5-display-egenskaper">Fråga 5: Display-egenskaper</a></h2>
+<p><strong>Fråga:</strong><br />
+Vad är skillnaden mellan <code>display: block</code>, <code>display: inline</code> och <code>display: inline-block</code>?</p>
+<p><strong>Förslag till svar:</strong></p>
+<ul>
+<li>
+<p><strong><code>display: block</code>:</strong></p>
+<ul>
+<li>Börjar på ny rad.</li>
+<li>Tar hela tillgängliga bredden.</li>
+<li>Respekterar <code>width</code>, <code>height</code>, alla <code>margin</code> och <code>padding</code>.</li>
+<li>Exempel: <code>&lt;div&gt;</code>, <code>&lt;p&gt;</code>, <code>&lt;h1&gt;</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong><code>display: inline</code>:</strong></p>
+<ul>
+<li>Flödar med texten (ingen ny rad).</li>
+<li>Tar bara nödvändig bredd.</li>
+<li>Ignorerar <code>width</code>, <code>height</code>, <code>margin-top/bottom</code>, <code>padding-top/bottom</code>.</li>
+<li>Exempel: <code>&lt;span&gt;</code>, <code>&lt;a&gt;</code>, <code>&lt;strong&gt;</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong><code>display: inline-block</code>:</strong></p>
+<ul>
+<li>Flödar som inline (ingen ny rad).</li>
+<li>Men respekterar alla box model-egenskaper som block.</li>
+<li>Perfekt för knappar eller element som ska vara bredvid varandra men ha specifika dimensioner.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h2 id="fråga-6-css-positionering"><a class="header" href="#fråga-6-css-positionering">Fråga 6: CSS-positionering</a></h2>
+<p><strong>Fråga:</strong><br />
+Förklara skillnaden mellan <code>position: relative</code>, <code>position: absolute</code> och <code>position: fixed</code>. Ge exempel på användningsfall för var och en.</p>
+<p><strong>Förslag till svar:</strong></p>
+<ul>
+<li>
+<p><strong><code>position: relative</code>:</strong></p>
+<ul>
+<li>Elementet följer normala flödet.</li>
+<li>Kan förskjutas med <code>top</code>, <code>left</code> etc. relativt till ursprunglig position.</li>
+<li>Lämnar tomt utrymme där det skulle ha varit.</li>
+<li><strong>Användning:</strong> Små justeringar, som positioneringskontext för absoluta barn.</li>
+</ul>
+</li>
+<li>
+<p><strong><code>position: absolute</code>:</strong></p>
+<ul>
+<li>Tas helt ur normala flödet.</li>
+<li>Positioneras relativt till närmaste positionerade förälder.</li>
+<li><strong>Användning:</strong> Tooltips, dropdown-menyer, overlays.</li>
+</ul>
+</li>
+<li>
+<p><strong><code>position: fixed</code>:</strong></p>
+<ul>
+<li>Positioneras relativt till webbläsarfönstret.</li>
+<li>Stannar kvar vid scrollning.</li>
+<li><strong>Användning:</strong> Fasta navigationsmenyer, "tillbaka till toppen"-knappar.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h2 id="fråga-7-färger-och-typografi"><a class="header" href="#fråga-7-färger-och-typografi">Fråga 7: Färger och typografi</a></h2>
+<p><strong>Fråga:</strong><br />
+Förklara skillnaden mellan dessa färgformat och när du skulle använda dem:</p>
+<pre><code class="language-css">color: red;
+color: #FF0000;
+color: rgb(255, 0, 0);
+color: rgba(255, 0, 0, 0.5);
+</code></pre>
+<p><strong>Förslag till svar:</strong></p>
+<ul>
+<li><strong><code>red</code></strong> – Namngiven färg: Enkelt för grundfärger, begränsat utbud.</li>
+<li><strong><code>#FF0000</code></strong> – HEX: Vanligast för webben, exakt färgkontroll, används av designers.</li>
+<li><strong><code>rgb(255, 0, 0)</code></strong> – RGB: Bra när man arbetar med RGB-värden från grafiska program.</li>
+<li><strong><code>rgba(255, 0, 0, 0.5)</code></strong> – RGBA: Som RGB men med genomskinlighet (alpha). Perfekt för overlays och genomskinliga element.</li>
+</ul>
+<p><strong>Rekommendation:</strong> HEX för fasta färger, RGBA när genomskinlighet behövs.</p>
+<hr />
+<h2 id="fråga-8-responsiv-design--media-queries"><a class="header" href="#fråga-8-responsiv-design--media-queries">Fråga 8: Responsiv design – Media Queries</a></h2>
+<p><strong>Fråga:</strong><br />
+Vad är skillnaden mellan dessa två Media Queries och vilken strategi representerar de?</p>
+<pre><code class="language-css">/* A */
+@media (max-width: 768px) {
+  .container { width: 100%; }
+}
+
+/* B */
+@media (min-width: 768px) {
+  .container { width: 80%; }
+}
+</code></pre>
+<p><strong>Förslag till svar:</strong></p>
+<ul>
+<li>
+<p><strong>A (<code>max-width</code>):</strong> Desktop-first design</p>
+<ul>
+<li>Skriver stilar för stora skärmar först.</li>
+<li>Ändrar/tar bort stilar för mindre skärmar.</li>
+<li>Regel gäller när skärmen är 768px eller <em>mindre</em>.</li>
+</ul>
+</li>
+<li>
+<p><strong>B (<code>min-width</code>):</strong> Mobile-first design (rekommenderad)</p>
+<ul>
+<li>Skriver grundstilar för mobil först.</li>
+<li>Lägger till/förbättrar stilar för större skärmar.</li>
+<li>Regel gäller när skärmen är 768px eller <em>större</em>.</li>
+</ul>
+</li>
+</ul>
+<p><strong>Mobile-first design är bättre</strong> för prestanda och tvingar fram prioritering av kärninnehåll.</p>
+<hr />
+<h2 id="fråga-9-mobile-first-design"><a class="header" href="#fråga-9-mobile-first-design">Fråga 9: Mobile-first design</a></h2>
+<p><strong>Fråga:</strong><br />
+Varför rekommenderas mobile-first design och hur implementerar du det i CSS?</p>
+<p><strong>Förslag till svar:</strong>
+<strong>Fördelar med mobile-first design:</strong></p>
+<ul>
+<li><strong>Prestanda:</strong> Mobila enheter laddar enkla stilar först, komplexa läggs till progressivt.</li>
+<li><strong>Innehållsprioritet:</strong> Tvingar fokus på viktigaste innehållet först.</li>
+<li><strong>Enklare CSS:</strong> Lättare att lägga till än att ta bort/skriva över komplexa stilar.</li>
+</ul>
+<p><strong>Implementation:</strong></p>
+<pre><code class="language-css">/* Grundstilar för mobil (ingen media query) */
+.container {
+  width: 100%;
+  padding: 10px;
+}
+
+/* Tablet och uppåt */
+@media (min-width: 768px) {
+  .container {
+    width: 80%;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+}
+</code></pre>
+<p><strong>Viktigt:</strong> Alltid inkludera viewport meta-tag:</p>
+<pre><code class="language-html">&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+</code></pre>
+<hr />
+<h2 id="fråga-10-flexibla-enheter"><a class="header" href="#fråga-10-flexibla-enheter">Fråga 10: Flexibla enheter</a></h2>
+<p><strong>Fråga:</strong><br />
+Förklara skillnaden mellan <code>px</code>, <code>em</code>, <code>rem</code> och <code>%</code>. När skulle du använda respektive enhet?</p>
+<p><strong>Förslag till svar:</strong></p>
+<ul>
+<li>
+<p><strong><code>px</code></strong> – Absolut enhet: Exakt storlek, alltid samma.</p>
+<ul>
+<li><strong>Använd för:</strong> Borders, små detaljer som ska vara konstanta.</li>
+</ul>
+</li>
+<li>
+<p><strong><code>em</code></strong> – Relativt till förälderns <code>font-size</code>.</p>
+<ul>
+<li><strong>Problem:</strong> Kan ge komplexa beräkningar vid nesting.</li>
+<li><strong>Använd för:</strong> Padding/margin som ska skala med textstorlek.</li>
+</ul>
+</li>
+<li>
+<p><strong><code>rem</code></strong> – Relativt till rot-elementets <code>font-size</code>.</p>
+<ul>
+<li><strong>Fördelar:</strong> Förutsägbar skalning, respekterar användarinställningar.</li>
+<li><strong>Använd för:</strong> Font-storlekar, padding, margin.</li>
+</ul>
+</li>
+<li>
+<p><strong><code>%</code></strong> – Relativt till förälderns motsvarande egenskap.</p>
+<ul>
+<li><strong>Använd för:</strong> Bredder i responsiva layouter.</li>
+</ul>
+</li>
+</ul>
+<p><strong>Modern best practice:</strong> <code>rem</code> för typografi och spacing, <code>%</code> för layouter, <code>px</code> för borders.</p>
+<hr />
+<h2 id="fråga-11-flexbox-layout"><a class="header" href="#fråga-11-flexbox-layout">Fråga 11: Flexbox layout</a></h2>
+<p><strong>Fråga:</strong><br />
+Förklara hur Flexbox fungerar. Vad är skillnaden mellan <code>justify-content</code> och <code>align-items</code>? Ge ett exempel på när du skulle använda Flexbox.</p>
+<p><strong>Förslag till svar:</strong>
+<strong>Flexbox (Flexible Box Layout):</strong></p>
+<ul>
+<li><strong>Endimensionell layout</strong> – arbetar med antingen rader eller kolumner.</li>
+<li><strong>Flex container</strong> (förälder) och <strong>flex items</strong> (barn).</li>
+<li>Aktiveras med <code>display: flex;</code> eller <code>display: inline-flex;</code>.</li>
+</ul>
+<p><strong>Viktiga egenskaper:</strong></p>
+<ul>
+<li><strong><code>justify-content</code>:</strong> Justerar items längs <strong>huvudaxeln</strong> (main axis).
+<ul>
+<li>Värden: <code>flex-start</code>, <code>flex-end</code>, <code>center</code>, <code>space-between</code>, <code>space-around</code>.</li>
+</ul>
+</li>
+<li><strong><code>align-items</code>:</strong> Justerar items längs <strong>tväraxeln</strong> (cross axis).
+<ul>
+<li>Värden: <code>stretch</code>, <code>flex-start</code>, <code>flex-end</code>, <code>center</code>, <code>baseline</code>.</li>
+</ul>
+</li>
+</ul>
+<p><strong>Exempel – Centrera innehåll:</strong></p>
+<pre><code class="language-css">.container {
+  display: flex;
+  justify-content: center; /* Centrerar horisontellt */
+  align-items: center;     /* Centrerar vertikalt */
+  height: 100vh;
+}
+</code></pre>
+<p><strong>Användningsfall:</strong> Navigationsmenyer, centrering av innehåll, fördelning av utrymme mellan element.</p>
+<hr />
+<h2 id="fråga-12-css-grid-layout"><a class="header" href="#fråga-12-css-grid-layout">Fråga 12: CSS Grid layout</a></h2>
+<p><strong>Fråga:</strong><br />
+Vad är skillnaden mellan CSS Grid och Flexbox? Visa hur du skulle skapa en enkel 3-kolumns layout med Grid.</p>
+<p><strong>Förslag till svar:</strong>
+<strong>CSS Grid vs Flexbox:</strong></p>
+<ul>
+<li><strong>Grid:</strong> Tvådimensionell layout (rader och kolumner samtidigt).</li>
+<li><strong>Flexbox:</strong> Endimensionell layout (antingen rad eller kolumn).</li>
+</ul>
+<p><strong>Grid för komplexa layouter, Flexbox för enklare komponenter.</strong></p>
+<p><strong>Exempel – 3-kolumns layout:</strong></p>
+<pre><code class="language-css">.container {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr; /* 3 kolumner */
+  gap: 20px; /* Avstånd mellan items */
+}
+
+/* Responsiv variant */
+@media (max-width: 768px) {
+  .container {
+    grid-template-columns: 1fr; /* En kolumn på mobil */
+  }
+}
+</code></pre>
+<p><strong>Grid-terminologi:</strong></p>
+<ul>
+<li><code>grid-template-columns/rows</code>: Definierar kolumn/rad-storlekar.</li>
+<li><code>fr</code> (fraction): Tar en andel av tillgängligt utrymme.</li>
+<li><code>gap</code>: Avstånd mellan grid-items.</li>
+<li><code>grid-area</code>: Placerar items på specifika positioner.</li>
+</ul>
+<p><strong>Användningsfall:</strong> Sidlayouter, kort-layouts, komplexa responsiva designs.</p>
+<hr />
+<h2 id="tips-för-tekniska-intervjuer"><a class="header" href="#tips-för-tekniska-intervjuer">Tips för tekniska intervjuer</a></h2>
+<ul>
+<li><strong>Visa dina kunskaper visuellt</strong> – rita box model eller beskriv layout-flöde.</li>
+<li><strong>Förklara trade-offs</strong> – diskutera för- och nackdelar med olika tillvägagångssätt.</li>
+<li><strong>Ge praktiska exempel</strong> från projekt du arbetat på.</li>
+<li><strong>Fråga om kontext</strong> – olika lösningar passar olika situationer.</li>
+<li><strong>Visa problemlösningsförmåga</strong> – förklara hur du skulle felsöka CSS-problem.</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_3/ovningar.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_4/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_3/ovningar.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_4/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

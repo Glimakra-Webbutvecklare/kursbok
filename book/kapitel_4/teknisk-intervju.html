@@ -1,0 +1,803 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Teknisk Intervju - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="tekniska-intervjufrågor-javascript-och-dom-manipulation"><a class="header" href="#tekniska-intervjufrågor-javascript-och-dom-manipulation">Tekniska Intervjufrågor: JavaScript och DOM-manipulation</a></h1>
+<p>Detta avsnitt innehåller exempel på tekniska intervjufrågor som kan dyka upp gällande JavaScript och frontend-programmering. Frågorna är utformade för att testa både teoretisk förståelse och praktisk kunskap.</p>
+<p>Använd dessa frågor för att testa din kunskap och förbereda dig för tekniska intervjuer.</p>
+<hr />
+<h2 id="fråga-1-javascript-grundläggande-och-inkludering"><a class="header" href="#fråga-1-javascript-grundläggande-och-inkludering">Fråga 1: JavaScript Grundläggande och Inkludering</a></h2>
+<p><strong>Fråga:</strong> "Förklara skillnaden mellan att inkludera JavaScript inline, internt och externt. Varför placeras <code>&lt;script&gt;</code>-taggar oftast före <code>&lt;/body&gt;</code>?"</p>
+<p><strong>Förslag till svar:</strong></p>
+<ul>
+<li><strong>Inline:</strong> <code>onclick="alert('Klick')"</code> - Bör undvikas, blandar struktur och beteende</li>
+<li><strong>Internt:</strong> <code>&lt;script&gt;</code>-taggar i HTML-dokumentet - OK för små tester</li>
+<li><strong>Externt:</strong> Separat <code>.js</code>-fil länkad med <code>&lt;script src="script.js"&gt;</code> - Rekommenderas</li>
+</ul>
+<p><strong>Varför före <code>&lt;/body&gt;</code>:</strong></p>
+<ul>
+<li><strong>DOM-laddning:</strong> HTML-element måste finnas innan JavaScript kan manipulera dem</li>
+<li><strong>Prestanda:</strong> Sidan kan börja renderas innan script laddas</li>
+<li><strong>Användarupplevelse:</strong> Undviker att script blockerar sidladdningen</li>
+</ul>
+<p><strong>Best practice:</strong> Extern JS-fil precis före <code>&lt;/body&gt;</code> för separation av concerns och bättre underhållbarhet.</p>
+<hr />
+<h2 id="fråga-2-variabler-och-deklarationer"><a class="header" href="#fråga-2-variabler-och-deklarationer">Fråga 2: Variabler och Deklarationer</a></h2>
+<p><strong>Fråga:</strong> "Vad är skillnaden mellan <code>let</code>, <code>const</code> och <code>var</code>? När skulle du använda respektive?"</p>
+<p><strong>Förslag till svar:</strong></p>
+<ul>
+<li><strong><code>const</code>:</strong> Konstant värde, kan inte tilldelas om, block-scope
+<pre><code class="language-javascript">const name = "Alice"; // Kan inte ändras
+</code></pre>
+</li>
+<li><strong><code>let</code>:</strong> Variabelt värde, kan tilldelas om, block-scope
+<pre><code class="language-javascript">let age = 25;
+age = 26; // OK
+</code></pre>
+</li>
+<li><strong><code>var</code>:</strong> Äldre syntax, function-scope (inte block-scope), hoisting-problem</li>
+</ul>
+<p><strong>Best practice:</strong></p>
+<ol>
+<li><strong>Använd <code>const</code> som standard</strong> - signalerar att värdet inte ska ändras</li>
+<li><strong>Använd <code>let</code> när du behöver ändra värdet</strong></li>
+<li><strong>Undvik <code>var</code></strong> - orsakar förvirring med scope</li>
+</ol>
+<p><strong>Block-scope exempel:</strong></p>
+<pre><code class="language-javascript">if (true) {
+  let blockVar = "synlig här";
+  const blockConst = "också synlig här";
+}
+// blockVar och blockConst är INTE synliga här
+</code></pre>
+<hr />
+<h2 id="fråga-3-datatyper-och-typomvandling"><a class="header" href="#fråga-3-datatyper-och-typomvandling">Fråga 3: Datatyper och Typomvandling</a></h2>
+<p><strong>Fråga:</strong> "Förklara JavaScripts primitiva datatyper. Vad händer i följande kod och varför?"</p>
+<pre><code class="language-javascript">console.log("5" + 3);
+console.log("5" - 3);
+console.log(true + 1);
+</code></pre>
+<p><strong>Förslag till svar:</strong>
+<strong>Primitiva datatyper:</strong></p>
+<ul>
+<li><code>string</code> - text: <code>"Hej"</code></li>
+<li><code>number</code> - tal: <code>42</code>, <code>3.14</code></li>
+<li><code>boolean</code> - sant/falskt: <code>true</code>, <code>false</code></li>
+<li><code>undefined</code> - ej tilldelat värde</li>
+<li><code>null</code> - avsiktligt tomt värde</li>
+<li><code>symbol</code> - unik identifierare</li>
+<li><code>bigint</code> - mycket stora heltal</li>
+</ul>
+<p><strong>Typomvandling (Type Coercion):</strong></p>
+<pre><code class="language-javascript">console.log("5" + 3);    // "53" - + konkatenerar strängar
+console.log("5" - 3);    // 2 - konverterar "5" till number
+console.log(true + 1);   // 2 - true blir 1
+</code></pre>
+<p><strong>Varför:</strong> JavaScript försöker automatiskt konvertera typer, vilket kan ge oväntade resultat. Var försiktig med operatorer på olika typer.</p>
+<hr />
+<h2 id="fråga-4-funktioner-och-syntax"><a class="header" href="#fråga-4-funktioner-och-syntax">Fråga 4: Funktioner och Syntax</a></h2>
+<p><strong>Fråga:</strong> "Visa tre olika sätt att skriva funktioner i JavaScript. Vad är skillnaderna mellan dem?"</p>
+<p><strong>Förslag till svar:</strong></p>
+<pre><code class="language-javascript">// 1. Funktionsdeklaration
+function add(a, b) {
+  return a + b;
+}
+
+// 2. Funktionsuttryck
+const multiply = function(a, b) {
+  return a * b;
+};
+
+// 3. Arrow function (ES6)
+const divide = (a, b) =&gt; a / b;
+
+// Kort arrow function (en parameter)
+const square = x =&gt; x * x;
+</code></pre>
+<p><strong>Skillnader:</strong></p>
+<ul>
+<li><strong>Deklaration:</strong> Hoistas (kan anropas före deklaration)</li>
+<li><strong>Uttryck:</strong> Hoistas inte, måste deklareras före anrop</li>
+<li><strong>Arrow:</strong> Kortare syntax, annorlunda <code>this</code>-binding, hoistas inte</li>
+</ul>
+<p><strong>När använda vad:</strong></p>
+<ul>
+<li><strong>Arrow functions:</strong> För korta, enkla funktioner och callbacks</li>
+<li><strong>Deklarationer:</strong> För huvudfunktioner i programmet</li>
+<li><strong>Uttryck:</strong> När du vill tilldela funktion till variabel</li>
+</ul>
+<hr />
+<h2 id="fråga-5-scope-och-synlighet"><a class="header" href="#fråga-5-scope-och-synlighet">Fråga 5: Scope och Synlighet</a></h2>
+<p><strong>Fråga:</strong> "Förklara skillnaden mellan globalt, lokalt och block-scope. Vad skrivs ut i denna kod?"</p>
+<pre><code class="language-javascript">const global = "Jag är global";
+
+function testScope() {
+  const local = "Jag är lokal";
+  
+  if (true) {
+    const block = "Jag är i block";
+    console.log(global); // ?
+    console.log(local);  // ?
+    console.log(block);  // ?
+  }
+  
+  console.log(block); // ?
+}
+</code></pre>
+<p><strong>Förslag till svar:</strong>
+<strong>Scope-typer:</strong></p>
+<ul>
+<li><strong>Global scope:</strong> Tillgänglig överallt i programmet</li>
+<li><strong>Funktions-scope (lokalt):</strong> Tillgänglig endast inuti funktionen</li>
+<li><strong>Block-scope:</strong> Tillgänglig endast inuti <code>{}</code> (för <code>let</code>/<code>const</code>)</li>
+</ul>
+<p><strong>Utskrift:</strong></p>
+<pre><code class="language-javascript">console.log(global); // "Jag är global" - global variabel
+console.log(local);  // "Jag är lokal" - lokal till funktionen  
+console.log(block);  // "Jag är i block" - i samma block
+
+console.log(block);  // ReferenceError! block finns inte här
+</code></pre>
+<p><strong>Princip:</strong> Inre scope kan komma åt yttre scope, men inte tvärtom.</p>
+<hr />
+<h2 id="fråga-6-kontrollstrukturer"><a class="header" href="#fråga-6-kontrollstrukturer">Fråga 6: Kontrollstrukturer</a></h2>
+<p><strong>Fråga:</strong> "Skriv kod som kontrollerar en användares ålder och ger olika meddelanden. Använd både <code>if/else</code> och <code>switch</code> för att visa skillnaden."</p>
+<p><strong>Förslag till svar:</strong></p>
+<pre><code class="language-javascript">// Med if/else (för ranges/intervall)
+function checkAgeIf(age) {
+  if (age &lt; 13) {
+    return "Barn";
+  } else if (age &lt; 20) {
+    return "Tonåring";
+  } else if (age &lt; 65) {
+    return "Vuxen";
+  } else {
+    return "Senior";
+  }
+}
+
+// Med switch (för specifika värden)
+function checkDayType(dayNumber) {
+  switch (dayNumber) {
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+      return "Vardag";
+    case 6:
+    case 7:
+      return "Helg";
+    default:
+      return "Ogiltig dag";
+  }
+}
+</code></pre>
+<p><strong>När använda vad:</strong></p>
+<ul>
+<li><strong><code>if/else</code>:</strong> För intervall, komplexa villkor, booleans</li>
+<li><strong><code>switch</code>:</strong> För specifika värden, många exakta fall</li>
+<li><strong>Viktigt:</strong> Glöm inte <code>break;</code> i switch-case (om du inte returnar)!</li>
+</ul>
+<hr />
+<h2 id="fråga-7-loopar-och-iteration"><a class="header" href="#fråga-7-loopar-och-iteration">Fråga 7: Loopar och Iteration</a></h2>
+<p><strong>Fråga:</strong> "Visa olika sätt att iterera över en array. Vad är för- och nackdelarna med varje metod?"</p>
+<p><strong>Förslag till svar:</strong></p>
+<pre><code class="language-javascript">const fruits = ["äpple", "banan", "apelsin"];
+
+// 1. Traditional for-loop
+for (let i = 0; i &lt; fruits.length; i++) {
+  console.log(i, fruits[i]);
+}
+// Fördelar: Full kontroll över index, kan ändra loop-variabel
+// Nackdelar: Mer kod, risk för off-by-one errors
+
+// 2. for...of (ES6)
+for (const fruit of fruits) {
+  console.log(fruit);
+}
+// Fördelar: Ren syntax, direkt tillgång till värden
+// Nackdelar: Ingen direkt tillgång till index
+
+// 3. forEach (array method)
+fruits.forEach((fruit, index) =&gt; {
+  console.log(index, fruit);
+});
+// Fördelar: Funktionell stil, index som parameter
+// Nackdelar: Kan inte break/continue
+
+// 4. while loop
+let i = 0;
+while (i &lt; fruits.length) {
+  console.log(fruits[i]);
+  i++;
+}
+// Fördelar: Flexibel, bra för okänt antal iterationer
+// Nackdelar: Risk för oändlig loop om man glömmer öka i
+</code></pre>
+<hr />
+<h2 id="fråga-8-dom-och-element-selektion"><a class="header" href="#fråga-8-dom-och-element-selektion">Fråga 8: DOM och Element-selektion</a></h2>
+<p><strong>Fråga:</strong> "Vad är DOM? Visa olika sätt att välja element från DOM och när du skulle använda varje metod."</p>
+<p><strong>Förslag till svar:</strong>
+<strong>DOM (Document Object Model):</strong></p>
+<ul>
+<li>Webbläsarens representation av HTML-dokumentet som ett träd av objekt</li>
+<li>JavaScript kan manipulera detta träd för att ändra sidan dynamiskt</li>
+<li>Varje HTML-element blir ett objekt med egenskaper och metoder</li>
+</ul>
+<p><strong>Element-selektion:</strong></p>
+<pre><code class="language-javascript">// Modern metod (rekommenderas)
+const element = document.querySelector('#myId');
+const elements = document.querySelectorAll('.myClass');
+
+// Äldre metoder (fortfarande används)
+const byId = document.getElementById('myId');
+const byClass = document.getElementsByClassName('myClass');
+const byTag = document.getElementsByTagName('p');
+</code></pre>
+<p><strong>Skillnader:</strong></p>
+<ul>
+<li><strong><code>querySelector</code>:</strong> Första matchning, CSS-selektor syntax</li>
+<li><strong><code>querySelectorAll</code>:</strong> Alla matchningar, returnerar NodeList</li>
+<li><strong><code>getElementById</code>:</strong> Snabbast för ID, bara ett element</li>
+<li><strong><code>getElementsByClass/Tag</code>:</strong> Returnerar HTMLCollection (live)</li>
+</ul>
+<p><strong>Best practice:</strong> Använd <code>querySelector</code>/<code>querySelectorAll</code> för flexibilitet.</p>
+<hr />
+<h2 id="fråga-9-dom-manipulation"><a class="header" href="#fråga-9-dom-manipulation">Fråga 9: DOM-manipulation</a></h2>
+<p><strong>Fråga:</strong> "Hur ändrar du innehållet, attribut och stilar på ett HTML-element med JavaScript? Visa exempel."</p>
+<p><strong>Förslag till svar:</strong></p>
+<pre><code class="language-javascript">const element = document.querySelector('#myElement');
+
+// Ändra textinnehåll
+element.textContent = "Ny text";          // Säker, bara text
+element.innerHTML = "&lt;strong&gt;HTML&lt;/strong&gt;"; // Osäker med user input!
+
+// Ändra attribut
+element.setAttribute('src', 'newimage.jpg');
+element.src = 'newimage.jpg';             // Direktegenskap
+const currentSrc = element.getAttribute('src');
+
+// Ändra stilar (undvik för många ändringar)
+element.style.backgroundColor = 'red';
+element.style.fontSize = '20px';
+
+// Bättre: Använd CSS-klasser
+element.classList.add('highlight');       // Lägg till klass
+element.classList.remove('old-style');   // Ta bort klass  
+element.classList.toggle('active');      // Växla klass
+const hasClass = element.classList.contains('highlight');
+
+// Skapa och lägga till element
+const newDiv = document.createElement('div');
+newDiv.textContent = "Nytt element";
+document.body.appendChild(newDiv);
+</code></pre>
+<p><strong>Best practice:</strong> Använd <code>classList</code> för stiländringar istället för <code>style</code>.</p>
+<hr />
+<h2 id="fråga-10-event-handling"><a class="header" href="#fråga-10-event-handling">Fråga 10: Event Handling</a></h2>
+<p><strong>Fråga:</strong> "Förklara hur händelsehantering fungerar i JavaScript. Skriv kod som hanterar en knappklickning och visa vad event-objektet innehåller."</p>
+<p><strong>Förslag till svar:</strong></p>
+<pre><code class="language-javascript">// HTML: &lt;button id="myButton"&gt;Klicka mig&lt;/button&gt;
+
+const button = document.querySelector('#myButton');
+
+// Modern metod (rekommenderas)
+button.addEventListener('click', handleClick);
+
+function handleClick(event) {
+  console.log('Knapp klickad!');
+  
+  // Event-objektet innehåller:
+  console.log('Event type:', event.type);        // 'click'
+  console.log('Target element:', event.target);  // Knappen som klickades
+  console.log('Mouse position:', event.clientX, event.clientY);
+  
+  // Förhindra standardbeteende (t.ex. för formulär)
+  event.preventDefault();
+  
+  // Ändra knappens utseende
+  event.target.textContent = 'Klickad!';
+  event.target.classList.add('clicked');
+}
+
+// Alternativ: arrow function direkt
+button.addEventListener('click', (event) =&gt; {
+  console.log('Klick med arrow function!');
+});
+</code></pre>
+<p><strong>Vanliga events:</strong> <code>click</code>, <code>submit</code>, <code>input</code>, <code>mouseover</code>, <code>keydown</code>, <code>load</code></p>
+<p><strong>Viktigt:</strong> Använd <code>addEventListener</code> istället för <code>onclick</code>-attribut för separation of concerns.</p>
+<hr />
+<h2 id="fråga-11-formulärhantering-och-validering"><a class="header" href="#fråga-11-formulärhantering-och-validering">Fråga 11: Formulärhantering och Validering</a></h2>
+<p><strong>Fråga:</strong> "Hur hanterar du formulärinskickning med JavaScript? Visa hur du förhindrar standardbeteendet och validerar input."</p>
+<p><strong>Förslag till svar:</strong></p>
+<pre><code class="language-html">// HTML: 
+&lt;form id="myForm"&gt;
+   &lt;input type="email" id="email" required&gt;
+   &lt;button type="submit"&gt;Skicka&lt;/button&gt;
+&lt;/form&gt;
+</code></pre>
+<pre><code class="language-javascript">
+const form = document.querySelector('#myForm');
+const emailInput = document.querySelector('#email');
+
+form.addEventListener('submit', handleSubmit);
+
+function handleSubmit(event) {
+  event.preventDefault(); // Stoppa normal formulärinskickning
+  
+  // Hämta värden
+  const email = emailInput.value.trim();
+  
+  // Enkel validering
+  if (!email) {
+    showError('E-post krävs');
+    return;
+  }
+  
+  if (!isValidEmail(email)) {
+    showError('Ogiltig e-postadress');
+    return;
+  }
+  
+  // Skicka data (t.ex. till server)
+  console.log('Skickar:', { email });
+  showSuccess('Formulär skickat!');
+}
+
+function isValidEmail(email) {
+  return email.includes('@') &amp;&amp; email.includes('.');
+}
+
+function showError(message) {
+  console.error(message);
+  // Visa felmeddelande i UI
+}
+
+function showSuccess(message) {
+  console.log(message);
+  // Visa framgångsmeddelande i UI
+}
+</code></pre>
+<p><strong>Viktigt:</strong> Alltid validera på server också - klientvalidering är bara för användarupplevelse.</p>
+<hr />
+<h2 id="fråga-12-felsökning-och-debug-tekniker"><a class="header" href="#fråga-12-felsökning-och-debug-tekniker">Fråga 12: Felsökning och Debug-tekniker</a></h2>
+<p><strong>Fråga:</strong> "Vilka verktyg och tekniker använder du för att felsöka JavaScript-kod? Visa praktiska exempel."</p>
+<p><strong>Förslag till svar:</strong>
+<strong>Felsökningsverktyg:</strong></p>
+<ol>
+<li><strong>Console.log()</strong> - Grundläggande utskrifter</li>
+</ol>
+<pre><code class="language-javascript">const data = { name: "Alice", age: 25 };
+console.log('Data:', data);
+console.log('Endast namnet:', data.name);
+
+// Andra console-metoder
+console.error('Detta är ett fel');
+console.warn('Detta är en varning');
+console.table(data); // Visa objekt som tabell
+</code></pre>
+<ol start="2">
+<li><strong>Browser Developer Tools</strong></li>
+</ol>
+<pre><code class="language-javascript">// Sätt breakpoints i koden
+function calculateTotal(price, tax) {
+  debugger; // Pausar exekvering här
+  const total = price + (price * tax);
+  return total;
+}
+</code></pre>
+<ol start="3">
+<li><strong>Defensive Programming</strong></li>
+</ol>
+<pre><code class="language-javascript">function processUser(user) {
+  // Kontrollera input
+  if (!user) {
+    console.error('User is null or undefined');
+    return;
+  }
+  
+  if (typeof user.age !== 'number') {
+    console.warn('User age is not a number:', user.age);
+  }
+  
+  // Fortsätt med logik...
+}
+</code></pre>
+<ol start="4">
+<li><strong>Try-Catch för felhantering</strong></li>
+</ol>
+<pre><code class="language-javascript">try {
+  const result = riskyOperation();
+  console.log('Success:', result);
+} catch (error) {
+  console.error('Something went wrong:', error.message);
+}
+</code></pre>
+<p><strong>Best practices:</strong> Använd console.log strategiskt, lär dig utvecklarverktygen, skriv defensiv kod.</p>
+<hr />
+<h2 id="tips-för-tekniska-intervjuer"><a class="header" href="#tips-för-tekniska-intervjuer">Tips för Tekniska Intervjuer</a></h2>
+<ul>
+<li><strong>Skriv kod på whiteboard/papper</strong> - träna på att skriva JavaScript utan editor</li>
+<li><strong>Förklara din tankeprocess</strong> - prata igenom vad du gör steg för steg</li>
+<li><strong>Testa din kod mentalt</strong> - gå igenom koden rad för rad</li>
+<li><strong>Fråga om krav</strong> - klargör vad som förväntas innan du börjar koda</li>
+<li><strong>Börja enkelt</strong> - löss grundproblemet först, lägg till features sedan</li>
+<li><strong>Hantera edge cases</strong> - diskutera vad som händer med oväntad input</li>
+</ul>
+<h1 id="tekniska-intervjufrågor-css-och-responsiv-design"><a class="header" href="#tekniska-intervjufrågor-css-och-responsiv-design">Tekniska intervjufrågor: CSS och responsiv design</a></h1>
+<p>Detta avsnitt innehåller exempel på tekniska intervjufrågor som kan dyka upp gällande CSS och responsiv webbutveckling. Frågorna är utformade för att testa både teoretisk förståelse och praktisk kunskap.</p>
+<p>Använd dessa frågor för att testa din kunskap och förbereda dig för tekniska intervjuer.</p>
+<hr />
+<h2 id="fråga-1-css-grundsyntax-och-inkludering"><a class="header" href="#fråga-1-css-grundsyntax-och-inkludering">Fråga 1: CSS grundsyntax och inkludering</a></h2>
+<p><strong>Fråga:</strong><br />
+Förklara skillnaden mellan inline CSS, intern CSS och extern CSS. Vilken metod rekommenderas och varför?</p>
+<p><strong>Svar:</strong></p>
+<ul>
+<li><strong>Inline CSS:</strong> Skrivs direkt i HTML-elementets <code>style</code>-attribut, t.ex. <code>&lt;p style="color: red;"&gt;Text&lt;/p&gt;</code>.</li>
+<li><strong>Intern CSS:</strong> Skrivs i en <code>&lt;style&gt;</code>-tagg i HTML-dokumentets <code>&lt;head&gt;</code>.</li>
+<li><strong>Extern CSS:</strong> Skrivs i en separat <code>.css</code>-fil som länkas in med <code>&lt;link rel="stylesheet" href="style.css"&gt;</code>.</li>
+</ul>
+<p>Extern CSS rekommenderas eftersom det separerar struktur och utseende, gör det lättare att återanvända och underhålla stilar, samt förbättrar prestanda genom cache.</p>
+<hr />
+<h2 id="fråga-2-css-selektorer"><a class="header" href="#fråga-2-css-selektorer">Fråga 2: CSS-selektorer</a></h2>
+<p><strong>Fråga:</strong><br />
+Förklara skillnaden mellan dessa selektorer och ge exempel på när du skulle använda var och en:</p>
+<pre><code class="language-css">p { }
+.highlight { }
+#header { }
+nav ul li { }
+</code></pre>
+<p><strong>Svar:</strong></p>
+<ul>
+<li><code>p</code> – Elementselektor: Väljer alla <code>&lt;p&gt;</code>-element. Används för grundläggande styling av paragrafer.</li>
+<li><code>.highlight</code> – Klassselektor: Väljer alla element med klassen <code>highlight</code>. Används för återanvändbara stilar.</li>
+<li><code>#header</code> – ID-selektor: Väljer elementet med id <code>header</code>. Används för unika element.</li>
+<li><code>nav ul li</code> – Ättlingselektor: Väljer alla <code>&lt;li&gt;</code>-element inuti en <code>&lt;ul&gt;</code> som ligger i en <code>&lt;nav&gt;</code>. Används för att styla specifika strukturer.</li>
+</ul>
+<hr />
+<h2 id="fråga-3-specificitet-och-kaskaden"><a class="header" href="#fråga-3-specificitet-och-kaskaden">Fråga 3: Specificitet och kaskaden</a></h2>
+<p><strong>Fråga:</strong><br />
+Vilken färg får texten i detta exempel och varför?</p>
+<pre><code class="language-html">&lt;p id="viktigt" class="highlight"&gt;Text&lt;/p&gt;
+</code></pre>
+<pre><code class="language-css">p { color: black; }
+.highlight { color: blue; }
+#viktigt { color: red; }
+p.highlight { color: green; }
+</code></pre>
+<p><strong>Svar:</strong><br />
+Texten blir <strong>röd</strong> eftersom ID-selektorn <code>#viktigt</code> har högst specificitet och därför vinner över de andra reglerna.</p>
+<hr />
+<h2 id="fråga-4-box-model"><a class="header" href="#fråga-4-box-model">Fråga 4: Box model</a></h2>
+<p><strong>Fråga:</strong><br />
+Förklara CSS box model. Om ett element har <code>width: 200px</code>, <code>padding: 20px</code>, <code>border: 5px solid black</code> och <code>margin: 10px</code>, vad blir elementets totala bredd?</p>
+<p><strong>Svar:</strong><br />
+Box model består av content, padding, border och margin.<br />
+Total bredd = width + (padding × 2) + (border × 2) = 200 + 40 + 10 = <strong>250px</strong> (margin räknas utanför detta).</p>
+<hr />
+<h2 id="fråga-5-display-egenskaper"><a class="header" href="#fråga-5-display-egenskaper">Fråga 5: Display-egenskaper</a></h2>
+<p><strong>Fråga:</strong><br />
+Vad är skillnaden mellan <code>display: block</code>, <code>display: inline</code> och <code>display: inline-block</code>?</p>
+<p><strong>Svar:</strong></p>
+<ul>
+<li><code>block</code>: Elementet tar hela raden, respekterar width/height, börjar på ny rad.</li>
+<li><code>inline</code>: Elementet tar bara så mycket plats som behövs, ignorerar width/height, bryter inte rad.</li>
+<li><code>inline-block</code>: Som inline, men respekterar width/height.</li>
+</ul>
+<hr />
+<h2 id="fråga-6-css-positionering"><a class="header" href="#fråga-6-css-positionering">Fråga 6: CSS-positionering</a></h2>
+<p><strong>Fråga:</strong><br />
+Förklara skillnaden mellan <code>position: relative</code>, <code>position: absolute</code> och <code>position: fixed</code>. Ge exempel på användningsfall.</p>
+<p><strong>Svar:</strong></p>
+<ul>
+<li><code>relative</code>: Elementet flyttas relativt sin ursprungliga plats, påverkar inte andra element.</li>
+<li><code>absolute</code>: Positioneras relativt närmaste positionerade förälder, tas ur flödet.</li>
+<li><code>fixed</code>: Positioneras relativt till fönstret, stannar kvar vid scroll.</li>
+</ul>
+<hr />
+<h2 id="fråga-7-färger-och-typografi"><a class="header" href="#fråga-7-färger-och-typografi">Fråga 7: Färger och typografi</a></h2>
+<p><strong>Fråga:</strong><br />
+Förklara skillnaden mellan dessa färgformat och när du skulle använda dem:</p>
+<pre><code class="language-css">color: red;
+color: #FF0000;
+color: rgb(255, 0, 0);
+color: rgba(255, 0, 0, 0.5);
+</code></pre>
+<p><strong>Svar:</strong></p>
+<ul>
+<li><code>red</code>: Namngiven färg, enkel men begränsad.</li>
+<li><code>#FF0000</code>: HEX, vanligt för webben.</li>
+<li><code>rgb(255, 0, 0)</code>: RGB, bra för exakta färger.</li>
+<li><code>rgba(255, 0, 0, 0.5)</code>: RGB med transparens (alpha).</li>
+</ul>
+<hr />
+<h2 id="fråga-8-responsiv-design--media-queries"><a class="header" href="#fråga-8-responsiv-design--media-queries">Fråga 8: Responsiv design – Media Queries</a></h2>
+<p><strong>Fråga:</strong><br />
+Vad är skillnaden mellan dessa två Media Queries och vilken strategi representerar de?</p>
+<pre><code class="language-css">@media (max-width: 768px) { ... }
+@media (min-width: 768px) { ... }
+</code></pre>
+<p><strong>Svar:</strong></p>
+<ul>
+<li><code>max-width</code>: Desktop-first, ändrar stilar för mindre skärmar.</li>
+<li><code>min-width</code>: Mobile-first, lägger till/förbättrar stilar för större skärmar.<br />
+Mobile-first rekommenderas idag.</li>
+</ul>
+<hr />
+<h2 id="fråga-9-mobile-first-design"><a class="header" href="#fråga-9-mobile-first-design">Fråga 9: Mobile-first design</a></h2>
+<p><strong>Fråga:</strong><br />
+Varför rekommenderas mobile-first design och hur implementerar du det i CSS?</p>
+<p><strong>Svar:</strong><br />
+Mobile-first prioriterar prestanda och tillgänglighet för mobila användare.<br />
+Implementeras genom att skriva grundstilar utan media queries och lägga till förbättringar med <code>@media (min-width: ...)</code>.</p>
+<hr />
+<h2 id="fråga-10-flexibla-enheter"><a class="header" href="#fråga-10-flexibla-enheter">Fråga 10: Flexibla enheter</a></h2>
+<p><strong>Fråga:</strong><br />
+Förklara skillnaden mellan <code>px</code>, <code>em</code>, <code>rem</code> och <code>%</code>. När skulle du använda respektive enhet?</p>
+<p><strong>Svar:</strong></p>
+<ul>
+<li><code>px</code>: Absolut, exakt storlek.</li>
+<li><code>em</code>: Relativ till förälderns font-size.</li>
+<li><code>rem</code>: Relativ till root-elementets font-size.</li>
+<li><code>%</code>: Relativ till förälderns storlek.<br />
+Använd <code>rem</code> för typografi, <code>%</code> för layouter, <code>px</code> för detaljer.</li>
+</ul>
+<hr />
+<h2 id="fråga-11-flexbox-layout"><a class="header" href="#fråga-11-flexbox-layout">Fråga 11: Flexbox layout</a></h2>
+<p><strong>Fråga:</strong><br />
+Förklara hur Flexbox fungerar. Vad är skillnaden mellan <code>justify-content</code> och <code>align-items</code>? Ge ett exempel.</p>
+<p><strong>Svar:</strong><br />
+Flexbox är för endimensionella layouter.</p>
+<ul>
+<li><code>justify-content</code>: Justerar längs huvudaxeln (t.ex. horisontellt).</li>
+<li><code>align-items</code>: Justerar längs tväraxeln (t.ex. vertikalt).</li>
+</ul>
+<p>Exempel:</p>
+<pre><code class="language-css">.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+</code></pre>
+<hr />
+<h2 id="fråga-12-css-grid-layout"><a class="header" href="#fråga-12-css-grid-layout">Fråga 12: CSS Grid layout</a></h2>
+<p><strong>Fråga:</strong><br />
+Vad är skillnaden mellan CSS Grid och Flexbox? Visa hur du skapar en enkel 3-kolumns layout med Grid.</p>
+<p><strong>Svar:</strong><br />
+Grid är tvådimensionellt (rader och kolumner), Flexbox är endimensionellt.<br />
+Exempel:</p>
+<pre><code class="language-css">.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+</code></pre>
+<hr />
+<h2 id="tips-för-tekniska-intervjuer-1"><a class="header" href="#tips-för-tekniska-intervjuer-1">Tips för tekniska intervjuer</a></h2>
+<ul>
+<li>Rita gärna box model eller layout-flöde.</li>
+<li>Förklara varför du väljer en viss lösning.</li>
+<li>Ge exempel från egna projekt.</li>
+<li>Visa att du kan felsöka och resonera kring CSS-problem.</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_4/ovningar.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_5/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_4/ovningar.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_5/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

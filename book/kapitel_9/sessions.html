@@ -1,0 +1,782 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Sessionshantering - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="sessionshantering-och-cookies"><a class="header" href="#sessionshantering-och-cookies">Sessionshantering och Cookies</a></h1>
+<p>Sessioner är ett sätt att lagra information om en användare över flera HTTP-förfrågningar. Eftersom HTTP är stateless behöver vi sessioner för att komma ihåg inloggade användare och deras preferenser. Låt oss utforska hur sessioner fungerar och när de är att föredra framför JWT.</p>
+<h2 id="vad-är-sessioner-och-cookies"><a class="header" href="#vad-är-sessioner-och-cookies">Vad är sessioner och cookies?</a></h2>
+<p><strong>Sessions</strong>: Server-side lagring av användardata som identifieras med ett unikt session-ID.</p>
+<p><strong>Cookies</strong>: Små textfiler som lagras i användarens webbläsare och skickas med varje HTTP-förfrågan.</p>
+<pre class="mermaid">sequenceDiagram
+    participant C as Client
+    participant S as Server
+    participant DB as Session Store
+    
+    C-&gt;&gt;S: 1. POST /login (credentials)
+    S-&gt;&gt;DB: 2. Create session
+    DB--&gt;&gt;S: 3. Session ID
+    S-&gt;&gt;C: 4. Set-Cookie: session=abc123
+    Note over C: Cookie sparas i webbläsare
+    
+    C-&gt;&gt;S: 5. GET /profile (Cookie: session=abc123)
+    S-&gt;&gt;DB: 6. Lookup session abc123
+    DB--&gt;&gt;S: 7. User data
+    S--&gt;&gt;C: 8. User profile data
+</pre>
+<h3 id="sessioner-vs-jwt"><a class="header" href="#sessioner-vs-jwt">Sessioner vs JWT</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Aspekt</th><th>Sessioner</th><th>JWT</th></tr></thead><tbody>
+<tr><td><strong>Lagring</strong></td><td>Server-side</td><td>Client-side (token)</td></tr>
+<tr><td><strong>Skalbarhet</strong></td><td>Kräver delad session store</td><td>Stateless, enkelt att skala</td></tr>
+<tr><td><strong>Säkerhet</strong></td><td>Svårare att manipulera</td><td>Kan dekodas (ej krypterad)</td></tr>
+<tr><td><strong>Invalidering</strong></td><td>Omedelbar (ta bort från server)</td><td>Svår (vänta på expiry)</td></tr>
+<tr><td><strong>Prestanda</strong></td><td>Databaslookup för varje request</td><td>Ingen server-lookup</td></tr>
+<tr><td><strong>Datalagring</strong></td><td>Obegränsad (server-side)</td><td>Begränsad (cookie/header size)</td></tr>
+</tbody></table>
+</div>
+<h2 id="implementera-sessioner-i-express"><a class="header" href="#implementera-sessioner-i-express">Implementera sessioner i Express</a></h2>
+<h3 id="grundläggande-setup"><a class="header" href="#grundläggande-setup">Grundläggande setup</a></h3>
+<pre><code class="language-javascript">const express = require('express');
+const session = require('express-session');
+const MongoStore = require('connect-mongo');
+
+const app = express();
+
+// Session middleware
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'your-secret-key',
+  resave: false,               // Spara inte om inget har ändrats
+  saveUninitialized: false,    // Spara inte tomma sessioner
+  name: 'sessionId',           // Ändra från default 'connect.sid'
+  cookie: {
+    secure: process.env.NODE_ENV === 'production', // HTTPS only i produktion
+    httpOnly: true,             // Förhindra XSS-attacker
+    maxAge: 1000 * 60 * 60 * 24 // 24 timmar
+  },
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGODB_URI,
+    touchAfter: 24 * 3600 // Lazy session update
+  })
+}));
+</code></pre>
+<h3 id="session-baserad-autentisering"><a class="header" href="#session-baserad-autentisering">Session-baserad autentisering</a></h3>
+<pre><code class="language-javascript">const bcrypt = require('bcrypt');
+const User = require('../models/User');
+
+class SessionAuthController {
+  // Registrera användare
+  static async register(req, res) {
+    try {
+      const { username, email, password } = req.body;
+      
+      // Kontrollera om användaren finns
+      const existingUser = await User.findOne({ 
+        $or: [{ email }, { username }] 
+      });
+      
+      if (existingUser) {
+        return res.status(409).json({ 
+          error: 'Användare finns redan' 
+        });
+      }
+      
+      // Hasha lösenord
+      const hashedPassword = await bcrypt.hash(password, 12);
+      
+      // Skapa användare
+      const user = new User({
+        username,
+        email,
+        password: hashedPassword
+      });
+      
+      await user.save();
+      
+      // Logga in automatiskt efter registrering
+      req.session.userId = user._id;
+      req.session.user = {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        role: user.role
+      };
+      
+      res.status(201).json({
+        message: 'Användare registrerad och inloggad',
+        user: req.session.user
+      });
+      
+    } catch (error) {
+      console.error('Registration error:', error);
+      res.status(500).json({ error: 'Registreringsfel' });
+    }
+  }
+  
+  // Logga in
+  static async login(req, res) {
+    try {
+      const { email, password } = req.body;
+      
+      // Hitta användare
+      const user = await User.findOne({ email }).select('+password');
+      
+      if (!user) {
+        return res.status(401).json({ 
+          error: 'Ogiltiga inloggningsuppgifter' 
+        });
+      }
+      
+      // Verifiera lösenord
+      const isValidPassword = await bcrypt.compare(password, user.password);
+      
+      if (!isValidPassword) {
+        return res.status(401).json({ 
+          error: 'Ogiltiga inloggningsuppgifter' 
+        });
+      }
+      
+      // Skapa session
+      req.session.userId = user._id;
+      req.session.user = {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        role: user.role
+      };
+      
+      // Uppdatera senaste inloggning
+      user.lastLogin = new Date();
+      await user.save();
+      
+      res.json({
+        message: 'Inloggning lyckades',
+        user: req.session.user
+      });
+      
+    } catch (error) {
+      console.error('Login error:', error);
+      res.status(500).json({ error: 'Inloggningsfel' });
+    }
+  }
+  
+  // Logga ut
+  static async logout(req, res) {
+    try {
+      req.session.destroy((err) =&gt; {
+        if (err) {
+          return res.status(500).json({ error: 'Kunde inte logga ut' });
+        }
+        
+        res.clearCookie('sessionId');
+        res.json({ message: 'Utloggning lyckades' });
+      });
+    } catch (error) {
+      res.status(500).json({ error: 'Utloggningsfel' });
+    }
+  }
+  
+  // Hämta profil
+  static async getProfile(req, res) {
+    try {
+      const user = await User.findById(req.session.userId).select('-password');
+      
+      if (!user) {
+        return res.status(404).json({ error: 'Användare inte hittad' });
+      }
+      
+      res.json(user);
+    } catch (error) {
+      res.status(500).json({ error: 'Kunde inte hämta profil' });
+    }
+  }
+  
+  // Kontrollera session-status
+  static checkSession(req, res) {
+    if (req.session.userId) {
+      res.json({ 
+        authenticated: true, 
+        user: req.session.user 
+      });
+    } else {
+      res.json({ 
+        authenticated: false 
+      });
+    }
+  }
+}
+
+module.exports = SessionAuthController;
+</code></pre>
+<h2 id="konfigurera-session-lagring"><a class="header" href="#konfigurera-session-lagring">Konfigurera session-lagring</a></h2>
+<h3 id="in-memory-store-endast-utveckling"><a class="header" href="#in-memory-store-endast-utveckling">In-Memory Store (endast utveckling)</a></h3>
+<pre><code class="language-javascript">// Standard - endast för utveckling
+app.use(session({
+  secret: 'dev-secret',
+  resave: false,
+  saveUninitialized: false
+  // Ingen store specificerad = MemoryStore
+}));
+</code></pre>
+<h3 id="mongodb-store"><a class="header" href="#mongodb-store">MongoDB Store</a></h3>
+<pre><code class="language-javascript">const MongoStore = require('connect-mongo');
+
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGODB_URI,
+    dbName: 'sessions',
+    collectionName: 'sessions',
+    ttl: 24 * 60 * 60, // 24 timmar
+    autoRemove: 'native'
+  }),
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24 // 24 timmar
+  }
+}));
+</code></pre>
+<h3 id="redis-store-hög-prestanda"><a class="header" href="#redis-store-hög-prestanda">Redis Store (hög prestanda)</a></h3>
+<pre><code class="language-javascript">const redis = require('redis');
+const RedisStore = require('connect-redis')(session);
+
+const redisClient = redis.createClient({
+  host: process.env.REDIS_HOST || 'localhost',
+  port: process.env.REDIS_PORT || 6379,
+  password: process.env.REDIS_PASSWORD
+});
+
+app.use(session({
+  store: new RedisStore({ client: redisClient }),
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: false, // true för HTTPS
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60 * 24
+  }
+}));
+</code></pre>
+<h2 id="arbeta-med-cookies"><a class="header" href="#arbeta-med-cookies">Arbeta med cookies</a></h2>
+<h3 id="sätta-och-läsa-cookies"><a class="header" href="#sätta-och-läsa-cookies">Sätta och läsa cookies</a></h3>
+<pre><code class="language-javascript">// Sätta cookies
+app.get('/set-cookie', (req, res) =&gt; {
+  // Enkel cookie
+  res.cookie('username', 'johndoe');
+  
+  // Cookie med options
+  res.cookie('preferences', JSON.stringify({
+    theme: 'dark',
+    language: 'sv'
+  }), {
+    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 dagar
+    httpOnly: false, // Tillgänglig för JavaScript
+    secure: process.env.NODE_ENV === 'production',
+    signed: true // Signerad cookie
+  });
+  
+  res.json({ message: 'Cookies satta' });
+});
+
+// Läsa cookies (kräver cookie-parser middleware)
+const cookieParser = require('cookie-parser');
+app.use(cookieParser(process.env.COOKIE_SECRET));
+
+app.get('/get-cookies', (req, res) =&gt; {
+  res.json({
+    cookies: req.cookies,        // Osignerade cookies
+    signedCookies: req.signedCookies // Signerade cookies
+  });
+});
+
+// Ta bort cookie
+app.get('/clear-cookie', (req, res) =&gt; {
+  res.clearCookie('username');
+  res.json({ message: 'Cookie borttagen' });
+});
+</code></pre>
+<h3 id="cookie-säkerhet"><a class="header" href="#cookie-säkerhet">Cookie-säkerhet</a></h3>
+<pre><code class="language-javascript">// Säkra cookie-inställningar för produktion
+const secureCookieSettings = {
+  httpOnly: true,      // Förhindra XSS
+  secure: true,        // Endast HTTPS
+  sameSite: 'strict',  // CSRF-skydd
+  maxAge: 24 * 60 * 60 * 1000 // 24 timmar
+};
+
+// Miljöspecifika inställningar
+const cookieSettings = process.env.NODE_ENV === 'production' 
+  ? secureCookieSettings 
+  : { 
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      maxAge: 24 * 60 * 60 * 1000
+    };
+
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  cookie: cookieSettings,
+  // ... andra inställningar
+}));
+</code></pre>
+<h2 id="säkerhet-i-sessionshantering"><a class="header" href="#säkerhet-i-sessionshantering">Säkerhet i sessionshantering</a></h2>
+<h3 id="session-hijacking-prevention"><a class="header" href="#session-hijacking-prevention">Session Hijacking Prevention</a></h3>
+<pre><code class="language-javascript">// Regenera session-ID efter inloggning
+const regenerateSession = (req, res, next) =&gt; {
+  const oldSessionData = req.session;
+  
+  req.session.regenerate((err) =&gt; {
+    if (err) {
+      return next(err);
+    }
+    
+    // Återställ sessionsdata
+    Object.assign(req.session, oldSessionData);
+    req.session.save(next);
+  });
+};
+
+// Använd efter lyckad inloggning
+app.post('/login', async (req, res, next) =&gt; {
+  // ... autentiseringslogik
+  
+  if (loginSuccessful) {
+    regenerateSession(req, res, () =&gt; {
+      req.session.userId = user._id;
+      res.json({ message: 'Inloggad' });
+    });
+  }
+});
+</code></pre>
+<h3 id="csrf-skydd-med-sessions"><a class="header" href="#csrf-skydd-med-sessions">CSRF-skydd med sessions</a></h3>
+<pre><code class="language-javascript">const csrf = require('csurf');
+
+// CSRF-middleware
+const csrfProtection = csrf({
+  cookie: {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production'
+  }
+});
+
+app.use(csrfProtection);
+
+// Skicka CSRF-token till frontend
+app.get('/api/csrf-token', (req, res) =&gt; {
+  res.json({ csrfToken: req.csrfToken() });
+});
+
+// Alla POST/PUT/DELETE-routes är nu skyddade
+app.post('/api/data', (req, res) =&gt; {
+  // CSRF-token valideras automatiskt
+  res.json({ success: true });
+});
+</code></pre>
+<h3 id="session-timeout-och-activity-tracking"><a class="header" href="#session-timeout-och-activity-tracking">Session Timeout och Activity Tracking</a></h3>
+<pre><code class="language-javascript">// Middleware för att kontrollera session-timeout
+const sessionTimeout = (timeoutMinutes = 30) =&gt; {
+  return (req, res, next) =&gt; {
+    if (req.session.userId) {
+      const now = Date.now();
+      const lastActivity = req.session.lastActivity || now;
+      const timeDiff = now - lastActivity;
+      
+      if (timeDiff &gt; timeoutMinutes * 60 * 1000) {
+        req.session.destroy();
+        return res.status(401).json({ 
+          error: 'Session har gått ut på grund av inaktivitet' 
+        });
+      }
+      
+      // Uppdatera senaste aktivitet
+      req.session.lastActivity = now;
+    }
+    
+    next();
+  };
+};
+
+app.use(sessionTimeout(30)); // 30 minuters timeout
+</code></pre>
+<h2 id="avancerad-sessionshantering"><a class="header" href="#avancerad-sessionshantering">Avancerad sessionshantering</a></h2>
+<h3 id="multi-device-sessions"><a class="header" href="#multi-device-sessions">Multi-device Sessions</a></h3>
+<pre><code class="language-javascript">// Schema för att lagra flera aktiva sessioner per användare
+const activeSessionSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  sessionId: { type: String, required: true },
+  deviceInfo: {
+    userAgent: String,
+    ip: String,
+    device: String,
+    browser: String
+  },
+  createdAt: { type: Date, default: Date.now },
+  lastActivity: { type: Date, default: Date.now },
+  isActive: { type: Boolean, default: true }
+});
+
+const ActiveSession = mongoose.model('ActiveSession', activeSessionSchema);
+
+// Logga aktiva sessioner
+const trackSession = async (req, res, next) =&gt; {
+  if (req.session.userId) {
+    await ActiveSession.findOneAndUpdate(
+      { sessionId: req.sessionID },
+      {
+        userId: req.session.userId,
+        sessionId: req.sessionID,
+        deviceInfo: {
+          userAgent: req.get('User-Agent'),
+          ip: req.ip,
+          // Parse user agent för device/browser info
+        },
+        lastActivity: new Date()
+      },
+      { upsert: true }
+    );
+  }
+  next();
+};
+
+// Hämta alla aktiva sessioner för användare
+app.get('/api/active-sessions', async (req, res) =&gt; {
+  try {
+    const sessions = await ActiveSession.find({
+      userId: req.session.userId,
+      isActive: true
+    });
+    
+    res.json(sessions);
+  } catch (error) {
+    res.status(500).json({ error: 'Kunde inte hämta sessioner' });
+  }
+});
+
+// Logga ut från specifik session
+app.delete('/api/sessions/:sessionId', async (req, res) =&gt; {
+  try {
+    await ActiveSession.findOneAndUpdate(
+      { 
+        sessionId: req.params.sessionId,
+        userId: req.session.userId
+      },
+      { isActive: false }
+    );
+    
+    res.json({ message: 'Session avslutad' });
+  } catch (error) {
+    res.status(500).json({ error: 'Kunde inte avsluta session' });
+  }
+});
+</code></pre>
+<h3 id="session-data-encryption"><a class="header" href="#session-data-encryption">Session Data Encryption</a></h3>
+<pre><code class="language-javascript">const crypto = require('crypto');
+
+class SessionEncryption {
+  static encrypt(text, key) {
+    const algorithm = 'aes-256-gcm';
+    const iv = crypto.randomBytes(16);
+    const cipher = crypto.createCipher(algorithm, key);
+    
+    let encrypted = cipher.update(text, 'utf8', 'hex');
+    encrypted += cipher.final('hex');
+    
+    const authTag = cipher.getAuthTag();
+    
+    return {
+      encrypted,
+      iv: iv.toString('hex'),
+      authTag: authTag.toString('hex')
+    };
+  }
+  
+  static decrypt(encryptedData, key) {
+    const algorithm = 'aes-256-gcm';
+    const decipher = crypto.createDecipher(algorithm, key);
+    
+    decipher.setAuthTag(Buffer.from(encryptedData.authTag, 'hex'));
+    
+    let decrypted = decipher.update(encryptedData.encrypted, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+    
+    return decrypted;
+  }
+}
+
+// Custom session serialization
+app.use(session({
+  // ... andra inställningar
+  store: new CustomStore({
+    serialize: (session) =&gt; {
+      const key = process.env.SESSION_ENCRYPTION_KEY;
+      const sessionData = JSON.stringify(session);
+      return SessionEncryption.encrypt(sessionData, key);
+    },
+    deserialize: (encryptedSession) =&gt; {
+      const key = process.env.SESSION_ENCRYPTION_KEY;
+      const sessionData = SessionEncryption.decrypt(encryptedSession, key);
+      return JSON.parse(sessionData);
+    }
+  })
+}));
+</code></pre>
+<h2 id="komplett-exempel-session-baserad-auth"><a class="header" href="#komplett-exempel-session-baserad-auth">Komplett exempel: Session-baserad auth</a></h2>
+<pre><code class="language-javascript">// routes/sessionAuth.js
+const express = require('express');
+const router = express.Router();
+const SessionAuthController = require('../controllers/SessionAuthController');
+
+// Middleware för att kontrollera session
+const requireAuth = (req, res, next) =&gt; {
+  if (!req.session.userId) {
+    return res.status(401).json({ error: 'Inloggning krävs' });
+  }
+  next();
+};
+
+const requireRole = (roles) =&gt; {
+  return (req, res, next) =&gt; {
+    if (!req.session.user || !roles.includes(req.session.user.role)) {
+      return res.status(403).json({ error: 'Otillåten åtkomst' });
+    }
+    next();
+  };
+};
+
+// Publika routes
+router.post('/register', SessionAuthController.register);
+router.post('/login', SessionAuthController.login);
+router.get('/session-status', SessionAuthController.checkSession);
+
+// Skyddade routes
+router.post('/logout', requireAuth, SessionAuthController.logout);
+router.get('/profile', requireAuth, SessionAuthController.getProfile);
+router.get('/admin', requireAuth, requireRole(['admin']), (req, res) =&gt; {
+  res.json({ message: 'Admin-område' });
+});
+
+module.exports = router;
+</code></pre>
+<p>Sessioner erbjuder en traditionell och säker metod för användarautentisering, särskilt lämplig för traditionella webbapplikationer. Medan JWT är bättre för API:er och mikroservices, ger sessioner bättre kontroll över säkerhet och användarhantering.</p>
+<p>Nästa steg är att utforska den kompletta demo-applikationen som kombinerar alla dessa koncept!</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_9/middleware.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_9/demo.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_9/middleware.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_9/demo.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

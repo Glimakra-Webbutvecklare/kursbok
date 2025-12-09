@@ -1,0 +1,610 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Komponentbaserad arkitektur - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="komponenter-Återanvändbara-ui-byggstenar"><a class="header" href="#komponenter-Återanvändbara-ui-byggstenar">Komponenter: Återanvändbara UI-byggstenar</a></h1>
+<p>Komponenter låter dig dela upp UI:t i oberoende, återanvändbara delar och tänka på varje del isolerat. Den här sidan ger en introduktion till idén om komponenter.</p>
+<p><strong>Mål:</strong> Lära dig skapa, organisera och återanvända komponenter för att bygga skalbar React-kod.</p>
+<h2 id="definiera-en-komponent"><a class="header" href="#definiera-en-komponent">Definiera en Komponent</a></h2>
+<p>React-komponenter är JavaScript-funktioner som returnerar markup:</p>
+<pre><code class="language-jsx">function MyButton() {
+  return (
+    &lt;button&gt;Jag är en knapp&lt;/button&gt;
+  );
+}
+</code></pre>
+<p>Nu när du har deklarerat <code>MyButton</code> kan du nästla den i en annan komponent:</p>
+<pre><code class="language-jsx">function MyApp() {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Välkommen till min app&lt;/h1&gt;
+      &lt;MyButton /&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<p>Observera att <code>&lt;MyButton /&gt;</code> börjar med stor bokstav. Så här vet du att det är en React-komponent. React-komponentnamn måste alltid börja med stor bokstav, medan HTML-taggar måste vara små bokstäver.</p>
+<h2 id="komponenter-inom-komponenter"><a class="header" href="#komponenter-inom-komponenter">Komponenter inom komponenter</a></h2>
+<p>Komponenter är vanliga JavaScript-funktioner, så du kan hålla flera komponenter i samma fil:</p>
+<pre><code class="language-jsx">function Avatar() {
+  return (
+    &lt;img
+      className="avatar"
+      src="https://i.imgur.com/1bX5QH6.jpg"
+      alt="Lin Lanying"
+      width={100}
+      height={100}
+    /&gt;
+  );
+}
+
+function Profile() {
+  return (
+    &lt;div&gt;
+      &lt;Avatar /&gt;
+      &lt;Avatar /&gt;
+      &lt;Avatar /&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<p>I detta exempel har <code>Profile</code>-komponenten tre <code>Avatar</code>-komponenter.</p>
+<h2 id="funktionella-komponenter-det-moderna-sättet"><a class="header" href="#funktionella-komponenter-det-moderna-sättet">Funktionella Komponenter: Det Moderna Sättet</a></h2>
+<p>Sedan React 16.8 och introduktionen av <strong>Hooks</strong> är funktionella komponenter standardsättet att skriva React-kod.</p>
+<h3 id="grundläggande-komponent"><a class="header" href="#grundläggande-komponent">Grundläggande Komponent</a></h3>
+<pre><code class="language-jsx">// Enkel funktionell komponent
+function Greeting() {
+  return &lt;h1&gt;Hej världen!&lt;/h1&gt;;
+}
+
+// Arrow function syntax (också vanlig)
+const Greeting = () =&gt; {
+  return &lt;h1&gt;Hej världen!&lt;/h1&gt;;
+};
+
+// Kort syntax för enkel return
+const Greeting = () =&gt; &lt;h1&gt;Hej världen!&lt;/h1&gt;;
+</code></pre>
+<h3 id="komponent-med-logik"><a class="header" href="#komponent-med-logik">Komponent med Logik</a></h3>
+<pre><code class="language-jsx">function UserProfile() {
+  const user = {
+    name: "Anna Andersson",
+    age: 28,
+    email: "anna@example.com",
+    avatar: "/images/anna.jpg"
+  };
+
+  const isAdult = user.age &gt;= 18;
+
+  return (
+    &lt;div className="user-profile"&gt;
+      &lt;img src={user.avatar} alt={`${user.name}s avatar`} /&gt;
+      &lt;h2&gt;{user.name}&lt;/h2&gt;
+      &lt;p&gt;Ålder: {user.age} {isAdult &amp;&amp; "✅ Myndig"}&lt;/p&gt;
+      &lt;p&gt;E-post: {user.email}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<h2 id="exportera-och-importera-komponenter"><a class="header" href="#exportera-och-importera-komponenter">Exportera och Importera Komponenter</a></h2>
+<p>Magin med komponenter ligger i deras återanvändbarhet: du kan skapa komponenter som består av andra komponenter. Men när du nästlar fler och fler komponenter är det ofta vettigt att börja dela upp dem i olika filer. Detta låter dig hålla dina filer lätta att skanna och återanvända komponenter på fler ställen.</p>
+<pre><code class="language-jsx">// Gallery.js
+import Profile from './Profile.js';
+
+function Gallery() {
+  return (
+    &lt;section&gt;
+      &lt;h1&gt;Fantastiska forskare&lt;/h1&gt;
+      &lt;Profile /&gt;
+      &lt;Profile /&gt;
+      &lt;Profile /&gt;
+    &lt;/section&gt;
+  );
+}
+
+export default Gallery;
+</code></pre>
+<pre><code class="language-jsx">// Profile.js
+function Profile() {
+  return (
+    &lt;img
+      src="https://i.imgur.com/QIrZWGIs.jpg"
+      alt="Alan L. Hart"
+    /&gt;
+  );
+}
+
+export default Profile;
+</code></pre>
+<pre><code class="language-jsx">// App.js
+import Gallery from './Gallery.js';
+
+function App() {
+  return (
+    &lt;Gallery /&gt;
+  );
+}
+
+export default App;
+</code></pre>
+<h2 id="komponentens-anatomi"><a class="header" href="#komponentens-anatomi">Komponentens Anatomi</a></h2>
+<p>En React-komponent består av några viktiga delar:</p>
+<pre><code class="language-jsx">// 1. Import-statements (om du använder andra komponenter)
+import { useState } from 'react';
+import './Button.css';
+
+// 2. Komponentfunktionen
+function Button() {
+  // 3. Logik (variabler, funktioner)
+  const handleClick = () =&gt; {
+    alert('Knappen klickades!');
+  };
+  
+  // 4. Return-statement med JSX
+  return (
+    &lt;button onClick={handleClick}&gt;
+      Klicka mig
+    &lt;/button&gt;
+  );
+}
+
+// 5. Export-statement
+export default Button;
+</code></pre>
+<h2 id="klasskomponenter-det-Äldre-sättet"><a class="header" href="#klasskomponenter-det-Äldre-sättet">Klasskomponenter: Det Äldre Sättet</a></h2>
+<p>Före hooks använde React klasskomponenter för att hantera state och lifecycle. Du kommer fortfarande stöta på dem i äldre kodbaser.</p>
+<pre><code class="language-jsx">import React, { Component } from 'react';
+
+class ClassCounter extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      count: 0
+    };
+  }
+
+  // Lifecycle-metod
+  componentDidMount() {
+    console.log('Component har monterats');
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.count !== this.state.count) {
+      console.log(`Count ändrades från ${prevState.count} till ${this.state.count}`);
+    }
+  }
+
+  componentWillUnmount() {
+    console.log('Component kommer att avmonteras');
+  }
+
+  // Event handler
+  incrementCount = () =&gt; {
+    this.setState({ count: this.state.count + 1 });
+  }
+
+  render() {
+    return (
+      &lt;div&gt;
+        &lt;h2&gt;Räknare: {this.state.count}&lt;/h2&gt;
+        &lt;button onClick={this.incrementCount}&gt;
+          Öka
+        &lt;/button&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+</code></pre>
+<h2 id="organisera-komponenter"><a class="header" href="#organisera-komponenter">Organisera Komponenter</a></h2>
+<p>När din app växer är det viktigt att organisera komponenter på ett smart sätt:</p>
+<h3 id="fil-per-komponent-rekommenderat"><a class="header" href="#fil-per-komponent-rekommenderat">Fil-per-komponent (Rekommenderat)</a></h3>
+<pre><code>src/
+  components/
+    Button/
+      Button.jsx
+      Button.css
+      Button.test.js
+    Avatar/
+      Avatar.jsx
+      Avatar.css
+    Card/
+      Card.jsx
+      Card.css
+  pages/
+    Home.jsx
+    About.jsx
+  App.jsx
+</code></pre>
+<h3 id="flera-komponenter-per-fil-för-små-relaterade-komponenter"><a class="header" href="#flera-komponenter-per-fil-för-små-relaterade-komponenter">Flera komponenter per fil (För små, relaterade komponenter)</a></h3>
+<pre><code class="language-jsx">// components/UI.jsx
+export function Button({ children, onClick, type = "button" }) {
+  return (
+    &lt;button type={type} onClick={onClick} className="btn"&gt;
+      {children}
+    &lt;/button&gt;
+  );
+}
+
+export function Input({ placeholder, value, onChange }) {
+  return (
+    &lt;input 
+      className="input"
+      placeholder={placeholder}
+      value={value}
+      onChange={onChange}
+    /&gt;
+  );
+}
+
+export function Card({ children }) {
+  return (
+    &lt;div className="card"&gt;
+      {children}
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<h2 id="komponent-komposition"><a class="header" href="#komponent-komposition">Komponent-komposition</a></h2>
+<p>En av Reacts starkaste funktioner är <strong>komposition</strong> - att bygga komplexa komponenter från enklare komponenter:</p>
+<pre><code class="language-jsx">function WelcomeMessage({ name }) {
+  return &lt;h1&gt;Hej {name}!&lt;/h1&gt;;
+}
+
+function UserAvatar({ imageUrl, name }) {
+  return (
+    &lt;img 
+      src={imageUrl} 
+      alt={name}
+      className="avatar" 
+    /&gt;
+  );
+}
+
+function UserCard({ user }) {
+  return (
+    &lt;div className="user-card"&gt;
+      &lt;UserAvatar imageUrl={user.avatar} name={user.name} /&gt;
+      &lt;WelcomeMessage name={user.name} /&gt;
+      &lt;p&gt;E-post: {user.email}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+
+// Användning
+function App() {
+  const user = {
+    name: "Anna Andersson",
+    email: "anna@example.com", 
+    avatar: "/anna.jpg"
+  };
+
+  return &lt;UserCard user={user} /&gt;;
+}
+</code></pre>
+<h2 id="best-practices-för-komponenter"><a class="header" href="#best-practices-för-komponenter">Best Practices för Komponenter</a></h2>
+<h3 id="1-håll-komponenter-små-och-fokuserade"><a class="header" href="#1-håll-komponenter-små-och-fokuserade">1. Håll Komponenter Små och Fokuserade</a></h3>
+<pre><code class="language-jsx">// ❌ För stor komponent
+function BlogPost({ post, user, comments, relatedPosts }) {
+  return (
+    &lt;article&gt;
+      {/* Hundratals rader kod... */}
+    &lt;/article&gt;
+  );
+}
+
+// ✅ Uppdelade komponenter
+function BlogPost({ post }) {
+  return (
+    &lt;article&gt;
+      &lt;BlogHeader post={post} /&gt;
+      &lt;BlogContent content={post.content} /&gt;
+      &lt;BlogFooter postId={post.id} /&gt;
+    &lt;/article&gt;
+  );
+}
+
+function BlogHeader({ post }) {
+  return (
+    &lt;header&gt;
+      &lt;h1&gt;{post.title}&lt;/h1&gt;
+      &lt;AuthorInfo author={post.author} /&gt;
+      &lt;PublishDate date={post.publishedAt} /&gt;
+    &lt;/header&gt;
+  );
+}
+</code></pre>
+<h3 id="2-använda-proptypes-för-typkontroll-optional"><a class="header" href="#2-använda-proptypes-för-typkontroll-optional">2. Använda PropTypes för Typkontroll (Optional)</a></h3>
+<p>PropTypes är ett verktyg för typkontroll i React som hjälper dig att:</p>
+<ol>
+<li>
+<p><strong>Hitta buggar tidigt:</strong> Genom att validera props under utveckling upptäcks fel direkt istället för att de dyker upp i produktion.</p>
+</li>
+<li>
+<p><strong>Dokumentera komponenter:</strong> PropTypes fungerar som självdokumenterande kod - andra utvecklare kan snabbt se vilka props en komponent förväntar sig.</p>
+</li>
+<li>
+<p><strong>Förbättra underhållbarhet:</strong> När du ändrar en komponent varnar PropTypes om du råkar skicka fel datatyp eller glömmer en required prop.</p>
+</li>
+<li>
+<p><strong>Underlätta refaktorering:</strong> Med tydliga kontrakt mellan komponenter blir det säkrare att göra större kodändringar.</p>
+</li>
+</ol>
+<p>Exempel på vanliga PropTypes:</p>
+<pre><code class="language-jsx">import PropTypes from 'prop-types';
+
+function ProductCard({ name, price, image, onSale }) {
+  return (
+    &lt;div className="product-card"&gt;
+      &lt;img src={image} alt={name} /&gt;
+      &lt;h3&gt;{name}&lt;/h3&gt;
+      &lt;p className={onSale ? "sale-price" : "regular-price"}&gt;
+        {price} kr
+      &lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+
+ProductCard.propTypes = {
+  name: PropTypes.string.isRequired,
+  price: PropTypes.number.isRequired,
+  image: PropTypes.string.isRequired,
+  onSale: PropTypes.bool
+};
+
+ProductCard.defaultProps = {
+  onSale: false
+};
+</code></pre>
+<p>Ett vanligt alternativ till PropTypes är TypeScript som erbjuder statisk typkontroll under kompilering och ger bättre IDE-stöd med autocompletions och refaktoreringsmöjligheter. TypeScript är särskilt användbart i större projekt där PropTypes kan bli otillräckligt.</p>
+<h3 id="3-komponentnamnskonventioner"><a class="header" href="#3-komponentnamnskonventioner">3. Komponentnamnskonventioner</a></h3>
+<pre><code class="language-jsx">// ✅ PascalCase för komponenter
+function UserProfile() { }
+function ProductCard() { }
+function NavigationMenu() { }
+
+// ✅ camelCase för funktioner och variabler
+const handleClick = () =&gt; { };
+const userName = "Anna";
+const isLoading = true;
+
+// ✅ Beskrivande namn
+function LoadingSpinner() { }  // Bättre än Spinner()
+function ErrorMessage() { }   // Bättre än Error()
+</code></pre>
+<h2 id="sammanfattning"><a class="header" href="#sammanfattning">Sammanfattning</a></h2>
+<p>Komponenter är byggstenen i React-applikationer:</p>
+<ul>
+<li><strong>Komponenter</strong> är JavaScript-funktioner som returnerar JSX</li>
+<li><strong>Komponentnamn</strong> måste börja med stor bokstav</li>
+<li><strong>Import/Export</strong> låter dig organisera komponenter i separata filer</li>
+<li><strong>Komposition</strong> bygger komplexa UI från enkla komponenter</li>
+<li><strong>Håll komponenter små</strong> och fokuserade på en sak</li>
+</ul>
+<h2 id="vad-händer-härnäst"><a class="header" href="#vad-händer-härnäst">Vad händer härnäst?</a></h2>
+<p>Nu när du kan skapa komponenter är det dags att göra dem interaktiva! I nästa avsnitt lär du dig:</p>
+<ul>
+<li><strong>Props</strong> - skicka data mellan komponenter</li>
+<li><strong>State</strong> - ge komponenter minne</li>
+<li><strong>Events</strong> - reagera på användarinteraktion</li>
+</ul>
+<p>Gå vidare till <strong>State och Props</strong> för att lära dig hur du gör dina komponenter levande!</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_8/react-intro.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_8/state-props.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_8/react-intro.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_8/state-props.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

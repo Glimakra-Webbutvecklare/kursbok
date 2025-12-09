@@ -1,0 +1,329 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Responsive Design - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="tailwind-css--responsiv-design"><a class="header" href="#tailwind-css--responsiv-design">Tailwind CSS – Responsiv Design</a></h1>
+<h2 id="introduktion"><a class="header" href="#introduktion">Introduktion</a></h2>
+<p>Responsiv design är en viktig del av modern webbutveckling. Med Tailwind CSS är det enkelt att skapa responsiva gränssnitt genom att använda dess inbyggda breakpoints och utility-klasser. Du kan snabbt anpassa layout, färger, typografi och andra stilar för olika skärmstorlekar utan att skriva egna media queries.</p>
+<hr />
+<h2 id="breakpoints-i-tailwind-css"><a class="header" href="#breakpoints-i-tailwind-css">Breakpoints i Tailwind CSS</a></h2>
+<p>Tailwind använder följande standard-breakpoints:</p>
+<div class="table-wrapper"><table><thead><tr><th>Breakpoint</th><th>Prefix</th><th>Beskrivning</th></tr></thead><tbody>
+<tr><td><code>sm</code></td><td><code>sm:</code></td><td>För skärmar ≥ 640px</td></tr>
+<tr><td><code>md</code></td><td><code>md:</code></td><td>För skärmar ≥ 768px</td></tr>
+<tr><td><code>lg</code></td><td><code>lg:</code></td><td>För skärmar ≥ 1024px</td></tr>
+<tr><td><code>xl</code></td><td><code>xl:</code></td><td>För skärmar ≥ 1280px</td></tr>
+<tr><td><code>2xl</code></td><td><code>2xl:</code></td><td>För skärmar ≥ 1536px</td></tr>
+</tbody></table>
+</div>
+<p>Du kan använda dessa prefix för att applicera olika stilar beroende på skärmstorlek.</p>
+<hr />
+<h2 id="exempel-responsiv-layout"><a class="header" href="#exempel-responsiv-layout">Exempel: Responsiv layout</a></h2>
+<p>Här är ett exempel på hur du kan skapa en responsiv layout med Tailwind:</p>
+<pre><code class="language-html">&lt;div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"&gt;
+  &lt;div class="p-4 bg-blue-500 text-white"&gt;Kolumn 1&lt;/div&gt;
+  &lt;div class="p-4 bg-green-500 text-white"&gt;Kolumn 2&lt;/div&gt;
+  &lt;div class="p-4 bg-red-500 text-white"&gt;Kolumn 3&lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<h3 id="förklaring"><a class="header" href="#förklaring">Förklaring:</a></h3>
+<ul>
+<li><code>grid grid-cols-1</code>: Skapar en grid-layout med en kolumn som standard.</li>
+<li><code>sm:grid-cols-2</code>: Vid skärmar ≥ 640px visas två kolumner.</li>
+<li><code>lg:grid-cols-3</code>: Vid skärmar ≥ 1024px visas tre kolumner.</li>
+<li><code>gap-4</code>: Lägger till mellanrum mellan kolumnerna.</li>
+</ul>
+<hr />
+<h2 id="exempel-responsiv-typografi"><a class="header" href="#exempel-responsiv-typografi">Exempel: Responsiv typografi</a></h2>
+<p>Du kan också anpassa textstorlekar för olika skärmstorlekar:</p>
+<pre><code class="language-html">&lt;h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl"&gt;
+  Responsiv rubrik
+&lt;/h1&gt;
+</code></pre>
+<h3 id="förklaring-1"><a class="header" href="#förklaring-1">Förklaring:</a></h3>
+<ul>
+<li><code>text-2xl</code>: Standardstorlek för rubriken.</li>
+<li><code>sm:text-3xl</code>: Vid skärmar ≥ 640px ökas textstorleken.</li>
+<li><code>md:text-4xl</code>: Vid skärmar ≥ 768px ökas textstorleken ytterligare.</li>
+<li><code>lg:text-5xl</code>: Vid skärmar ≥ 1024px används den största textstorleken.</li>
+</ul>
+<hr />
+<h2 id="exempel-responsiv-navigationsmeny"><a class="header" href="#exempel-responsiv-navigationsmeny">Exempel: Responsiv navigationsmeny</a></h2>
+<p>Här är ett exempel på en navigationsmeny som ändras mellan mobil och desktop:</p>
+<pre><code class="language-html">&lt;nav class="bg-gray-800 text-white p-4"&gt;
+  &lt;ul class="flex flex-col sm:flex-row sm:space-x-4"&gt;
+    &lt;li&gt;&lt;a href="#" class="block py-2 sm:py-0"&gt;Hem&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="#" class="block py-2 sm:py-0"&gt;Om oss&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="#" class="block py-2 sm:py-0"&gt;Tjänster&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="#" class="block py-2 sm:py-0"&gt;Kontakt&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+</code></pre>
+<h3 id="förklaring-2"><a class="header" href="#förklaring-2">Förklaring:</a></h3>
+<ul>
+<li><code>flex flex-col</code>: Menyn visas som en vertikal lista som standard.</li>
+<li><code>sm:flex-row</code>: Vid skärmar ≥ 640px ändras menyn till en horisontell lista.</li>
+<li><code>sm:space-x-4</code>: Lägger till horisontellt mellanrum mellan menyalternativen på större skärmar.</li>
+</ul>
+<hr />
+<h2 id="Övning-skapa-en-responsiv-produktkortskomponent"><a class="header" href="#Övning-skapa-en-responsiv-produktkortskomponent">Övning: Skapa en responsiv produktkortskomponent</a></h2>
+<h3 id="uppgift"><a class="header" href="#uppgift">Uppgift</a></h3>
+<p>Skapa en responsiv produktkortskomponent som innehåller:</p>
+<ol>
+<li>En bild av produkten.</li>
+<li>Produktens namn och pris.</li>
+<li>En kort beskrivning.</li>
+<li>En knapp för att lägga till produkten i varukorgen.</li>
+</ol>
+<h3 id="krav"><a class="header" href="#krav">Krav</a></h3>
+<ul>
+<li>Kortet ska visas i en kolumn på små skärmar och i en rad på större skärmar.</li>
+<li>Använd Tailwinds breakpoints för att göra kortet responsivt.</li>
+<li>Lägg till en hover-effekt på knappen.</li>
+</ul>
+<h3 id="exempel-på-html-struktur"><a class="header" href="#exempel-på-html-struktur">Exempel på HTML-struktur</a></h3>
+<pre><code class="language-html">&lt;div class="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden sm:flex sm:items-center sm:space-x-4"&gt;
+  &lt;img class="w-full h-48 object-cover sm:w-32 sm:h-32" src="https://via.placeholder.com/150" alt="Produktbild"&gt;
+  &lt;div class="p-4"&gt;
+    &lt;h2 class="text-lg font-bold text-gray-800"&gt;Produktnamn&lt;/h2&gt;
+    &lt;p class="text-gray-600"&gt;Kort beskrivning av produkten.&lt;/p&gt;
+    &lt;p class="mt-2 text-green-500 font-semibold"&gt;Pris: 299 kr&lt;/p&gt;
+    &lt;button class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"&gt;
+      Lägg till i varukorgen
+    &lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<h3 id="utmaning"><a class="header" href="#utmaning">Utmaning</a></h3>
+<ul>
+<li>Gör kortet klickbart genom att lägga till en länk runt hela kortet.</li>
+<li>Lägg till en responsiv grid-layout som visar flera produktkort bredvid varandra på större skärmar.</li>
+</ul>
+<hr />
+<h2 id="sammanfattning"><a class="header" href="#sammanfattning">Sammanfattning</a></h2>
+<ul>
+<li><strong>Breakpoints</strong>: Använd Tailwinds inbyggda breakpoints för att skapa responsiva layouter.</li>
+<li><strong>Responsivitet</strong>: Anpassa layout, typografi och andra stilar för olika skärmstorlekar.</li>
+<li><strong>Praktisk tillämpning</strong>: Skapa komponenter som fungerar bra på både små och stora skärmar.</li>
+</ul>
+<p>För mer information, besök <a href="https://tailwindcss.com/docs/responsive-design">Tailwind CSS Dokumentation</a>.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../css-frontend-ramverk/tailwind-colors-typography.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../css-frontend-ramverk/tailwind-states-interactivity.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../css-frontend-ramverk/tailwind-colors-typography.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../css-frontend-ramverk/tailwind-states-interactivity.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

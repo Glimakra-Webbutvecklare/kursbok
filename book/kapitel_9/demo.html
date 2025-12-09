@@ -1,0 +1,1415 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Demo App - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="demo-app---poem-collector"><a class="header" href="#demo-app---poem-collector">Demo App - Poem Collector</a></h1>
+<h1 id="projektbeskrivning"><a class="header" href="#projektbeskrivning">Projektbeskrivning</a></h1>
+<p>Vi ska bygga en Poesi-samlingsapp där användare kan registrera sig, logga in och dela sina egna dikter. Varje dikt är kopplad till en författare (användare), och andra användare kan kommentera på dikterna. Applikationen kommer att ha följande funktioner:</p>
+<ul>
+<li>Användarhantering: Registrering, inloggning och autentisering.</li>
+<li>Dikthantering: Skapa, läsa, uppdatera och ta bort dikter.</li>
+<li>Kommentarer: Användare kan kommentera på dikter.</li>
+</ul>
+<p>Teknologier som används:</p>
+<ul>
+<li>React med React Router för enkel navigering.</li>
+<li>Node.js med Express, skriven med ES2015 (ES6) syntax som använder import istället för require.</li>
+<li>Databas: MongoDB med Mongoose för lagring av användare, dikter och kommentarer.</li>
+</ul>
+<pre class="mermaid">graph TB
+    subgraph &quot;Frontend (React)&quot;
+        A[React App] --&gt; B[React Router]
+        A --&gt; C[Components]
+        C --&gt; D[Navbar]
+        C --&gt; E[Home]
+        C --&gt; F[Login/Register]
+        C --&gt; G[PoemDetail]
+        C --&gt; H[AddPoem]
+    end
+    
+    subgraph &quot;Backend (Node.js/Express)&quot;
+        I[Express Server] --&gt; J[Auth Routes]
+        I --&gt; K[Poem Routes]
+        I --&gt; L[Comment Routes]
+        I --&gt; M[JWT Middleware]
+    end
+    
+    subgraph &quot;Database (MongoDB)&quot;
+        N[(MongoDB)]
+        N --&gt; O[Users Collection]
+        N --&gt; P[Poems Collection]
+        N --&gt; Q[Comments Collection]
+    end
+    
+    A --&gt;|HTTP Requests| I
+    J --&gt;|User Auth| O
+    K --&gt;|CRUD Operations| P
+    L --&gt;|Comments| Q
+    M --&gt;|Token Verification| J
+</pre>
+<h2 id="mappstruktur"><a class="header" href="#mappstruktur">Mappstruktur</a></h2>
+<p>Projektets mappstruktur kommer att organiseras enligt följande:</p>
+<pre><code>Projekt/
+    frontend/
+    backend/
+    package.json
+</code></pre>
+<ul>
+<li>frontend/: Innehåller all frontend-kod byggd med React.</li>
+<li>backend/: Innehåller all backend-kod med Express och MongoDB.</li>
+<li>package.json: I rotmappen för att hantera skript som påverkar både frontend och backend.</li>
+</ul>
+<p>Skript i package.json:</p>
+<ul>
+<li>"setup": Installerar beroenden i både frontend och backend.</li>
+<li>"frontend-dev": Startar utvecklingsservern för frontend.</li>
+<li>"backend-dev": Startar utvecklingsservern för backend.</li>
+</ul>
+<pre class="mermaid">graph TD
+    A[Projekt/] --&gt; B[frontend/]
+    A --&gt; C[backend/]
+    A --&gt; D[package.json]
+    
+    B --&gt; E[src/]
+    B --&gt; F[public/]
+    B --&gt; G[package.json]
+    B --&gt; H[node_modules/]
+    
+    E --&gt; I[components/]
+    E --&gt; J[pages/]
+    E --&gt; K[utils/]
+    E --&gt; L[App.js]
+    
+    I --&gt; M[Navbar.jsx]
+    I --&gt; N[AddComment.jsx]
+    
+    J --&gt; O[Home.jsx]
+    J --&gt; P[Login.jsx]
+    J --&gt; Q[Register.jsx]
+    J --&gt; R[PoemDetail.jsx]
+    J --&gt; S[AddPoem.jsx]
+    
+    K --&gt; T[api.js]
+    
+    C --&gt; U[models/]
+    C --&gt; V[routes/]
+    C --&gt; W[middleware/]
+    C --&gt; X[server.js]
+    C --&gt; Y[package.json]
+    C --&gt; Z[.env]
+    
+    U --&gt; AA[User.js]
+    U --&gt; BB[Poem.js]
+    U --&gt; CC[Comment.js]
+    
+    V --&gt; DD[auth.js]
+    V --&gt; EE[poems.js]
+    V --&gt; FF[comments.js]
+    
+    W --&gt; GG[auth.js]
+</pre>
+<h2 id="planering-och-arkitektur"><a class="header" href="#planering-och-arkitektur">Planering och arkitektur</a></h2>
+<h3 id="funktioner"><a class="header" href="#funktioner">Funktioner</a></h3>
+<ul>
+<li>Användarautentisering: Registrera och logga in användare med säker lösenordshantering.</li>
+<li>Dikthantering: CRUD-operationer (Create, Read, Update, Delete) för dikter.</li>
+<li>Kommentarssystem: Möjlighet att kommentera på dikter.</li>
+<li>Navigering: Användarvänlig navigering mellan olika sidor i applikationen.</li>
+</ul>
+<h3 id="databasschema"><a class="header" href="#databasschema">Databasschema</a></h3>
+<p>Vi använder MongoDB för att lagra data. Här är en översikt av databasschemat:</p>
+<h4 id="user"><a class="header" href="#user">User</a></h4>
+<ul>
+<li>username: String (unik och krävs)</li>
+<li>email: String (unik och krävs)</li>
+<li>password: String (hashad och krävs)</li>
+<li>createdAt: Date (standardvärde: aktuellt datum)</li>
+</ul>
+<h4 id="poem"><a class="header" href="#poem">Poem</a></h4>
+<ul>
+<li>title: String (krävs)</li>
+<li>content: String (krävs)</li>
+<li>author: ObjectId (referens till en användare)</li>
+<li>createdAt: Date (standardvärde: aktuellt datum)</li>
+</ul>
+<h4 id="comment"><a class="header" href="#comment">Comment</a></h4>
+<ul>
+<li>content: String (krävs)</li>
+<li>author: ObjectId (referens till en användare)</li>
+<li>poem: ObjectId (referens till en dikt)</li>
+<li>createdAt: Date (standardvärde: aktuellt datum)</li>
+</ul>
+<pre class="mermaid">erDiagram
+    USER {
+        ObjectId _id PK
+        string username UK
+        string email UK
+        string password
+        date createdAt
+    }
+    
+    POEM {
+        ObjectId _id PK
+        string title
+        string content
+        ObjectId author FK
+        date createdAt
+    }
+    
+    COMMENT {
+        ObjectId _id PK
+        string content
+        ObjectId author FK
+        ObjectId poem FK
+        date createdAt
+    }
+    
+    USER ||--o{ POEM : &quot;writes&quot;
+    USER ||--o{ COMMENT : &quot;writes&quot;
+    POEM ||--o{ COMMENT : &quot;has&quot;
+</pre>
+<h2 id="setup-av-projektmiljö"><a class="header" href="#setup-av-projektmiljö">Setup av projektmiljö</a></h2>
+<p>Initialisera projektet</p>
+<ol>
+<li>Skapa projektmappen:</li>
+</ol>
+<pre><code class="language-bash">mkdir poesi-app
+cd poesi-app
+</code></pre>
+<ol start="2">
+<li>Skapa frontend och backend-mappar:</li>
+</ol>
+<pre><code class="language-bash">mkdir frontend backend
+</code></pre>
+<ol start="3">
+<li>Initiera NPM i rotmappen:</li>
+</ol>
+<pre><code class="language-bash">npm init -y
+</code></pre>
+<ol start="4">
+<li>Uppdatera package.json med skript:</li>
+</ol>
+<pre><code class="language-json">{
+  "scripts": {
+    "setup": "cd frontend &amp;&amp; npm install &amp;&amp; cd ../backend &amp;&amp; npm install",
+    "frontend-dev": "cd frontend &amp;&amp; npm run start",
+    "backend-dev": "cd backend &amp;&amp; npm run dev"
+  }
+}
+</code></pre>
+<p>Backend-setup</p>
+<ol>
+<li>Gå till backend-mappen och initiera NPM:</li>
+</ol>
+<pre><code class="language-bash">cd backend
+npm init -y
+</code></pre>
+<ol start="2">
+<li>Installera beroenden:</li>
+</ol>
+<pre><code class="language-bash">npm install express mongoose bcrypt jsonwebtoken cors
+</code></pre>
+<ol start="3">
+<li>Installera utvecklingsberoenden:</li>
+</ol>
+<pre><code class="language-bash">npm install -D nodemon
+</code></pre>
+<ol start="4">
+<li>Uppdatera package.json skript:</li>
+</ol>
+<pre><code class="language-json">{
+  "scripts": {
+    "dev": "nodemon server.js"
+  }
+}
+</code></pre>
+<h2 id="frontend-setup"><a class="header" href="#frontend-setup">Frontend-setup</a></h2>
+<ol>
+<li>Gå till frontend-mappen och skapa en React-app:</li>
+</ol>
+<pre><code class="language-bash">cd ../frontend
+npm create vite@latest # Välj React och javascript
+</code></pre>
+<ol start="2">
+<li>Installera React Router:</li>
+</ol>
+<pre><code class="language-bash">npm install react-router-dom
+</code></pre>
+<h2 id="backend"><a class="header" href="#backend">Backend</a></h2>
+<p>Vi börjar med att implementera och testa <strong>poems</strong>-rutterna och använder cURL för att verifiera funktionaliteten. När <strong>poems</strong> fungerar korrekt, lägger vi till <strong>users</strong> och autentisering med JSON Web Tokens (JWT). Slutligen implementerar vi <strong>comments</strong>.</p>
+<h2 id="projektmapp"><a class="header" href="#projektmapp">Projektmapp</a></h2>
+<ol>
+<li>Skapa en fil server.js i backend-mappen:</li>
+</ol>
+<pre><code class="language-bash">touch server.js
+</code></pre>
+<p>Lägg till följande kod i server.js:</p>
+<pre><code class="language-js">import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+// TODO: Använd routes
+//import poemRoutes from './routes/poems';
+
+// Konfigurera miljövariabler
+process.loadEnvFile()
+
+// Skapa Express-applikationen
+const server = express();
+
+// Middleware
+server.use(cors());
+server.use(express.json());
+
+// Test route
+server.get('/', (req, res) =&gt; {
+  res.json({message: "Hello from poem app!"});
+})
+
+// TODO: Använd routes
+//server.use('/api/poems', poemRoutes);
+
+// Anslut till MongoDB och starta servern
+const PORT = process.env.PORT || 5000;
+
+mongoose
+  .connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() =&gt; {
+    server.listen(PORT, () =&gt; console.log(`Servern körs på port ${PORT}`));
+  })
+  .catch((error) =&gt; console.error(error));
+</code></pre>
+<ol start="3">
+<li>Skapa .env-fil</li>
+</ol>
+<p>Skapa en .env-fil i backend-mappen:</p>
+<pre><code class="language-bash">touch .env
+</code></pre>
+<p>Lägg till följande innehåll och ersätt din_mongodb_connection_string med din faktiska MongoDB-anslutningssträng:</p>
+<pre><code class="language-txt">MONGODB_URI=din_mongodb_connection_string
+</code></pre>
+<ol start="4">
+<li>Starta Servern</li>
+</ol>
+<p>Lägg till följande skript i din package.json:</p>
+<pre><code class="language-json">"scripts": {
+  "start": "node server.js",
+  "dev": "nodemon server.js"
+}
+</code></pre>
+<p>Starta servern i utvecklingsläge:</p>
+<pre><code class="language-bash">npm run dev
+</code></pre>
+<p>Testa serverns test route:</p>
+<pre><code class="language-bash">curl localhost:3000 # Borde ge svaret {"message": "Hello from poem app!"}
+</code></pre>
+<p>Skapa Poem Model</p>
+<p>Skapa en mapp models och skapa filen Poem.js:</p>
+<pre><code class="language-bash">mkdir models
+touch models/Poem.js
+</code></pre>
+<p>Lägg till följande kod i models/Poem.js:</p>
+<pre><code class="language-js">import mongoose from 'mongoose';
+
+const poemSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  content: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now },
+});
+
+export default mongoose.model('Poem', poemSchema);
+</code></pre>
+<h3 id="implementera-poems-routes"><a class="header" href="#implementera-poems-routes">Implementera Poems Routes</a></h3>
+<p>Skapa en mapp routes och skapa filen poems.js:</p>
+<pre><code class="language-bash">mkdir routes
+touch routes/poems.js
+</code></pre>
+<p>Lägg till följande kod i routes/poems.js:</p>
+<pre><code class="language-js">import express from 'express';
+import Poem from '../models/Poem';
+const router = express.Router();
+
+// Hämta alla dikter
+router.get('/', async (req, res) =&gt; {
+  try {
+    const poems = await Poem.find().sort({ createdAt: -1 });
+    res.json(poems);
+  } catch (error) {
+    res.status(500).json({ message: 'Serverfel' });
+  }
+});
+
+// Skapa en ny dikt
+router.post('/', async (req, res) =&gt; {
+  const { title, content } = req.body;
+  try {
+    const poem = new Poem({ title, content });
+    await poem.save();
+    res.status(201).json(poem);
+  } catch (error) {
+    res.status(400).json({ message: 'Invalid data' });
+  }
+});
+
+export default router;
+</code></pre>
+<p><strong>Nu kan du kommentera in <code>poemRoutes</code> i <code>server.js</code>.</strong></p>
+<p>Då har vi två routes för poems:</p>
+<ul>
+<li><code>GET /api/poems</code>: hämtar alla dikter i databasen</li>
+<li><code>POST /api/poems</code>: skapar en ny dikt med title och content</li>
+</ul>
+<h3 id="testa-poems-routes-med-curl"><a class="header" href="#testa-poems-routes-med-curl">Testa Poems Routes med cURL</a></h3>
+<p>Testa GET Request</p>
+<p>Kör följande cURL-kommando i terminalen för att hämta alla dikter:</p>
+<pre><code class="language-bash">curl -X GET http://localhost:5000/api/poems
+</code></pre>
+<h4 id="förväntat-resultat"><a class="header" href="#förväntat-resultat">Förväntat Resultat</a></h4>
+<p>Eftersom databasen är tom bör du få en tom array:</p>
+<pre><code>[]
+</code></pre>
+<p>Testa POST Request</p>
+<p>Skapa en ny dikt genom att skicka en POST-request:</p>
+<pre><code class="language-bash">curl -X POST http://localhost:5000/api/poems \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Min Första Dikt",
+    "content": "Detta är innehållet i min första dikt."
+  }'
+</code></pre>
+<h4 id="förväntat-resultat-1"><a class="header" href="#förväntat-resultat-1">Förväntat Resultat</a></h4>
+<p>Du bör få tillbaka den skapade dikten med ett unikt _id:</p>
+<pre><code class="language-json">{
+  "_id": "5f9d88b8b5e1b12d4c8e1a1e",
+  "title": "Min Första Dikt",
+  "content": "Detta är innehållet i min första dikt.",
+  "createdAt": "2023-10-31T12:34:56.789Z",
+  "__v": 0
+}
+</code></pre>
+<p>Verifiera att Dikten Har Sparats</p>
+<p>Kör GET-requesten igen:</p>
+<pre><code class="language-bash">curl -X GET http://localhost:5000/api/poems
+</code></pre>
+<h4 id="förväntat-resultat-2"><a class="header" href="#förväntat-resultat-2">Förväntat Resultat</a></h4>
+<p>Nu bör du se den nyligen skapade dikten i arrayen:</p>
+<pre><code class="language-json">[
+  {
+    "_id": "5f9d88b8b5e1b12d4c8e1a1e",
+    "title": "Min Första Dikt",
+    "content": "Detta är innehållet i min första dikt.",
+    "createdAt": "2023-10-31T12:34:56.789Z",
+    "__v": 0
+  }
+]
+</code></pre>
+<h3 id="felhantering"><a class="header" href="#felhantering">Felhantering</a></h3>
+<p>Skicka Tomma Fält vid POST</p>
+<p>Om du försöker skapa en dikt utan nödvändiga fält:</p>
+<pre><code class="language-bash">curl -X POST http://localhost:5000/api/poems \
+  -H "Content-Type: application/json" \
+  -d '{}'
+</code></pre>
+<h4 id="förväntat-resultat-3"><a class="header" href="#förväntat-resultat-3">Förväntat Resultat</a></h4>
+<p>Du bör få ett felmeddelande:</p>
+<pre><code class="language-json">{
+  "message": "Invalid data"
+}
+</code></pre>
+<p>Servern returnerar statuskod <code>400 Bad Request</code>.</p>
+<h3 id="lägga-till-users-och-autentisering"><a class="header" href="#lägga-till-users-och-autentisering">Lägga till Users och Autentisering</a></h3>
+<p>Nu när <strong>poems</strong> fungerar korrekt, låt oss lägga till <strong>users</strong> och autentisering med JSON Web Tokens.</p>
+<h2 id="autentisering"><a class="header" href="#autentisering">Autentisering</a></h2>
+<p>Autentisering handlar om att verifiera att en användare verkligen är den de utger sig för att vara. I webbutveckling är detta kritiskt för att skydda användares data och begränsa åtkomst till vissa funktioner.</p>
+<p>JWT (JSON Web Tokens) är en modern standard för att hantera autentisering genom att:</p>
+<p>Skapa en krypterad token när användaren loggar in
+Låta klienten spara denna token
+Skicka med token vid varje efterföljande request
+Verifiera token på serversidan
+Fördelar med JWT:</p>
+<ul>
+<li>Stateless: Servern behöver inte spara sessions-information</li>
+<li>Säkert: Tokens är signerade och kan inte manipuleras</li>
+<li>Flexibelt: Kan innehålla anpassad användardata</li>
+<li>Skalbart: Fungerar bra i från 10 till 1000000 användare</li>
+</ul>
+<h4 id="ett-typiskt-jwt-flöde"><a class="header" href="#ett-typiskt-jwt-flöde">Ett typiskt JWT-flöde:</a></h4>
+<ol>
+<li>Användaren skickar inloggningsuppgifter</li>
+</ol>
+<pre><code class="language-json">{email: "user@example.com", password: "123456"}
+</code></pre>
+<ol start="2">
+<li>Servern verifierar och skapar en token</li>
+</ol>
+<pre><code class="language-js">jwt.sign({userId: user._id}, "hemlig_nyckel"))
+</code></pre>
+<ol start="3">
+<li>Klienten sparar token</li>
+</ol>
+<pre><code class="language-js">localStorage.setItem('token', receivedToken)
+</code></pre>
+<ol start="4">
+<li>Vid API-anrop inkluderas token</li>
+</ol>
+<pre><code class="language-js">headers: { Authorization: 'Bearer ' + token }
+</code></pre>
+<ol start="5">
+<li>Servern verifierar token innan den ger åtkomst till skyddade routes.</li>
+</ol>
+<p>För att skydda routes använder vi middleware, som vi kan kalla <code>authMiddleware</code> som kontrollerar token innan förfrågan tillåts fortsätta. Detta ger oss ett elegant sätt att:</p>
+<ul>
+<li>Kontrollera behörighet</li>
+<li>Identifiera användaren</li>
+<li>Neka åtkomst för ogiltiga tokens</li>
+</ul>
+<pre class="mermaid">sequenceDiagram
+    participant U as User
+    participant F as Frontend
+    participant B as Backend
+    participant D as Database
+    
+    Note over U,D: Registrering
+    U-&gt;&gt;F: Fyller i registreringsformulär
+    F-&gt;&gt;B: POST /api/auth/register
+    B-&gt;&gt;D: Kontrollera om email finns
+    D--&gt;&gt;B: Email finns inte
+    B-&gt;&gt;B: Hasha lösenord
+    B-&gt;&gt;D: Spara användare
+    D--&gt;&gt;B: Användare sparad
+    B-&gt;&gt;B: Skapa JWT token
+    B--&gt;&gt;F: Returnera token + user info
+    F-&gt;&gt;F: Spara token i localStorage
+    
+    Note over U,D: Inloggning
+    U-&gt;&gt;F: Fyller i inloggningsformulär
+    F-&gt;&gt;B: POST /api/auth/login
+    B-&gt;&gt;D: Hitta användare via email
+    D--&gt;&gt;B: Returnera användare
+    B-&gt;&gt;B: Verifiera lösenord
+    B-&gt;&gt;B: Skapa JWT token
+    B--&gt;&gt;F: Returnera token + user info
+    F-&gt;&gt;F: Spara token i localStorage
+    
+    Note over U,D: Skyddad API-anrop
+    F-&gt;&gt;B: API-anrop med Authorization header
+    B-&gt;&gt;B: Verifiera JWT token
+    B-&gt;&gt;B: Extrahera user ID från token
+    B-&gt;&gt;D: Utför operation
+    D--&gt;&gt;B: Returnera data
+    B--&gt;&gt;F: Returnera svar
+</pre>
+<ol>
+<li>Installera Nödvändiga Paket</li>
+</ol>
+<pre><code class="language-bash">npm install bcrypt jsonwebtoken
+</code></pre>
+<ol start="2">
+<li>Skapa User Model</li>
+</ol>
+<p>Skapa filen models/User.js:</p>
+<pre><code class="language-bash">touch models/User.js
+</code></pre>
+<p>Lägg till följande kod:</p>
+<pre><code class="language-js">import mongoose from'mongoose';
+
+const userSchema = new mongoose.Schema({
+  username: { type: String, required: true, unique: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now },
+});
+
+export default mongoose.model('User', userSchema);
+</code></pre>
+<ol start="3">
+<li>Skapa Auth Routes</li>
+</ol>
+<p>Skapa filen routes/auth.js:</p>
+<pre><code class="language-bash">touch routes/auth.js
+</code></pre>
+<p>Lägg till följande kod:</p>
+<pre><code class="language-js">import express from 'express';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import User from '../models/User';
+const router = express.Router();
+
+// Registrering
+router.post('/register', async (req, res) =&gt; {
+  const { username, email, password } = req.body;
+  try {
+    // Kontrollera om användaren redan finns
+    const existingUser = await User.findOne({ email });
+    if (existingUser) return res.status(400).json({ message: 'E-postadressen already exists' });
+
+    // Hasha lösenordet
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Skapa ny användare
+    const user = new User({ username, email, password: hashedPassword });
+    await user.save();
+
+    // Skapa JWT-token
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    res.status(201).json({ token, user: { id: user._id, username: user.username } });
+  } catch (error) {
+    res.status(500).json({ message: 'Serverfel' });
+  }
+});
+
+// Inloggning
+router.post('/login', async (req, res) =&gt; {
+  const { email, password } = req.body;
+  try {
+    // Hitta användaren
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).json({ message: 'Användaren finns inte' });
+
+    // Kontrollera lösenordet
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(400).json({ message: 'Fel lösenord' });
+
+    // Skapa JWT-token
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    res.json({ token, user: { id: user._id, username: user.username } });
+  } catch (error) {
+    res.status(500).json({ message: 'Serverfel' });
+  }
+});
+
+export default router;
+</code></pre>
+<ol start="4">
+<li>Uppdatera .env-filen</li>
+</ol>
+<p>Lägg till en hemlig nyckel för JWT:</p>
+<pre><code>JWT_SECRET=din_hemliga_nyckel
+</code></pre>
+<ol start="5">
+<li>Uppdatera server.js</li>
+</ol>
+<p>Importera och använd authRoutes:</p>
+<pre><code class="language-js">import authRoutes from './routes/auth';
+server.use('/api/auth', authRoutes);
+</code></pre>
+<ol start="6">
+<li>Skapa Autentiseringsmiddleware</li>
+</ol>
+<p>Skapa filen middleware/auth.js:</p>
+<pre><code class="language-bash">mkdir middleware
+touch middleware/auth.js
+</code></pre>
+<p>Lägg till följande kod:</p>
+<pre><code class="language-js">import jwt from 'jsonwebtoken';
+
+function authMiddleware(req, res, next) {
+  const token = req.header('Authorization')?.split(' ')[1];
+  if (!token) return res.status(401).json({ message: 'No token provided, authorization denied' });
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (error) {
+    res.status(400).json({ message: 'Invalid token' });
+  }
+};
+
+export default {
+  authMiddleware
+}
+</code></pre>
+<ol start="7">
+<li>Uppdatera Poems Routes för Att Kräva Autentisering vid Skapande</li>
+</ol>
+<p>Uppdatera routes/poems.js:</p>
+<pre><code class="language-js">import authMiddleware from '../middleware/auth';
+
+// Skapa en ny dikt
+router.post('/', authMiddleware, async (req, res) =&gt; {
+  const { title, content } = req.body;
+  try {
+    const poem = new Poem({ title, content, author: req.user.id });
+    await poem.save();
+    res.status(201).json(poem);
+  } catch (error) {
+    res.status(400).json({ message: 'Invalid data' });
+  }
+});
+</code></pre>
+<ol start="8">
+<li>Testa Auth Routes med cURL</li>
+</ol>
+<p>Registrering</p>
+<pre><code class="language-bash">curl -X POST http://localhost:5000/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "användarnamn",
+    "email": "email@example.com",
+    "password": "lösenord"
+  }'
+</code></pre>
+<p>Förväntat Resultat</p>
+<pre><code class="language-json">{
+  "token": "JWT_TOKEN_HÄR",
+  "user": {
+    "id": "USER_ID_HÄR",
+    "username": "användarnamn"
+  }
+}
+</code></pre>
+<p>Inloggning</p>
+<pre><code class="language-bash">curl -X POST http://localhost:5000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "email@example.com",
+    "password": "lösenord"
+  }'
+</code></pre>
+<p>Förväntat Resultat</p>
+<pre><code class="language-json">{
+  "token": "JWT_TOKEN_HÄR",
+  "user": {
+    "id": "USER_ID_HÄR",
+    "username": "användarnamn"
+  }
+}
+</code></pre>
+<h3 id="felhantering-1"><a class="header" href="#felhantering-1">Felhantering</a></h3>
+<ul>
+<li>Fel lösenord:
+Om du anger fel lösenord vid inloggning får du:</li>
+</ul>
+<pre><code class="language-json">{
+  "message": "Fel lösenord"
+}
+</code></pre>
+<ul>
+<li>Användaren finns inte:
+Om e-postadressen inte finns i systemet:</li>
+</ul>
+<pre><code class="language-json">{
+  "message": "Användaren finns inte"
+}
+</code></pre>
+<ol start="9">
+<li>Testa Skyddade Poems Routes med cURL</li>
+</ol>
+<p>Använd JWT-token från inloggningen för att skapa en ny dikt.</p>
+<pre><code class="language-bash">curl -X POST http://localhost:5000/api/poems \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer JWT_TOKEN_HÄR" \
+  -d '{
+    "title": "En Dikt av En Inloggad Användare",
+    "content": "Innehållet i dikten."
+  }'
+</code></pre>
+<p>Förväntat Resultat</p>
+<p>Den nya dikten bör skapas och returneras.</p>
+<p>Felhantering</p>
+<ul>
+<li>Ingen Token:
+Om du inte inkluderar Authorization-huvudet:</li>
+</ul>
+<pre><code class="language-json">{
+  "message": "No token provided, authorization denied"
+}
+</code></pre>
+<ul>
+<li>Ogiltig token:
+Om token är ogiltig eller utgått:</li>
+</ul>
+<pre><code class="language-json">{
+  "message": "Invalid token"
+}
+</code></pre>
+<h2 id="implementera-comments"><a class="header" href="#implementera-comments">Implementera Comments</a></h2>
+<p>Nu när användarautentisering fungerar kan vi lägga till kommentarer.</p>
+<ol>
+<li>Skapa Comment Model</li>
+</ol>
+<p>Skapa filen models/Comment.js:</p>
+<pre><code class="language-bash">touch models/Comment.js
+</code></pre>
+<p>Lägg till följande kod:</p>
+<pre><code class="language-js">import mongoose from 'mongoose';
+
+const commentSchema = new mongoose.Schema({
+  content: { type: String, required: true },
+  author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  poem: { type: mongoose.Schema.Types.ObjectId, ref: 'Poem' },
+  createdAt: { type: Date, default: Date.now },
+});
+
+export default mongoose.model('Comment', commentSchema);
+</code></pre>
+<ol start="2">
+<li>Skapa Comments Routes</li>
+</ol>
+<p>Skapa filen routes/comments.js:</p>
+<pre><code class="language-bash">touch routes/comments.js
+</code></pre>
+<p>Lägg till följande kod:</p>
+<pre><code class="language-js">import express from 'express';
+import Comment from '../models/Comment';
+import authMiddleware from '../middleware/auth';
+const router = express.Router();
+
+// Lägg till en kommentar
+router.post('/:poemId', authMiddleware, async (req, res) =&gt; {
+  const { content } = req.body;
+  const { poemId } = req.params;
+  try {
+    const comment = new Comment({ content, author: req.user.id, poem: poemId });
+    await comment.save();
+    res.status(201).json(comment);
+  } catch (error) {
+    res.status(400).json({ message: 'Invalid data' });
+  }
+});
+
+// Hämta kommentarer för en dikt
+router.get('/:poemId', async (req, res) =&gt; {
+  const { poemId } = req.params;
+  try {
+    const comments = await Comment.find({ poem: poemId }).populate('author', 'username');
+    res.json(comments);
+  } catch (error) {
+    res.status(500).json({ message: 'Serverfel' });
+  }
+});
+
+module.exports = router;
+</code></pre>
+<ol start="3">
+<li>Uppdatera server.js</li>
+</ol>
+<p>Importera och använd commentRoutes:</p>
+<pre><code class="language-js">import commentRoutes from './routes/comments';
+
+server.use('/api/comments', commentRoutes);
+</code></pre>
+<ol start="4">
+<li>Testa Comments Routes med cURL</li>
+</ol>
+<h3 id="lägg-till-en-kommentar"><a class="header" href="#lägg-till-en-kommentar">Lägg till en Kommentar</a></h3>
+<p>Använd en giltig JWT-token för att lägga till en kommentar till en dikt med poemId.</p>
+<pre><code class="language-bash">curl -X POST http://localhost:5000/api/comments/POEM_ID_HÄR \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer JWT_TOKEN_HÄR" \
+  -d '{
+    "content": "Detta är en kommentar."
+  }'
+</code></pre>
+<h4 id="förväntat-resultat-4"><a class="header" href="#förväntat-resultat-4">Förväntat Resultat</a></h4>
+<p>Den nya kommentaren bör skapas och returneras.</p>
+<p>Hämta Kommentarer för en Dikt</p>
+<pre><code class="language-bash">curl -X GET http://localhost:5000/api/comments/POEM_ID_HÄR
+</code></pre>
+<h4 id="förväntat-resultat-5"><a class="header" href="#förväntat-resultat-5">Förväntat Resultat</a></h4>
+<p>En array av kommentarer för den specifika dikten returneras.</p>
+<p>Felhantering</p>
+<ul>
+<li>Invalid data:
+Om content saknas vid skapande av kommentar:</li>
+</ul>
+<pre><code class="language-json">{
+  "message": "Invalid data"
+}
+</code></pre>
+<ul>
+<li>Serverfel:
+Vid oväntade fel returneras:</li>
+</ul>
+<pre><code class="language-json">{
+  "message": "Server error"
+}
+</code></pre>
+<h2 id="frontend-integration"><a class="header" href="#frontend-integration">Frontend-integration</a></h2>
+<h2 id="strukturera-frontend"><a class="header" href="#strukturera-frontend">Strukturera frontend</a></h2>
+<ul>
+<li>Komponenter:
+<ul>
+<li>Navbar: Navigeringsmeny.</li>
+<li>Home: Startsida som visar alla dikter.</li>
+<li>Login: Inloggningsformulär.</li>
+<li>Register: Registreringsformulär.</li>
+<li>PoemDetail: Visar en specifik dikt och dess kommentarer.</li>
+<li>AddPoem: Formulär för att lägga upp en ny dikt.</li>
+<li>AddComment: Formulär för att lägga till en kommentar.</li>
+</ul>
+</li>
+</ul>
+<h3 id="implementera-react-routes"><a class="header" href="#implementera-react-routes">Implementera React Routes</a></h3>
+<p>I App.js:</p>
+<pre><code class="language-js">import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import PoemDetail from './pages/PoemDetail';
+import AddPoem from './pages/AddPoem';
+
+function App() {
+  return (
+    &lt;Router&gt;
+      &lt;Navbar /&gt;
+      &lt;Routes&gt;
+        &lt;Route path="/" exact component={Home} /&gt;
+        &lt;Route path="/login" component={Login} /&gt;
+        &lt;Route path="/register" component={Register} /&gt;
+        &lt;Route path="/poems/:id" component={PoemDetail} /&gt;
+        &lt;Route path="/add-poem" component={AddPoem} /&gt;
+      &lt;/Routes&gt;
+    &lt;/Router&gt;
+  );
+}
+
+export default App;
+</code></pre>
+<p>Sedan skapar vi React komponenter för varje sida. Men vänta med backend integreringen.</p>
+<p>Exempelvis <code>pages/Home.jsx</code>:</p>
+<pre><code class="language-js">import { Link } from 'react-router-dom';
+
+function Home() {
+  // Sample data for poems
+  const poems = [
+    { id: 1, title: 'The Road Not Taken' },
+    { id: 2, title: 'Stopping by Woods on a Snowy Evening' },
+  ];
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Welcome to the Poetry App&lt;/h1&gt;
+      &lt;ul&gt;
+        {poems.map(poem =&gt; (
+          &lt;li key={poem.id}&gt;
+            &lt;Link to={`/poems/${poem.id}`}&gt;{poem.title}&lt;/Link&gt;
+          &lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default Home;
+</code></pre>
+<p>Försök sedan själv att implementera resten av sidorna. <code>Login.jsx</code>, <code>Register.jsx</code>, <code>PoemDetail.jsx</code>, <code>AddPoem.jsx</code></p>
+<h2 id="anslutning-till-backend-api"><a class="header" href="#anslutning-till-backend-api">Anslutning till backend-API</a></h2>
+<p>Med fetch kan vi skicka HTTP-förfrågningar till vår backend. Eftersom merparten av en fetch HTTP request är identiskt är det hjälpsamt att ha en hjälpfunktion.</p>
+<pre><code class="language-js">// utils/api.js
+
+const apiBaseUrl = 'http://localhost:3000/api';
+
+function api(endpoint, options = {}) {
+  const token = localStorage.getItem('token');
+
+  // Sätt standardheaders
+  const headers = {
+    'Content-Type': 'application/json',
+    ...options.headers,
+  };
+
+  // Lägg till Authorization-header om token finns
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  // Kombinera standardinställningar med inkommande options
+  const config = {
+    ...options,
+    headers,
+  };
+
+  return fetch(`${apiBaseUrl}${endpoint}`, config)
+    .then((response) =&gt; {
+      if (!response.ok) {
+        // Hantera fel genom att kasta ett undantag
+        return response.json().then((error) =&gt; {
+          throw error;
+        });
+      }
+      // Returnera svarets JSON-data
+      return response.json();
+    })
+    .catch((error) =&gt; {
+      // Global felhantering (valfritt)
+      console.error('API-fel:', error);
+      throw error;
+    });
+}
+
+export default api;
+</code></pre>
+<ul>
+<li>Exempel på användning i en komponent:</li>
+</ul>
+<pre><code class="language-js">import { useEffect, useState } from 'react';
+import api from '../utils/api';
+
+function Home() {
+  const [poems, setPoems] = useState([]);
+
+  useEffect(() =&gt; {
+    api.get('/poems')
+      .then((response) =&gt; setPoems(response.data))
+      .catch((error) =&gt; console.error(error));
+  }, []);
+
+  return (
+    &lt;main&gt;
+      &lt;h1&gt;Welcome to the Poetry App&lt;/h1&gt;
+      &lt;ul&gt;
+        {poems.map(poem =&gt; (
+          &lt;li key={poem.id}&gt;
+            &lt;Link to={`/poems/${poem.id}`}&gt;{poem.title}&lt;/Link&gt;
+          &lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+    &lt;/main&gt;
+  );
+}
+
+export default Home;
+</code></pre>
+<pre class="mermaid">graph TD
+    A[App.js] --&gt; B[Router]
+    A --&gt; C[Navbar]
+    
+    B --&gt; D[Home]
+    B --&gt; E[Login]
+    B --&gt; F[Register]
+    B --&gt; G[PoemDetail]
+    B --&gt; H[AddPoem]
+    
+    C --&gt; I[Login Link]
+    C --&gt; J[Register Link]
+    C --&gt; K[Logout Button]
+    C --&gt; L[Add Poem Link]
+    
+    D --&gt; M[Poem List]
+    M --&gt; N[Poem Card]
+    N --&gt; O[Poem Title Link]
+    N --&gt; P[Poem Preview]
+    
+    E --&gt; Q[Login Form]
+    Q --&gt; R[Email Input]
+    Q --&gt; S[Password Input]
+    Q --&gt; T[Submit Button]
+    
+    F --&gt; U[Register Form]
+    U --&gt; V[Username Input]
+    U --&gt; W[Email Input]
+    U --&gt; X[Password Input]
+    U --&gt; Y[Submit Button]
+    
+    G --&gt; Z[Poem Content]
+    G --&gt; AA[Comments Section]
+    AA --&gt; BB[Comment List]
+    AA --&gt; CC[Add Comment Form]
+    BB --&gt; DD[Comment Item]
+    
+    H --&gt; EE[Add Poem Form]
+    EE --&gt; FF[Title Input]
+    EE --&gt; GG[Content Textarea]
+    EE --&gt; HH[Submit Button]
+    
+    style A fill:#e1f5fe
+    style B fill:#f3e5f5
+    style C fill:#fff3e0
+    style D fill:#e8f5e8
+    style E fill:#e8f5e8
+    style F fill:#e8f5e8
+    style G fill:#e8f5e8
+    style H fill:#e8f5e8
+</pre>
+<h2 id="testning-och-felsökning"><a class="header" href="#testning-och-felsökning">Testning och felsökning</a></h2>
+<h3 id="backend-testning"><a class="header" href="#backend-testning">Backend-testning</a></h3>
+<ul>
+<li>Använd Postman eller Insomnia för att testa API-endpoints.</li>
+<li>Enhetstester: Implementera tester med Mocha eller Jest för kritiska funktioner.</li>
+</ul>
+<h3 id="frontend-testning"><a class="header" href="#frontend-testning">Frontend-testning</a></h3>
+<ul>
+<li>Webbläsarens utvecklarverktyg: Inspektera element, nätverkstrafik och konsol för att hitta fel.</li>
+<li>React Developer Tools: För att inspektera komponenternas tillstånd och props.</li>
+</ul>
+<h3 id="vanliga-problem"><a class="header" href="#vanliga-problem">Vanliga problem</a></h3>
+<ul>
+<li>CORS-fel: Se till att cors-middleware är korrekt konfigurerad i backend. Det bör räcka med att skriva <code>server.use(cors())</code> i <code>backend/server.js</code></li>
+<li>Felaktig token: Kontrollera att token lagras och skickas korrekt.</li>
+<li>Databasanslutningsproblem: Verifiera MongoDB-anslutningssträngen och att databasen körs.</li>
+</ul>
+<pre class="mermaid">flowchart TD
+    A[Problem upptäckt] --&gt; B{Typ av problem?}
+    
+    B --&gt;|Frontend| C[Kontrollera webbläsarens utvecklarverktyg]
+    B --&gt;|Backend| D[Kontrollera serverloggar]
+    B --&gt;|Database| E[Kontrollera databasanslutning]
+    
+    C --&gt; C1[Inspektera Console för fel]
+    C --&gt; C2[Kontrollera Network tab]
+    C --&gt; C3[Kontrollera React DevTools]
+    
+    C1 --&gt; F{JavaScript fel?}
+    F --&gt;|Ja| F1[Kontrollera syntax och imports]
+    F --&gt;|Nej| C2
+    
+    C2 --&gt; G{CORS fel?}
+    G --&gt;|Ja| G1[Verifiera cors() middleware i backend]
+    G --&gt;|Nej| H{API-anrop misslyckas?}
+    
+    H --&gt;|Ja| H1[Kontrollera API-endpoints]
+    H --&gt;|Nej| C3
+    
+    D --&gt; D1[Kontrollera server.js konfiguration]
+    D --&gt; D2[Verifiera miljövariabler]
+    D --&gt; D3[Kontrollera routes och middleware]
+    
+    D1 --&gt; I{Server startar inte?}
+    I --&gt;|Ja| I1[Kontrollera port och dependencies]
+    I --&gt;|Nej| D2
+    
+    D2 --&gt; J{Miljövariabler saknas?}
+    J --&gt;|Ja| J1[Kontrollera .env fil]
+    J --&gt;|Nej| D3
+    
+    E --&gt; E1[Verifiera MongoDB URI]
+    E --&gt; E2[Kontrollera databasstatus]
+    E --&gt; E3[Testa anslutning]
+    
+    E1 --&gt; K{URI korrekt?}
+    K --&gt;|Nej| K1[Uppdatera MONGODB_URI]
+    K --&gt;|Ja| E2
+    
+    E2 --&gt; L{Databas körs?}
+    L --&gt;|Nej| L1[Starta MongoDB]
+    L --&gt;|Ja| E3
+    
+    F1 --&gt; M[Testa lösning]
+    G1 --&gt; M
+    H1 --&gt; M
+    I1 --&gt; M
+    J1 --&gt; M
+    K1 --&gt; M
+    L1 --&gt; M
+    
+    M --&gt; N{Lösning fungerar?}
+    N --&gt;|Ja| O[Problem löst!]
+    N --&gt;|Nej| P[Gå tillbaka till relevant steg]
+    
+    P --&gt; B
+    
+    style A fill:#ffebee
+    style O fill:#e8f5e8
+    style B fill:#fff3e0
+    style C fill:#e3f2fd
+    style D fill:#e3f2fd
+    style E fill:#e3f2fd
+</pre>
+<h2 id="deploying-till-produktion"><a class="header" href="#deploying-till-produktion">Deploying till produktion</a></h2>
+<h3 id="backend-deploy"><a class="header" href="#backend-deploy">Backend-deploy</a></h3>
+<ul>
+<li>Hosting: Använd en molntjänst som Heroku, DigitalOcean eller AWS.</li>
+<li>Miljövariabler: Konfigurera miljövariabler på servern för MONGODB_URI och JWT_SECRET.</li>
+<li>Bygg för produktion: Säkerställ att alla beroenden är installerade och att servern körs korrekt.</li>
+</ul>
+<h3 id="frontend-deploy"><a class="header" href="#frontend-deploy">Frontend-deploy</a></h3>
+<ul>
+<li>Bygg frontend:</li>
+</ul>
+<pre><code class="language-bash">npm run build
+</code></pre>
+<ul>
+<li>Hosting: Använd tjänster som Netlify, Vercel eller hosta statiska filer på samma server som backend.</li>
+</ul>
+<h3 id="domän-och-ssl"><a class="header" href="#domän-och-ssl">Domän och SSL</a></h3>
+<ul>
+<li>Domännamn: Köp och konfigurera ett domännamn.</li>
+<li>SSL-certifikat: Använd Let’s Encrypt för att säkra applikationen med HTTPS.</li>
+</ul>
+<h3 id="cicd-pipeline"><a class="header" href="#cicd-pipeline">CI/CD-pipeline</a></h3>
+<ul>
+<li>Automatiserad deployment: Använd GitHub Actions eller liknande för att automatisera bygg och deployment vid varje push till huvudgrenen.</li>
+</ul>
+<pre class="mermaid">graph TB
+    subgraph &quot;Development&quot;
+        A[Local Development] --&gt; B[Git Repository]
+    end
+    
+    subgraph &quot;CI/CD Pipeline&quot;
+        B --&gt; C[GitHub Actions]
+        C --&gt; D[Build &amp; Test]
+        D --&gt; E[Deploy to Production]
+    end
+    
+    subgraph &quot;Production Environment&quot;
+        E --&gt; F[Frontend Hosting]
+        E --&gt; G[Backend Hosting]
+        E --&gt; H[Database Hosting]
+        
+        F --&gt; I[Netlify/Vercel]
+        G --&gt; J[Heroku/DigitalOcean]
+        H --&gt; K[MongoDB Atlas]
+    end
+    
+    subgraph &quot;Domain &amp; Security&quot;
+        L[Domain Name] --&gt; M[SSL Certificate]
+        M --&gt; N[HTTPS]
+        N --&gt; F
+        N --&gt; G
+    end
+    
+    subgraph &quot;Monitoring &amp; Analytics&quot;
+        O[Application Monitoring]
+        P[Error Tracking]
+        Q[Performance Analytics]
+        
+        F --&gt; O
+        G --&gt; O
+        F --&gt; P
+        G --&gt; P
+        F --&gt; Q
+        G --&gt; Q
+    end
+    
+    style A fill:#e8f5e8
+    style B fill:#e3f2fd
+    style C fill:#fff3e0
+    style F fill:#f3e5f5
+    style G fill:#f3e5f5
+    style H fill:#f3e5f5
+    style L fill:#ffebee
+    style O fill:#e0f2f1
+</pre>
+<p>Genom att följa denna guide har vi byggt en fullständig webbapplikation med en modern tech stack. Projektet täcker viktiga koncept som:</p>
+<ul>
+<li>Fullstack-utveckling med Node.js, Express och React.</li>
+<li>Hantering av användarautentisering med JWT.</li>
+<li>Kommunikation mellan frontend och backend med RESTful API:er.</li>
+<li>Databasinteraktion med MongoDB och Mongoose.</li>
+<li>Deployment av en fullständig applikation till produktion.</li>
+</ul>
+<p>Detta projekt ger en praktisk inblick i att bygga skalbara och underhållbara webbapplikationer, vilket är en värdefull erfarenhet för alla blivande webbutvecklare.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_9/sessions.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_9/ovningar.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_9/sessions.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_9/ovningar.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

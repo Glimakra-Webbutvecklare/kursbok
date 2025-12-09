@@ -1,0 +1,377 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Promises och async/await - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="promises-och-asyncawait"><a class="header" href="#promises-och-asyncawait">Promises och Async/Await</a></h1>
+<p>Som vi såg i föregående avsnitt kan callbacks leda till rörig kod, speciellt när flera asynkrona operationer måste utföras i sekvens ("Callback Hell"). För att lösa detta introducerades <strong>Promises</strong> (Löften) i JavaScript.</p>
+<p><strong>Vad är ett Promise?</strong></p>
+<p>Ett Promise representerar det framtida resultatet av en asynkron operation. Det är ett objekt som fungerar som en platshållare för ett värde som ännu inte är känt, men som <em>lovar</em> att leverera ett värde (eller ett fel) vid någon tidpunkt i framtiden.</p>
+<p>Tänk på det som att beställa en bok online. Du får en orderbekräftelse (ett Promise) direkt. Boken (värdet) har inte kommit än, men orderbekräftelsen lovar att du antingen kommer att få boken (Promise <em>fulfilled</em>) eller ett meddelande om att något gick fel, t.ex. att boken var slutsåld (Promise <em>rejected</em>).</p>
+<h2 id="promise-livscykel"><a class="header" href="#promise-livscykel">Promise-livscykel</a></h2>
+<p>Ett Promise kan befinna sig i ett av tre tillstånd:</p>
+<ol>
+<li><strong>Pending (Väntande):</strong> Det initiala tillståndet. Operationen har startat men är ännu inte slutförd eller misslyckad.</li>
+<li><strong>Fulfilled (Uppfylld):</strong> Operationen slutfördes framgångsrikt. Promiset har nu ett resulterande värde.</li>
+<li><strong>Rejected (Avvisad):</strong> Operationen misslyckades. Promiset har nu en anledning (ett felobjekt) till varför det misslyckades.</li>
+</ol>
+<p>Ett Promise kan bara övergå från <em>pending</em> till antingen <em>fulfilled</em> eller <em>rejected</em>, och när det väl har hänt ändras dess tillstånd aldrig igen. Man säger att Promiset är <strong>settled</strong> (avgjort).</p>
+<h2 id="att-använda-promises-then-och-catch"><a class="header" href="#att-använda-promises-then-och-catch">Att Använda Promises: <code>.then()</code> och <code>.catch()</code></a></h2>
+<p>För att hantera resultatet (eller felet) av ett Promise använder vi metoderna <code>.then()</code> och <code>.catch()</code>.</p>
+<ul>
+<li><code>.then(onFulfilled, onRejected)</code>: Tar emot upp till två argument, båda funktioner:
+<ul>
+<li><code>onFulfilled</code>: Körs om Promiset blir <em>fulfilled</em>. Den tar emot det resulterande värdet som argument.</li>
+<li><code>onRejected</code>: Körs om Promiset blir <em>rejected</em>. Den tar emot felorsaken som argument. (Det är vanligare att använda <code>.catch()</code> för detta).</li>
+</ul>
+</li>
+<li><code>.catch(onRejected)</code>: Tar emot en funktion som körs om Promiset blir <em>rejected</em>. Det är ett mer läsbart sätt att hantera fel än att skicka en andra funktion till <code>.then()</code>.</li>
+</ul>
+<pre><code class="language-javascript">// Simulerar en asynkron operation som returnerar ett Promise
+function fetchData() {
+  return new Promise((resolve, reject) =&gt; {
+    // Simulera nätverksfördröjning
+    setTimeout(() =&gt; {
+      const success = Math.random() &gt; 0.3; // 70% chans att lyckas
+      if (success) {
+        resolve({ data: "Hämtad data!" }); // Uppfyll Promiset med data
+      } else {
+        reject(new Error("Kunde inte hämta data.")); // Avvisa Promiset med ett fel
+      }
+    }, 1500);
+  });
+}
+
+console.log("Startar datahämtning...");
+
+fetchData()
+  .then((result) =&gt; {
+    // Körs om Promiset blir fulfilled
+    console.log("Success:", result.data);
+  })
+  .catch((error) =&gt; {
+    // Körs om Promiset blir rejected
+    console.error("Error:", error.message);
+  })
+  .finally(() =&gt; {
+    // Körs alltid, oavsett om det lyckades eller misslyckades
+    console.log("Datahämtning avslutad (fulfilled eller rejected).");
+  });
+
+console.log("Promise startat, väntar på resultat...");
+
+// Output (exempel vid success):
+// Startar datahämtning...
+// Promise startat, väntar på resultat...
+// (efter 1.5 sekunder)
+// Success: Hämtad data!
+// Datahämtning avslutad (fulfilled eller rejected).
+
+// Output (exempel vid error):
+// Startar datahämtning...
+// Promise startat, väntar på resultat...
+// (efter 1.5 sekunder)
+// Error: Kunde inte hämta data.
+// Datahämtning avslutad (fulfilled eller rejected).
+</code></pre>
+<p>Notera <code>.finally()</code> som körs oavsett utfall, användbart för t.ex. städning eller att dölja en laddningsindikator.</p>
+<h2 id="kedjade-promises-chaining"><a class="header" href="#kedjade-promises-chaining">Kedjade Promises (Chaining)</a></h2>
+<p>Styrkan med <code>.then()</code> är att den <em>också</em> returnerar ett Promise. Detta gör att vi kan kedja flera asynkrona operationer efter varandra på ett läsbart sätt, utan djup nästling.</p>
+<pre><code class="language-javascript">fetchData() // Returnerar ett Promise
+  .then(result1 =&gt; {
+    console.log("Steg 1 klart:", result1.data);
+    // Starta nästa operation, som också returnerar ett Promise
+    return anotherAsyncOperation(result1.data);
+  })
+  .then(result2 =&gt; {
+    console.log("Steg 2 klart:", result2);
+    // ...och så vidare...
+  })
+  .catch(error =&gt; {
+    // Ett enda catch hanterar fel från *alla* föregående steg i kedjan
+    console.error("Ett fel inträffade i kedjan:", error.message);
+  });
+</code></pre>
+<h2 id="asyncawait-syntaktiskt-socker"><a class="header" href="#asyncawait-syntaktiskt-socker">Async/Await: Syntaktiskt Socker</a></h2>
+<p>Även om kedjade Promises är mycket bättre än Callback Hell, kan koden fortfarande bli lite svårläst med många <code>.then()</code>. ES2017 introducerade <code>async</code> och <code>await</code> för att skriva asynkron kod som <em>ser ut</em> som synkron kod.</p>
+<ul>
+<li><strong><code>async function</code></strong>: När du deklarerar en funktion med <code>async</code> framför, händer två saker:
+<ol>
+<li>Funktionen returnerar <em>alltid</em> automatiskt ett Promise. Om funktionen returnerar ett värde, blir det värdet resultatet av ett <em>fulfilled</em> Promise. Om funktionen kastar ett fel, blir det felet anledningen till ett <em>rejected</em> Promise.</li>
+<li>Det möjliggör användningen av <code>await</code> inuti funktionen.</li>
+</ol>
+</li>
+<li><strong><code>await</code></strong>: Kan <em>endast</em> användas inuti en <code>async function</code>. När du sätter <code>await</code> framför ett anrop som returnerar ett Promise, pausas exekveringen av <code>async</code>-funktionen (utan att blockera huvudtråden!) tills det Promiset är <em>settled</em> (avgjort).
+<ul>
+<li>Om Promiset blir <em>fulfilled</em>, returnerar <code>await</code>-uttrycket det uppfyllda värdet.</li>
+<li>Om Promiset blir <em>rejected</em>, kastar <code>await</code>-uttrycket felet (som kan fångas med <code>try...catch</code>).</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-javascript">// Samma fetchData som tidigare
+
+// async funktion för att använda await
+async function processData() {
+  console.log("Startar processData (async)...");
+  try {
+    // Pausar här tills fetchData() är fulfilled eller rejected
+    const result = await fetchData();
+    console.log("Data hämtad (inom async):");
+
+    // Kan nu använda resultatet som om det vore synkront
+    const processedData = result.data.toUpperCase();
+    console.log("Bearbetad data:", processedData);
+
+    // Om vi hade fler await-anrop skulle de köras sekventiellt
+    // const result2 = await anotherAsyncOperation(processedData);
+    // console.log("Resultat från andra operationen:", result2);
+
+    return processedData; // Detta blir värdet för Promiset som processData returnerar
+
+  } catch (error) {
+    // Fångar fel från await fetchData() eller andra fel i try-blocket
+    console.error("Fel i processData:", error.message);
+    // Kan välja att kasta felet vidare eller returnera ett standardvärde
+    throw error; // Kasta om felet så att anroparen kan fånga det
+  }
+}
+
+console.log("Anropar processData...");
+
+// Eftersom processData är async, returnerar den ett Promise
+processData()
+  .then(finalResult =&gt; {
+    console.log("processData lyckades med resultat:", finalResult);
+  })
+  .catch(error =&gt; {
+    console.error("processData misslyckades:", error.message);
+  });
+
+console.log("processData anropad, väntar...");
+</code></pre>
+<p><strong>Fördelar med Async/Await:</strong></p>
+<ul>
+<li><strong>Läslighet:</strong> Koden ser mycket mer ut som traditionell, synkron kod.</li>
+<li><strong>Felhantering:</strong> Använder standard <code>try...catch</code>, vilket många utvecklare är vana vid.</li>
+<li><strong>Enklare felsökning:</strong> Lättare att följa kodflödet och sätta brytpunkter.</li>
+</ul>
+<p><code>async/await</code> är idag det vanligaste sättet att hantera Promises i modern JavaScript-utveckling.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_5/asynkron.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_5/fetch.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_5/asynkron.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_5/fetch.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,576 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Spelutveckling och WebSockets - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="spelutveckling-och-websockets"><a class="header" href="#spelutveckling-och-websockets">Spelutveckling och WebSockets</a></h1>
+<p>Välkommen till den spännande världen av webbaserad spelutveckling! I detta kapitel ska vi utforska hur man skapar interaktiva spel och realtidsapplikationer direkt i webbläsaren. Från enkla Canvas-spel till komplexa multiplayer-upplevelser - här lär du dig verktygen och teknikerna som driver modern webbaserad spel- och applikationsutveckling.</p>
+<h2 id="vad-är-webbaserad-spelutveckling"><a class="header" href="#vad-är-webbaserad-spelutveckling">Vad är webbaserad spelutveckling?</a></h2>
+<p>Webbaserad spelutveckling innebär att skapa interaktiva spel som körs direkt i webbläsaren utan behov av nedladdning eller installation. Med moderna webbteknologier kan vi skapa allt från enkla pussel-spel till avancerade 3D-världar.</p>
+<h3 id="fördelar-med-webspel"><a class="header" href="#fördelar-med-webspel">Fördelar med webspel</a></h3>
+<ul>
+<li><strong>Omedelbar tillgänglighet</strong>: Spel körs direkt i webbläsaren</li>
+<li><strong>Plattformsoberoende</strong>: Fungerar på dator, mobil och surfplatta</li>
+<li><strong>Enkel distribution</strong>: Dela via en URL</li>
+<li><strong>Automatiska uppdateringar</strong>: Inga manuella nedladdningar</li>
+<li><strong>Social integration</strong>: Enkelt att dela och spela tillsammans</li>
+<li><strong>Låg tröskel</strong>: Tillgängligt för alla med internetanslutning</li>
+</ul>
+<pre class="mermaid">graph TB
+    A[Webbläsare] --&gt; B[HTML5 Canvas]
+    A --&gt; C[WebGL för 3D]
+    A --&gt; D[Web Audio API]
+    A --&gt; E[WebSockets]
+    
+    B --&gt; F[2D Sprites &amp; Animation]
+    B --&gt; G[Collision Detection]
+    
+    C --&gt; H[3D Grafik &amp; Shaders]
+    
+    D --&gt; I[Ljudeffekter &amp; Musik]
+    
+    E --&gt; J[Multiplayer]
+    E --&gt; K[Real-time Chat]
+    E --&gt; L[Live Updates]
+    
+    style A fill:#FF6B6B,stroke:#FF5252,color:#fff
+    style E fill:#4ECDC4,stroke:#26A69A,color:#fff
+</pre>
+<h2 id="teknologier-för-webspel"><a class="header" href="#teknologier-för-webspel">Teknologier för webspel</a></h2>
+<h3 id="core-technologies"><a class="header" href="#core-technologies">Core Technologies</a></h3>
+<p><strong>HTML5 Canvas</strong>: 2D-ritning och animation</p>
+<pre><code class="language-javascript">const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+
+// Rita spelkaraktär
+ctx.fillStyle = 'blue';
+ctx.fillRect(playerX, playerY, 32, 32);
+</code></pre>
+<p><strong>WebGL</strong>: Högpresterande 3D-grafik</p>
+<pre><code class="language-javascript">// Three.js exempel för 3D
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight);
+const renderer = new THREE.WebGLRenderer();
+</code></pre>
+<p><strong>Web Audio API</strong>: Avancerat ljud</p>
+<pre><code class="language-javascript">const audioContext = new AudioContext();
+const oscillator = audioContext.createOscillator();
+oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
+</code></pre>
+<h3 id="realtidskommunikation"><a class="header" href="#realtidskommunikation">Realtidskommunikation</a></h3>
+<p><strong>WebSockets</strong>: Tvåvägs kommunikation</p>
+<pre><code class="language-javascript">const socket = new WebSocket('ws://game-server.com');
+socket.send(JSON.stringify({ action: 'move', x: 100, y: 200 }));
+</code></pre>
+<p><strong>WebRTC</strong>: Peer-to-peer kommunikation</p>
+<pre><code class="language-javascript">// Direkt kommunikation mellan spelare
+const peerConnection = new RTCPeerConnection();
+</code></pre>
+<h2 id="spelutvecklingsarkitektur"><a class="header" href="#spelutvecklingsarkitektur">Spelutvecklingsarkitektur</a></h2>
+<h3 id="game-loop---hjärtat-i-alla-spel"><a class="header" href="#game-loop---hjärtat-i-alla-spel">Game Loop - hjärtat i alla spel</a></h3>
+<pre class="mermaid">graph LR
+    A[Start] --&gt; B[Input Handling]
+    B --&gt; C[Update Game State]
+    C --&gt; D[Render/Draw]
+    D --&gt; E[Check Continue?]
+    E --&gt;|Yes| B
+    E --&gt;|No| F[End]
+    
+    style B fill:#FFE066,stroke:#FFC107
+    style C fill:#66BB6A,stroke:#4CAF50
+    style D fill:#42A5F5,stroke:#2196F3
+</pre>
+<p><strong>Grundläggande Game Loop</strong>:</p>
+<pre><code class="language-javascript">class Game {
+  constructor() {
+    this.running = true;
+    this.lastTime = 0;
+  }
+  
+  gameLoop = (currentTime) =&gt; {
+    const deltaTime = currentTime - this.lastTime;
+    this.lastTime = currentTime;
+    
+    // 1. Hantera input
+    this.handleInput();
+    
+    // 2. Uppdatera spellogik
+    this.update(deltaTime);
+    
+    // 3. Rita spelet
+    this.render();
+    
+    // 4. Fortsätt loopen
+    if (this.running) {
+      requestAnimationFrame(this.gameLoop);
+    }
+  }
+  
+  start() {
+    requestAnimationFrame(this.gameLoop);
+  }
+}
+</code></pre>
+<h3 id="objektorienterad-speldesign"><a class="header" href="#objektorienterad-speldesign">Objektorienterad speldesign</a></h3>
+<p><strong>Game Objects</strong>: Allt i spelet representeras som objekt</p>
+<pre><code class="language-javascript">class GameObject {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.velocity = { x: 0, y: 0 };
+    this.sprite = null;
+  }
+  
+  update(deltaTime) {
+    this.x += this.velocity.x * deltaTime;
+    this.y += this.velocity.y * deltaTime;
+  }
+  
+  render(ctx) {
+    if (this.sprite) {
+      ctx.drawImage(this.sprite, this.x, this.y);
+    }
+  }
+}
+
+class Player extends GameObject {
+  constructor(x, y) {
+    super(x, y);
+    this.health = 100;
+    this.score = 0;
+  }
+  
+  takeDamage(amount) {
+    this.health -= amount;
+    if (this.health &lt;= 0) {
+      this.die();
+    }
+  }
+}
+</code></pre>
+<h2 id="multiplayer-och-websockets"><a class="header" href="#multiplayer-och-websockets">Multiplayer och WebSockets</a></h2>
+<h3 id="client-server-architecture"><a class="header" href="#client-server-architecture">Client-Server Architecture</a></h3>
+<pre class="mermaid">sequenceDiagram
+    participant P1 as Player 1
+    participant S as Game Server
+    participant P2 as Player 2
+    
+    P1-&gt;&gt;S: Connect to game
+    P2-&gt;&gt;S: Connect to game
+    S-&gt;&gt;P1: Send game state
+    S-&gt;&gt;P2: Send game state
+    
+    P1-&gt;&gt;S: Move player
+    S-&gt;&gt;S: Update game state
+    S-&gt;&gt;P1: Confirm move
+    S-&gt;&gt;P2: Player 1 moved
+    
+    P2-&gt;&gt;S: Shoot bullet
+    S-&gt;&gt;S: Process action
+    S-&gt;&gt;P1: Player 2 shot
+    S-&gt;&gt;P2: Confirm shot
+</pre>
+<p><strong>Realtidssynkronisering</strong>:</p>
+<pre><code class="language-javascript">// Klient
+class MultiplayerGame {
+  constructor() {
+    this.socket = new WebSocket('ws://localhost:8080');
+    this.players = new Map();
+    this.setupSocketEvents();
+  }
+  
+  setupSocketEvents() {
+    this.socket.onmessage = (event) =&gt; {
+      const data = JSON.parse(event.data);
+      
+      switch(data.type) {
+        case 'player-moved':
+          this.updatePlayerPosition(data.playerId, data.x, data.y);
+          break;
+        case 'player-joined':
+          this.addPlayer(data.player);
+          break;
+        case 'game-state':
+          this.syncGameState(data.state);
+          break;
+      }
+    };
+  }
+  
+  sendPlayerAction(action, data) {
+    this.socket.send(JSON.stringify({
+      type: action,
+      ...data
+    }));
+  }
+}
+</code></pre>
+<h3 id="kapitelinnehåll"><a class="header" href="#kapitelinnehåll">Kapitelinnehåll</a></h3>
+<p><strong>Fundamentals (Kapitel 1-3)</strong>:</p>
+<ol>
+<li><strong>Canvas API</strong> - 2D-ritning, sprites och grundläggande animation</li>
+<li><strong>OOP för spel</strong> - Klasser, arv och spelarkitektur</li>
+<li><strong>WebSockets</strong> - Realtidskommunikation och grundläggande multiplayer</li>
+</ol>
+<p><strong>Intermediate (Kapitel 4-6)</strong>:
+4. <strong>Chat-applikationer</strong> - WebSockets och användarhantering
+5. <strong>Multiplayer-spel</strong> - State synchronization och spelmekanik
+6. <strong>Praktiska övningar</strong> - Fyra progressiva spelprojekt</p>
+<p><strong>Advanced (Kapitel 7)</strong>:
+7. <strong>Teknisk intervju</strong> - Förberedelse för spelutvecklingsjobb</p>
+<h2 id="utvecklingsmiljö-för-spelutveckling"><a class="header" href="#utvecklingsmiljö-för-spelutveckling">Utvecklingsmiljö för spelutveckling</a></h2>
+<h3 id="nödvändiga-verktyg"><a class="header" href="#nödvändiga-verktyg">Nödvändiga verktyg</a></h3>
+<p><strong>Code Editor med extensions</strong>:</p>
+<pre><code class="language-bash"># VS Code extensions för spelutveckling
+- Live Server (för lokal testning)
+- WebGL Shader Language Support
+- JavaScript (ES6) code snippets
+- Bracket Pair Colorizer
+</code></pre>
+<p><strong>Grafiska resurser</strong>:</p>
+<ul>
+<li><strong>Sprites</strong>: Piskel, Aseprite för pixelart</li>
+<li><strong>Audio</strong>: Audacity, LMMS för ljud</li>
+<li><strong>Texturer</strong>: GIMP, Photoshop för grafik</li>
+</ul>
+<p><strong>Development Server</strong>:</p>
+<pre><code class="language-javascript">// Enkel server för WebSocket-testning
+const express = require('express');
+const http = require('http');
+const WebSocket = require('ws');
+
+const app = express();
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
+
+app.use(express.static('public'));
+
+wss.on('connection', (ws) =&gt; {
+  console.log('En spelare anslöt');
+  
+  ws.on('message', (message) =&gt; {
+    const data = JSON.parse(message);
+    console.log('Mottaget:', data);
+    
+    // Broadcast till alla anslutna
+    wss.clients.forEach((client) =&gt; {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(JSON.stringify(data));
+      }
+    });
+  });
+});
+
+server.listen(3000, () =&gt; {
+  console.log('Game server på port 3000');
+});
+</code></pre>
+<h3 id="projektstruktur-för-spel"><a class="header" href="#projektstruktur-för-spel">Projektstruktur för spel</a></h3>
+<pre><code>game-project/
+├── index.html              # Entry point
+├── style.css              # Styling
+├── client/                # Frontend kod
+│   ├── game.js            # Huvudspellogik
+│   ├── entities/          # Spelobjekt
+│   │   ├── Player.js
+│   │   ├── Enemy.js
+│   │   └── Bullet.js
+│   ├── systems/           # Game systems
+│   │   ├── InputSystem.js
+│   │   ├── RenderSystem.js
+│   │   └── CollisionSystem.js
+│   └── utils/             # Hjälpfunktioner
+│       ├── Vector2D.js
+│       └── SpriteLoader.js
+├── server/                # Backend (multiplayer)
+│   ├── server.js          # WebSocket server
+│   ├── GameRoom.js        # Spelrum-logik
+│   └── PlayerManager.js   # Spelarhantering
+├── assets/                # Grafik och ljud
+│   ├── sprites/
+│   ├── sounds/
+│   └── music/
+└── docs/                  # Dokumentation
+    └── game-design.md
+</code></pre>
+<h2 id="varför-lära-sig-webbaserad-spelutveckling"><a class="header" href="#varför-lära-sig-webbaserad-spelutveckling">Varför lära sig webbaserad spelutveckling?</a></h2>
+<h3 id="karriärmöjligheter"><a class="header" href="#karriärmöjligheter">Karriärmöjligheter</a></h3>
+<p><strong>Frontend Game Developer</strong>:</p>
+<ul>
+<li>HTML5-spelstudios</li>
+<li>Casual gaming-företag</li>
+<li>Reklam- och marknadsföringsspel</li>
+</ul>
+<p><strong>Full-Stack Game Developer</strong>:</p>
+<ul>
+<li>Multiplayer-spelservrar</li>
+<li>Real-time applikationer</li>
+<li>Social gaming-plattformar</li>
+</ul>
+<p><strong>Specialistroller</strong>:</p>
+<ul>
+<li>WebGL/3D-specialist</li>
+<li>Performance optimization</li>
+<li>Mobile game development</li>
+</ul>
+<h3 id="transferable-skills"><a class="header" href="#transferable-skills">Transferable Skills</a></h3>
+<p>Kunskaperna från webbaserad spelutveckling överförs till:</p>
+<ul>
+<li><strong>Interactive Visualizations</strong>: D3.js, data storytelling</li>
+<li><strong>Real-time Applications</strong>: Trading platforms, collaboration tools</li>
+<li><strong>Media Applications</strong>: Video editing, streaming platforms</li>
+<li><strong>IoT Applications</strong>: Sensor dashboards, device control</li>
+</ul>
+<h2 id="redo-för-äventyret"><a class="header" href="#redo-för-äventyret">Redo för äventyret?</a></h2>
+<p>Webbaserad spelutveckling kombinerar kreativitet med teknisk skicklighet. Du kommer att lära dig:</p>
+<p><strong>Tekniska färdigheter</strong>:</p>
+<ul>
+<li>🎨 Canvas API och 2D-grafik</li>
+<li>🎮 Game loops och animation</li>
+<li>🏗️ Objektorienterad spelarkitektur</li>
+<li>🌐 WebSockets och multiplayer</li>
+<li>⚡ Performance optimization</li>
+</ul>
+<p><strong>Kreativa färdigheter</strong>:</p>
+<ul>
+<li>🎯 Spelmekanik och design</li>
+<li>🎵 Ljud och användarupplevelse</li>
+<li>🎨 Visuell design och animation</li>
+<li>📱 Responsive game design</li>
+</ul>
+<p><strong>Nästa steg</strong>:</p>
+<ol>
+<li>🎨 <strong>Canvas API</strong> - Lär dig rita och animera</li>
+<li>🎮 <strong>OOP för spel</strong> - Strukturera din spelkod</li>
+<li>🌐 <strong>WebSockets</strong> - Skapa realtidsupplevelser</li>
+<li>💬 <strong>Chat-app</strong> - Bygg din första multiplayer-funktion</li>
+<li>🏟️ <strong>Multiplayer-spel</strong> - Avancerad spelarinteraktion</li>
+<li>🚀 <strong>Praktiska projekt</strong> - Bygg fyra kompletta spel</li>
+</ol>
+<p>Varje kapitel innehåller:</p>
+<ul>
+<li>📖 Detaljerade förklaringar med interaktiva exempel</li>
+<li>🎮 Praktiska spelprototyper att bygga vidare på</li>
+<li>💡 Industry best practices från professionella studios</li>
+<li>🔧 Moderna verktyg och tekniker</li>
+</ul>
+<p>Spelutveckling är en av de mest kreativa och givande formerna av programmering - där logik möter fantasi och kod blir till upplevelser. Låt oss börja skapa!</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_9/teknisk-intervju.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_10/websockets.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_9/teknisk-intervju.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_10/websockets.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

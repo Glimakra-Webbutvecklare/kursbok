@@ -1,0 +1,599 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Backend-utveckling med Node.js - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="backend-utveckling-med-nodejs"><a class="header" href="#backend-utveckling-med-nodejs">Backend-utveckling med Node.js</a></h1>
+<p>Välkommen till backend-utveckling! I detta kapitel ska vi utforska hur man bygger robusta serverapplikationer med Node.js och Express. Backend är hjärtat i alla moderna webbapplikationer - det hanterar databasoperationer, autentisering, API:er och mycket mer.</p>
+<h2 id="vad-är-backend-utveckling"><a class="header" href="#vad-är-backend-utveckling">Vad är Backend-utveckling?</a></h2>
+<p>Backend-utveckling handlar om att skapa serversidan av webbapplikationer. Medan frontend fokuserar på vad användaren ser och interagerar med, ansvarar backend för:</p>
+<ul>
+<li><strong>Datahantering</strong>: Lagra, hämta och uppdatera data i databaser</li>
+<li><strong>Autentisering</strong>: Verifiera användares identitet och hantera inloggningar</li>
+<li><strong>API:er</strong>: Skapa endpoints som frontend kan kommunicera med</li>
+<li><strong>Säkerhet</strong>: Skydda applikationer mot attacker och säkerställa dataintegrity</li>
+<li><strong>Skalbarhet</strong>: Hantera tusentals samtidiga användare</li>
+<li><strong>Integrationer</strong>: Kommunicera med externa tjänster och system</li>
+</ul>
+<pre class="mermaid">graph TB
+    A[Frontend&lt;br/&gt;React/Vue/Angular] --&gt; B[API Gateway]
+    B --&gt; C[Backend Server&lt;br/&gt;Node.js + Express]
+    C --&gt; D[Databas&lt;br/&gt;MongoDB]
+    C --&gt; E[Cache&lt;br/&gt;Redis]
+    C --&gt; F[Externa API:er&lt;br/&gt;Betalning, Email, etc.]
+    C --&gt; G[Fillagring&lt;br/&gt;AWS S3, Cloudinary]
+    
+    style C fill:#2196F3,stroke:#1976D2,color:#fff
+    style D fill:#4CAF50,stroke:#388E3C,color:#fff
+</pre>
+<h3 id="full-stack-development-landscape"><a class="header" href="#full-stack-development-landscape">Full-Stack Development Landscape</a></h3>
+<p>Modern webbutveckling involverar många komponenter som arbetar tillsammans:</p>
+<p><strong>Frontend Technologies</strong>:</p>
+<ul>
+<li>React, Vue.js, Angular för användarinterface</li>
+<li>Mobile apps med React Native eller Flutter</li>
+<li>Desktop apps med Electron</li>
+</ul>
+<p><strong>Backend Technologies</strong>:</p>
+<ul>
+<li><strong>Runtime</strong>: Node.js, Python, Java, C#, Go, Rust</li>
+<li><strong>Frameworks</strong>: Express.js, Nest.js, Fastify (Node.js)</li>
+<li><strong>Databaser</strong>: MongoDB, PostgreSQL, MySQL, Redis</li>
+<li><strong>Cloud Services</strong>: AWS, Google Cloud, Azure</li>
+</ul>
+<h2 id="varför-nodejs-för-backend"><a class="header" href="#varför-nodejs-för-backend">Varför Node.js för Backend?</a></h2>
+<p>Node.js har revolutionerat backend-utveckling genom att låta JavaScript-utvecklare bygga hela applikationer:</p>
+<h3 id="fördelar-med-nodejs"><a class="header" href="#fördelar-med-nodejs">Fördelar med Node.js</a></h3>
+<p><strong>1. JavaScript Everywhere</strong></p>
+<pre><code class="language-javascript">// Frontend (React)
+const user = await fetch('/api/users/me');
+
+// Backend (Express)
+app.get('/api/users/me', (req, res) =&gt; {
+  res.json({ id: 1, name: 'John' });
+});
+</code></pre>
+<p><strong>2. Non-blocking I/O</strong></p>
+<pre><code class="language-javascript">// Traditionell blocking I/O (PHP, Python)
+const data1 = database.query('SELECT * FROM users');     // Väntar
+const data2 = database.query('SELECT * FROM posts');     // Väntar
+
+// Node.js non-blocking
+const data1Promise = database.query('SELECT * FROM users');  // Körs parallellt
+const data2Promise = database.query('SELECT * FROM posts');  // Körs parallellt
+const [data1, data2] = await Promise.all([data1Promise, data2Promise]);
+</code></pre>
+<p><strong>3. Enorm Ekosystem (NPM)</strong></p>
+<pre><code class="language-bash">npm install express mongoose bcrypt jsonwebtoken socket.io
+# 2+ miljoner paket tillgängliga
+</code></pre>
+<p><strong>4. Hög Prestanda för I/O-intensiva Applikationer</strong></p>
+<ul>
+<li>Event-driven arkitektur</li>
+<li>Single-threaded event loop</li>
+<li>Perfekt för real-time applikationer</li>
+<li>Skalbar för tusentals samtidiga anslutningar</li>
+</ul>
+<h3 id="när-nodejs-är-bäst"><a class="header" href="#när-nodejs-är-bäst">När Node.js är bäst</a></h3>
+<p>✅ <strong>Utmärkt för</strong>:</p>
+<ul>
+<li>RESTful API:er och GraphQL</li>
+<li>Real-time applikationer (chat, gaming)</li>
+<li>Mikroservices</li>
+<li>Single Page Applications (SPAs)</li>
+<li>Prototyping och snabb utveckling</li>
+</ul>
+<p>❌ <strong>Undvik för</strong>:</p>
+<ul>
+<li>CPU-intensiva beräkningar</li>
+<li>Legacy system integration</li>
+<li>Stora enterprise-applikationer med komplex affärslogik</li>
+</ul>
+<h2 id="kapitelets-mål-och-progression"><a class="header" href="#kapitelets-mål-och-progression">Kapitelets mål och progression</a></h2>
+<p>I detta kapitel kommer du att lära dig:</p>
+<pre class="mermaid">flowchart TD
+    A[Node.js Fundamentals] --&gt; B[Express.js Framework]
+    B --&gt; C[Database Integration&lt;br/&gt;MongoDB + Mongoose]
+    C --&gt; D[RESTful API Design]
+    D --&gt; E[Authentication &amp; Security&lt;br/&gt;JWT + bcrypt]
+    E --&gt; F[Advanced Features&lt;br/&gt;Sessions, Middleware]
+    F --&gt; G[Real-world Projects]
+    
+    A1[Runtime, NPM, Modules] --&gt; A
+    B1[Routing, Middleware] --&gt; B
+    C1[CRUD Operations, Schemas] --&gt; C
+    D1[HTTP Methods, Status Codes] --&gt; D
+    E1[Login Systems, Hashing] --&gt; E
+    F1[Cookies, Rate Limiting] --&gt; F
+    G1[Todo API, Blog System, E-commerce] --&gt; G
+</pre>
+<h3 id="kapitelstruktur"><a class="header" href="#kapitelstruktur">Kapitelstruktur</a></h3>
+<p><strong>Grund (Kapitel 1-3)</strong>:</p>
+<ol>
+<li><strong>Node.js Introduction</strong> - Runtime, moduler och grundläggande koncept</li>
+<li><strong>Express.js</strong> - Webbramverk, routing och middleware</li>
+<li><strong>MongoDB &amp; Mongoose</strong> - Databasintegration och ODM</li>
+</ol>
+<p><strong>Intermediär (Kapitel 4-6)</strong>:
+4. <strong>RESTful APIs</strong> - API-design, HTTP-metoder och best practices
+5. <strong>Authentication</strong> - JWT, bcrypt, säkerhet och middleware
+6. <strong>Sessions &amp; Cookies</strong> - Traditionell autentisering och användarhantering</p>
+<p><strong>Avancerat (Kapitel 7-8)</strong>:
+7. <strong>Praktiska Övningar</strong> - Fyra progressiva projekt
+8. <strong>Teknisk Intervju</strong> - Förberedelse för backend-intervjuer</p>
+<h2 id="utvecklingsmiljö-och-verktyg"><a class="header" href="#utvecklingsmiljö-och-verktyg">Utvecklingsmiljö och verktyg</a></h2>
+<h3 id="nödvändiga-verktyg"><a class="header" href="#nödvändiga-verktyg">Nödvändiga verktyg</a></h3>
+<p><strong>1. Node.js och NPM</strong></p>
+<pre><code class="language-bash"># Installera Node.js (inkluderar NPM)
+# Från nodejs.org eller via package manager
+
+# Kontrollera installation
+node --version     # v18.x.x eller senare
+npm --version      # 9.x.x eller senare
+</code></pre>
+<p><strong>2. Code Editor</strong></p>
+<ul>
+<li><strong>VS Code</strong> (rekommenderas) med extensions:
+<ul>
+<li>Node.js Extension Pack</li>
+<li>REST Client eller Thunder Client</li>
+<li>MongoDB for VS Code</li>
+<li>Bracket Pair Colorizer</li>
+</ul>
+</li>
+</ul>
+<p><strong>3. Databas</strong></p>
+<pre><code class="language-bash"># MongoDB lokalt
+brew install mongodb-community
+# Eller använd MongoDB Atlas (cloud)
+
+# Redis för sessions/caching (valfritt)
+brew install redis
+</code></pre>
+<p><strong>4. Testing och API-verktyg</strong></p>
+<ul>
+<li><strong>Postman</strong> eller <strong>Insomnia</strong> för API-testning</li>
+<li><strong>MongoDB Compass</strong> för databashantering</li>
+<li><strong>Git</strong> för versionshantering</li>
+</ul>
+<h3 id="projektstruktur-best-practices"><a class="header" href="#projektstruktur-best-practices">Projektstruktur (Best Practices)</a></h3>
+<pre><code>backend-project/
+├── server.js              # Entry point
+├── package.json           # Dependencies och scripts
+├── .env                   # Environment variables
+├── .gitignore            # Git ignore fil
+├── config/               # Konfiguration
+│   ├── database.js       # Databasanslutning
+│   └── jwt.js           # JWT-konfiguration
+├── models/              # Datamodeller (Mongoose schemas)
+│   ├── User.js
+│   └── Post.js
+├── controllers/         # Route handlers/business logic
+│   ├── authController.js
+│   └── postController.js
+├── routes/             # API routes
+│   ├── auth.js
+│   └── posts.js
+├── middleware/         # Custom middleware
+│   ├── auth.js
+│   ├── validation.js
+│   └── errorHandler.js
+├── utils/             # Utility functions
+│   └── helpers.js
+├── tests/            # Test files
+│   └── auth.test.js
+└── docs/            # API documentation
+    └── api.md
+</code></pre>
+<h2 id="grundläggande-backend-koncept"><a class="header" href="#grundläggande-backend-koncept">Grundläggande Backend-koncept</a></h2>
+<h3 id="client-server-architecture"><a class="header" href="#client-server-architecture">Client-Server Architecture</a></h3>
+<pre class="mermaid">sequenceDiagram
+    participant C as Client (Browser/Mobile)
+    participant S as Server (Node.js)
+    participant D as Database (MongoDB)
+    
+    C-&gt;&gt;S: 1. HTTP Request (GET /api/users)
+    S-&gt;&gt;D: 2. Database Query
+    D--&gt;&gt;S: 3. Query Result
+    S--&gt;&gt;C: 4. HTTP Response (JSON)
+    
+    Note over C,S: HTTPS för säkerhet
+    Note over S,D: Mongoose ODM
+</pre>
+<h3 id="api-design-principles"><a class="header" href="#api-design-principles">API Design Principles</a></h3>
+<p><strong>RESTful URLs</strong>:</p>
+<pre><code class="language-javascript">GET    /api/users           // Hämta alla användare
+GET    /api/users/123       // Hämta specifik användare  
+POST   /api/users           // Skapa ny användare
+PUT    /api/users/123       // Uppdatera användare (helt)
+PATCH  /api/users/123       // Uppdatera användare (delvis)
+DELETE /api/users/123       // Ta bort användare
+
+// Hierarkiska resurser
+GET    /api/users/123/posts // Användarens inlägg
+POST   /api/users/123/posts // Skapa inlägg för användare
+</code></pre>
+<p><strong>HTTP Status Codes</strong>:</p>
+<pre><code class="language-javascript">200  // OK - Lyckad GET/PUT/PATCH
+201  // Created - Lyckad POST
+204  // No Content - Lyckad DELETE
+400  // Bad Request - Klientfel
+401  // Unauthorized - Autentisering krävs
+403  // Forbidden - Otillåten åtkomst
+404  // Not Found - Resurs finns inte
+500  // Internal Server Error - Serverfel
+</code></pre>
+<h3 id="säkerhetsfundament"><a class="header" href="#säkerhetsfundament">Säkerhetsfundament</a></h3>
+<p><strong>1. Input Validation</strong></p>
+<pre><code class="language-javascript">const { body, validationResult } = require('express-validator');
+
+const validateUser = [
+  body('email').isEmail().normalizeEmail(),
+  body('password').isLength({ min: 6 }),
+  body('name').trim().escape()
+];
+</code></pre>
+<p><strong>2. Authentication &amp; Authorization</strong></p>
+<pre><code class="language-javascript">// Autentisering: "Vem är du?"
+const authenticate = (req, res, next) =&gt; {
+  const token = req.headers.authorization?.split(' ')[1];
+  // Verifiera JWT token
+};
+
+// Auktorisation: "Vad får du göra?"
+const authorize = (roles) =&gt; {
+  return (req, res, next) =&gt; {
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({ error: 'Otillåten' });
+    }
+    next();
+  };
+};
+</code></pre>
+<p><strong>3. Data Protection</strong></p>
+<pre><code class="language-javascript">const bcrypt = require('bcrypt');
+
+// Hash lösenord
+const hashedPassword = await bcrypt.hash(password, 12);
+
+// Verifiera lösenord  
+const isValid = await bcrypt.compare(password, hashedPassword);
+</code></pre>
+<h2 id="backend-development-workflow"><a class="header" href="#backend-development-workflow">Backend Development Workflow</a></h2>
+<h3 id="1-planering-och-design"><a class="header" href="#1-planering-och-design">1. Planering och Design</a></h3>
+<pre class="mermaid">graph LR
+    A[Requirements] --&gt; B[API Design]
+    B --&gt; C[Database Schema]
+    C --&gt; D[Security Plan]
+    D --&gt; E[Architecture]
+    
+    B1[Endpoints&lt;br/&gt;Request/Response] --&gt; B
+    C1[Models&lt;br/&gt;Relationships] --&gt; C
+    D1[Auth Strategy&lt;br/&gt;Validation] --&gt; D
+    E1[Folder Structure&lt;br/&gt;Deployment] --&gt; E
+</pre>
+<h3 id="2-implementation-process"><a class="header" href="#2-implementation-process">2. Implementation Process</a></h3>
+<pre><code class="language-javascript">// 1. Setup projekt
+npm init -y
+npm install express mongoose bcrypt jsonwebtoken
+
+// 2. Basic server
+const express = require('express');
+const app = express();
+
+// 3. Middleware
+app.use(express.json());
+
+// 4. Routes
+app.get('/api/health', (req, res) =&gt; {
+  res.json({ status: 'OK' });
+});
+
+// 5. Database connection
+mongoose.connect(process.env.MONGODB_URI);
+
+// 6. Start server
+app.listen(3000, () =&gt; {
+  console.log('Server körs på port 3000');
+});
+</code></pre>
+<h3 id="3-testing-strategy"><a class="header" href="#3-testing-strategy">3. Testing Strategy</a></h3>
+<pre><code class="language-javascript">// Unit tests - testa funktioner isolerat
+describe('Auth Controller', () =&gt; {
+  test('should hash password correctly', async () =&gt; {
+    const password = 'test123';
+    const hashed = await hashPassword(password);
+    expect(hashed).not.toBe(password);
+  });
+});
+
+// Integration tests - testa API endpoints
+describe('POST /api/users', () =&gt; {
+  test('should create new user', async () =&gt; {
+    const response = await request(app)
+      .post('/api/users')
+      .send({ name: 'Test', email: 'test@test.com' });
+    
+    expect(response.status).toBe(201);
+    expect(response.body.name).toBe('Test');
+  });
+});
+</code></pre>
+<h2 id="modern-backend-trends"><a class="header" href="#modern-backend-trends">Modern Backend Trends</a></h2>
+<h3 id="microservices-architecture"><a class="header" href="#microservices-architecture">Microservices Architecture</a></h3>
+<pre class="mermaid">graph TB
+    A[API Gateway] --&gt; B[User Service]
+    A --&gt; C[Product Service]  
+    A --&gt; D[Order Service]
+    A --&gt; E[Payment Service]
+    
+    B --&gt; F[(User DB)]
+    C --&gt; G[(Product DB)]
+    D --&gt; H[(Order DB)]
+    E --&gt; I[External Payment API]
+</pre>
+<h3 id="serverless-och-cloud-native"><a class="header" href="#serverless-och-cloud-native">Serverless och Cloud-Native</a></h3>
+<pre><code class="language-javascript">// AWS Lambda function
+exports.handler = async (event) =&gt; {
+  const user = JSON.parse(event.body);
+  
+  // Process user data
+  const result = await createUser(user);
+  
+  return {
+    statusCode: 201,
+    body: JSON.stringify(result)
+  };
+};
+</code></pre>
+<h3 id="real-time-features"><a class="header" href="#real-time-features">Real-time Features</a></h3>
+<pre><code class="language-javascript">// Socket.io för real-time
+const io = require('socket.io')(server);
+
+io.on('connection', (socket) =&gt; {
+  socket.on('join-room', (roomId) =&gt; {
+    socket.join(roomId);
+  });
+  
+  socket.on('message', (data) =&gt; {
+    io.to(data.room).emit('new-message', data);
+  });
+});
+</code></pre>
+<h2 id="redo-att-börja"><a class="header" href="#redo-att-börja">Redo att börja?</a></h2>
+<p>Nu har du en översikt av backend-utveckling med Node.js! I de kommande kapitlen kommer vi att dyka djupt in i varje område:</p>
+<p><strong>Nästa steg</strong>:</p>
+<ol>
+<li>🚀 <strong>Node.js Intro</strong> - Lär dig runtime och grundläggande moduler</li>
+<li>🛠️ <strong>Express.js</strong> - Bygg ditt första web API</li>
+<li>🗄️ <strong>MongoDB</strong> - Integrera databas för persistent data</li>
+<li>🔐 <strong>Authentication</strong> - Säkra dina applikationer</li>
+<li>🏗️ <strong>Praktiska projekt</strong> - Bygg verkliga applikationer</li>
+</ol>
+<p>Varje kapitel innehåller:</p>
+<ul>
+<li>📖 Detaljerade förklaringar med kod-exempel</li>
+<li>🎯 Praktiska övningar och utmaningar</li>
+<li>💡 Best practices och säkerhetstips</li>
+<li>🔧 Verktyg och tekniker från industrin</li>
+</ul>
+<p>Backend-utveckling är en av de mest givande karriärvägarna inom tech - du bygger infrastrukturen som driver hela den digitala världen. Låt oss komma igång!</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_8/fordjupning/typescript.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_9/node-intro.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_8/fordjupning/typescript.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_9/node-intro.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

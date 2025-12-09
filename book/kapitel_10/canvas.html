@@ -1,0 +1,457 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Canvas och grafik - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="canvas-och-grafikprogrammering"><a class="header" href="#canvas-och-grafikprogrammering">Canvas och grafikprogrammering</a></h1>
+<h2 id="vad-är-canvas"><a class="header" href="#vad-är-canvas">Vad är Canvas?</a></h2>
+<p>Canvas är ett HTML5-element som låter dig rita grafik, animationer och interaktiva element direkt i webbläsaren. Det fungerar som en rityta där du kan använda JavaScript för att rita former, bilder och text dynamiskt.</p>
+<h3 id="grundläggande-koncept"><a class="header" href="#grundläggande-koncept">Grundläggande koncept</a></h3>
+<ul>
+<li>Canvas-elementet skapar en rektangulär yta på webbsidan</li>
+<li>All ritning sker via JavaScript</li>
+<li>Använder ett koordinatsystem där (0,0) är i övre vänstra hörnet</li>
+<li>Stödjer både 2D och WebGL (3D) kontext</li>
+</ul>
+<pre><code class="language-html">&lt;canvas id="myCanvas" width="500" height="300"&gt;&lt;/canvas&gt;
+</code></pre>
+<pre><code class="language-javascript">const canvas = document.getElementById('myCanvas');
+const context = canvas.getContext('2d');
+</code></pre>
+<h2 id="canvas-api"><a class="header" href="#canvas-api">Canvas API</a></h2>
+<h3 id="grundläggande-ritfunktioner"><a class="header" href="#grundläggande-ritfunktioner">Grundläggande ritfunktioner</a></h3>
+<p>Med Canvas API kan du rita olika former och bilder på canvas. <code>context</code> är objektet som du använder för att rita på canvas.</p>
+<ul>
+<li><code>fillRect(x, y, width, height)</code> - Rita fylld rektangel</li>
+<li><code>strokeRect(x, y, width, height)</code> - Rita rektangelkontur</li>
+<li><code>clearRect(x, y, width, height)</code> - Rensa specificerat område</li>
+<li><code>beginPath()</code> - Starta ny ritväg</li>
+<li><code>moveTo(x, y)</code> - Flytta pennan</li>
+<li><code>lineTo(x, y)</code> - Rita linje till punkt</li>
+<li><code>arc(x, y, radius, startAngle, endAngle)</code> - Rita båge/cirkel</li>
+<li><code>fill()</code> - Fyll aktuell form</li>
+<li><code>stroke()</code> - Rita kontur för aktuell form</li>
+</ul>
+<h3 id="stilar-och-färger"><a class="header" href="#stilar-och-färger">Stilar och färger</a></h3>
+<pre><code class="language-javascript">// Färger och transparens
+context.fillStyle = 'red';
+context.strokeStyle = '#00ff00';
+context.globalAlpha = 0.5;
+
+// Linjestilar
+context.lineWidth = 5;
+context.lineCap = 'round';
+context.lineJoin = 'miter';
+</code></pre>
+<h2 id="rita-med-event-handling"><a class="header" href="#rita-med-event-handling">Rita med Event handling</a></h2>
+<p>Ofta vill man att användaren ska kunna interagera med ritningen. Detta gör man med event handling.</p>
+<h3 id="musinteraktion"><a class="header" href="#musinteraktion">Musinteraktion</a></h3>
+<pre><code class="language-javascript">canvas.addEventListener('mousedown', startDrawing);
+canvas.addEventListener('mousemove', draw);
+canvas.addEventListener('mouseup', stopDrawing);
+
+let isDrawing = false;
+
+function startDrawing(e) {
+    isDrawing = true;
+    draw(e);
+}
+
+function draw(e) {
+    if (!isDrawing) return;
+    
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    context.lineTo(x, y);
+    context.stroke();
+}
+
+function stopDrawing() {
+    isDrawing = false;
+    context.beginPath();
+}
+</code></pre>
+<h2 id="animation-loops"><a class="header" href="#animation-loops">Animation loops</a></h2>
+<p>En animation loop är en loop som uppdaterar canvasen varje gång en ny frame ska visas. Det finns två huvudsakliga sätt att implementera detta:</p>
+<h3 id="settimeoutsetinterval-äldre-metod"><a class="header" href="#settimeoutsetinterval-äldre-metod">setTimeout/setInterval (äldre metod)</a></h3>
+<pre><code class="language-javascript">function animate() {
+    // Rensa canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Rita nästa frame
+    drawScene();
+    
+    // Schemalägg nästa frame
+    setTimeout(animate, 1000 / 60); // Försöker köra i 60 FPS
+}
+</code></pre>
+<p>Denna metod har flera nackdelar:</p>
+<ul>
+<li><strong>Osynkroniserad med skärmen</strong>: setTimeout garanterar inte att animationen synkroniseras med skärmens uppdateringsfrekvens</li>
+<li><strong>Batteridränering</strong>: Fortsätter köra även i bakgrundsflikar vilket slösar batteritid</li>
+<li><strong>Ojämn timing</strong>: Kan resultera i hackiga animationer eftersom timingen inte är exakt</li>
+<li><strong>Prestanda</strong>: Kan missa frames om webbläsaren är upptagen med andra uppgifter</li>
+</ul>
+<h3 id="requestanimationframe-modern-metod"><a class="header" href="#requestanimationframe-modern-metod">requestAnimationFrame (modern metod)</a></h3>
+<pre><code class="language-javascript">function animate() {
+    // Rensa canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Rita nästa frame
+    drawScene();
+    
+    // Begär nästa animation frame
+    requestAnimationFrame(animate);
+}
+</code></pre>
+<p>Fördelar med requestAnimationFrame:</p>
+<ul>
+<li><strong>Skärmsynkronisering</strong>: Synkroniserar automatiskt med skärmens uppdateringsfrekvens (vanligtvis 60Hz)</li>
+<li><strong>Batteribesparing</strong>: Pausar automatiskt i bakgrundsflikar</li>
+<li><strong>Jämn timing</strong>: Ger konsekvent timing för mjukare animationer</li>
+<li><strong>Prestanda</strong>: Optimerar automatiskt renderingen för bästa prestanda</li>
+</ul>
+<h2 id="vad-är-en-sprite"><a class="header" href="#vad-är-en-sprite">Vad är en sprite?</a></h2>
+<p>En sprite är en liten bild som används i animationer. Den består av en serie olika bilder som visas i en sekvens. Såhär kan en sprite se ut:</p>
+<p><img src="./sprite.svg" alt="Sprite" /></p>
+<h2 id="sprite-handling"><a class="header" href="#sprite-handling">Sprite handling</a></h2>
+<p>Vanligtvis vill man använda sprites i sina animationer. Detta gör man genom att ladda in en bild och sedan rita ut den på canvasen.</p>
+<h3 id="ladda-och-rita-sprites"><a class="header" href="#ladda-och-rita-sprites">Ladda och rita sprites</a></h3>
+<pre><code class="language-javascript">const sprite = new Image();
+sprite.src = 'path/to/sprite.png';
+
+sprite.onload = () =&gt; {
+    ctx.drawImage(sprite, x, y, width, height);
+};
+</code></pre>
+<h3 id="sprite-animation"><a class="header" href="#sprite-animation">Sprite animation</a></h3>
+<p>För att användaren ska kunna se animationen av en sprite så måste man rita ut sekvensen av bilderna på canvasen. Detta gör man genom att använda <code>drawImage</code> och sedan rita ut varje frame i sekvensen. drawImage har följande parametrar:</p>
+<ul>
+<li>
+<p><code>image</code> Bilden som ska ritas ut. Kan vara en HTMLImageElement, SVGImageElement, HTMLVideoElement, HTMLCanvasElement, ImageBitmap, OffscreenCanvas eller VideoFrame.</p>
+</li>
+<li>
+<p><code>sx</code> (Valfri)
+X-koordinaten för övre vänstra hörnet av källbilden.</p>
+</li>
+<li>
+<p><code>sy</code> (Valfri)
+Y-koordinaten för övre vänstra hörnet av källbilden.</p>
+</li>
+<li>
+<p><code>sWidth</code> (Valfri)
+Bredden på delen av källbilden som ska ritas ut. Om inget anges används hela bildens bredd.</p>
+</li>
+<li>
+<p><code>sHeight</code> (Valfri)
+Höjden på delen av källbilden som ska ritas ut. Om inget anges används hela bildens höjd.</p>
+</li>
+<li>
+<p><code>dx</code>
+X-koordinaten där bilden ska placeras på canvas.</p>
+</li>
+<li>
+<p><code>dy</code><br />
+Y-koordinaten där bilden ska placeras på canvas.</p>
+</li>
+<li>
+<p><code>dWidth</code>
+Bredden bilden ska ritas ut med på canvas. Möjliggör skalning.</p>
+</li>
+<li>
+<p><code>dHeight</code>
+Höjden bilden ska ritas ut med på canvas. Möjliggör skalning.</p>
+</li>
+</ul>
+<p><img src="./canvas_drawimage.svg" alt="drawImage" /></p>
+<p>Man använder sx, sy, sWidth och sHeight för att rita ut rätt frame i sprite sheet på canvasen.</p>
+<pre><code class="language-javascript">const frameWidth = 32;
+const frameHeight = 32;
+let currentFrame = 0;
+
+function animateSprite() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Beräkna position i sprite sheet
+    const row = Math.floor(currentFrame / 4);
+    const col = currentFrame % 4;
+    
+    ctx.drawImage(
+        sprite,
+        col * frameWidth,
+        row * frameHeight,
+        frameWidth,
+        frameHeight,
+        x,
+        y,
+        frameWidth,
+        frameHeight
+    );
+    
+    currentFrame = (currentFrame + 1) % totalFrames;
+}
+</code></pre>
+<h2 id="collision-detection"><a class="header" href="#collision-detection">Collision detection</a></h2>
+<h3 id="rektangulär-kollision"><a class="header" href="#rektangulär-kollision">Rektangulär kollision</a></h3>
+<pre><code class="language-javascript">function checkCollision(rect1, rect2) {
+    return rect1.x &lt; rect2.x + rect2.width &amp;&amp;
+           rect1.x + rect1.width &gt; rect2.x &amp;&amp;
+           rect1.y &lt; rect2.y + rect2.height &amp;&amp;
+           rect1.y + rect1.height &gt; rect2.y;
+}
+</code></pre>
+<h3 id="cirkulär-kollision"><a class="header" href="#cirkulär-kollision">Cirkulär kollision</a></h3>
+<pre><code class="language-javascript">function checkCircleCollision(circle1, circle2) {
+    const dx = circle1.x - circle2.x;
+    const dy = circle1.y - circle2.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    
+    return distance &lt; circle1.radius + circle2.radius;
+}
+</code></pre>
+<h2 id="optimering-och-best-practices"><a class="header" href="#optimering-och-best-practices">Optimering och best practices</a></h2>
+<h3 id="performance-tips"><a class="header" href="#performance-tips">Performance tips</a></h3>
+<ul>
+<li>Använd <code>requestAnimationFrame</code> istället för <code>setInterval</code></li>
+<li>Minimera antal canvas-operationer</li>
+<li>Använd offscreen canvas för komplexa renderingar</li>
+<li>Undvik onödig clearRect genom att rita över tidigare innehåll</li>
+<li>Cacha ofta använda värden och beräkningar</li>
+</ul>
+<h3 id="responsiv-canvas"><a class="header" href="#responsiv-canvas">Responsiv canvas</a></h3>
+<pre><code class="language-javascript">function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+</code></pre>
+<h2 id="Övningsuppgifter"><a class="header" href="#Övningsuppgifter">Övningsuppgifter</a></h2>
+<ol>
+<li>Skapa en enkel ritapp med olika verktyg (penna, suddgummi, former)</li>
+<li>Implementera ett enkelt spel med rörliga sprites och kollisionsdetektering</li>
+<li>Skapa en partikeleffekt med många rörliga partiklar</li>
+<li>Bygg en enkel animerad graf som visar realtidsdata</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_10/chat.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_10/oop.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_10/chat.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_10/oop.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

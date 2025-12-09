@@ -1,0 +1,421 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Introduktion till PHP - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="introduktion-till-php"><a class="header" href="#introduktion-till-php">Introduktion till PHP</a></h1>
+<p>PHP (Hypertext Preprocessor) är ett populärt skriptspråk med öppen källkod som främst används för webbutveckling på serversidan. Det skapades ursprungligen av Rasmus Lerdorf 1994 och har sedan dess utvecklats till ett kraftfullt och flexibelt språk som driver en stor del av webben, inklusive välkända plattformar som WordPress och Facebook.</p>
+<h2 id="php-i-modern-webbutveckling"><a class="header" href="#php-i-modern-webbutveckling">PHP i modern webbutveckling</a></h2>
+<p>Trots framväxten av nyare teknologier förblir PHP ett relevant och ofta använt språk inom webbutveckling. Några anledningar till detta är:</p>
+<ul>
+<li><strong>Stor community och ekosystem:</strong> Det finns ett enormt bibliotek av ramverk (t.ex. Laravel, Symfony), paket och verktyg tillgängliga för PHP.</li>
+<li><strong>Enkelhet och snabb inlärningskurva:</strong> Många utvecklare anser att PHP är relativt lätt att komma igång med jämfört med andra serverspråk.</li>
+<li><strong>Integration med databaser:</strong> PHP har utmärkt stöd för att interagera med olika databaser, särskilt MySQL.</li>
+<li><strong>Kostnadseffektivt:</strong> PHP är gratis att använda och många webbhotell erbjuder prisvärda PHP-hostingalternativ.</li>
+</ul>
+<h2 id="utvecklingsmiljö-setup"><a class="header" href="#utvecklingsmiljö-setup">Utvecklingsmiljö setup</a></h2>
+<p>För att utveckla med PHP lokalt behöver du installera:</p>
+<ol>
+<li><strong>PHP-tolken:</strong> Själva kärnan i PHP som exekverar din kod. Den kan laddas ner från <a href="https://www.php.net/downloads.php">php.net</a>.</li>
+<li><strong>En webbserver:</strong> T.ex. Apache eller Nginx, som hanterar HTTP-förfrågningar och serverar dina PHP-filer.</li>
+<li><strong>En databas:</strong> Ofta MySQL eller MariaDB om din applikation behöver lagra data.</li>
+</ol>
+<p>Ett enkelt sätt att få allt detta är att installera ett paket som XAMPP, MAMP eller WAMP, som buntar ihop Apache, MySQL och PHP (och ofta Perl/Python) för enkel installation på Windows, macOS eller Linux.</p>
+<p>Alternativt kan du använda verktyg som Docker för att skapa isolerade och konfigurerbara utvecklingsmiljöer.</p>
+<h2 id="php-och-webbservrar"><a class="header" href="#php-och-webbservrar">PHP och webbservrar</a></h2>
+<p>När en användare begär en PHP-sida från en webbserver händer följande:</p>
+<ol>
+<li>Webbservern (t.ex. Apache) tar emot förfrågan.</li>
+<li>Om filen har ändelsen <code>.php</code>, skickar servern filen till PHP-tolken.</li>
+<li>PHP-tolken exekverar koden i filen. Detta kan innebära att hämta data från en databas, bearbeta formulärdata, eller utföra annan logik.</li>
+<li>Resultatet av PHP-skriptet (vanligtvis HTML, men kan vara JSON, XML etc.) skickas tillbaka till webbservern.</li>
+<li>Webbservern skickar det slutliga resultatet (HTML) till användarens webbläsare.</li>
+</ol>
+<pre class="mermaid">sequenceDiagram
+    participant B as Webbläsare
+    participant WS as Webbserver (t.ex. Apache)
+    participant PHP as PHP-Tolk
+    participant DB as Databas (Valfritt)
+
+    B-&gt;&gt;+WS: Begär PHP-sida (t.ex. GET /sida.php)
+    WS-&gt;&gt;+PHP: Överlämnar sida.php för bearbetning
+    alt Databasinteraktion
+        PHP-&gt;&gt;+DB: Skickar databasfråga
+        DB--&gt;&gt;-PHP: Returnerar resultat
+    end
+    PHP--&gt;&gt;-WS: Returnerar genererad HTML/Output
+    WS--&gt;&gt;-B: Skickar HTML-svar
+</pre>
+<h2 id="grundläggande-koncept-och-syntax"><a class="header" href="#grundläggande-koncept-och-syntax">Grundläggande koncept och syntax</a></h2>
+<p>PHP-kod bäddas oftast in direkt i HTML-dokument med hjälp av speciella taggar: <code>&lt;?php</code> och <code>?&gt;</code>.</p>
+<pre><code class="language-php">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Min första PHP-sida&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Välkommen!&lt;/h1&gt;
+    &lt;p&gt;Dagens datum är &lt;?php echo date('Y-m-d'); ?&gt;.&lt;/p&gt; 
+    
+    &lt;?php
+        // Detta är en PHP-kommentar
+        $greeting = "Hej från PHP!";
+        echo "&lt;p&gt;" . $greeting . "&lt;/p&gt;"; 
+
+        $num1 = 5;
+        $num2 = 10;
+        $sum = $num1 + $num2;
+        echo "&lt;p&gt;Summan av $num1 och $num2 är: $sum&lt;/p&gt;";
+    ?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>I exemplet ovan:</p>
+<ul>
+<li><code>&lt;?php ... ?&gt;</code>: Taggarna som omger PHP-koden.</li>
+<li><code>echo</code>: Används för att skriva ut data till HTML-outputen.</li>
+<li><code>date('Y-m-d')</code>: En inbyggd PHP-funktion som returnerar dagens datum.</li>
+<li><code>$greeting</code>, <code>$num1</code>, <code>$num2</code>, <code>$sum</code>: Variabler (börjar alltid med <code>$</code> i PHP).</li>
+<li><code>.</code>: Konkateneringsoperatorn för att slå ihop strängar.</li>
+<li><code>//</code>: En enkelradskommentar i PHP.</li>
+</ul>
+<h2 id="php-vs-javascript"><a class="header" href="#php-vs-javascript">PHP vs. JavaScript</a></h2>
+<p>Det är viktigt att förstå skillnaden mellan PHP och JavaScript, två vanliga språk inom webbutveckling:</p>
+<ul>
+<li>
+<p><strong>PHP (Server-side):</strong></p>
+<ul>
+<li>Körs på <strong>webbservern</strong>.</li>
+<li>Används för att hantera data, interagera med databaser, hantera användarsessioner, och generera dynamiskt HTML <strong>innan</strong> det skickas till webbläsaren.</li>
+<li>Användaren ser aldrig själva PHP-koden, bara resultatet (oftast HTML).</li>
+<li>Bra för backend-logik, databashantering, säkerhetskritiska operationer.</li>
+</ul>
+</li>
+<li>
+<p><strong>JavaScript (Client-side):</strong></p>
+<ul>
+<li>Körs i <strong>användarens webbläsare</strong>.</li>
+<li>Används för att göra webbsidor interaktiva, manipulera HTML och CSS (DOM-manipulation), göra asynkrona anrop (t.ex. med Fetch API) och validera formulärdata <strong>utan</strong> att behöva ladda om sidan.</li>
+<li>Användaren kan se JavaScript-koden (oftast).</li>
+<li>Bra för användargränssnitt, interaktivitet, realtidsuppdateringar på klientsidan.</li>
+</ul>
+</li>
+</ul>
+<p><strong>Analogi:</strong> Tänk på en restaurang. PHP är som <strong>kocken</strong> som förbereder maten (datan) i köket (servern) baserat på beställningen (HTTP-förfrågan). JavaScript är som <strong>servitören</strong> som interagerar med gästen (användaren) vid bordet (webbläsaren), tar emot specifika önskemål (användarinteraktioner) och justerar presentationen (webbsidan) direkt.</p>
+<p>Även om JavaScript ursprungligen var ett klientspråk, kan det idag även köras på serversidan med plattformar som Node.js (vilket tas upp i kapitel 9). Men när man pratar om traditionell webbutveckling är PHP ett serverspråk och JavaScript (i webbläsaren) ett klientspråk. PHP och JavaScript kompletterar ofta varandra för att skapa rika och dynamiska webbapplikationer.</p>
+<h2 id="kom-igång-med-php-utveckling"><a class="header" href="#kom-igång-med-php-utveckling">Kom igång med PHP-utveckling</a></h2>
+<p>För att bygga och köra PHP-applikationer lokalt behöver du en utvecklingsmiljö som inkluderar PHP-tolken, en webbserver och ofta en databas. En traditionell "stack" (samling mjukvara) för detta är LAMP (Linux, Apache, MySQL, PHP) eller LEMP (Linux, Nginx, MySQL, PHP). Istället för att installera dessa tjänster direkt på ditt operativsystem, kommer vi i den här boken att använda <strong>Docker</strong>.</p>
+<p>Docker låter oss definiera och köra applikationer i isolerade "containrar". Detta gör det enklare att:</p>
+<ul>
+<li>Sätta upp en konsekvent utvecklingsmiljö oavsett ditt operativsystem.</li>
+<li>Hantera olika versioner av mjukvara (PHP, MySQL etc.) för olika projekt.</li>
+<li>Simulera produktionsmiljön mer exakt.</li>
+<li>Dela miljökonfigurationen med andra utvecklare.</li>
+</ul>
+<p>Vi kommer att använda en <code>docker-compose.yml</code>-fil för att definiera de tjänster (services) som vår PHP-applikation behöver. I vårt fall är det:</p>
+<ol>
+<li><strong>Webbserver (Apache):</strong> Apache är en mycket populär och väletablerad webbserver som ansvarar för att ta emot HTTP-förfrågningar från webbläsare och skicka dem vidare till PHP-tolken för bearbetning av <code>.php</code>-filer. Den serverar också statiska filer som HTML, CSS och JavaScript.</li>
+<li><strong>Databas (MariaDB):</strong> MariaDB är en populär relationsdatabas med öppen källkod, skapad av de ursprungliga utvecklarna av MySQL. Den används för att lagra och hämta applikationens data på ett strukturerat sätt. PHP har utmärkt stöd för att kommunicera med MariaDB/MySQL.</li>
+<li><strong>Databashanterare (phpMyAdmin):</strong> phpMyAdmin är ett webbaserat verktyg skrivet i PHP som ger ett grafiskt gränssnitt för att administrera MariaDB/MySQL-databaser. Det är praktiskt för att titta på data, köra SQL-frågor manuellt och hantera databasstrukturen under utveckling.</li>
+<li><strong>PHP:</strong> Själva PHP-tjänsten som kör vår applikationskod.</li>
+</ol>
+<p>Nedan följer ett exempel på hur en <code>docker-compose.yml</code>-fil kan se ut för att sätta upp denna miljö. (Detaljer kring Docker och Docker Compose täcks mer ingående i andra sammanhang, men detta ger en grundläggande uppfattning).</p>
+<hr />
+<p><em>docker-compose.yml</em></p>
+<pre><code class="language-yml">services:
+    php:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        volumes:
+            - ./app/public:/var/www/html
+        ports:
+            - 8060:80
+    mysql:
+        image: mariadb:latest
+        environment:
+            MYSQL_ROOT_PASSWORD: db_root_password
+            MYSQL_USER: db_user
+            MYSQL_PASSWORD: db_password
+            MYSQL_DATABASE: db_fullstack
+        volumes:
+            - mysqldata:/var/lib/mysql
+        ports:
+            - 38060:3306
+    phpmyadmin:
+        image: phpmyadmin
+        restart: always
+        ports:
+            - 8061:80
+        environment:
+            - PMA_ARBITRARY=1
+        depends_on:
+            - mysql
+volumes:
+    mysqldata: {}
+</code></pre>
+<p><em>Dockerfile</em></p>
+<pre><code class="language-yml">FROM php:8-apache
+RUN a2enmod ssl &amp;&amp; a2enmod rewrite
+RUN service apache2 restart
+RUN apt-get update &amp;&amp; apt-get install -y
+RUN docker-php-ext-install mysqli pdo pdo_mysql
+</code></pre>
+<p><em>Mappstruktur för exemplet ovan</em></p>
+<pre><code class="language-yml">project
+├───app
+│   └───public
+│       └───index.php
+├───Dockerfile
+├───docker-compose.yml
+</code></pre>
+<hr />
+<h3 id="demo-server-side-vs-client-side"><a class="header" href="#demo-server-side-vs-client-side">Demo: Server-side vs Client-side</a></h3>
+<p>För att illustrera skillnaden mellan kod som körs på servern (PHP) och kod som körs i klienten (JavaScript), kan vi skapa en enkel <code>index.php</code>-fil:</p>
+<pre><code class="language-php">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;PHP &amp; JS Demo&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;PHP säger:&lt;/h1&gt;
+    &lt;?php
+        // Denna PHP-kod körs på servern
+        $serverMessage = "Jag körs på servern!";
+        echo "&lt;p&gt;" . htmlspecialchars($serverMessage) . "&lt;/p&gt;"; 
+    ?&gt;
+
+    &lt;script&gt;
+        // Denna JavaScript-kod körs i klientens webbläsare
+        console.log("Jag körs på klienten (i webbläsarens konsol)!");
+        alert("Hej från JavaScript!"); // Visar en popup i webbläsaren
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>När du besöker denna sida i webbläsaren:</p>
+<ol>
+<li>PHP-koden (<code>echo ...</code>) exekveras på servern och genererar HTML-texten <code>&lt;p&gt;Jag körs på servern!&lt;/p&gt;</code>.</li>
+<li>Den kompletta HTML-koden (inklusive <code>&lt;script&gt;</code>-taggarna) skickas till webbläsaren.</li>
+<li>Webbläsaren renderar HTML:en och exekverar JavaScript-koden inuti <code>&lt;script&gt;</code>-taggarna, vilket skriver ut meddelandet till webbläsarkonsolen och visar en <code>alert</code>-ruta.</li>
+</ol>
+<p>Detta visar tydligt hur PHP genererar innehållet på serversidan medan JavaScript hanterar interaktivitet och logik på klientsidan.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_7/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_7/syntax.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_7/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_7/syntax.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

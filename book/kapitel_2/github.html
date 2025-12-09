@@ -1,0 +1,313 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Arbeta med GitHub - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="arbeta-med-github-ditt-projekt-i-molnet"><a class="header" href="#arbeta-med-github-ditt-projekt-i-molnet">Arbeta med GitHub: Ditt projekt i molnet</a></h1>
+<p>Vi har lärt oss hur Git fungerar lokalt på vår dator för att spåra ändringar. Men den verkliga styrkan med Git, särskilt för samarbete och säkerhetskopiering, kommer när vi kopplar vårt lokala repository till en <strong>remoteserver</strong>. Den mest populära plattformen för detta är <strong>GitHub</strong>.</p>
+<blockquote>
+<p><strong>Mål:</strong><br />
+Förstå hur du kopplar ett lokalt Git-repository till GitHub och använder de grundläggande kommandona för att skicka (<code>push</code>) och hämta (<code>pull</code>) ändringar.</p>
+</blockquote>
+<p><strong>Förutsättning:</strong><br />
+Du har ett gratis konto på <a href="https://github.com/">GitHub</a>. Om inte, skapa ett nu.</p>
+<hr />
+<h2 id="vad-är-github"><a class="header" href="#vad-är-github">Vad är GitHub?</a></h2>
+<p>GitHub är en webbaserad plattform för att lagra och hantera Git-repositories i molnet. Utöver lagring erbjuder GitHub:</p>
+<ul>
+<li><strong>Kodbackup:</strong> Säkert lagra dina projekt online.</li>
+<li><strong>Samarbete:</strong> Arbeta tillsammans i team, granska kod (Pull Requests) och diskutera ändringar.</li>
+<li><strong>Projekthantering:</strong> Hantera ärenden (Issues), projekt-tavlor (Projects) och wikis.</li>
+<li><strong>Versionshantering:</strong> Grafiskt gränssnitt för att se historik, jämföra versioner och utforska koden.</li>
+<li><strong>Open Source:</strong> Hem för miljontals öppen källkods-projekt.</li>
+</ul>
+<hr />
+<h2 id="skapa-ett-remote-repository-på-github"><a class="header" href="#skapa-ett-remote-repository-på-github">Skapa ett Remote-repository på GitHub</a></h2>
+<ol>
+<li>Logga in på ditt GitHub-konto.</li>
+<li>Klicka på "+"-ikonen uppe till höger och välj <strong>New repository</strong>.</li>
+<li>Ge repositoryt ett namn (t.ex. <code>mitt-projekt</code>). Det är praktiskt om det matchar din lokala mapp, men det är inget krav.</li>
+<li>Lägg till en kort beskrivning (valfritt).</li>
+<li>Välj om det ska vara <strong>Public</strong> (synligt för alla) eller <strong>Private</strong> (endast för dig och inbjudna).</li>
+<li><strong>Viktigt:</strong> Om du redan har ett lokalt repository, <strong>bocka INTE i</strong> rutorna för "Add a README file", "Add .gitignore" eller "Choose a license". Om du skapar ett helt nytt projekt direkt på GitHub kan du bocka i dessa.</li>
+<li>Klicka på <strong>Create repository</strong>.</li>
+</ol>
+<hr />
+<h2 id="koppla-ditt-lokala-repo-till-github"><a class="header" href="#koppla-ditt-lokala-repo-till-github">Koppla ditt lokala repo till GitHub</a></h2>
+<p>När du har skapat repositoryt på GitHub visas instruktioner. Leta efter avsnittet "…or push an existing repository from the command line".</p>
+<h3 id="steg-1-lägg-till-remote-repository"><a class="header" href="#steg-1-lägg-till-remote-repository">Steg 1: Lägg till remote-repository</a></h3>
+<pre><code class="language-bash">git remote add origin https://github.com/ditt-anvandarnamn/mitt-projekt.git
+</code></pre>
+<ul>
+<li><code>origin</code> är standardnamnet för din remoteserver.</li>
+<li>Byt ut URL:en mot den du får från GitHub.</li>
+</ul>
+<h3 id="steg-2-byt-namn-på-huvudbranch-om-nödvändigt"><a class="header" href="#steg-2-byt-namn-på-huvudbranch-om-nödvändigt">Steg 2: Byt namn på huvudbranch (om nödvändigt)</a></h3>
+<pre><code class="language-bash">git branch -M main
+</code></pre>
+<ul>
+<li>Byter namn på din huvudbranch till <code>main</code> (standard på GitHub).</li>
+</ul>
+<h3 id="steg-3-skicka-upp-din-kod"><a class="header" href="#steg-3-skicka-upp-din-kod">Steg 3: Skicka upp din kod</a></h3>
+<pre><code class="language-bash">git push -u origin main
+</code></pre>
+<ul>
+<li>Skickar dina commits till GitHub.</li>
+<li><code>-u</code> kopplar din lokala branch till remote-branchen, så att du senare kan använda bara <code>git push</code> och <code>git pull</code>.</li>
+</ul>
+<p>Du kan behöva logga in eller autentisera dig mot GitHub (t.ex. med en personlig access token).</p>
+<hr />
+<h2 id="skicka-fler-ändringar-git-push"><a class="header" href="#skicka-fler-ändringar-git-push">Skicka fler ändringar: <code>git push</code></a></h2>
+<p>När du gjort nya ändringar och committat dem:</p>
+<pre><code class="language-bash">git push
+</code></pre>
+<ul>
+<li>Skickar alla nya commits på din nuvarande branch till GitHub.</li>
+</ul>
+<hr />
+<h2 id="hämta-ändringar-git-pull"><a class="header" href="#hämta-ändringar-git-pull">Hämta ändringar: <code>git pull</code></a></h2>
+<p>Om någon annan (eller du själv från en annan dator) har pushat ändringar till GitHub, hämta dem så här:</p>
+<pre><code class="language-bash">git pull
+</code></pre>
+<ul>
+<li>Hämtar och försöker automatiskt sammanfoga (<code>merge</code>) ändringarna från GitHub till din lokala kod.</li>
+<li>Kör gärna <code>git pull</code> innan du börjar arbeta och innan du pushar egna ändringar.</li>
+</ul>
+<hr />
+<h2 id="klona-ett-repository-git-clone"><a class="header" href="#klona-ett-repository-git-clone">Klona ett repository: <code>git clone</code></a></h2>
+<p>Om du vill börja arbeta med ett projekt som redan finns på GitHub:</p>
+<pre><code class="language-bash">git clone https://github.com/anvandarnamn/projekt.git
+</code></pre>
+<ul>
+<li>Laddar ner hela repositoryt (alla filer och historik) till en ny mapp på din dator.</li>
+<li>Sätter automatiskt upp <code>origin</code> så att du kan använda <code>git push</code> och <code>git pull</code>.</li>
+</ul>
+<hr />
+<h2 id="sammanfattning"><a class="header" href="#sammanfattning">Sammanfattning</a></h2>
+<p>GitHub är en plattform för att lagra och samarbeta kring Git-repositories i molnet. Genom att koppla ditt lokala repo till GitHub kan du:</p>
+<ul>
+<li>Skicka ändringar till GitHub med <code>git push</code>.</li>
+<li>Hämta ändringar från GitHub med <code>git pull</code>.</li>
+<li>Klona befintliga projekt med <code>git clone</code>.</li>
+</ul>
+<p>Att använda Git tillsammans med GitHub är standard inom modern webbutveckling och gör det enkelt att samarbeta, säkerhetskopiera och visa upp dina projekt.</p>
+<p>Nu är det dags att öva på dessa HTML- och Git-färdigheter!</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_2/git-kommandon.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_2/mer-git-kommandon.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_2/git-kommandon.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_2/mer-git-kommandon.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

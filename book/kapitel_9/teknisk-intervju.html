@@ -1,0 +1,1464 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Teknisk Intervju - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="teknisk-intervju-backend-utveckling-med-nodejs"><a class="header" href="#teknisk-intervju-backend-utveckling-med-nodejs">Teknisk Intervju: Backend-utveckling med Node.js</a></h1>
+<p>Detta avsnitt innehåller vanliga tekniska intervjufrågor för backend-utveckling med Node.js. Frågorna täcker Node.js grundläggande, Express.js, REST API:er, MongoDB, autentisering och fullstack-utveckling.</p>
+<h2 id="fråga-1-nodejs-grundläggande-och-event-loop"><a class="header" href="#fråga-1-nodejs-grundläggande-och-event-loop">Fråga 1: Node.js Grundläggande och Event Loop</a></h2>
+<p><strong>Intervjuare:</strong> "Förklara vad Node.js är och hur Event Loop fungerar. Visa skillnaden mellan synkron och asynkron kod."</p>
+<p><strong>Bra svar:</strong></p>
+<pre><code class="language-javascript">// Node.js är en JavaScript runtime byggd på Chrome's V8-motor
+// Event Loop hanterar asynkrona operationer utan att blockera
+
+// Synkron kod (blockerar)
+const fs = require('fs');
+try {
+  const data = fs.readFileSync('file.txt', 'utf8');
+  console.log('Synkron:', data);
+} catch (err) {
+  console.error(err);
+}
+
+// Asynkron kod (blockerar inte)
+fs.readFile('file.txt', 'utf8', (err, data) =&gt; {
+  if (err) throw err;
+  console.log('Asynkron callback:', data);
+});
+
+// Modern asynkron med Promises
+const fsPromises = require('fs').promises;
+async function readFileAsync() {
+  try {
+    const data = await fsPromises.readFile('file.txt', 'utf8');
+    console.log('Async/await:', data);
+  } catch (err) {
+    console.error(err);
+  }
+}
+</code></pre>
+<p><strong>Förklaring:</strong> Node.js använder single-threaded Event Loop som hanterar I/O-operationer asynkront. Detta gör Node.js perfekt för I/O-intensiva applikationer men mindre lämplig för CPU-intensiva uppgifter.</p>
+<h2 id="fråga-2-expressjs-och-middleware"><a class="header" href="#fråga-2-expressjs-och-middleware">Fråga 2: Express.js och Middleware</a></h2>
+<p><strong>Intervjuare:</strong> "Skapa en Express-server med custom middleware för loggning och felhantering."</p>
+<p><strong>Bra svar:</strong></p>
+<pre><code class="language-javascript">const express = require('express');
+const app = express();
+
+// Custom logging middleware
+const logger = (req, res, next) =&gt; {
+  const timestamp = new Date().toISOString();
+  console.log(`${timestamp} - ${req.method} ${req.url}`);
+  next(); // Viktigt att anropa next()
+};
+
+// Body parser middleware
+app.use(express.json());
+app.use(logger);
+
+// Routes
+app.get('/', (req, res) =&gt; {
+  res.json({ message: 'Hello World!' });
+});
+
+app.get('/error', (req, res, next) =&gt; {
+  // Simulera ett fel
+  const error = new Error('Något gick fel!');
+  error.status = 500;
+  next(error); // Skicka fel till error handler
+});
+
+// Global error handling middleware (måste vara sist)
+app.use((err, req, res, next) =&gt; {
+  console.error(err.stack);
+  res.status(err.status || 500).json({
+    error: err.message,
+    timestamp: new Date().toISOString()
+  });
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () =&gt; {
+  console.log(`Server running on port ${PORT}`);
+});
+</code></pre>
+<p><strong>Förklaring:</strong> Middleware körs i ordning och kan modifiera request/response eller avsluta request-response cykeln. Error middleware måste ha 4 parametrar.</p>
+<h2 id="fråga-3-restful-api-design-och-http-metoder"><a class="header" href="#fråga-3-restful-api-design-och-http-metoder">Fråga 3: RESTful API Design och HTTP-metoder</a></h2>
+<p><strong>Intervjuare:</strong> "Designa ett RESTful API för en produktkatalog och förklara HTTP-metoderna."</p>
+<p><strong>Bra svar:</strong></p>
+<pre><code class="language-javascript">const express = require('express');
+const app = express();
+app.use(express.json());
+
+// In-memory data (i verkligheten skulle detta vara en databas)
+let products = [
+  { id: 1, name: 'Laptop', price: 999, category: 'Electronics' },
+  { id: 2, name: 'Book', price: 19, category: 'Education' }
+];
+
+// GET /api/products - Hämta alla produkter
+app.get('/api/products', (req, res) =&gt; {
+  const { category, minPrice } = req.query;
+  let filtered = products;
+  
+  if (category) {
+    filtered = filtered.filter(p =&gt; p.category === category);
+  }
+  if (minPrice) {
+    filtered = filtered.filter(p =&gt; p.price &gt;= parseInt(minPrice));
+  }
+  
+  res.json(filtered);
+});
+
+// GET /api/products/:id - Hämta specifik produkt
+app.get('/api/products/:id', (req, res) =&gt; {
+  const product = products.find(p =&gt; p.id === parseInt(req.params.id));
+  if (!product) {
+    return res.status(404).json({ error: 'Product not found' });
+  }
+  res.json(product);
+});
+
+// POST /api/products - Skapa ny produkt
+app.post('/api/products', (req, res) =&gt; {
+  const { name, price, category } = req.body;
+  
+  // Validering
+  if (!name || !price || !category) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+  
+  const newProduct = {
+    id: products.length + 1,
+    name,
+    price: parseFloat(price),
+    category
+  };
+  
+  products.push(newProduct);
+  res.status(201).json(newProduct);
+});
+
+// PUT /api/products/:id - Uppdatera produkt
+app.put('/api/products/:id', (req, res) =&gt; {
+  const productIndex = products.findIndex(p =&gt; p.id === parseInt(req.params.id));
+  if (productIndex === -1) {
+    return res.status(404).json({ error: 'Product not found' });
+  }
+  
+  const { name, price, category } = req.body;
+  products[productIndex] = { 
+    id: parseInt(req.params.id), 
+    name, 
+    price: parseFloat(price), 
+    category 
+  };
+  
+  res.json(products[productIndex]);
+});
+
+// DELETE /api/products/:id - Ta bort produkt
+app.delete('/api/products/:id', (req, res) =&gt; {
+  const productIndex = products.findIndex(p =&gt; p.id === parseInt(req.params.id));
+  if (productIndex === -1) {
+    return res.status(404).json({ error: 'Product not found' });
+  }
+  
+  products.splice(productIndex, 1);
+  res.status(204).send(); // No content
+});
+</code></pre>
+<p><strong>HTTP-metoder:</strong></p>
+<ul>
+<li>GET: Hämta data (idempotent)</li>
+<li>POST: Skapa ny resurs</li>
+<li>PUT: Uppdatera/ersätt resurs (idempotent)</li>
+<li>DELETE: Ta bort resurs (idempotent)</li>
+</ul>
+<h2 id="fråga-4-mongodb-och-mongoose"><a class="header" href="#fråga-4-mongodb-och-mongoose">Fråga 4: MongoDB och Mongoose</a></h2>
+<p><strong>Intervjuare:</strong> "Skapa Mongoose-modeller med validering och visa CRUD-operationer."</p>
+<p><strong>Bra svar:</strong></p>
+<pre><code class="language-javascript">const mongoose = require('mongoose');
+
+// Anslut till MongoDB
+mongoose.connect('mongodb://localhost:27017/webshop', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
+
+// Product Schema med validering
+const productSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: [true, 'Product name is required'],
+    trim: true,
+    maxlength: [50, 'Name cannot exceed 50 characters']
+  },
+  price: {
+    type: Number,
+    required: true,
+    min: [0, 'Price cannot be negative']
+  },
+  category: {
+    type: String,
+    required: true,
+    enum: ['Electronics', 'Clothing', 'Books', 'Home']
+  },
+  inStock: {
+    type: Boolean,
+    default: true
+  },
+  tags: [String],
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
+});
+
+// Virtual property (beräknad egenskap)
+productSchema.virtual('discountedPrice').get(function() {
+  return this.price * 0.9; // 10% rabatt
+});
+
+// Middleware - körs innan sparning
+productSchema.pre('save', function(next) {
+  console.log(`Saving product: ${this.name}`);
+  next();
+});
+
+const Product = mongoose.model('Product', productSchema);
+
+// CRUD Operations med async/await
+class ProductService {
+  // Create
+  static async createProduct(productData) {
+    try {
+      const product = new Product(productData);
+      return await product.save();
+    } catch (error) {
+      throw new Error(`Failed to create product: ${error.message}`);
+    }
+  }
+  
+  // Read
+  static async getAllProducts(filters = {}) {
+    try {
+      const query = {};
+      if (filters.category) query.category = filters.category;
+      if (filters.inStock !== undefined) query.inStock = filters.inStock;
+      
+      return await Product.find(query)
+        .sort({ createdAt: -1 })
+        .limit(10);
+    } catch (error) {
+      throw new Error(`Failed to fetch products: ${error.message}`);
+    }
+  }
+  
+  static async getProductById(id) {
+    try {
+      const product = await Product.findById(id);
+      if (!product) throw new Error('Product not found');
+      return product;
+    } catch (error) {
+      throw error;
+    }
+  }
+  
+  // Update
+  static async updateProduct(id, updateData) {
+    try {
+      const product = await Product.findByIdAndUpdate(
+        id, 
+        updateData, 
+        { new: true, runValidators: true }
+      );
+      if (!product) throw new Error('Product not found');
+      return product;
+    } catch (error) {
+      throw error;
+    }
+  }
+  
+  // Delete
+  static async deleteProduct(id) {
+    try {
+      const product = await Product.findByIdAndDelete(id);
+      if (!product) throw new Error('Product not found');
+      return product;
+    } catch (error) {
+      throw error;
+    }
+  }
+}
+
+// Användning i Express routes
+app.post('/api/products', async (req, res) =&gt; {
+  try {
+    const product = await ProductService.createProduct(req.body);
+    res.status(201).json(product);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+</code></pre>
+<p><strong>Förklaring:</strong> Mongoose ger schemavalidering, middleware hooks och elegant syntax för MongoDB-operationer.</p>
+<h2 id="fråga-5-jwt-autentisering-och-authorization"><a class="header" href="#fråga-5-jwt-autentisering-och-authorization">Fråga 5: JWT-autentisering och Authorization</a></h2>
+<p><strong>Intervjuare:</strong> "Implementera JWT-baserad autentisering med middleware för skyddade routes."</p>
+<p><strong>Bra svar:</strong></p>
+<pre><code class="language-javascript">const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const User = require('./models/User');
+
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+
+// User registration
+app.post('/api/auth/register', async (req, res) =&gt; {
+  try {
+    const { username, email, password } = req.body;
+    
+    // Kontrollera om användare redan finns
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(409).json({ error: 'User already exists' });
+    }
+    
+    // Hasha lösenord
+    const saltRounds = 12;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    
+    // Skapa användare
+    const user = new User({
+      username,
+      email,
+      password: hashedPassword
+    });
+    
+    await user.save();
+    
+    // Skapa JWT token
+    const token = jwt.sign(
+      { userId: user._id, email: user.email },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+    
+    res.status(201).json({
+      message: 'User created successfully',
+      token,
+      user: { id: user._id, username, email }
+    });
+    
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// User login
+app.post('/api/auth/login', async (req, res) =&gt; {
+  try {
+    const { email, password } = req.body;
+    
+    // Hitta användare
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+    
+    // Verifiera lösenord
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    if (!isValidPassword) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+    
+    // Skapa JWT token
+    const token = jwt.sign(
+      { userId: user._id, email: user.email },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+    
+    res.json({
+      message: 'Login successful',
+      token,
+      user: { id: user._id, username: user.username, email: user.email }
+    });
+    
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Authentication middleware
+const authenticateToken = (req, res, next) =&gt; {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader &amp;&amp; authHeader.split(' ')[1]; // Bearer TOKEN
+  
+  if (!token) {
+    return res.status(401).json({ error: 'Access token required' });
+  }
+  
+  jwt.verify(token, JWT_SECRET, (err, user) =&gt; {
+    if (err) {
+      return res.status(403).json({ error: 'Invalid or expired token' });
+    }
+    req.user = user; // Lägg till användardatun till request
+    next();
+  });
+};
+
+// Authorization middleware för admin
+const authorizeAdmin = async (req, res, next) =&gt; {
+  try {
+    const user = await User.findById(req.user.userId);
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({ error: 'Admin access required' });
+    }
+    next();
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Skyddade routes
+app.get('/api/profile', authenticateToken, async (req, res) =&gt; {
+  try {
+    const user = await User.findById(req.user.userId).select('-password');
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Admin-only route
+app.delete('/api/admin/users/:id', authenticateToken, authorizeAdmin, async (req, res) =&gt; {
+  try {
+    await User.findByIdAndDelete(req.params.id);
+    res.json({ message: 'User deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+</code></pre>
+<p><strong>Förklaring:</strong> JWT innehåller användardata och är självsignerande. Autentisering verifierar vem du är, auktorisation kontrollerar vad du får göra.</p>
+<h2 id="fråga-6-felhantering-och-validering"><a class="header" href="#fråga-6-felhantering-och-validering">Fråga 6: Felhantering och Validering</a></h2>
+<p><strong>Intervjuare:</strong> "Visa hur du implementerar robust felhantering och input-validering i en Express-app."</p>
+<p><strong>Bra svar:</strong></p>
+<pre><code class="language-javascript">const express = require('express');
+const { body, validationResult } = require('express-validator');
+
+// Custom Error class
+class AppError extends Error {
+  constructor(message, statusCode) {
+    super(message);
+    this.statusCode = statusCode;
+    this.isOperational = true;
+    Error.captureStackTrace(this, this.constructor);
+  }
+}
+
+// Validation middleware
+const validateProduct = [
+  body('name')
+    .trim()
+    .isLength({ min: 1, max: 50 })
+    .withMessage('Name must be between 1-50 characters'),
+  body('price')
+    .isFloat({ min: 0 })
+    .withMessage('Price must be a positive number'),
+  body('email')
+    .optional()
+    .isEmail()
+    .normalizeEmail()
+    .withMessage('Invalid email format'),
+  body('category')
+    .isIn(['Electronics', 'Clothing', 'Books'])
+    .withMessage('Invalid category')
+];
+
+// Check validation results
+const handleValidationErrors = (req, res, next) =&gt; {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const errorMessages = errors.array().map(error =&gt; ({
+      field: error.param,
+      message: error.msg
+    }));
+    return res.status(400).json({ 
+      error: 'Validation failed', 
+      details: errorMessages 
+    });
+  }
+  next();
+};
+
+// Route med validering
+app.post('/api/products', 
+  validateProduct, 
+  handleValidationErrors, 
+  async (req, res, next) =&gt; {
+    try {
+      const product = await ProductService.createProduct(req.body);
+      res.status(201).json(product);
+    } catch (error) {
+      next(error); // Skicka till error handler
+    }
+  }
+);
+
+// Async error handler wrapper
+const asyncHandler = (fn) =&gt; {
+  return (req, res, next) =&gt; {
+    Promise.resolve(fn(req, res, next)).catch(next);
+  };
+};
+
+// Användning av async handler
+app.get('/api/products/:id', asyncHandler(async (req, res) =&gt; {
+  const product = await ProductService.getProductById(req.params.id);
+  if (!product) {
+    throw new AppError('Product not found', 404);
+  }
+  res.json(product);
+}));
+
+// Global error handling middleware
+const globalErrorHandler = (err, req, res, next) =&gt; {
+  let error = { ...err };
+  error.message = err.message;
+
+  // Mongoose validation error
+  if (err.name === 'ValidationError') {
+    const message = Object.values(err.errors).map(val =&gt; val.message).join(', ');
+    error = new AppError(message, 400);
+  }
+  
+  // Mongoose duplicate key error
+  if (err.code === 11000) {
+    const field = Object.keys(err.keyValue)[0];
+    error = new AppError(`${field} already exists`, 409);
+  }
+  
+  // JWT errors
+  if (err.name === 'JsonWebTokenError') {
+    error = new AppError('Invalid token', 401);
+  }
+
+  // Log error (i produktion skicka till logging service)
+  console.error(err);
+
+  res.status(error.statusCode || 500).json({
+    error: error.message || 'Internal Server Error',
+    timestamp: new Date().toISOString(),
+    path: req.originalUrl,
+    method: req.method,
+    ...(process.NODE_ENV === 'development' &amp;&amp; { stack: err.stack })
+  });
+};
+
+app.use(globalErrorHandler);
+
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (err) =&gt; {
+  console.error('Unhandled Promise Rejection:', err);
+  process.exit(1);
+});
+</code></pre>
+<p><strong>Förklaring:</strong> Strukturerad felhantering med custom error klasser, validering med express-validator och global error middleware för konsekvent felhantering.</p>
+<h2 id="fråga-7-environment-variables-och-configuration"><a class="header" href="#fråga-7-environment-variables-och-configuration">Fråga 7: Environment Variables och Configuration</a></h2>
+<p><strong>Intervjuare:</strong> "Hur hanterar du konfiguration och miljövariabler i en Node.js-applikation?"</p>
+<p><strong>Bra svar:</strong></p>
+<pre><code class="language-javascript">// .env fil (aldrig commit till git)
+/*
+NODE_ENV=development
+PORT=3000
+MONGODB_URI=mongodb://localhost:27017/myapp
+JWT_SECRET=your-super-secret-key-here
+JWT_EXPIRES_IN=24h
+BCRYPT_ROUNDS=12
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USER=your-email@gmail.com
+EMAIL_PASS=your-app-password
+REDIS_URL=redis://localhost:6379
+*/
+
+// config/config.js
+require('dotenv').config();
+
+const config = {
+  development: {
+    port: process.env.PORT || 3000,
+    mongodb: {
+      uri: process.env.MONGODB_URI || 'mongodb://localhost:27017/myapp-dev',
+      options: {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+      }
+    },
+    jwt: {
+      secret: process.env.JWT_SECRET || 'dev-secret',
+      expiresIn: process.env.JWT_EXPIRES_IN || '1h'
+    },
+    bcrypt: {
+      rounds: parseInt(process.env.BCRYPT_ROUNDS) || 10
+    },
+    email: {
+      host: process.env.EMAIL_HOST,
+      port: process.env.EMAIL_PORT,
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS
+    }
+  },
+  production: {
+    port: process.env.PORT || 8080,
+    mongodb: {
+      uri: process.env.MONGODB_URI,
+      options: {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        maxPoolSize: 10,
+        serverSelectionTimeoutMS: 5000,
+        socketTimeoutMS: 45000,
+      }
+    },
+    jwt: {
+      secret: process.env.JWT_SECRET,
+      expiresIn: process.env.JWT_EXPIRES_IN || '15m'
+    },
+    bcrypt: {
+      rounds: parseInt(process.env.BCRYPT_ROUNDS) || 12
+    }
+  },
+  test: {
+    port: 4000,
+    mongodb: {
+      uri: 'mongodb://localhost:27017/myapp-test'
+    },
+    jwt: {
+      secret: 'test-secret',
+      expiresIn: '1h'
+    }
+  }
+};
+
+const env = process.env.NODE_ENV || 'development';
+module.exports = config[env];
+
+// Användning i applikationen
+const config = require('./config/config');
+const mongoose = require('mongoose');
+
+// Validera required miljövariabler
+const requiredEnvVars = ['MONGODB_URI', 'JWT_SECRET'];
+const missingVars = requiredEnvVars.filter(varName =&gt; !process.env[varName]);
+
+if (missingVars.length &gt; 0) {
+  console.error(`Missing required environment variables: ${missingVars.join(', ')}`);
+  process.exit(1);
+}
+
+// Anslut till databas med config
+mongoose.connect(config.mongodb.uri, config.mongodb.options)
+  .then(() =&gt; console.log('MongoDB connected'))
+  .catch(err =&gt; {
+    console.error('MongoDB connection error:', err);
+    process.exit(1);
+  });
+
+// Server setup
+const app = express();
+app.listen(config.port, () =&gt; {
+  console.log(`Server running in ${process.env.NODE_ENV} mode on port ${config.port}`);
+});
+</code></pre>
+<p><strong>Best Practices:</strong></p>
+<ul>
+<li>Använd dotenv för development</li>
+<li>Validera required miljövariabler vid start</li>
+<li>Olika konfigurationer för olika miljöer</li>
+<li>Aldrig commit .env-filer till version control</li>
+</ul>
+<h2 id="fråga-8-prestanda-och-caching"><a class="header" href="#fråga-8-prestanda-och-caching">Fråga 8: Prestanda och Caching</a></h2>
+<p><strong>Intervjuare:</strong> "Hur optimerar du prestanda i en Node.js-applikation med caching?"</p>
+<p><strong>Bra svar:</strong></p>
+<pre><code class="language-javascript">const redis = require('redis');
+const client = redis.createClient(process.env.REDIS_URL);
+
+// Cache middleware
+const cache = (duration = 300) =&gt; {
+  return async (req, res, next) =&gt; {
+    const key = `cache:${req.originalUrl}`;
+    
+    try {
+      const cached = await client.get(key);
+      if (cached) {
+        console.log('Cache hit');
+        return res.json(JSON.parse(cached));
+      }
+      
+      // Modifiera res.json för att spara till cache
+      const originalJson = res.json;
+      res.json = function(data) {
+        client.setex(key, duration, JSON.stringify(data));
+        originalJson.call(this, data);
+      };
+      
+      next();
+    } catch (error) {
+      console.error('Cache error:', error);
+      next(); // Fortsätt utan cache vid fel
+    }
+  };
+};
+
+// Database query optimization
+class ProductService {
+  static async getProductsWithPagination(page = 1, limit = 10, filters = {}) {
+    const skip = (page - 1) * limit;
+    
+    // Bygg query med index
+    const query = {};
+    if (filters.category) query.category = filters.category;
+    if (filters.priceRange) {
+      query.price = {
+        $gte: filters.priceRange.min,
+        $lte: filters.priceRange.max
+      };
+    }
+    
+    // Parallel queries för bättre prestanda
+    const [products, totalCount] = await Promise.all([
+      Product.find(query)
+        .select('name price category') // Välj endast nödvändiga fält
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(), // Returnera plain JavaScript objects
+      Product.countDocuments(query)
+    ]);
+    
+    return {
+      products,
+      pagination: {
+        page,
+        limit,
+        totalPages: Math.ceil(totalCount / limit),
+        totalCount
+      }
+    };
+  }
+  
+  // Batch operations för bättre prestanda
+  static async createMultipleProducts(productsData) {
+    return await Product.insertMany(productsData, {
+      ordered: false, // Fortsätt även om några misslyckas
+      rawResult: true
+    });
+  }
+}
+
+// Routes med cache och prestanda-optimering
+app.get('/api/products', cache(300), async (req, res) =&gt; {
+  try {
+    const { page, limit, category, minPrice, maxPrice } = req.query;
+    
+    const filters = {};
+    if (category) filters.category = category;
+    if (minPrice || maxPrice) {
+      filters.priceRange = {
+        min: minPrice ? parseFloat(minPrice) : 0,
+        max: maxPrice ? parseFloat(maxPrice) : Number.MAX_VALUE
+      };
+    }
+    
+    const result = await ProductService.getProductsWithPagination(
+      parseInt(page) || 1,
+      parseInt(limit) || 10,
+      filters
+    );
+    
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Compression middleware för mindre responses
+const compression = require('compression');
+app.use(compression());
+
+// Rate limiting för skydd mot överbelastning
+const rateLimit = require('express-rate-limit');
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minuter
+  max: 100, // Max 100 requests per IP
+  message: 'Too many requests from this IP'
+});
+
+app.use('/api/', limiter);
+
+// Connection pooling för databas
+const mongoose = require('mongoose');
+mongoose.connect(config.mongodb.uri, {
+  maxPoolSize: 10, // Maintain up to 10 socket connections
+  serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
+  socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
+  bufferMaxEntries: 0 // Disable mongoose buffering
+});
+</code></pre>
+<p><strong>Prestandaoptimering:</strong></p>
+<ul>
+<li>Redis för caching</li>
+<li>Database indexing och query optimization</li>
+<li>Connection pooling</li>
+<li>Compression och rate limiting</li>
+<li>Pagination för stora datasets</li>
+</ul>
+<h2 id="fråga-9-testing-i-nodejs"><a class="header" href="#fråga-9-testing-i-nodejs">Fråga 9: Testing i Node.js</a></h2>
+<p><strong>Intervjuare:</strong> "Hur testar du en Node.js/Express-applikation? Visa unit tests och integration tests."</p>
+<p><strong>Bra svar:</strong></p>
+<pre><code class="language-javascript">// package.json
+/*
+{
+  "scripts": {
+    "test": "NODE_ENV=test mocha --recursive --timeout 10000",
+    "test:watch": "npm test -- --watch",
+    "test:coverage": "nyc npm test"
+  },
+  "devDependencies": {
+    "mocha": "^9.0.0",
+    "chai": "^4.3.0",
+    "chai-http": "^4.3.0",
+    "sinon": "^11.1.0",
+    "nyc": "^15.1.0"
+  }
+}
+*/
+
+// test/setup.js
+const mongoose = require('mongoose');
+
+before(async function() {
+  this.timeout(10000);
+  // Anslut till test-databas
+  await mongoose.connect('mongodb://localhost:27017/myapp-test');
+});
+
+beforeEach(async function() {
+  // Rensa databas innan varje test
+  const collections = await mongoose.connection.db.collections();
+  for (let collection of collections) {
+    await collection.deleteMany({});
+  }
+});
+
+after(async function() {
+  await mongoose.connection.close();
+});
+
+// test/unit/productService.test.js
+const { expect } = require('chai');
+const sinon = require('sinon');
+const ProductService = require('../../services/ProductService');
+const Product = require('../../models/Product');
+
+describe('ProductService', () =&gt; {
+  describe('createProduct', () =&gt; {
+    it('should create a product successfully', async () =&gt; {
+      const productData = {
+        name: 'Test Product',
+        price: 99.99,
+        category: 'Electronics'
+      };
+      
+      // Mock Product.save
+      const mockSave = sinon.stub(Product.prototype, 'save');
+      mockSave.resolves({ _id: '123', ...productData });
+      
+      const result = await ProductService.createProduct(productData);
+      
+      expect(result).to.have.property('_id');
+      expect(result.name).to.equal(productData.name);
+      expect(mockSave.calledOnce).to.be.true;
+      
+      mockSave.restore();
+    });
+    
+    it('should throw error for invalid product data', async () =&gt; {
+      const invalidData = { name: '', price: -10 };
+      
+      try {
+        await ProductService.createProduct(invalidData);
+        expect.fail('Should have thrown error');
+      } catch (error) {
+        expect(error.message).to.include('validation');
+      }
+    });
+  });
+});
+
+// test/integration/products.test.js
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+const app = require('../../app');
+const Product = require('../../models/Product');
+
+chai.use(chaiHttp);
+const { expect } = chai;
+
+describe('Products API', () =&gt; {
+  let authToken;
+  
+  before(async () =&gt; {
+    // Skapa test-användare och få token
+    const user = {
+      username: 'testuser',
+      email: 'test@example.com',
+      password: 'password123'
+    };
+    
+    const res = await chai.request(app)
+      .post('/api/auth/register')
+      .send(user);
+    
+    authToken = res.body.token;
+  });
+  
+  describe('GET /api/products', () =&gt; {
+    beforeEach(async () =&gt; {
+      // Skapa test data
+      await Product.create([
+        { name: 'Product 1', price: 100, category: 'Electronics' },
+        { name: 'Product 2', price: 200, category: 'Clothing' }
+      ]);
+    });
+    
+    it('should get all products', async () =&gt; {
+      const res = await chai.request(app)
+        .get('/api/products')
+        .expect(200);
+      
+      expect(res.body).to.be.an('array');
+      expect(res.body).to.have.lengthOf(2);
+      expect(res.body[0]).to.have.property('name');
+      expect(res.body[0]).to.have.property('price');
+    });
+    
+    it('should filter products by category', async () =&gt; {
+      const res = await chai.request(app)
+        .get('/api/products?category=Electronics')
+        .expect(200);
+      
+      expect(res.body).to.have.lengthOf(1);
+      expect(res.body[0].category).to.equal('Electronics');
+    });
+  });
+  
+  describe('POST /api/products', () =&gt; {
+    it('should create a new product with valid auth', async () =&gt; {
+      const newProduct = {
+        name: 'New Product',
+        price: 150,
+        category: 'Electronics'
+      };
+      
+      const res = await chai.request(app)
+        .post('/api/products')
+        .set('Authorization', `Bearer ${authToken}`)
+        .send(newProduct)
+        .expect(201);
+      
+      expect(res.body).to.have.property('_id');
+      expect(res.body.name).to.equal(newProduct.name);
+      
+      // Verifiera i databas
+      const productInDb = await Product.findById(res.body._id);
+      expect(productInDb).to.not.be.null;
+    });
+    
+    it('should return 401 without auth token', async () =&gt; {
+      const newProduct = {
+        name: 'Unauthorized Product',
+        price: 150,
+        category: 'Electronics'
+      };
+      
+      await chai.request(app)
+        .post('/api/products')
+        .send(newProduct)
+        .expect(401);
+    });
+    
+    it('should return 400 for invalid data', async () =&gt; {
+      const invalidProduct = {
+        name: '', // Tomt namn
+        price: -50 // Negativt pris
+      };
+      
+      const res = await chai.request(app)
+        .post('/api/products')
+        .set('Authorization', `Bearer ${authToken}`)
+        .send(invalidProduct)
+        .expect(400);
+      
+      expect(res.body).to.have.property('error');
+    });
+  });
+});
+
+// test/middleware/auth.test.js  
+const { expect } = require('chai');
+const sinon = require('sinon');
+const jwt = require('jsonwebtoken');
+const { authenticateToken } = require('../../middleware/auth');
+
+describe('Auth Middleware', () =&gt; {
+  let req, res, next;
+  
+  beforeEach(() =&gt; {
+    req = {
+      headers: {}
+    };
+    res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub()
+    };
+    next = sinon.stub();
+  });
+  
+  it('should pass with valid token', () =&gt; {
+    const token = jwt.sign({ userId: '123' }, 'test-secret');
+    req.headers.authorization = `Bearer ${token}`;
+    
+    const jwtStub = sinon.stub(jwt, 'verify');
+    jwtStub.yields(null, { userId: '123' });
+    
+    authenticateToken(req, res, next);
+    
+    expect(next.calledOnce).to.be.true;
+    expect(req.user).to.deep.equal({ userId: '123' });
+    
+    jwtStub.restore();
+  });
+  
+  it('should return 401 without token', () =&gt; {
+    authenticateToken(req, res, next);
+    
+    expect(res.status.calledWith(401)).to.be.true;
+    expect(next.called).to.be.false;
+  });
+});
+</code></pre>
+<p><strong>Testing Best Practices:</strong></p>
+<ul>
+<li>Separata test-databas</li>
+<li>Mock externa dependencies</li>
+<li>Test både lyckade och misslyckade scenarier</li>
+<li>Integration tests för API endpoints</li>
+<li>Code coverage för att mäta test-täckning</li>
+</ul>
+<h2 id="fråga-10-deployment-och-devops"><a class="header" href="#fråga-10-deployment-och-devops">Fråga 10: Deployment och DevOps</a></h2>
+<p><strong>Intervjuare:</strong> "Hur deployar du en Node.js-applikation och vilka verktyg använder du för CI/CD?"</p>
+<p><strong>Bra svar:</strong></p>
+<pre><code class="language-yaml"># .github/workflows/deploy.yml
+name: Deploy to Production
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    services:
+      mongodb:
+        image: mongo:4.4
+        ports:
+          - 27017:27017
+      redis:
+        image: redis:6
+        ports:
+          - 6379:6379
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Run linting
+      run: npm run lint
+    
+    - name: Run tests
+      run: npm test
+      env:
+        NODE_ENV: test
+        MONGODB_URI: mongodb://localhost:27017/test
+        JWT_SECRET: test-secret
+    
+    - name: Run security audit
+      run: npm audit
+  
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Deploy to Heroku
+      uses: akhileshns/heroku-deploy@v3.12.12
+      with:
+        heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+        heroku_app_name: "your-app-name"
+        heroku_email: "your-email@example.com"
+</code></pre>
+<pre><code class="language-dockerfile"># Dockerfile
+FROM node:16-alpine
+
+# Skapa app directory
+WORKDIR /usr/src/app
+
+# Kopiera package files
+COPY package*.json ./
+
+# Installera dependencies
+RUN npm ci --only=production
+
+# Kopiera app source
+COPY . .
+
+# Skapa non-root user
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nextjs -u 1001
+
+# Ändra ownership
+RUN chown -R nextjs:nodejs /usr/src/app
+USER nextjs
+
+# Exponera port
+EXPOSE 3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD node healthcheck.js
+
+# Starta app
+CMD ["node", "server.js"]
+</code></pre>
+<pre><code class="language-javascript">// healthcheck.js
+const http = require('http');
+
+const options = {
+  hostname: 'localhost',
+  port: process.env.PORT || 3000,
+  path: '/health',
+  timeout: 2000
+};
+
+const request = http.request(options, (res) =&gt; {
+  if (res.statusCode === 200) {
+    process.exit(0);
+  } else {
+    process.exit(1);
+  }
+});
+
+request.on('error', () =&gt; {
+  process.exit(1);
+});
+
+request.end();
+</code></pre>
+<pre><code class="language-yaml"># docker-compose.yml
+version: '3.8'
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - MONGODB_URI=mongodb://mongo:27017/myapp
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - mongo
+      - redis
+    restart: unless-stopped
+  
+  mongo:
+    image: mongo:4.4
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+  
+  redis:
+    image: redis:6-alpine
+    restart: unless-stopped
+  
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl
+    depends_on:
+      - app
+    restart: unless-stopped
+
+volumes:
+  mongo_data:
+</code></pre>
+<p><strong>Deployment Best Practices:</strong></p>
+<ul>
+<li>Automated testing och linting</li>
+<li>Security scanning och dependency audit</li>
+<li>Health checks och monitoring</li>
+<li>Load balancing med nginx</li>
+<li>SSL certificates och HTTPS</li>
+<li>Environment-specific configurations</li>
+</ul>
+<hr />
+<p><strong>Sammanfattning av viktiga Node.js-koncept:</strong></p>
+<ul>
+<li>Event Loop och asynkron programmering</li>
+<li>Express middleware och routing</li>
+<li>MongoDB/Mongoose för datalagring</li>
+<li>JWT-autentisering och säkerhet</li>
+<li>RESTful API design</li>
+<li>Testing och deployment strategies</li>
+<li>Prestanda-optimering och caching</li>
+<li>Error handling och validering</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_9/ovningar.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_10/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_9/ovningar.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_10/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

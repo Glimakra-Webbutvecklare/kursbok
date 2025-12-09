@@ -1,0 +1,604 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>PHP Syntax och funktioner - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="introduktion-till-php"><a class="header" href="#introduktion-till-php">Introduktion till PHP</a></h1>
+<ul>
+<li>PHP i modern webbutveckling</li>
+<li>Utvecklingsmiljö setup</li>
+<li>PHP och webbservrar</li>
+<li>Grundläggande koncept</li>
+</ul>
+<h1 id="php-syntax-och-grundläggande-funktioner"><a class="header" href="#php-syntax-och-grundläggande-funktioner">PHP Syntax och grundläggande funktioner</a></h1>
+<p>Detta avsnitt dyker djupare in i den grundläggande syntaxen för PHP. Om du har erfarenhet av JavaScript kommer mycket att kännas bekant, men det finns viktiga skillnader i hur du skriver variabler, hanterar datatyper, och strukturerar din kod. Vi kommer att fokusera på dessa skillnader och även introducera några moderna PHP-funktioner.</p>
+<h2 id="php-taggar-och-kommentarer"><a class="header" href="#php-taggar-och-kommentarer">PHP-taggar och kommentarer</a></h2>
+<p>PHP-kod exekveras på servern och bäddas oftast in i HTML-dokument med hjälp av speciella taggar.</p>
+<ul>
+<li><strong>Standardtaggar:</strong> <code>&lt;?php ... ?&gt;</code>
+Detta är det vanligaste och mest rekommenderade sättet att markera PHP-kodblock.</li>
+<li><strong>Kort echo-tagg:</strong> <code>&lt;?= ... ?&gt;</code>
+En genväg för <code>&lt;?php echo ... ?&gt;</code>. Användbar för att snabbt skriva ut en variabel eller resultatet av en funktion direkt i HTML.</li>
+</ul>
+<pre><code class="language-php">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;PHP Taggar&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Välkommen&lt;/h1&gt;
+    &lt;p&gt;Dagens datum är: &lt;?= date('Y-m-d'); ?&gt;&lt;/p&gt; 
+
+    &lt;?php
+        // Detta är en PHP-kommentar (enkelrad)
+        $message = "Hej från ett PHP-block!";
+        /*
+           Detta är en
+           flerradskommentar i PHP.
+        */
+        echo "&lt;p&gt;" . $message . "&lt;/p&gt;"; 
+    ?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<ul>
+<li><strong>Kommentarer:</strong> Liknar JavaScript: <code>//</code> för enkelradskommentarer och <code>/* ... */</code> för flerradskommentarer.</li>
+</ul>
+<h2 id="kodstandard-och-namngivningsprinciper"><a class="header" href="#kodstandard-och-namngivningsprinciper">Kodstandard och namngivningsprinciper</a></h2>
+<p>Att följa en kodstandard är något som programmerare bör vara insatt i. PHP är ett programspråk som funnits under relativt lång tid och därmed förändras också en kodstandard. Sträva efter att vara konsekvent.</p>
+<h3 id="variabler"><a class="header" href="#variabler">Variabler</a></h3>
+<p>En av de mest uppenbara skillnaderna från JavaScript är hur variabler deklareras och används i PHP.</p>
+<ul>
+<li>Alla variabelnamn i PHP inleds med ett dollartecken (<code>$</code>).</li>
+<li>Efter <code>$</code> måste namnet börja med en bokstav eller ett understreck (<code>_</code>), följt av valfritt antal bokstäver, siffror eller understreck.</li>
+<li>PHP är <strong>Case sensitive</strong> för variabelnamn (<code>$name</code> och <code>$Name</code> är två olika variabler).
+En variabel namnges med gemener. Använd understreck mellan ord.</li>
+</ul>
+<pre><code class="language-php">$last_name
+$is_authenticated
+</code></pre>
+<h3 id="funktioner"><a class="header" href="#funktioner">Funktioner</a></h3>
+<p>Funktionsnamn skrivs med gemener och understreck mellan ord - snake_case.</p>
+<pre><code class="language-php">get_name()
+render_copyright()
+</code></pre>
+<h3 id="klasser-och-metoder"><a class="header" href="#klasser-och-metoder">Klasser och metoder</a></h3>
+<p>En klass namnges PascalCase, och metoder i klassen som camelCase.</p>
+<pre><code class="language-php">MyClass() {
+    function __construct() {
+    
+    }
+    
+    public function printInfo() {
+
+    }
+}
+</code></pre>
+<p><strong>PHP:</strong></p>
+<pre><code class="language-php">&lt;?php
+$first_name = "Anna"; // Skapar och tilldelar en sträng
+$age = 30;          // Skapar och tilldelar ett heltal
+$price = 199.50;    // Skapar och tilldelar ett flyttal
+$is_valid = true;   // Namn kan börja med _
+
+$age = 31; // Ändrar värdet på en befintlig variabel
+
+echo "Namn: " . $first_name . ", Ålder: " . $age;
+?&gt;
+</code></pre>
+<p><strong>JavaScript (jämförelse):</strong></p>
+<pre><code class="language-javascript">let firstName = "Anna"; // Kräver let, const (eller var)
+let age = 30;
+const price = 199.50; // Konstant, kan inte ändras
+let isValid = true;   // Inget $ behövs
+
+age = 31; // Ändra värde
+
+console.log(`Namn: ${firstName}, Ålder: ${age}`); // Template literals för enkel utskrift
+</code></pre>
+<h2 id="datatyper"><a class="header" href="#datatyper">Datatyper</a></h2>
+<p>PHP har flera inbyggda datatyper. De viktigaste kan delas in i:</p>
+<h3 id="skalära-typer-scalar-types"><a class="header" href="#skalära-typer-scalar-types">Skalära Typer (Scalar Types)</a></h3>
+<p>Dessa representerar enskilda värden.</p>
+<ul>
+<li><strong><code>int</code> (Integer):</strong> Heltal (t.ex. <code>10</code>, <code>-5</code>, <code>0</code>).</li>
+<li><strong><code>float</code> (Floating-point number, även <code>double</code>):</strong> Decimaltal (t.ex. <code>3.14</code>, <code>-0.5</code>, <code>1.0</code>).</li>
+<li><strong><code>string</code>:</strong> Textsträngar. Kan omges av enkla (<code>'...'</code>) eller dubbla (<code>"..."</code>) citationstecken.
+<ul>
+<li>Dubbla citationstecken (<code>"</code>) tillåter <strong>variabelinterpolering</strong> (variabler inuti strängen ersätts med deras värden) och specialtecken som <code>\n</code> (nyrad), <code>\t</code> (tab).</li>
+<li>Enkla citationstecken (<code>'</code>) behandlar nästan all text bokstavligt (literal), ingen variabelinterpolering sker (förutom <code>\\</code> och <code>\'</code>). De är ofta snabbare när ingen interpolering behövs.</li>
+</ul>
+</li>
+<li><strong><code>bool</code> (Boolean):</strong> Logiska värden, antingen <code>true</code> eller <code>false</code> (skiftlägesokänsliga).</li>
+</ul>
+<pre><code class="language-php">&lt;?php
+$count = 100;       // int
+$pi = 3.14159;    // float
+$is_admin = false;   // bool
+
+$single_quote = 'Detta är en sträng. Variabel: $count \n'; // $count och \n skrivs ut bokstavligt
+$double_quote = "Detta är en sträng. Variabel: $count \n"; // $count ersätts, \n blir nyrad
+
+echo $single_quote; 
+// Output: Detta är en sträng. Variabel: $count \n
+
+echo $double_quote;
+// Output: Detta är en sträng. Variabel: 100 
+// (och en nyrad)
+?&gt;
+</code></pre>
+<h3 id="sammansatta-typer-compound-types"><a class="header" href="#sammansatta-typer-compound-types">Sammansatta Typer (Compound Types)</a></h3>
+<p>Dessa kan innehålla flera värden.</p>
+<ul>
+<li><strong><code>array</code>:</strong> Ordnad mappning av nyckel-värde-par. Kan vara indexerad (numeriska nycklar) eller associativ (strängnycklar). (Se <code>array-loopar.md</code> för detaljer).</li>
+<li><strong><code>object</code>:</strong> Instanser av klasser.</li>
+<li><strong><code>callable</code>:</strong> En referens till en funktion.</li>
+</ul>
+<h3 id="speciella-typer"><a class="header" href="#speciella-typer">Speciella Typer</a></h3>
+<ul>
+<li><strong><code>resource</code>:</strong> En speciell variabel som håller en referens till en extern resurs (t.ex. en databasanslutning, en öppen fil).</li>
+<li><strong><code>null</code>:</strong> Representerar avsaknaden av ett värde. En variabel har värdet <code>null</code> om den har tilldelats <code>null</code>, inte har tilldelats något värde alls, eller har blivit <code>unset()</code>.</li>
+</ul>
+<p>PHP är ett <strong>dynamiskt typat</strong> språk (som JavaScript) som standard, vilket innebär att du inte behöver specificera datatypen när du skapar en variabel. PHP avgör typen baserat på värdet den tilldelas, och typen kan ändras under körningens gång (även om detta bör undvikas om möjligt).</p>
+<pre><code class="language-php">&lt;?php
+$value = 10;     // $value är nu int
+echo gettype($value); // Output: integer
+
+$value = "Hej";  // $value är nu string
+echo gettype($value); // Output: string
+?&gt;
+</code></pre>
+<p>(Vi kommer till <em>Type Hinting</em> senare, vilket låter dig vara mer explicit med typer i funktioner.)</p>
+<h2 id="konstanter"><a class="header" href="#konstanter">Konstanter</a></h2>
+<p>För värden som inte ska ändras under skriptets körning kan du definiera konstanter med <code>define()</code> eller <code>const</code>.</p>
+<ul>
+<li><strong><code>define(name, value, case_insensitive)</code>:</strong> Traditionellt sätt. Namnet är en sträng. Standard är skiftlägeskänsligt.</li>
+<li><strong><code>const NAME = value;</code>:</strong> Nyare sätt (sedan PHP 5.3), används oftast inom klasser men fungerar även globalt. Kan inte användas inom kontrollstrukturer (som <code>if</code>). Alltid skiftlägeskänsligt.</li>
+</ul>
+<p>Konstanter har <strong>inget <code>$</code></strong> framför sig.</p>
+<pre><code class="language-php">&lt;?php
+define("APP_VERSION", "1.0.2");
+const DEFAULT_LANG = "sv";
+
+echo APP_VERSION; // Output: 1.0.2
+echo DEFAULT_LANG; // Output: sv
+
+// Försök att ändra konstant (ger fel)
+// APP_VERSION = "1.1.0"; // Fatal error
+// const DEFAULT_LANG = "en"; // Parse error
+?&gt;
+</code></pre>
+<h2 id="operatorer"><a class="header" href="#operatorer">Operatorer</a></h2>
+<p>PHP har många operatorer som liknar de i JavaScript.</p>
+<ul>
+<li><strong>Aritmetiska:</strong> <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>%</code> (modulo/rest), <code>**</code> (exponent, sedan PHP 5.6).</li>
+<li><strong>Tilldelning:</strong> <code>=</code>, <code>+=</code>, <code>-=</code>, <code>*=</code>, <code>/=</code>, <code>%=</code>, <code>**=</code>, <code>.=</code> (för strängkonkatenering).</li>
+<li><strong>Jämförelse:</strong>
+<ul>
+<li><code>==</code> (Lika, efter typomvandling - <strong>undvik ofta!</strong>)</li>
+<li><code>===</code> (Identisk, samma värde OCH samma typ - <strong>rekommenderas!</strong>)</li>
+<li><code>!=</code> eller <code>&lt;&gt;</code> (Inte lika, efter typomvandling)</li>
+<li><code>!==</code> (Inte identisk, olika värde ELLER olika typ - <strong>rekommenderas!</strong>)</li>
+<li><code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code></li>
+<li><code>&lt;=&gt;</code> (Spaceship operator, sedan PHP 7): Returnerar -1, 0, eller 1 beroende på om vänster är mindre än, lika med, eller större än höger.</li>
+</ul>
+</li>
+<li><strong>Logiska:</strong> <code>&amp;&amp;</code> (and), <code>||</code> (or), <code>!</code> (not), <code>and</code> (samma som <code>&amp;&amp;</code> men lägre prioritet), <code>or</code> (samma som <code>||</code> men lägre prioritet), <code>xor</code>.</li>
+<li><strong>Strängkonkatenering:</strong> <code>.</code> (punkt) används för att slå ihop strängar.</li>
+<li><strong>Felkontroll:</strong> <code>@</code> (används framför ett uttryck för att tysta eventuella fel/varningar det genererar - <strong>använd med extrem försiktighet!</strong>)</li>
+<li><strong>Null Coalescing:</strong> <code>??</code> (sedan PHP 7): Returnerar vänster operand om den existerar och inte är <code>null</code>, annars höger operand. Bra för att sätta defaultvärden.</li>
+<li><strong>Null Coalescing Assignment:</strong> <code>??=</code> (sedan PHP 7.4): Tilldelar höger operand till vänster operand endast om vänster operand är <code>null</code>.</li>
+</ul>
+<pre><code class="language-php">&lt;?php
+$a = 5;
+$b = "5";
+$c = 10;
+
+var_dump($a == $b);  // bool(true) - Undvik! '5' görs om till 5.
+var_dump($a === $b); // bool(false) - Rekommenderas! Olika typer.
+var_dump($a != $b);  // bool(false)
+var_dump($a !== $b); // bool(true) - Rekommenderas!
+
+var_dump($a &lt;=&gt; $c); // int(-1)
+var_dump($a &lt;=&gt; $a); // int(0)
+var_dump($c &lt;=&gt; $a); // int(1)
+
+$name = $_GET['user'] ?? 'Gäst'; // Om $_GET['user'] inte finns eller är null, blir $name 'Gäst'
+echo "Välkommen, $name!\n";
+
+$settings['theme'] = $settings['theme'] ?? 'light'; // Traditionellt
+$settings['theme'] ??= 'light'; // Samma som ovan med ??=
+
+$greeting = "Hej";
+$target = "Världen";
+$fullGreeting = $greeting . " " . $target . "!"; // Strängkonkatenering
+echo $fullGreeting; // Output: Hej Världen!
+?&gt;
+</code></pre>
+<h2 id="kontrollstrukturer"><a class="header" href="#kontrollstrukturer">Kontrollstrukturer</a></h2>
+<p>Styr hur koden exekveras.</p>
+<h3 id="if-elseif-else"><a class="header" href="#if-elseif-else"><code>if</code>, <code>elseif</code>, <code>else</code></a></h3>
+<p>Fungerar i princip identiskt med JavaScript.</p>
+<pre><code class="language-php">&lt;?php
+$score = 75;
+
+if ($score &gt;= 90) {
+    echo "Betyg: A";
+} elseif ($score &gt;= 80) {
+    echo "Betyg: B";
+} elseif ($score &gt;= 65) {
+    echo "Betyg: C"; // Denna körs
+} else {
+    echo "Betyg: F";
+}
+?&gt;
+</code></pre>
+<h3 id="switch"><a class="header" href="#switch"><code>switch</code></a></h3>
+<p>Liknar JavaScripts <code>switch</code>, men använder lös jämförelse (<code>==</code>) som standard. Kom ihåg <code>break;</code>!</p>
+<pre><code class="language-php">&lt;?php
+$day = "Måndag";
+
+switch ($day) {
+    case "Måndag":
+        echo "Start på veckan.";
+        break;
+    case "Fredag":
+        echo "Snart helg!";
+        break;
+    default:
+        echo "En vanlig dag.";
+        // break; behövs inte i default
+}
+?&gt;
+</code></pre>
+<h3 id="match-php-8"><a class="header" href="#match-php-8"><code>match</code> (PHP 8+)</a></h3>
+<p>Ett modernare alternativ till <code>switch</code>. Viktiga skillnader:</p>
+<ul>
+<li>Använder <strong>strikt jämförelse (<code>===</code>)</strong>. Mycket säkrare!</li>
+<li>Är ett <strong>uttryck</strong>, vilket betyder att det returnerar ett värde.</li>
+<li>Har <strong>inga <code>break</code></strong>, faller inte igenom.</li>
+<li>Måste vara <strong>uttömmande</strong> (ha ett <code>default</code>-fall eller täcka alla möjliga värden om input-typen är känd, t.ex. en enum).</li>
+<li>Kan ha <strong>flera värden</strong> per arm, separerade med komma.</li>
+</ul>
+<pre><code class="language-php">&lt;?php
+$httpStatusCode = 200;
+
+$message = match ($httpStatusCode) {
+    200, 201, 204 =&gt; "Success!",
+    400 =&gt; "Bad Request",
+    404 =&gt; "Not Found",
+    500 =&gt; "Server Error",
+    default =&gt; "Unknown status code",
+};
+
+echo $message; // Output: Success!
+
+// Jämför med switch:
+// switch ($httpStatusCode) {
+//     case 200:
+//     case 201:
+//     case 204:
+//         $message = "Success!";
+//         break;
+//     case 400:
+//         $message = "Bad Request";
+//         break;
+//     // ... etc ...
+// }
+?&gt;
+</code></pre>
+<p><code>match</code> är ofta att föredra framför <code>switch</code> i modern PHP tack vare strikt jämförelse och att det är ett uttryck.</p>
+<h3 id="loopar-for-while-do-while-foreach"><a class="header" href="#loopar-for-while-do-while-foreach">Loopar (<code>for</code>, <code>while</code>, <code>do-while</code>, <code>foreach</code>)</a></h3>
+<p><code>for</code>, <code>while</code>, och <code>do-while</code> fungerar i stort sett som i JavaScript.
+<code>foreach</code> är specifikt designad för att loopa över arrayer och objekt och täcks i detalj i <code>array-loopar.md</code>.</p>
+<pre><code class="language-php">&lt;?php
+// for-loop
+for ($i = 0; $i &lt; 5; $i++) {
+    echo "i är $i\n";
+}
+
+// while-loop
+$j = 0;
+while ($j &lt; 3) {
+    echo "j är $j\n";
+    $j++;
+}
+
+// do-while loop (körs minst en gång)
+$k = 5;
+do {
+    echo "k är $k\n"; // Körs en gång
+    $k++;
+} while ($k &lt; 5);
+?&gt;
+</code></pre>
+<h2 id="funktioner-1"><a class="header" href="#funktioner-1">Funktioner</a></h2>
+<p>Att definiera och anropa funktioner liknar JavaScript, men med PHP-syntax.</p>
+<pre><code class="language-php">&lt;?php
+// Definiera en funktion
+function greet($name) {
+    echo "Hej, " . $name . "!";
+}
+
+// Anropa funktionen
+greet("Anna"); // Output: Hej, Anna!
+
+// Funktion som returnerar ett värde
+function add($num1, $num2) {
+    return $num1 + $num2;
+}
+
+$sum = add(10, 5);
+echo "\nSumman är: " . $sum; // Output: Summan är: 15
+?&gt;
+</code></pre>
+<h2 id="type-hinting-typdeklarationer"><a class="header" href="#type-hinting-typdeklarationer">Type Hinting (Typdeklarationer)</a></h2>
+<p>Sedan PHP 7 har möjligheten att deklarera förväntade typer för funktionsparametrar och returvärden förbättrats avsevärt. Detta kallas <strong>type hinting</strong> eller <strong>typdeklarationer</strong>.</p>
+<ul>
+<li><strong>Parameter Types:</strong> Ange förväntad typ före parameternamnet.</li>
+<li><strong>Return Types:</strong> Ange förväntad returtyp efter parameterlistan med ett kolon (<code>:</code>).</li>
+<li><strong>Nullable Types:</strong> Om en parameter eller returvärde kan vara antingen den specificerade typen <em>eller</em> <code>null</code>, sätt ett frågetecken (<code>?</code>) före typen (t.ex. <code>?string</code>).</li>
+<li><strong>Union Types (PHP 8+):</strong> Tillåter att en parameter eller returvärde kan vara en av flera typer, separerade med <code>|</code> (t.ex. <code>int|float</code>).</li>
+<li><strong><code>mixed</code> Type (PHP 8+):</strong> Indikerar att en parameter eller returvärde kan vara av vilken typ som helst.</li>
+<li><strong><code>void</code> Return Type (PHP 7.1+):</strong> Indikerar att en funktion inte returnerar något värde.</li>
+</ul>
+<p>Om en funktion anropas med fel typ eller returnerar fel typ (och strikta typer är aktiverade, se nedan), kastas ett <code>TypeError</code>.</p>
+<pre><code class="language-php">&lt;?php
+// Aktivera strikta typer (rekommenderas i början av filer)
+declare(strict_types=1);
+
+// Funktion med typdeklarationer
+function calculateArea(float $width, float $height): float {
+    if ($width &lt;= 0 || $height &lt;= 0) {
+        // Kanske kasta ett undantag istället
+        throw new InvalidArgumentException("Bredd och höjd måste vara större än 0");
+    }
+    return $width * $height;
+}
+
+$area = calculateArea(10.5, 5.2);
+echo "Area: " . $area . "\n"; // Output: Area: 54.6
+
+// $invalidArea = calculateArea(-10.0, 5.0); // Detta ger ett TypeError pga -10.0
+
+// Funktion med nullable return type
+function findUser(int $id): ?array { // Kan returnera array eller null
+    // ... logik för att hämta användare ...
+    if ($id === 1) {
+        return ['id' =&gt; 1, 'name' =&gt; 'Anna'];
+    }
+    return null;
+}
+
+// Funktion med union type parameter och void return type
+function processValue(int|string $input): void {
+    echo "Bearbetar: " . $input . "\n";
+    // Returnerar inget
+}
+
+processValue(123);
+processValue("abc");
+?&gt;
+</code></pre>
+<p><strong><code>declare(strict_types=1);</code>:</strong> Denna deklaration, när den placeras i början av en PHP-fil, aktiverar <strong>strikt typläge</strong>. I strikt läge accepteras endast värden av <em>exakt</em> den typ som deklarerats (med några få undantag som <code>int</code> till <code>float</code>). Utan strikt läge (default), försöker PHP tvångsomvandla (coerce) värden till den förväntade typen om möjligt (t.ex. strängen <code>"10"</code> skulle accepteras för en <code>int</code>-parameter). Att använda strikta typer rekommenderas starkt för att fånga fel tidigare och göra koden mer förutsägbar.</p>
+<p>Att använda type hinting gör din PHP-kod mer robust, lättare att förstå, och hjälper utvecklingsverktyg (som IDE:er) att ge bättre assistans och felkontroll.</p>
+<p>Detta täcker de mest grundläggande syntaxelementen i PHP. Nästa steg är att se hur man interagerar med databaser (<code>sql.md</code>), hanterar sessioner (<code>sessions.md</code>) och tänker på säkerhet (<code>security.md</code>) innan vi bygger vår CRUD-applikation.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_7/php-intro.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_7/array-loop.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_7/php-intro.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_7/array-loop.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

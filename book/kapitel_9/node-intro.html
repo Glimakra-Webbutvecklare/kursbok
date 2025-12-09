@@ -1,0 +1,711 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Node.js introduktion - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="introduktion-till-nodejs"><a class="header" href="#introduktion-till-nodejs">Introduktion till Node.js</a></h1>
+<h2 id="vad-är-nodejs"><a class="header" href="#vad-är-nodejs">Vad är Node.js?</a></h2>
+<p>Node.js är en öppen källkod JavaScript-runtime-miljö som körs på serversidan. Den är byggd på Chrome's V8 JavaScript-motor och möjliggör för utvecklare att köra JavaScript-kod utanför webbläsaren. Detta innebär att du kan bygga skalbara nätverksapplikationer och servrar med samma programmeringsspråk som du använder på klientsidan.</p>
+<h2 id="historia-och-bakgrund"><a class="header" href="#historia-och-bakgrund">Historia och bakgrund</a></h2>
+<p>Node.js skapades av Ryan Dahl 2009. Innan Node.js var JavaScript främst begränsat till webbläsaren, men med introduktionen av Node.js blev det möjligt att använda JavaScript för server-side-programmering, alltså utanför en webbläsare. Detta öppnade upp för enhetlig utveckling där både frontend och backend kunde skrivas i samma språk. Node.js har sedan dess utvecklats och har nu en stor och aktiv community som bidrar till dess ekosystem.</p>
+<h2 id="varför-använda-nodejs"><a class="header" href="#varför-använda-nodejs">Varför använda Node.js?</a></h2>
+<ul>
+<li>Event-drivet och asynkront: Node.js använder en event-driven, non-blocking I/O-modell som gör den lätt och effektiv, speciellt för applikationer som behöver hantera många samtidiga anslutningar.</li>
+<li>Skalbarhet: Tack vare dess asynkrona natur är Node.js utmärkt för att bygga skalbara nätverksapplikationer.</li>
+<li>Enhetligt språk: Använd samma språk för både klient och server, vilket förenklar utvecklingsprocessen.</li>
+<li>Stort ekosystem: Med NPM (Node Package Manager) har du tillgång till ett enormt bibliotek av öppna moduler som kan användas i dina projekt.</li>
+</ul>
+<h2 id="installera-nodejs"><a class="header" href="#installera-nodejs">Installera Node.js</a></h2>
+<ul>
+<li>Steg-för-steg-guide för att installera Node.js på Windows, macOS och Linux med hjälp av Node Version Manager.</li>
+</ul>
+<h2 id="din-första-nodejs-applikation"><a class="header" href="#din-första-nodejs-applikation">Din första Node.js-applikation</a></h2>
+<p>Låt oss skapa en enkel “Hello World”-applikation som körs i terminalen.</p>
+<ol>
+<li>Öppna en textredigerare och skapa en fil kallad app.js.</li>
+<li>Skriv följande kod i filen</li>
+</ol>
+<pre><code class="language-js editable">console.log('Hello, World!');
+</code></pre>
+<ol start="3">
+<li>Spara Filen och öppna en terminal</li>
+<li>Kör programmet med kommandot</li>
+</ol>
+<pre><code class="language-bash">node app.js
+</code></pre>
+<p>Du bör se <code>Hello, World!</code> skrivet i terminalen.</p>
+<h2 id="grundläggande-koncept-i-nodejs"><a class="header" href="#grundläggande-koncept-i-nodejs">Grundläggande koncept i Node.js</a></h2>
+<h3 id="globala-objekt-och-modulsystem-skillnader"><a class="header" href="#globala-objekt-och-modulsystem-skillnader">Globala objekt och modulsystem-skillnader</a></h3>
+<p>Node.js har flera globala objekt som är tillgängliga överallt i din applikation:</p>
+<p><strong>Tillgängliga i både CommonJS och ES6 Modules:</strong></p>
+<ul>
+<li><code>global</code>: Motsvarigheten till <code>window</code> i webbläsaren</li>
+<li><code>process</code>: Ger information om och kontroll över den aktuella Node.js-processen</li>
+<li><code>console</code>: För utskrift och debugging</li>
+<li><code>Buffer</code>: För hantering av binär data</li>
+</ul>
+<p><strong>Endast i CommonJS:</strong></p>
+<ul>
+<li><code>__dirname</code>: Ger den fullständiga sökvägen till den katalog där den aktuella filen befinner sig</li>
+<li><code>__filename</code>: Ger den fullständiga sökvägen till den aktuella filen</li>
+<li><code>require</code>: För att importera moduler</li>
+<li><code>module</code>: Information om den aktuella modulen</li>
+<li><code>exports</code>: För att exportera från modulen</li>
+</ul>
+<p><strong>ES6 Modules alternativ:</strong></p>
+<pre><code class="language-js">// I ES6 modules, använd import.meta för liknande funktionalitet
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+console.log('Current file:', __filename);
+console.log('Current directory:', __dirname);
+</code></pre>
+<h3 id="modulsystem-i-nodejs"><a class="header" href="#modulsystem-i-nodejs">Modulsystem i Node.js</a></h3>
+<p>Node.js stöder två huvudsakliga modulsystem:</p>
+<h4 id="commonjs-traditionellt"><a class="header" href="#commonjs-traditionellt">CommonJS (traditionellt)</a></h4>
+<pre><code class="language-js">const fs = require('fs');
+const path = require('path');
+</code></pre>
+<h4 id="es6-modules-modernt-och-rekommenderat"><a class="header" href="#es6-modules-modernt-och-rekommenderat">ES6 Modules (modernt och rekommenderat)</a></h4>
+<pre><code class="language-js">import fs from 'fs';
+import path from 'path';
+</code></pre>
+<h3 id="varför-es6-modules-är-bättre"><a class="header" href="#varför-es6-modules-är-bättre">Varför ES6 Modules är bättre</a></h3>
+<p>ES6 Modules (ECMAScript Modules) är den moderna standarden för JavaScript-moduler och har flera fördelar:</p>
+<p><strong>1. Standardiserat och framtidssäkert</strong></p>
+<ul>
+<li>Del av JavaScript-standarden (ECMAScript)</li>
+<li>Samma syntax i både Node.js och webbläsare</li>
+<li>Bättre långsiktig kompatibilitet</li>
+</ul>
+<p><strong>2. Statisk analys</strong></p>
+<pre><code class="language-js">// ES6 imports kan analyseras vid byggtid
+import { readFile, writeFile } from 'fs/promises';
+
+// CommonJS require() körs vid runtime
+const { readFile, writeFile } = require('fs/promises');
+</code></pre>
+<p><strong>3. Bättre prestanda</strong></p>
+<ul>
+<li>Tree shaking (oanvänd kod kan tas bort)</li>
+<li>Optimering vid byggtid</li>
+<li>Mindre bundle-storlek</li>
+</ul>
+<p><strong>4. Tydligare syntax</strong></p>
+<pre><code class="language-js">// ES6 - tydligt vad som importeras
+import { createServer } from 'http';
+import express from 'express';
+
+// CommonJS - mindre tydligt
+const { createServer } = require('http');
+const express = require('express');
+</code></pre>
+<p><strong>5. Asynkron laddning</strong></p>
+<pre><code class="language-js">// Dynamisk import (ES6)
+const module = await import('./myModule.js');
+
+// Top-level await stöds i ES6 modules
+const data = await fetch('/api/data');
+</code></pre>
+<h3 id="konfigurera-es6-modules"><a class="header" href="#konfigurera-es6-modules">Konfigurera ES6 Modules</a></h3>
+<p>För att använda ES6 modules i Node.js, lägg till i din <code>package.json</code>:</p>
+<pre><code class="language-json">{
+  "type": "module"
+}
+</code></pre>
+<p>Eller använd <code>.mjs</code> filextension:</p>
+<pre><code class="language-bash"># Filer med .mjs använder automatiskt ES6 modules
+node app.mjs
+</code></pre>
+<h2 id="inbyggda-moduler"><a class="header" href="#inbyggda-moduler">Inbyggda moduler</a></h2>
+<p>Node.js kommer med flera inbyggda moduler som kan användas utan att installera något ytterligare.</p>
+<h3 id="fs-file-system"><a class="header" href="#fs-file-system">fs (File System)</a></h3>
+<p>Används för att interagera med filsystemet.</p>
+<ul>
+<li>Läsa från en fil:</li>
+</ul>
+<pre><code class="language-js">import fs from 'fs';
+
+fs.readFile('text.txt', 'utf8', (err, data) =&gt; {
+  if (err) throw err;
+  console.log(data);
+});
+</code></pre>
+<ul>
+<li>Skriva till en fil:</li>
+</ul>
+<pre><code class="language-js">fs.writeFile('output.txt', 'Detta är en testfil.', (err) =&gt; {
+  if (err) throw err;
+  console.log('Filen har sparats!');
+});
+</code></pre>
+<h3 id="http"><a class="header" href="#http">http</a></h3>
+<p>Används för att skapa en HTTP-server.</p>
+<pre><code class="language-js">import { createServer } from 'http';
+
+const server = createServer((req, res) =&gt; {
+  res.statusCode = 200;
+  res.setHeader('Content-Type', 'text/plain');
+  res.end('Hello, World!\n');
+});
+
+server.listen(3000, () =&gt; {
+  console.log('Servern körs på http://localhost:3000/');
+});
+</code></pre>
+<h3 id="path"><a class="header" href="#path">path</a></h3>
+<p>Används för att hantera fil- och sökvägar.</p>
+<pre><code class="language-js">import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+// I ES6 modules behöver vi skapa __dirname manuellt
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const fullPath = path.join(__dirname, 'folder', 'file.txt');
+console.log(fullPath);
+
+// Alternativt, använd path.resolve för absoluta sökvägar
+const absolutePath = path.resolve('folder', 'file.txt');
+console.log(absolutePath);
+</code></pre>
+<h3 id="os"><a class="header" href="#os">os</a></h3>
+<p>Ger information om operativsystemet.</p>
+<pre><code class="language-js">import os from 'os';
+
+console.log('OS Platform:', os.platform());
+console.log('CPU Architecture:', os.arch());
+console.log('Total Memory:', os.totalmem());
+</code></pre>
+<h2 id="event-driven-programmering"><a class="header" href="#event-driven-programmering">Event-driven programmering</a></h2>
+<p>Node.js är baserat på en event-driven arkitektur, vilket innebär att applikationen kan reagera på händelser utan att blockera huvudtråden.</p>
+<p>TODO: Lägg till bild av - Illustration av Node.js Event Loop</p>
+<h2 id="eventemitter"><a class="header" href="#eventemitter">EventEmitter</a></h2>
+<p>EventEmitter är en klass i Node.js som tillåter skapandet och hanteringen av anpassade händelser.</p>
+<pre><code class="language-js">import { EventEmitter } from 'events';
+
+class MyEmitter extends EventEmitter {}
+
+const myEmitter = new MyEmitter();
+
+// Lyssna på en händelse
+myEmitter.on('event', () =&gt; {
+  console.log('En händelse inträffade!');
+});
+
+// Utlösa händelsen
+myEmitter.emit('event');
+</code></pre>
+<p><strong>Praktiskt exempel med EventEmitter:</strong></p>
+<pre><code class="language-js">import { EventEmitter } from 'events';
+
+class FileProcessor extends EventEmitter {
+  processFile(filename) {
+    this.emit('start', filename);
+    
+    // Simulera filbearbetning
+    setTimeout(() =&gt; {
+      this.emit('progress', 50);
+      
+      setTimeout(() =&gt; {
+        this.emit('complete', filename);
+      }, 1000);
+    }, 1000);
+  }
+}
+
+const processor = new FileProcessor();
+
+processor.on('start', (filename) =&gt; {
+  console.log(`Börjar bearbeta: ${filename}`);
+});
+
+processor.on('progress', (percent) =&gt; {
+  console.log(`Framsteg: ${percent}%`);
+});
+
+processor.on('complete', (filename) =&gt; {
+  console.log(`Klar med: ${filename}`);
+});
+
+processor.processFile('document.pdf');
+</code></pre>
+<h2 id="asynkron-programmering-i-nodejs"><a class="header" href="#asynkron-programmering-i-nodejs">Asynkron programmering i Node.js</a></h2>
+<h3 id="callbacks"><a class="header" href="#callbacks">Callbacks</a></h3>
+<p>Callbacks är funktioner som skickas som argument till andra funktioner och anropas när en viss operation är klar.</p>
+<pre><code class="language-js">function fetchData(callback) {
+  setTimeout(() =&gt; {
+    callback('Data hämtad');
+  }, 1000);
+}
+
+fetchData((data) =&gt; {
+  console.log(data);
+});
+</code></pre>
+<h3 id="promises"><a class="header" href="#promises">Promises</a></h3>
+<p>Promises underlättar hanteringen av asynkron kod genom att kedja operationer och hantera fel på ett mer strukturerat sätt.</p>
+<pre><code class="language-js">function fetchData() {
+  return new Promise((resolve, reject) =&gt; {
+    setTimeout(() =&gt; {
+      resolve('Data hämtad');
+    }, 1000);
+  });
+}
+
+fetchData()
+  .then((data) =&gt; {
+    console.log(data);
+  })
+  .catch((err) =&gt; {
+    console.error(err);
+  });
+</code></pre>
+<h3 id="asyncawait"><a class="header" href="#asyncawait">Async/Await</a></h3>
+<p>Async/Await är syntaktiskt socker ovanpå Promises och gör asynkron kod ser synkron ut.</p>
+<pre><code class="language-js">async function getData() {
+  try {
+    const data = await fetchData();
+    console.log(data);
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+getData();
+</code></pre>
+<h2 id="npm--node-package-manager"><a class="header" href="#npm--node-package-manager">NPM – Node Package Manager</a></h2>
+<h3 id="vad-är-npm"><a class="header" href="#vad-är-npm">Vad är NPM?</a></h3>
+<p>NPM är en pakethanterare för Node.js som låter dig installera och dela paket (bibliotek och moduler).</p>
+<p>Installera paket</p>
+<ul>
+<li>Lokalt paket:</li>
+</ul>
+<pre><code class="language-bash">npm install package-name
+</code></pre>
+<ul>
+<li>Globalt paket:</li>
+</ul>
+<pre><code class="language-bash">npm install -g package-name
+</code></pre>
+<h3 id="packagejson"><a class="header" href="#packagejson">package.json</a></h3>
+<p>package.json är en fil som innehåller metadata om ditt projekt och dess beroenden.</p>
+<p>För att skapa en package.json kan du använda:</p>
+<pre><code class="language-bash">npm init
+</code></pre>
+<p>Följ instruktionerna för att konfigurera ditt projekt.</p>
+<h2 id="skapa-en-cli-applikation"><a class="header" href="#skapa-en-cli-applikation">Skapa en CLI-applikation</a></h2>
+<p>Låt oss skapa en enkel kommandoradsapplikation som hälsar på användaren.
+1.	Skapa en fil kallad <code>greet.js</code>.
+2.	Skriv följande kod:</p>
+<pre><code class="language-js">import readline from 'readline';
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+rl.question('Vad heter du? ', (answer) =&gt; {
+  console.log(`Hej, ${answer}!`);
+  rl.close();
+});
+</code></pre>
+<ol start="3">
+<li>Kör applikationen:</li>
+</ol>
+<pre><code class="language-bash">node greet.js
+</code></pre>
+<h2 id="debugging-i-nodejs"><a class="header" href="#debugging-i-nodejs">Debugging i Node.js</a></h2>
+<h3 id="consolelog"><a class="header" href="#consolelog">console.log</a></h3>
+<p>Det enklaste sättet att debugga är att använda console.log() för att skriva ut variabler och meddelanden.</p>
+<pre><code class="language-js">const x = 5;
+console.log('Värdet av x är:', x);
+</code></pre>
+<h3 id="debugger"><a class="header" href="#debugger">Debugger</a></h3>
+<p>Node.js har en inbyggd debugger som du kan använda genom att starta din applikation med --inspect flaggan.</p>
+<pre><code class="language-bash">node --inspect app.js
+</code></pre>
+<p>Du kan sedan ansluta till debuggern via Chrome DevTools genom att öppna chrome://inspect i Chrome.</p>
+<h2 id="best-practices"><a class="header" href="#best-practices">Best Practices</a></h2>
+<h3 id="kodstruktur"><a class="header" href="#kodstruktur">Kodstruktur</a></h3>
+<ul>
+<li>Moduler: Dela upp din kod i mindre, återanvändbara moduler.</li>
+<li>Mappar: Organisera filer i logiska mappar som controllers, models, views.</li>
+</ul>
+<h3 id="felhantering"><a class="header" href="#felhantering">Felhantering</a></h3>
+<ul>
+<li>Använd try...catch block för att fånga synkrona fel.</li>
+<li>Hantera asynkrona fel i catch blocket när du använder Promises.</li>
+<li>Skapa en global felhanterare om möjligt.</li>
+</ul>
+<h3 id="prestandaoptimering"><a class="header" href="#prestandaoptimering">Prestandaoptimering</a></h3>
+<ul>
+<li>Använd asynkrona metoder: För att undvika blockering av huvudtråden.</li>
+<li>Cache: Implementera caching där det är lämpligt.</li>
+<li>Strömlinjeforma kod: Undvik onödiga beräkningar och minnesanvändning.</li>
+</ul>
+<h2 id="praktiska-övningar"><a class="header" href="#praktiska-övningar">Praktiska övningar</a></h2>
+<h3 id="Övning-1-filhantering"><a class="header" href="#Övning-1-filhantering">Övning 1: Filhantering</a></h3>
+<p>Skapa en applikation som läser från en textfil input.txt och skriver ut innehållet i terminalen.</p>
+<pre><code class="language-js">import fs from 'fs';
+
+fs.readFile('input.txt', 'utf8', (err, data) =&gt; {
+  if (err) {
+    console.error('Fel vid läsning av fil:', err.message);
+    return;
+  }
+  console.log(data);
+});
+</code></pre>
+<p><strong>Alternativ med Promises (rekommenderat):</strong></p>
+<pre><code class="language-js">import { readFile } from 'fs/promises';
+
+try {
+  const data = await readFile('input.txt', 'utf8');
+  console.log(data);
+} catch (err) {
+  console.error('Fel vid läsning av fil:', err.message);
+}
+</code></pre>
+<h3 id="Övning-2-bygga-en-http-server"><a class="header" href="#Övning-2-bygga-en-http-server">Övning 2: Bygga en HTTP-server</a></h3>
+<p>Utveckla en enkel webbsida som serveras via Node.js inbyggda http-modul.</p>
+<pre><code class="language-js">import { createServer } from 'http';
+
+const server = createServer((req, res) =&gt; {
+  res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'});
+  res.write('&lt;h1&gt;Välkommen till min webbserver!&lt;/h1&gt;');
+  res.end();
+});
+
+server.listen(3000, () =&gt; {
+  console.log('Servern körs på http://localhost:3000/');
+});
+</code></pre>
+<p><strong>Utökad version med routing:</strong></p>
+<pre><code class="language-js">import { createServer } from 'http';
+import { parse } from 'url';
+
+const server = createServer((req, res) =&gt; {
+  const parsedUrl = parse(req.url, true);
+  const path = parsedUrl.pathname;
+  
+  res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'});
+  
+  switch (path) {
+    case '/':
+      res.write('&lt;h1&gt;Startsida&lt;/h1&gt;&lt;p&gt;Välkommen!&lt;/p&gt;');
+      break;
+    case '/about':
+      res.write('&lt;h1&gt;Om oss&lt;/h1&gt;&lt;p&gt;Detta är en enkel Node.js server.&lt;/p&gt;');
+      break;
+    default:
+      res.writeHead(404);
+      res.write('&lt;h1&gt;404 - Sidan hittades inte&lt;/h1&gt;');
+  }
+  
+  res.end();
+});
+
+server.listen(3000, () =&gt; {
+  console.log('Servern körs på http://localhost:3000/');
+});
+</code></pre>
+<h3 id="Övning-3-asynkron-datahantering"><a class="header" href="#Övning-3-asynkron-datahantering">Övning 3: Asynkron datahantering</a></h3>
+<p>Använd fs-modulen för att läsa och skriva data asynkront med Promises.</p>
+<pre><code class="language-js">import { readFile, writeFile } from 'fs/promises';
+import { existsSync } from 'fs';
+
+async function processFiles() {
+  try {
+    // Kontrollera om filen finns
+    if (!existsSync('input.txt')) {
+      console.log('input.txt finns inte, skapar en ny fil...');
+      await writeFile('input.txt', 'Detta är ursprungsdata\nRad 2\nRad 3');
+    }
+    
+    // Läs från fil
+    const data = await readFile('input.txt', 'utf8');
+    console.log('Läst data:', data);
+    
+    // Bearbeta data (lägg till tidsstämpel)
+    const processedData = data + `\nBearbetad: ${new Date().toISOString()}`;
+    
+    // Skriv till ny fil
+    await writeFile('output.txt', processedData);
+    console.log('Data har bearbetats och sparats till output.txt');
+    
+  } catch (error) {
+    console.error('Fel vid filhantering:', error.message);
+  }
+}
+
+processFiles();
+</code></pre>
+<p><strong>Bonus: Hantera flera filer parallellt</strong></p>
+<pre><code class="language-js">import { readFile, writeFile } from 'fs/promises';
+
+async function processMultipleFiles() {
+  const files = ['file1.txt', 'file2.txt', 'file3.txt'];
+  
+  try {
+    // Läs alla filer parallellt
+    const fileContents = await Promise.all(
+      files.map(file =&gt; readFile(file, 'utf8').catch(() =&gt; `Fel: ${file} kunde inte läsas`))
+    );
+    
+    // Kombinera innehållet
+    const combined = fileContents.join('\n---\n');
+    
+    // Skriv till resultatfil
+    await writeFile('combined.txt', combined);
+    console.log('Alla filer har kombinerats till combined.txt');
+    
+  } catch (error) {
+    console.error('Fel vid bearbetning:', error.message);
+  }
+}
+</code></pre>
+<h2 id="sammanfattning"><a class="header" href="#sammanfattning">Sammanfattning</a></h2>
+<p>I denna introduktion har vi gått igenom grunderna i Node.js och fokuserat på moderna utvecklingsmetoder:</p>
+<p><strong>Vad vi har lärt oss:</strong></p>
+<ul>
+<li>Node.js som JavaScript-runtime för serversidan</li>
+<li>Skillnaden mellan CommonJS och ES6 Modules</li>
+<li>Varför ES6 Modules är det moderna valet</li>
+<li>Inbyggda moduler som <code>fs</code>, <code>http</code>, <code>path</code> och <code>os</code></li>
+<li>Event-driven programmering med EventEmitter</li>
+<li>Asynkron programmering med callbacks, Promises och async/await</li>
+<li>NPM för pakethantering</li>
+<li>Praktiska exempel och övningar</li>
+</ul>
+<p><strong>Viktiga takeaways:</strong></p>
+<ul>
+<li>Använd ES6 Modules (<code>import</code>/<code>export</code>) för nya projekt</li>
+<li>Konfigurera <code>"type": "module"</code> i <code>package.json</code></li>
+<li>Föredra <code>fs/promises</code> över callback-baserade fs-metoder</li>
+<li>Använd <code>async/await</code> för tydligare asynkron kod</li>
+<li>EventEmitter är kraftfullt för event-driven arkitektur</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_9/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_9/http-webserver.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_9/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_9/http-webserver.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,289 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Vad är webbutveckling? - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="vad-är-webbutveckling"><a class="header" href="#vad-är-webbutveckling">Vad är webbutveckling?</a></h1>
+<p>Du använder webben varje dag – för att söka information, kommunicera, handla, eller titta på videor. Men har du någonsin stannat upp och funderat på <em>hur</em> allt detta fungerar? Hur skapas webbplatserna och applikationerna som gör detta möjligt?</p>
+<p>Svaret är <strong>webbutveckling</strong>. Det är processen att designa, bygga och underhålla webbplatser och webbapplikationer. Det handlar om att kombinera teknisk skicklighet med kreativ problemlösning för att skapa de digitala upplevelser vi tar för givna.</p>
+<p><strong>Varför är det relevant för dig?</strong> Att förstå grunderna i webbutveckling ger dig inte bara insikt i hur en stor del av den moderna världen fungerar, utan öppnar också dörrar till att själv kunna skapa och forma digitalt innehåll och verktyg.</p>
+<h2 id="två-sidor-av-samma-mynt-frontend-och-backend"><a class="header" href="#två-sidor-av-samma-mynt-frontend-och-backend">Två sidor av samma mynt: Frontend och Backend</a></h2>
+<p>Webbutveckling brukar delas upp i två huvudsakliga områden:</p>
+<ol>
+<li>
+<p><strong>Frontend (Klientsidan):</strong> Tänk på detta som allt du <em>ser</em> och <em>interagerar med</em> i din webbläsare. Det är layouten, färgerna, knapparna, formulären och animationerna. Frontend-utvecklare använder språk som:</p>
+<ul>
+<li><strong>HTML (HyperText Markup Language):</strong> Byggstenarna som strukturerar innehållet (rubriker, paragrafer, bilder, länkar).</li>
+<li><strong>CSS (Cascading Style Sheets):</strong> Reglerna som bestämmer hur innehållet ska se ut (färger, typsnitt, layout).</li>
+<li><strong>JavaScript:</strong> Språket som gör sidan interaktiv och dynamisk (hanterar klick, uppdaterar innehåll utan att ladda om sidan, skapar animationer).</li>
+</ul>
+</li>
+<li>
+<p><strong>Backend (Serversidan):</strong> Detta är "bakom kulisserna". Backend hanterar logiken, databaserna och allt som sker på servern för att webbplatsen ska fungera. Tänk på det som motorn i en bil – du ser den inte direkt, men den är avgörande. Backend-utvecklare arbetar med:</p>
+<ul>
+<li><strong>Serverspråk:</strong> Språk som PHP (som vi fokuserar på i denna kurs), Python, Ruby, Node.js (JavaScript på servern), Java, m.fl. Dessa språk hanterar inkommande förfrågningar, bearbetar data och genererar svar.</li>
+<li><strong>Databaser:</strong> System som MySQL, PostgreSQL, MongoDB för att lagra och hämta information (t.ex. användardata, produkter, inlägg).</li>
+<li><strong>Servern:</strong> Datorn där webbplatsens kod körs och dess data lagras.</li>
+</ul>
+</li>
+</ol>
+<p><strong>Analogi:</strong> Tänk på en restaurang. Frontend är matsalen – inredningen, menyn du läser, hur servitören interagerar med dig. Backend är köket – kocken som lagar maten (processar data), recepten (logiken), och skafferiet (databasen).</p>
+<pre class="mermaid">graph TD
+    User[&quot;Användare&quot;] --&gt;|&quot;Förfrågan (Request)&quot;| Browser[&quot;Webbläsare/Klient&quot;]
+    Browser --&gt;|&quot;HTTP(S) Request&quot;| Server[&quot;Webbserver/Backend&quot;]
+    Server --&gt;|&quot;Bearbetar &amp; hämtar data&quot;| Database[(&quot;Databas&quot;)]
+    Database --&gt;|&quot;Data&quot;| Server
+    Server --&gt;|&quot;HTTP(S) Response (HTML, CSS, JS)&quot;| Browser
+    Browser --&gt;|&quot;Renderar sidan&quot;| User
+
+    subgraph Frontend [&quot;Frontend&quot;]
+        Browser
+    end
+
+    subgraph Backend [&quot;Backend&quot;]
+        Server
+        Database
+    end
+</pre>
+<p><em>Diagram: Förenklad bild av hur en webbförfrågan (request) hanteras.</em></p>
+<h2 id="hur-fungerar-det-request-response-cycle"><a class="header" href="#hur-fungerar-det-request-response-cycle">Hur fungerar det? Request-Response Cycle</a></h2>
+<p>När du skriver in en webbadress (t.ex. <code>www.example.com</code>) eller klickar på en länk, händer följande i stora drag:</p>
+<ol>
+<li><strong>Förfrågan (Request):</strong> Din webbläsare (klienten) skickar en förfrågan (HTTP request) över internet till den server där webbplatsen finns lagrad. Adressen översätts först från ett domännamn (som <code>www.example.com</code>) till en IP-adress via DNS (Domain Name System), ungefär som en telefonkatalog för internet.</li>
+<li><strong>Bearbetning (Processing):</strong> Servern tar emot förfrågan. Om det är en enkel sida kan den direkt skicka tillbaka HTML-, CSS- och JavaScript-filer. Om det krävs logik (t.ex. logga in, hämta data) kör backend-koden, interagerar kanske med en databas.</li>
+<li><strong>Svar (Response):</strong> Servern skickar tillbaka ett svar (HTTP response) till din webbläsare. Detta svar innehåller de filer och data som behövs för att visa sidan (oftast HTML, CSS, JavaScript).</li>
+<li><strong>Rendering:</strong> Din webbläsare tar emot svaret, tolkar filerna och "ritar upp" webbsidan på din skärm.</li>
+</ol>
+<p>Denna process, från förfrågan till svar, kallas <strong>Request-Response Cycle</strong> och är grunden för hur webben fungerar.</p>
+<h2 id="fullstack-utvecklare"><a class="header" href="#fullstack-utvecklare">Fullstack-utvecklare</a></h2>
+<p>En person som behärskar både frontend- och backend-utveckling kallas ofta <strong>Fullstack-utvecklare</strong>. De har en bred förståelse för hela processen och kan bygga kompletta webbapplikationer på egen hand.</p>
+<h2 id="viktiga-begrepp-ordlista"><a class="header" href="#viktiga-begrepp-ordlista">Viktiga Begrepp (Ordlista)</a></h2>
+<ul>
+<li><strong>HTTP/HTTPS (HyperText Transfer Protocol/Secure):</strong> Protokollet (regelverket) för hur data skickas mellan klient och server på webben. HTTPS är den krypterade, säkra versionen.</li>
+<li><strong>URL (Uniform Resource Locator):</strong> Webbadressen som identifierar en specifik resurs (t.ex. en webbsida) på internet.</li>
+<li><strong>DNS (Domain Name System):</strong> Internets "telefonkatalog" som översätter läsbara domännamn till numeriska IP-adresser.</li>
+<li><strong>IP-adress (Internet Protocol Address):</strong> En unik numerisk adress för varje enhet ansluten till internet (t.ex. <code>192.168.1.1</code>).</li>
+<li><strong>API (Application Programming Interface):</strong> Ett gränssnitt som låter olika program eller systemdelar kommunicera med varandra.</li>
+</ul>
+<h2 id="sammanfattning"><a class="header" href="#sammanfattning">Sammanfattning</a></h2>
+<p>Webbutveckling är fältet där man skapar och underhåller webbplatser och applikationer. Det delas huvudsakligen upp i <strong>Frontend</strong> (det användaren ser och interagerar med, byggt med HTML, CSS, JavaScript) och <strong>Backend</strong> (logiken, databasen och servern som driver allt, ofta med språk som PHP). Förståelsen för hur klient och server kommunicerar via HTTP(S) i en <strong>Request-Response Cycle</strong> är central.</p>
+<p>I nästa del tittar vi närmare på webbens historia och framtid.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_1/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_1/webbens-historia-och-framtid.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_1/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_1/webbens-historia-och-framtid.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

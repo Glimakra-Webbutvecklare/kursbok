@@ -1,0 +1,1329 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Testning med Jest - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="testning-med-jest"><a class="header" href="#testning-med-jest">Testning med Jest</a></h1>
+<h2 id="varför-testa-kod"><a class="header" href="#varför-testa-kod">Varför testa kod?</a></h2>
+<p>När du skriver kod behöver du veta att den fungerar som förväntat. Manuell testning (köra programmet och testa manuellt) är tidskrävande och lätt att glömma bort när du gör ändringar. <strong>Automatiserad testning</strong> låter dig verifiera att din kod fungerar korrekt, snabbt och konsekvent.</p>
+<pre class="mermaid">graph LR
+    A[Skriv kod] --&gt; B[Skriv test]
+    B --&gt; C[Kör test]
+    C --&gt; D{Passar?}
+    D --&gt;|Ja| E[Refaktorisera]
+    D --&gt;|Nej| F[Fixa kod]
+    F --&gt; C
+    E --&gt; A
+    
+    style D fill:#f9f,stroke:#333,stroke-width:2px
+    style C fill:#9f9,stroke:#333,stroke-width:2px
+</pre>
+<h3 id="fördelar-med-testning"><a class="header" href="#fördelar-med-testning">Fördelar med testning</a></h3>
+<ul>
+<li><strong>Säkerhet vid ändringar</strong>: Test hjälper dig att upptäcka om ändringar bryter befintlig funktionalitet</li>
+<li><strong>Dokumentation</strong>: Test visar hur koden ska användas</li>
+<li><strong>Refaktorisering</strong>: Du kan förbättra koden utan att oroa dig för att bryta något</li>
+<li><strong>Snabbare utveckling</strong>: Mindre tid åt manuell testning</li>
+<li><strong>Självförtroende</strong>: Veta att din kod fungerar ger trygghet</li>
+</ul>
+<h2 id="vad-är-jest"><a class="header" href="#vad-är-jest">Vad är Jest?</a></h2>
+<p>Jest är ett populärt testramverk (test framework) för JavaScript, särskilt utvecklat för att fungera bra med Node.js, React och andra moderna JavaScript-projekt. Jest kommer med många funktioner inbyggda, så du behöver inte installera många extra paket.</p>
+<h3 id="varför-jest"><a class="header" href="#varför-jest">Varför Jest?</a></h3>
+<ul>
+<li>✅ <strong>Enkel setup</strong>: Fungerar direkt utan mycket konfiguration</li>
+<li>✅ <strong>Snabb</strong>: Optimerad för prestanda</li>
+<li>✅ <strong>Bra felmeddelanden</strong>: Tydliga meddelanden när test misslyckas</li>
+<li>✅ <strong>Mocks och spies</strong>: Inbyggt stöd för att testa isolerat</li>
+<li>✅ <strong>Code coverage</strong>: Se hur mycket av koden som testas</li>
+<li>✅ <strong>Watch mode</strong>: Automatisk omkörning när filer ändras</li>
+</ul>
+<h2 id="installation-och-setup"><a class="header" href="#installation-och-setup">Installation och Setup</a></h2>
+<h3 id="steg-1-installera-jest"><a class="header" href="#steg-1-installera-jest">Steg 1: Installera Jest</a></h3>
+<pre><code class="language-bash"># Initiera projekt om du inte redan har package.json
+npm init -y
+
+# Installera Jest som utvecklingsberoende
+npm install --save-dev jest
+</code></pre>
+<h3 id="steg-2-konfigurera-packagejson"><a class="header" href="#steg-2-konfigurera-packagejson">Steg 2: Konfigurera package.json</a></h3>
+<p>För att använda ES6-moduler behöver du först lägga till en rad i <code>package.json</code>:</p>
+<pre><code class="language-json">{
+  "name": "mitt-test-projekt",
+  "version": "1.0.0",
+  "type": "module"
+}
+</code></pre>
+<p><strong>Vad gör detta?</strong></p>
+<ul>
+<li><code>"type": "module"</code> aktiverar ES6-moduler (import/export) i hela projektet</li>
+</ul>
+<p>Nu behöver du lägga till ett test-script (script för att köra test). Vad behöver du tänka på?</p>
+<ul>
+<li>Jest behöver köras med en speciell flagga för att fungera med ES6-moduler</li>
+<li>Scriptet ska ligga under <code>"scripts"</code> i <code>package.json</code></li>
+</ul>
+<p><strong>Din uppgift</strong>: Lägg till ett <code>"scripts"</code>-objekt med en <code>"test"</code>-property. Värdet ska köra Jest med flaggan <code>--experimental-vm-modules</code>. Titta på Node.js-kommandot i Steg 1 för att se hur Jest körs.</p>
+<details>
+<summary>Visa lösning</summary>
+<pre><code class="language-json">{
+  "name": "mitt-test-projekt",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch"
+  }
+}
+</code></pre>
+<p><strong>Förklaring</strong>:</p>
+<ul>
+<li><code>--experimental-vm-modules</code>: Behövs för att Jest ska fungera med ES6-moduler</li>
+<li><code>test:watch</code>: Kör test automatiskt när filer ändras (valfritt men användbart)</li>
+</ul>
+</details>
+<h3 id="steg-3-skapa-din-första-test"><a class="header" href="#steg-3-skapa-din-första-test">Steg 3: Skapa din första test</a></h3>
+<p>Låt oss börja enkelt. Skapa en fil <code>math.js</code> med en funktion att testa:</p>
+<pre><code class="language-javascript">// math.js
+export function add(a, b) {
+  return a + b;
+}
+</code></pre>
+<p>Nu skapar du din första testfil <code>math.test.js</code>. Tänk på:</p>
+<ul>
+<li>Du behöver importera funktionen från <code>math.js</code></li>
+<li>Använd <code>test()</code> för att definiera ett test</li>
+<li>Använd <code>expect()</code> för att verifiera resultatet</li>
+</ul>
+<p><strong>Din uppgift</strong>: Skapa ett test som verifierar att <code>add(2, 3)</code> returnerar <code>5</code>.</p>
+<details>
+<summary>Visa lösning</summary>
+<pre><code class="language-javascript">// math.test.js
+import { add } from './math.js';
+
+test('adderar två tal korrekt', () =&gt; {
+  expect(add(2, 3)).toBe(5);
+});
+</code></pre>
+<p><strong>Förklaring</strong>:</p>
+<ul>
+<li><code>import { add }</code>: Importerar funktionen från math.js</li>
+<li><code>test('beskrivning', ...)</code>: Skapar ett testfall med en beskrivning</li>
+<li><code>expect(add(2, 3))</code>: Kör funktionen och förbereder för verifiering</li>
+<li><code>.toBe(5)</code>: Verifierar att resultatet är exakt 5</li>
+</ul>
+</details>
+<p>Kör testet:</p>
+<pre><code class="language-bash">npm test
+</code></pre>
+<p>Du bör se något som:</p>
+<pre><code>PASS  ./math.test.js
+  ✓ adderar två tal korrekt
+
+Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+</code></pre>
+<p><strong>Bra jobbat!</strong> Du har skapat ditt första test. Nu är det din tur att öva.</p>
+<h4 id="Övning-lägg-till-fler-funktioner-och-test"><a class="header" href="#Övning-lägg-till-fler-funktioner-och-test">Övning: Lägg till fler funktioner och test</a></h4>
+<ol>
+<li>
+<p><strong>Lägg till <code>subtract()</code> i <code>math.js</code></strong>:</p>
+<ul>
+<li>Skapa funktionen som subtraherar två tal</li>
+<li>Lägg till ett test som verifierar <code>subtract(5, 3)</code> blir <code>2</code></li>
+</ul>
+</li>
+<li>
+<p><strong>Lägg till <code>multiply()</code> i <code>math.js</code></strong>:</p>
+<ul>
+<li>Skapa funktionen som multiplicerar två tal</li>
+<li>Lägg till ett test som verifierar <code>multiply(4, 3)</code> blir <code>12</code></li>
+</ul>
+</li>
+<li>
+<p><strong>Utmaning: Lägg till <code>divide()</code> med felhantering</strong>:</p>
+<ul>
+<li>Funktionen ska dividera två tal</li>
+<li>Om den andra parametern är 0, ska den kasta ett fel med <code>throw new Error('Division med noll är inte tillåten')</code></li>
+<li>Skriv två test:
+<ul>
+<li>Ett som testar normal division, t.ex. <code>divide(10, 2)</code> blir <code>5</code></li>
+<li>Ett som testar att fel kastas: <code>expect(() =&gt; divide(10, 0)).toThrow('Division med noll är inte tillåten')</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p><strong>Tips</strong>: Tänk på hur du testade <code>add()</code> - använd samma struktur för de andra funktionerna!</p>
+<h2 id="grundläggande-jest-koncept"><a class="header" href="#grundläggande-jest-koncept">Grundläggande Jest-koncept</a></h2>
+<h3 id="test-struktur"><a class="header" href="#test-struktur">Test struktur</a></h3>
+<p>Du har redan använt <code>test()</code> och <code>expect()</code>. Låt oss förstå strukturen bättre:</p>
+<h4 id="test---ett-testfall"><a class="header" href="#test---ett-testfall"><code>test()</code> - Ett testfall</a></h4>
+<p><code>test()</code> (eller <code>it()</code>) definierar ett enskilt testfall:</p>
+<pre><code class="language-javascript">test('beskrivning av vad testet gör', () =&gt; {
+  // Din testkod här
+});
+</code></pre>
+<h4 id="expect---verifiering-assertion"><a class="header" href="#expect---verifiering-assertion"><code>expect()</code> - Verifiering (assertion)</a></h4>
+<p><code>expect()</code> används för att verifiera att resultatet stämmer:</p>
+<pre><code class="language-javascript">expect(actualValue).toBe(expectedValue);
+</code></pre>
+<h4 id="describe---gruppera-relaterade-test"><a class="header" href="#describe---gruppera-relaterade-test"><code>describe()</code> - Gruppera relaterade test</a></h4>
+<p>När du har flera test kan du gruppera dem med <code>describe()</code> för bättre struktur:</p>
+<pre><code class="language-javascript">describe('Matematiska funktioner', () =&gt; {
+  test('adderar två tal', () =&gt; {
+    expect(add(2, 3)).toBe(5);
+  });
+  
+  test('subtraherar två tal', () =&gt; {
+    expect(subtract(5, 3)).toBe(2);
+  });
+});
+</code></pre>
+<p><strong>Övning</strong>: Uppdatera din <code>math.test.js</code> och gruppera dina test under en <code>describe('Matematiska funktioner', ...)</code>.</p>
+<h4 id="arrange-act-assert-mönster"><a class="header" href="#arrange-act-assert-mönster">Arrange-Act-Assert mönster</a></h4>
+<p>Ett bra sätt att strukturera test är att följa Arrange-Act-Assert mönstret:</p>
+<pre><code class="language-javascript">test('beräknar dubbelt värde', () =&gt; {
+  // Arrange (Förbered) - förbered testdata
+  const input = 5;
+  const expected = 10;
+  
+  // Act (Utför) - kör funktionen
+  const result = double(input);
+  
+  // Assert (Verifiera) - kontrollera resultatet
+  expect(result).toBe(expected);
+});
+</code></pre>
+<p>Detta gör testen lättare att förstå och underhålla.</p>
+<h3 id="matchers-matchare"><a class="header" href="#matchers-matchare">Matchers (Matchare)</a></h3>
+<p>Matchers är metoder som används med <code>expect()</code> för att verifiera värden. Du har redan använt <code>.toBe()</code> - låt oss lära oss fler!</p>
+<h4 id="tobe---exakt-likhet"><a class="header" href="#tobe---exakt-likhet"><code>toBe()</code> - Exakt likhet</a></h4>
+<p>Du känner redan till <code>toBe()</code>. Den använder <code>===</code> för jämförelse:</p>
+<pre><code class="language-javascript">expect(5).toBe(5);
+expect('hej').toBe('hej');
+</code></pre>
+<p><strong>Viktigt</strong>: <code>toBe()</code> fungerar inte för objekt och arrays (de jämförs med referens, inte värde).</p>
+<p><strong>Övning</strong>: Skriv ett test som använder <code>toBe()</code> för att verifiera att två tal är lika.</p>
+<h4 id="toequal---värde-likhet-för-objekt-och-arrays"><a class="header" href="#toequal---värde-likhet-för-objekt-och-arrays"><code>toEqual()</code> - Värde-likhet för objekt och arrays</a></h4>
+<p>För att jämföra objekt och arrays använder du <code>toEqual()</code>:</p>
+<pre><code class="language-javascript">expect({ name: 'Anna' }).toEqual({ name: 'Anna' });
+expect([1, 2, 3]).toEqual([1, 2, 3]);
+</code></pre>
+<p><strong>Övning</strong>: Skapa ett objekt <code>{ age: 25 }</code> och skriv ett test som verifierar att det är lika med <code>{ age: 25 }</code> med <code>toEqual()</code>.</p>
+<h4 id="not---negering"><a class="header" href="#not---negering"><code>not</code> - Negering</a></h4>
+<p>Du kan använda <code>.not</code> för att invertera vilken matcher som helst:</p>
+<pre><code class="language-javascript">expect(5).not.toBe(3);
+expect('hej').not.toBe('adjö');
+</code></pre>
+<p><strong>Övning</strong>: Skriv ett test som verifierar att <code>10</code> inte är lika med <code>5</code>.</p>
+<h4 id="jämförelse-för-tal"><a class="header" href="#jämförelse-för-tal">Jämförelse för tal</a></h4>
+<pre><code class="language-javascript">expect(10).toBeGreaterThan(5);      // Större än
+expect(5).toBeLessThan(10);         // Mindre än
+expect(5).toBeGreaterThanOrEqual(5); // Större eller lika
+expect(5).toBeLessThanOrEqual(10);   // Mindre eller lika
+</code></pre>
+<p><strong>Viktigt för flyttal</strong>: På grund av avrundningsfel i JavaScript använder du <code>toBeCloseTo()</code> för decimaltal:</p>
+<pre><code class="language-javascript">expect(0.1 + 0.2).toBeCloseTo(0.3);
+</code></pre>
+<p><strong>Övning</strong>: Skriv test som verifierar:</p>
+<ul>
+<li><code>15</code> är större än <code>10</code></li>
+<li><code>0.1 + 0.2</code> är ungefär lika med <code>0.3</code> (använd <code>toBeCloseTo</code>)</li>
+</ul>
+<h4 id="strängar"><a class="header" href="#strängar">Strängar</a></h4>
+<pre><code class="language-javascript">const message = 'Hej världen';
+
+expect(message).toContain('världen');  // Innehåller delsträng
+expect(message).toMatch(/världen/);   // Matchar regex
+expect(message).toHaveLength(11);     // Längd
+</code></pre>
+<p><strong>Övning</strong>: Testa att strängen <code>'JavaScript'</code> innehåller <code>'Script'</code> och har längden <code>10</code>.</p>
+<h4 id="arrays"><a class="header" href="#arrays">Arrays</a></h4>
+<pre><code class="language-javascript">const fruits = ['äpple', 'banan', 'apelsin'];
+
+expect(fruits).toContain('banan');           // Array innehåller element
+expect(fruits).toHaveLength(3);              // Array-längd
+expect(fruits).toEqual(['äpple', 'banan', 'apelsin']); // Exakt lika array
+</code></pre>
+<p><strong>Övning</strong>: Skapa en array <code>[1, 2, 3]</code> och skriv test som verifierar:</p>
+<ul>
+<li>Arrayen innehåller <code>2</code></li>
+<li>Arrayen har längden <code>3</code></li>
+</ul>
+<h4 id="objekt"><a class="header" href="#objekt">Objekt</a></h4>
+<pre><code class="language-javascript">const user = { name: 'Anna', age: 25 };
+
+expect(user).toHaveProperty('name');          // Har property
+expect(user).toHaveProperty('age', 25);     // Har property med värde
+expect(user.name).toBe('Anna');              // Direkt access
+</code></pre>
+<p><strong>Övning</strong>: Skapa ett objekt <code>{ city: 'Stockholm', country: 'Sverige' }</code> och verifiera:</p>
+<ul>
+<li>Objektet har propertyn <code>city</code></li>
+<li><code>city</code> har värdet <code>'Stockholm'</code></li>
+</ul>
+<h4 id="booleans-och-nullundefined"><a class="header" href="#booleans-och-nullundefined">Booleans och null/undefined</a></h4>
+<pre><code class="language-javascript">expect(true).toBeTruthy();        // Alla "truthy" värden
+expect(false).toBeFalsy();        // Alla "falsy" värden
+expect(null).toBeNull();          // Exakt null
+expect(undefined).toBeUndefined(); // Exakt undefined
+expect('text').toBeDefined();     // Inte undefined
+</code></pre>
+<p><strong>Övning</strong>: Skriv test som verifierar:</p>
+<ul>
+<li><code>null</code> är <code>null</code></li>
+<li>Ett tal (t.ex. <code>5</code>) är truthy</li>
+</ul>
+<h4 id="funktioner-och-fel"><a class="header" href="#funktioner-och-fel">Funktioner och fel</a></h4>
+<p>När du testar att en funktion kastar fel, måste du wrappa anropet i en arrow function:</p>
+<pre><code class="language-javascript">function throwError() {
+  throw new Error('Något gick fel');
+}
+
+expect(() =&gt; throwError()).toThrow();                    // Kastar något fel
+expect(() =&gt; throwError()).toThrow('Något gick fel');   // Kastar specifikt felmeddelande
+expect(() =&gt; throwError()).toThrow(Error);               // Kastar Error-typ
+</code></pre>
+<p><strong>Övning</strong>: Om du har <code>divide()</code> från tidigare, testa att den kastar fel när du försöker dividera med noll.</p>
+<h2 id="testa-express-apier"><a class="header" href="#testa-express-apier">Testa Express API:er</a></h2>
+<p>När du testar web API:er behöver du simulera HTTP-requests (förfrågningar). För detta använder vi <code>supertest</code>.</p>
+<h3 id="installera-supertest"><a class="header" href="#installera-supertest">Installera Supertest</a></h3>
+<pre><code class="language-bash">npm install --save-dev supertest
+</code></pre>
+<h3 id="steg-1-skapa-en-enkel-modell-att-testa"><a class="header" href="#steg-1-skapa-en-enkel-modell-att-testa">Steg 1: Skapa en enkel modell att testa</a></h3>
+<p>Börja med en enkel modell som hanterar posts i minnet. Skapa <code>models/Post.js</code>:</p>
+<pre><code class="language-javascript">// models/Post.js
+let posts = [];
+let nextId = 1;
+
+function getAllPosts() {
+  return posts;
+}
+
+function getPostById(id) {
+  const post = posts.find(p =&gt; p.id === parseInt(id));
+  if (!post) {
+    throw new Error(`Post med id ${id} hittades inte`);
+  }
+  return post;
+}
+
+function createPost(title, content) {
+  if (!title || title.trim().length === 0) {
+    throw new Error('Titel krävs');
+  }
+  if (!content || content.trim().length === 0) {
+    throw new Error('Innehåll krävs');
+  }
+
+  const newPost = {
+    id: nextId++,
+    title: title.trim(),
+    content: content.trim(),
+    createdAt: new Date().toISOString()
+  };
+  
+  posts.push(newPost);
+  return newPost;
+}
+
+function resetPosts() {
+  posts = [];
+  nextId = 1;
+}
+
+export default {
+  getAllPosts,
+  getPostById,
+  createPost,
+  resetPosts
+};
+</code></pre>
+<p><strong>Din uppgift</strong>: Skapa funktionerna <code>updatePost(id, title, content)</code> och <code>deletePost(id)</code>. Tänk på:</p>
+<ul>
+<li><code>updatePost</code> ska hitta posten med <code>getPostById()</code> och uppdatera title/content om de anges</li>
+<li><code>deletePost</code> ska hitta och ta bort posten, kasta fel om den inte finns</li>
+<li>Glöm inte att lägga till dem i export-objektet</li>
+</ul>
+<h3 id="steg-2-testa-modellen-direkt"><a class="header" href="#steg-2-testa-modellen-direkt">Steg 2: Testa modellen direkt</a></h3>
+<p>Innan vi testar API:et kan vi testa modellen direkt. Skapa <code>models/Post.test.js</code>:</p>
+<pre><code class="language-javascript">import PostModel from './Post.js';
+
+describe('Post Model', () =&gt; {
+  beforeEach(() =&gt; {
+    PostModel.resetPosts();
+  });
+
+  test('getAllPosts returnerar tom array initialt', () =&gt; {
+    const posts = PostModel.getAllPosts();
+    expect(posts).toEqual([]);
+  });
+
+  test('createPost skapar en ny post', () =&gt; {
+    const post = PostModel.createPost('Titel', 'Innehåll');
+    
+    expect(post).toHaveProperty('id');
+    expect(post.title).toBe('Titel');
+    expect(post.content).toBe('Innehåll');
+    expect(post).toHaveProperty('createdAt');
+  });
+});
+</code></pre>
+<p><strong>Din uppgift</strong>: Lägg till test för:</p>
+<ul>
+<li><code>getPostById()</code> - verifiera att den hittar en post och kastar fel om den inte finns</li>
+<li><code>createPost()</code> - testa att den kastar fel om title eller content saknas</li>
+<li>Om du implementerade <code>updatePost()</code> och <code>deletePost()</code> - skriv test för dem också!</li>
+</ul>
+<h3 id="steg-3-skapa-express-route"><a class="header" href="#steg-3-skapa-express-route">Steg 3: Skapa Express-route</a></h3>
+<p>Skapa en enkel route i <code>routes/posts.js</code>:</p>
+<pre><code class="language-javascript">import express from 'express';
+import PostModel from '../models/Post.js';
+
+const router = express.Router();
+
+router.get('/', (req, res) =&gt; {
+  try {
+    const posts = PostModel.getAllPosts();
+    res.json(posts);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+</code></pre>
+<p><strong>Din uppgift</strong>: Lägg till route för <code>GET /:id</code> som:</p>
+<ul>
+<li>Använder <code>PostModel.getPostById(req.params.id)</code></li>
+<li>Returnerar posten som JSON om den finns</li>
+<li>Returnerar 404 med felmeddelande om posten inte finns</li>
+</ul>
+<h3 id="steg-4-testa-route-med-supertest"><a class="header" href="#steg-4-testa-route-med-supertest">Steg 4: Testa route med Supertest</a></h3>
+<p>Skapa <code>routes/posts.test.js</code>:</p>
+<pre><code class="language-javascript">import request from 'supertest';
+import express from 'express';
+import postsRouter from './posts.js';
+import PostModel from '../models/Post.js';
+
+const app = express();
+app.use(express.json());
+app.use('/api/posts', postsRouter);
+
+describe('GET /api/posts', () =&gt; {
+  beforeEach(() =&gt; {
+    PostModel.resetPosts();
+  });
+
+  test('returnerar tom array när inga posts finns', async () =&gt; {
+    const response = await request(app)
+      .get('/api/posts')
+      .expect(200)
+      .expect('Content-Type', /json/);
+    
+    expect(response.body).toEqual([]);
+  });
+});
+</code></pre>
+<p><strong>Förklaring</strong>:</p>
+<ul>
+<li><code>request(app)</code> skapar en request till Express-appen</li>
+<li><code>.get('/api/posts')</code> gör en GET-request</li>
+<li><code>.expect(200)</code> verifierar statuskoden</li>
+<li><code>response.body</code> är JSON-svaret</li>
+</ul>
+<p><strong>Din uppgift</strong>: Skriv test för:</p>
+<ul>
+<li>GET <code>/api/posts</code> när det finns posts (skapa några med <code>PostModel.createPost()</code> först)</li>
+<li>GET <code>/api/posts/:id</code> - testa både lyckat fall och 404-fall</li>
+</ul>
+<h3 id="steg-5-post-route-med-validering"><a class="header" href="#steg-5-post-route-med-validering">Steg 5: POST-route med validering</a></h3>
+<p>Lägg till POST-route i <code>routes/posts.js</code>:</p>
+<pre><code class="language-javascript">router.post('/', (req, res) =&gt; {
+  try {
+    const { title, content } = req.body;
+    const newPost = PostModel.createPost(title, content);
+    res.status(201).json(newPost);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+</code></pre>
+<p><strong>Din uppgift</strong>: Skriv test för POST <code>/api/posts</code> som verifierar:</p>
+<ul>
+<li>En post skapas korrekt med title och content</li>
+<li>400 returneras om title saknas</li>
+<li>400 returneras om content saknas</li>
+<li>Whitespace trimmas från title och content</li>
+</ul>
+<p><strong>Tips</strong>: Använd <code>.send({ title: '...', content: '...' })</code> för att skicka JSON-data.</p>
+<h3 id="utmaning-komplettera-apiet"><a class="header" href="#utmaning-komplettera-apiet">Utmaning: Komplettera API:et</a></h3>
+<p>Om du implementerade <code>updatePost()</code> och <code>deletePost()</code> i Steg 1:</p>
+<ol>
+<li>Lägg till routes för PUT <code>/api/posts/:id</code> och DELETE <code>/api/posts/:id</code></li>
+<li>Skriv tester för dessa routes</li>
+<li>Tänk på alla edge cases (saknad post, saknade/tomma fält, etc.)</li>
+</ol>
+<details>
+<summary>Visa komplett lösningsförslag</summary>
+<p>Här är ett komplett lösningsförslag för hela API:et med tester:</p>
+<h4 id="komplett-postjs"><a class="header" href="#komplett-postjs">Komplett Post.js</a></h4>
+<pre><code class="language-javascript">// models/Post.js
+let posts = [];
+let nextId = 1;
+
+function getAllPosts() {
+  return posts;
+}
+
+function getPostById(id) {
+  const post = posts.find(p =&gt; p.id === parseInt(id));
+  if (!post) {
+    throw new Error(`Post med id ${id} hittades inte`);
+  }
+  return post;
+}
+
+function createPost(title, content) {
+  if (!title || title.trim().length === 0) {
+    throw new Error('Titel krävs');
+  }
+  if (!content || content.trim().length === 0) {
+    throw new Error('Innehåll krävs');
+  }
+
+  const newPost = {
+    id: nextId++,
+    title: title.trim(),
+    content: content.trim(),
+    createdAt: new Date().toISOString()
+  };
+  
+  posts.push(newPost);
+  return newPost;
+}
+
+function updatePost(id, title, content) {
+  const post = getPostById(id);
+  
+  if (title !== undefined) {
+    if (!title || title.trim().length === 0) {
+      throw new Error('Titel kan inte vara tom');
+    }
+    post.title = title.trim();
+  }
+  
+  if (content !== undefined) {
+    if (!content || content.trim().length === 0) {
+      throw new Error('Innehåll kan inte vara tomt');
+    }
+    post.content = content.trim();
+  }
+  
+  post.updatedAt = new Date().toISOString();
+  return post;
+}
+
+function deletePost(id) {
+  const postIndex = posts.findIndex(p =&gt; p.id === parseInt(id));
+  if (postIndex === -1) {
+    throw new Error(`Post med id ${id} hittades inte`);
+  }
+  const deletedPost = posts[postIndex];
+  posts.splice(postIndex, 1);
+  return deletedPost;
+}
+
+function resetPosts() {
+  posts = [];
+  nextId = 1;
+}
+
+export default {
+  getAllPosts,
+  getPostById,
+  createPost,
+  updatePost,
+  deletePost,
+  resetPosts
+};
+</code></pre>
+<h4 id="komplett-posttestjs"><a class="header" href="#komplett-posttestjs">Komplett Post.test.js</a></h4>
+<pre><code class="language-javascript">// models/Post.test.js
+import PostModel from './Post.js';
+
+describe('Post Model', () =&gt; {
+  beforeEach(() =&gt; {
+    PostModel.resetPosts();
+  });
+
+  test('getAllPosts returnerar tom array initialt', () =&gt; {
+    const posts = PostModel.getAllPosts();
+    expect(posts).toEqual([]);
+  });
+
+  test('createPost skapar en ny post', () =&gt; {
+    const post = PostModel.createPost('Titel', 'Innehåll');
+    
+    expect(post).toHaveProperty('id');
+    expect(post.title).toBe('Titel');
+    expect(post.content).toBe('Innehåll');
+    expect(post).toHaveProperty('createdAt');
+  });
+
+  test('getPostById hittar en post', () =&gt; {
+    const createdPost = PostModel.createPost('Titel', 'Innehåll');
+    const foundPost = PostModel.getPostById(createdPost.id);
+    
+    expect(foundPost).toEqual(createdPost);
+  });
+
+  test('getPostById kastar fel om post inte finns', () =&gt; {
+    expect(() =&gt; PostModel.getPostById(999)).toThrow('Post med id 999 hittades inte');
+  });
+
+  test('createPost kastar fel om title saknas', () =&gt; {
+    expect(() =&gt; PostModel.createPost('', 'Innehåll')).toThrow('Titel krävs');
+    expect(() =&gt; PostModel.createPost(null, 'Innehåll')).toThrow('Titel krävs');
+  });
+
+  test('createPost kastar fel om content saknas', () =&gt; {
+    expect(() =&gt; PostModel.createPost('Titel', '')).toThrow('Innehåll krävs');
+    expect(() =&gt; PostModel.createPost('Titel', null)).toThrow('Innehåll krävs');
+  });
+
+  test('updatePost uppdaterar en post', () =&gt; {
+    const createdPost = PostModel.createPost('Original', 'Originalt innehåll');
+    const updatedPost = PostModel.updatePost(createdPost.id, 'Ny titel', 'Nytt innehåll');
+    
+    expect(updatedPost.title).toBe('Ny titel');
+    expect(updatedPost.content).toBe('Nytt innehåll');
+    expect(updatedPost).toHaveProperty('updatedAt');
+  });
+
+  test('updatePost uppdaterar endast title om content saknas', () =&gt; {
+    const createdPost = PostModel.createPost('Original', 'Innehåll');
+    const updatedPost = PostModel.updatePost(createdPost.id, 'Ny titel');
+    
+    expect(updatedPost.title).toBe('Ny titel');
+    expect(updatedPost.content).toBe('Innehåll');
+  });
+
+  test('updatePost kastar fel om post inte finns', () =&gt; {
+    expect(() =&gt; PostModel.updatePost(999, 'Titel', 'Innehåll')).toThrow('hittades inte');
+  });
+
+  test('deletePost tar bort en post', () =&gt; {
+    const createdPost = PostModel.createPost('Att ta bort', 'Innehåll');
+    const deletedPost = PostModel.deletePost(createdPost.id);
+    
+    expect(deletedPost.id).toBe(createdPost.id);
+    expect(PostModel.getAllPosts()).toHaveLength(0);
+  });
+
+  test('deletePost kastar fel om post inte finns', () =&gt; {
+    expect(() =&gt; PostModel.deletePost(999)).toThrow('Post med id 999 hittades inte');
+  });
+});
+</code></pre>
+<h4 id="komplett-routespostsjs"><a class="header" href="#komplett-routespostsjs">Komplett routes/posts.js</a></h4>
+<pre><code class="language-javascript">// routes/posts.js
+import express from 'express';
+import PostModel from '../models/Post.js';
+
+const router = express.Router();
+
+router.get('/', (req, res) =&gt; {
+  try {
+    const posts = PostModel.getAllPosts();
+    res.json(posts);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.get('/:id', (req, res) =&gt; {
+  try {
+    const post = PostModel.getPostById(req.params.id);
+    res.json(post);
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+});
+
+router.post('/', (req, res) =&gt; {
+  try {
+    const { title, content } = req.body;
+    const newPost = PostModel.createPost(title, content);
+    res.status(201).json(newPost);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+router.put('/:id', (req, res) =&gt; {
+  try {
+    const { title, content } = req.body;
+    const updatedPost = PostModel.updatePost(req.params.id, title, content);
+    res.json(updatedPost);
+  } catch (error) {
+    const statusCode = error.message.includes('hittades inte') ? 404 : 400;
+    res.status(statusCode).json({ error: error.message });
+  }
+});
+
+router.delete('/:id', (req, res) =&gt; {
+  try {
+    const deletedPost = PostModel.deletePost(req.params.id);
+    res.json(deletedPost);
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+});
+
+export default router;
+</code></pre>
+<h4 id="komplett-routespoststestjs"><a class="header" href="#komplett-routespoststestjs">Komplett routes/posts.test.js</a></h4>
+<pre><code class="language-javascript">// routes/posts.test.js
+import request from 'supertest';
+import express from 'express';
+import postsRouter from './posts.js';
+import PostModel from '../models/Post.js';
+
+const app = express();
+app.use(express.json());
+app.use('/api/posts', postsRouter);
+
+describe('Posts API', () =&gt; {
+  beforeEach(() =&gt; {
+    PostModel.resetPosts();
+  });
+
+  describe('GET /api/posts', () =&gt; {
+    test('returnerar tom array när inga posts finns', async () =&gt; {
+      const response = await request(app)
+        .get('/api/posts')
+        .expect(200)
+        .expect('Content-Type', /json/);
+      
+      expect(response.body).toEqual([]);
+    });
+
+    test('returnerar alla posts', async () =&gt; {
+      PostModel.createPost('Första posten', 'Innehåll här');
+      PostModel.createPost('Andra posten', 'Mer innehåll');
+      
+      const response = await request(app)
+        .get('/api/posts')
+        .expect(200);
+      
+      expect(response.body).toHaveLength(2);
+      expect(response.body[0]).toHaveProperty('id');
+      expect(response.body[0]).toHaveProperty('title');
+      expect(response.body[0]).toHaveProperty('content');
+    });
+  });
+
+  describe('GET /api/posts/:id', () =&gt; {
+    test('returnerar post med korrekt id', async () =&gt; {
+      const createdPost = PostModel.createPost('Test post', 'Innehåll');
+      
+      const response = await request(app)
+        .get(`/api/posts/${createdPost.id}`)
+        .expect(200);
+      
+      expect(response.body.id).toBe(createdPost.id);
+      expect(response.body.title).toBe('Test post');
+      expect(response.body.content).toBe('Innehåll');
+    });
+
+    test('returnerar 404 om post inte finns', async () =&gt; {
+      const response = await request(app)
+        .get('/api/posts/999')
+        .expect(404);
+      
+      expect(response.body).toHaveProperty('error');
+      expect(response.body.error).toContain('hittades inte');
+    });
+  });
+
+  describe('POST /api/posts', () =&gt; {
+    test('skapar ny post med korrekt data', async () =&gt; {
+      const newPost = {
+        title: 'Ny post',
+        content: 'Detta är innehållet'
+      };
+      
+      const response = await request(app)
+        .post('/api/posts')
+        .send(newPost)
+        .expect(201)
+        .expect('Content-Type', /json/);
+      
+      expect(response.body).toHaveProperty('id');
+      expect(response.body.title).toBe('Ny post');
+      expect(response.body.content).toBe('Detta är innehållet');
+      expect(response.body).toHaveProperty('createdAt');
+    });
+
+    test('returnerar 400 om titel saknas', async () =&gt; {
+      const response = await request(app)
+        .post('/api/posts')
+        .send({ content: 'Innehåll utan titel' })
+        .expect(400);
+      
+      expect(response.body).toHaveProperty('error');
+      expect(response.body.error).toBe('Titel krävs');
+    });
+
+    test('returnerar 400 om innehåll saknas', async () =&gt; {
+      const response = await request(app)
+        .post('/api/posts')
+        .send({ title: 'Titel utan innehåll' })
+        .expect(400);
+      
+      expect(response.body).toHaveProperty('error');
+      expect(response.body.error).toBe('Innehåll krävs');
+    });
+
+    test('trimmar whitespace från titel och innehåll', async () =&gt; {
+      const response = await request(app)
+        .post('/api/posts')
+        .send({ title: '  Titel  ', content: '  Innehåll  ' })
+        .expect(201);
+      
+      expect(response.body.title).toBe('Titel');
+      expect(response.body.content).toBe('Innehåll');
+    });
+  });
+
+  describe('PUT /api/posts/:id', () =&gt; {
+    test('uppdaterar post med ny data', async () =&gt; {
+      const createdPost = PostModel.createPost('Original', 'Originalt innehåll');
+      
+      const response = await request(app)
+        .put(`/api/posts/${createdPost.id}`)
+        .send({ title: 'Uppdaterad titel', content: 'Uppdaterat innehåll' })
+        .expect(200);
+      
+      expect(response.body.title).toBe('Uppdaterad titel');
+      expect(response.body.content).toBe('Uppdaterat innehåll');
+      expect(response.body).toHaveProperty('updatedAt');
+    });
+
+    test('uppdaterar endast titel om content saknas', async () =&gt; {
+      const createdPost = PostModel.createPost('Original', 'Innehåll');
+      
+      const response = await request(app)
+        .put(`/api/posts/${createdPost.id}`)
+        .send({ title: 'Ny titel' })
+        .expect(200);
+      
+      expect(response.body.title).toBe('Ny titel');
+      expect(response.body.content).toBe('Innehåll');
+    });
+
+    test('returnerar 404 om post inte finns', async () =&gt; {
+      const response = await request(app)
+        .put('/api/posts/999')
+        .send({ title: 'Ny titel', content: 'Nytt innehåll' })
+        .expect(404);
+      
+      expect(response.body).toHaveProperty('error');
+    });
+
+    test('returnerar 400 om titel är tom', async () =&gt; {
+      const createdPost = PostModel.createPost('Titel', 'Innehåll');
+      
+      const response = await request(app)
+        .put(`/api/posts/${createdPost.id}`)
+        .send({ title: '', content: 'Innehåll' })
+        .expect(400);
+      
+      expect(response.body.error).toContain('kan inte vara tom');
+    });
+  });
+
+  describe('DELETE /api/posts/:id', () =&gt; {
+    test('tar bort post och returnerar den', async () =&gt; {
+      const createdPost = PostModel.createPost('Att ta bort', 'Innehåll');
+      
+      const response = await request(app)
+        .delete(`/api/posts/${createdPost.id}`)
+        .expect(200);
+      
+      expect(response.body.id).toBe(createdPost.id);
+      
+      // Verifiera att posten faktiskt är borttagen
+      const getResponse = await request(app)
+        .get(`/api/posts/${createdPost.id}`)
+        .expect(404);
+    });
+
+    test('returnerar 404 om post inte finns', async () =&gt; {
+      const response = await request(app)
+        .delete('/api/posts/999')
+        .expect(404);
+      
+      expect(response.body).toHaveProperty('error');
+    });
+  });
+});
+</code></pre>
+<h4 id="appjs-för-att-köra-servern"><a class="header" href="#appjs-för-att-köra-servern">app.js (för att köra servern)</a></h4>
+<pre><code class="language-javascript">// app.js
+import express from 'express';
+import postsRouter from './routes/posts.js';
+
+const app = express();
+
+app.use(express.json());
+app.use('/api/posts', postsRouter);
+
+export default app;
+</code></pre>
+</details>
+<h2 id="setup-och-teardown"><a class="header" href="#setup-och-teardown">Setup och Teardown</a></h2>
+<p>Ibland behöver du förbereda data eller städa upp mellan test. Jest ger dig hooks (krokar) för detta.</p>
+<h3 id="beforeeach---körs-före-varje-test"><a class="header" href="#beforeeach---körs-före-varje-test"><code>beforeEach()</code> - Körs före varje test</a></h3>
+<p>Du har redan sett <code>beforeEach()</code> i våra exempel. Den används för att säkerställa att varje test börjar med en ren miljö:</p>
+<pre><code class="language-javascript">describe('Post Model', () =&gt; {
+  beforeEach(() =&gt; {
+    PostModel.resetPosts(); // Rensa alla posts före varje test
+  });
+
+  test('test 1', () =&gt; {
+    // Posts är nu tomma
+  });
+
+  test('test 2', () =&gt; {
+    // Posts är återigen tomma, oavsett vad test 1 gjorde
+  });
+});
+</code></pre>
+<p><strong>Övning</strong>: Om du har flera test i din <code>math.test.js</code>, vad skulle du kunna förbereda i <code>beforeEach()</code>? (Tips: kanske skapa testdata?)</p>
+<h3 id="aftereach---körs-efter-varje-test"><a class="header" href="#aftereach---körs-efter-varje-test"><code>afterEach()</code> - Körs efter varje test</a></h3>
+<p><code>afterEach()</code> körs efter varje test, användbar för städning:</p>
+<pre><code class="language-javascript">describe('Filer', () =&gt; {
+  afterEach(() =&gt; {
+    // Ta bort temporära filer efter varje test
+    fs.unlinkSync('temp-file.txt');
+  });
+});
+</code></pre>
+<p><strong>Övning</strong>: När tror du <code>afterEach()</code> är användbar? Ge ett exempel.</p>
+<h3 id="beforeall-och-afterall---körs-en-gång"><a class="header" href="#beforeall-och-afterall---körs-en-gång"><code>beforeAll()</code> och <code>afterAll()</code> - Körs en gång</a></h3>
+<p>Dessa körs en gång före/efter alla test i ett <code>describe</code>-block. Användbart för tunga operationer:</p>
+<pre><code class="language-javascript">describe('Databas-test', () =&gt; {
+  // Körs EN gång före alla test
+  beforeAll(async () =&gt; {
+    await connectToDatabase(); // Anslut till databas
+  });
+
+  // Körs EN gång efter alla test
+  afterAll(async () =&gt; {
+    await closeDatabase(); // Stäng anslutning
+  });
+
+  test('test 1', () =&gt; {
+    // Databasen är redan ansluten
+  });
+
+  test('test 2', () =&gt; {
+    // Samma databasanslutning används
+  });
+});
+</code></pre>
+<p><strong>Övning</strong>: I vilka situationer skulle <code>beforeAll()</code> vara bättre än <code>beforeEach()</code>? (Tips: tänk på kostnad/tid)</p>
+<h2 id="organisera-dina-test"><a class="header" href="#organisera-dina-test">Organisera dina test</a></h2>
+<h3 id="filnamn-och-struktur"><a class="header" href="#filnamn-och-struktur">Filnamn och struktur</a></h3>
+<p>Jest letar automatiskt efter testfiler med dessa namn:</p>
+<ul>
+<li>Filer i <code>__tests__</code>-mapp</li>
+<li>Filer som slutar på <code>.test.js</code></li>
+<li>Filer som slutar på <code>.spec.js</code></li>
+</ul>
+<p><strong>Rekommenderad struktur</strong>:</p>
+<pre><code>projekt/
+├── src/
+│   ├── math.js
+│   ├── user.js
+│   └── utils.js
+├── tests/
+│   ├── math.test.js
+│   ├── user.test.js
+│   └── utils.test.js
+└── package.json
+</code></pre>
+<h3 id="konfigurera-testmapp"><a class="header" href="#konfigurera-testmapp">Konfigurera testmapp</a></h3>
+<p>Du kan konfigurera Jest att leta i specifika mappar genom att skapa <code>jest.config.js</code>:</p>
+<pre><code class="language-javascript">// jest.config.js
+export default {
+  testMatch: ['**/tests/**/*.test.js'],
+  testEnvironment: 'node',
+  collectCoverageFrom: [
+    'src/**/*.js',
+    '!src/**/*.test.js'
+  ]
+};
+</code></pre>
+<h2 id="best-practices-bästa-praxis"><a class="header" href="#best-practices-bästa-praxis">Best Practices (Bästa praxis)</a></h2>
+<h3 id="1-testa-en-sak-i-taget"><a class="header" href="#1-testa-en-sak-i-taget">1. Testa en sak i taget</a></h3>
+<pre><code class="language-javascript">// ❌ Dåligt - testar flera saker
+test('användare funktioner', () =&gt; {
+  const user = createUser('Anna', 'anna@test.com');
+  expect(user.getName()).toBe('Anna');
+  user.updateName('Kalle');
+  expect(user.getName()).toBe('Kalle');
+  expect(user.isValidEmail()).toBe(true);
+});
+
+// ✅ Bra - separata test
+test('skapar användare med korrekt namn', () =&gt; {
+  const user = createUser('Anna', 'anna@test.com');
+  expect(user.getName()).toBe('Anna');
+});
+
+test('uppdaterar användarens namn', () =&gt; {
+  const user = createUser('Anna', 'anna@test.com');
+  user.updateName('Kalle');
+  expect(user.getName()).toBe('Kalle');
+});
+
+test('validerar email korrekt', () =&gt; {
+  const user = createUser('Anna', 'anna@test.com');
+  expect(user.isValidEmail()).toBe(true);
+});
+</code></pre>
+<h3 id="2-använd-beskrivande-namn"><a class="header" href="#2-använd-beskrivande-namn">2. Använd beskrivande namn</a></h3>
+<pre><code class="language-javascript">// ❌ Dåligt
+test('test 1', () =&gt; { ... });
+test('funktion fungerar', () =&gt; { ... });
+
+// ✅ Bra
+test('räknar ut summan av två positiva tal', () =&gt; { ... });
+test('kastar fel när man försöker dividera med noll', () =&gt; { ... });
+</code></pre>
+<h3 id="3-testa-edge-cases-gränsfall"><a class="header" href="#3-testa-edge-cases-gränsfall">3. Testa edge cases (Gränsfall)</a></h3>
+<pre><code class="language-javascript">describe('add funktion', () =&gt; {
+  test('adderar positiva tal', () =&gt; {
+    expect(add(2, 3)).toBe(5);
+  });
+
+  test('adderar negativa tal', () =&gt; {
+    expect(add(-2, -3)).toBe(-5);
+  });
+
+  test('adderar med noll', () =&gt; {
+    expect(add(5, 0)).toBe(5);
+    expect(add(0, 5)).toBe(5);
+  });
+
+  test('hanterar decimaltal', () =&gt; {
+    expect(add(0.1, 0.2)).toBeCloseTo(0.3);
+  });
+});
+</code></pre>
+<h3 id="4-arrange-act-assert-mönster"><a class="header" href="#4-arrange-act-assert-mönster">4. Arrange-Act-Assert mönster</a></h3>
+<pre><code class="language-javascript">test('beräknar ålder från födelsedatum', () =&gt; {
+  // Arrange (Förbered)
+  const birthDate = new Date('1990-01-01');
+  const today = new Date('2024-01-01');
+  
+  // Act (Utför)
+  const age = calculateAge(birthDate, today);
+  
+  // Assert (Verifiera)
+  expect(age).toBe(34);
+});
+</code></pre>
+<p><strong>Övning</strong>: Skriv om ett av dina tidigare test med tydlig Arrange-Act-Assert-struktur med kommentarer.</p>
+<h2 id="code-coverage-kodtäckning"><a class="header" href="#code-coverage-kodtäckning">Code Coverage (Kodtäckning)</a></h2>
+<p>Code coverage visar hur mycket av din kod som testas. Kör med coverage-flaggan:</p>
+<pre><code class="language-bash">npm test -- --coverage
+</code></pre>
+<p>Detta ger dig en rapport som visar:</p>
+<ul>
+<li><strong>Statements</strong>: Hur många kodrader som kördes</li>
+<li><strong>Branches</strong>: Hur många if/else-vägar som testades</li>
+<li><strong>Functions</strong>: Hur många funktioner som anropades</li>
+<li><strong>Lines</strong>: Hur många rader som täcktes</li>
+</ul>
+<pre><code class="language-javascript">// Exempel på vad coverage kan visa
+
+// math.js - 100% coverage
+export function add(a, b) {
+  return a + b;  // ✅ Täckt av test
+}
+
+export function subtract(a, b) {
+  return a - b;  // ✅ Täckt av test
+}
+
+// user.js - 80% coverage
+export function updateName(newName) {
+  if (!newName) {  // ✅ Täckt av test
+    throw new Error('Namn krävs');
+  }
+  this.name = newName;  // ✅ Täckt av test
+}
+
+export function sendEmail() {
+  // ❌ Inte täckt - inget test för denna funktion
+  console.log('Skickar email...');
+}
+</code></pre>
+<h2 id="vanliga-problem-och-lösningar"><a class="header" href="#vanliga-problem-och-lösningar">Vanliga problem och lösningar</a></h2>
+<h3 id="problem-cannot-find-module"><a class="header" href="#problem-cannot-find-module">Problem: "Cannot find module"</a></h3>
+<p><strong>Orsak</strong>: ES6-moduler kräver att filer har <code>.js</code>-ändelse i imports.</p>
+<p><strong>Lösning</strong>:</p>
+<pre><code class="language-javascript">// ✅ Rätt
+import { add } from './math.js';
+
+// ❌ Fel
+import { add } from './math';
+</code></pre>
+<h3 id="problem-syntaxerror-unexpected-token-export"><a class="header" href="#problem-syntaxerror-unexpected-token-export">Problem: "SyntaxError: Unexpected token 'export'"</a></h3>
+<p><strong>Orsak</strong>: Node.js försöker använda CommonJS istället för ES6-moduler.</p>
+<p><strong>Lösning</strong>: Se till att <code>package.json</code> innehåller <code>"type": "module"</code>.</p>
+<h3 id="problem-test-timeout"><a class="header" href="#problem-test-timeout">Problem: Test timeout</a></h3>
+<p><strong>Orsak</strong>: Asynkron kod tar för lång tid.</p>
+<p><strong>Lösning</strong>: Öka timeout eller fixa koden:</p>
+<pre><code class="language-javascript">test('långsam async operation', async () =&gt; {
+  // Standard timeout är 5000ms, öka om nödvändigt
+}, 10000); // 10 sekunder
+</code></pre>
+<h2 id="sammanfattning"><a class="header" href="#sammanfattning">Sammanfattning</a></h2>
+<p>I denna lektion har du lärt dig:</p>
+<p>✅ <strong>Varför testa</strong>: Säkerhet vid ändringar, dokumentation, snabbare utveckling<br />
+✅ <strong>Jest setup</strong>: Installera och konfigurera Jest med ES6-moduler<br />
+✅ <strong>Grundläggande test</strong>: <code>describe</code>, <code>test</code>, <code>expect</code> och olika matchers<br />
+✅ <strong>Teststruktur</strong>: Organisera test med Arrange-Act-Assert mönstret<br />
+✅ <strong>Setup/Teardown</strong>: Använda <code>beforeEach</code>, <code>afterEach</code>, <code>beforeAll</code>, <code>afterAll</code><br />
+✅ <strong>API-testning</strong>: Testa Express-routes med Supertest<br />
+✅ <strong>Best practices</strong>: Hur du skriver bra test</p>
+<h3 id="nästa-steg"><a class="header" href="#nästa-steg">Nästa steg</a></h3>
+<ul>
+<li>Öva på att skriva test för dina egna funktioner</li>
+<li>Lär dig om mocks (låtsaskod) för att isolera test</li>
+<li>Utforska mer avancerade testscenarion</li>
+<li>Lär dig om test-driven development (TDD) - skriv testet först, sedan koden</li>
+</ul>
+<p>Kom ihåg: <strong>Bra test ger dig trygghet och hjälper dig bygga robust kod!</strong></p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_9/mongodb.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_9/middleware.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_9/mongodb.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_9/middleware.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

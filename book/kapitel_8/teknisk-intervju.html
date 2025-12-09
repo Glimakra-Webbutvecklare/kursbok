@@ -1,0 +1,1172 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Teknisk Intervju - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="teknisk-intervju-frontend-ramverk-med-react"><a class="header" href="#teknisk-intervju-frontend-ramverk-med-react">Teknisk Intervju: Frontend-ramverk med React</a></h1>
+<p>Detta avsnitt innehåller vanliga tekniska intervjufrågor för React-utveckling. Frågorna täcker React fundamentals, komponenter, hooks, state management, routing och prestanda.</p>
+<h2 id="fråga-1-react-grundläggande-koncept"><a class="header" href="#fråga-1-react-grundläggande-koncept">Fråga 1: React Grundläggande Koncept</a></h2>
+<p><strong>Intervjuare:</strong> "Förklara vad React är och vad Virtual DOM innebär. Visa skillnaden mellan JSX och vanlig HTML."</p>
+<p><strong>Bra svar:</strong></p>
+<pre><code class="language-jsx">// React är ett JavaScript-bibliotek för att bygga användargränssnitt
+// Virtual DOM är en representation av den riktiga DOM:en i minnet
+
+// JSX - JavaScript XML (React syntax)
+function Welcome({ name }) {
+  return (
+    &lt;div className="greeting"&gt;
+      &lt;h1&gt;Hej {name}!&lt;/h1&gt;
+      &lt;p&gt;Dagens datum: {new Date().toLocaleDateString()}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+
+// Motsvarande HTML skulle vara statisk:
+// &lt;div class="greeting"&gt;
+//   &lt;h1&gt;Hej Anna!&lt;/h1&gt;
+//   &lt;p&gt;Dagens datum: 2024-01-15&lt;/p&gt;
+// &lt;/div&gt;
+
+// Skillnader JSX vs HTML:
+// - className istället för class
+// - {} för JavaScript-uttryck
+// - camelCase för attribut (onClick, onChange)
+// - Måste ha en parent element eller React Fragment
+</code></pre>
+<p><strong>Förklaring:</strong> Virtual DOM gör att React kan jämföra förändringar effektivt och bara uppdatera de delar av DOM:en som ändrats. JSX tillåter JavaScript-uttryck inbäddade i markup.</p>
+<h2 id="fråga-2-funktionella-vs-class-components"><a class="header" href="#fråga-2-funktionella-vs-class-components">Fråga 2: Funktionella vs Class Components</a></h2>
+<p><strong>Intervjuare:</strong> "Vad är skillnaden mellan funktionella och class components? Varför föredras funktionella komponenter idag?"</p>
+<p><strong>Bra svar:</strong></p>
+<pre><code class="language-jsx">// Class Component (äldre sätt)
+class ClassCounter extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { count: 0 };
+  }
+
+  componentDidMount() {
+    console.log('Component mounted');
+  }
+
+  incrementCount = () =&gt; {
+    this.setState({ count: this.state.count + 1 });
+  }
+
+  render() {
+    return (
+      &lt;div&gt;
+        &lt;p&gt;Count: {this.state.count}&lt;/p&gt;
+        &lt;button onClick={this.incrementCount}&gt;Increment&lt;/button&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+
+// Functional Component med hooks (modernt sätt)
+function FunctionalCounter() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() =&gt; {
+    console.log('Component mounted/updated');
+  }, []);
+
+  const incrementCount = () =&gt; {
+    setCount(count + 1);
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;Count: {count}&lt;/p&gt;
+      &lt;button onClick={incrementCount}&gt;Increment&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<p><strong>Fördelar med funktionella komponenter:</strong></p>
+<ul>
+<li>Enklare syntax och mindre boilerplate-kod</li>
+<li>Bättre prestanda med hooks</li>
+<li>Lättare att testa och förstå</li>
+<li>Modern React development standard</li>
+</ul>
+<h2 id="fråga-3-usestate-och-useeffect-hooks"><a class="header" href="#fråga-3-usestate-och-useeffect-hooks">Fråga 3: useState och useEffect Hooks</a></h2>
+<p><strong>Intervjuare:</strong> "Förklara hur useState och useEffect fungerar. Visa ett exempel med API-anrop."</p>
+<p><strong>Bra svar:</strong></p>
+<pre><code class="language-jsx">import { useState, useEffect } from 'react';
+
+function UserProfile({ userId }) {
+  // useState för state management
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // useEffect för side effects (API calls, subscriptions etc)
+  useEffect(() =&gt; {
+    const fetchUser = async () =&gt; {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        const response = await fetch(`/api/users/${userId}`);
+        if (!response.ok) {
+          throw new Error('User not found');
+        }
+        
+        const userData = await response.json();
+        setUser(userData);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, [userId]); // Dependency array - kör när userId ändras
+
+  // Cleanup effect (körs när component unmounts)
+  useEffect(() =&gt; {
+    return () =&gt; {
+      console.log('Cleanup when component unmounts');
+    };
+  }, []);
+
+  if (loading) return &lt;div&gt;Loading...&lt;/div&gt;;
+  if (error) return &lt;div&gt;Error: {error}&lt;/div&gt;;
+  if (!user) return &lt;div&gt;No user found&lt;/div&gt;;
+
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;{user.name}&lt;/h2&gt;
+      &lt;p&gt;Email: {user.email}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<p><strong>useEffect dependency arrays:</strong></p>
+<ul>
+<li><code>[]</code> - körs bara en gång (componentDidMount)</li>
+<li><code>[userId]</code> - körs när userId ändras</li>
+<li>Ingen array - körs efter varje render</li>
+</ul>
+<h2 id="fråga-4-props-och-state-management"><a class="header" href="#fråga-4-props-och-state-management">Fråga 4: Props och State Management</a></h2>
+<p><strong>Intervjuare:</strong> "Förklara skillnaden mellan props och state. Visa hur man hanterar props drilling och Context API."</p>
+<p><strong>Bra svar:</strong></p>
+<pre><code class="language-jsx">// Props - data som skickas från parent till child
+function Parent() {
+  const [theme, setTheme] = useState('light');
+  
+  return (
+    &lt;Child 
+      theme={theme} 
+      onThemeChange={setTheme}
+      title="My App"
+    /&gt;
+  );
+}
+
+function Child({ theme, onThemeChange, title }) {
+  return (
+    &lt;div className={`app ${theme}`}&gt;
+      &lt;h1&gt;{title}&lt;/h1&gt;
+      &lt;button onClick={() =&gt; onThemeChange(theme === 'light' ? 'dark' : 'light')}&gt;
+        Toggle Theme
+      &lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+// Context API för att undvika props drilling
+const ThemeContext = createContext();
+
+function ThemeProvider({ children }) {
+  const [theme, setTheme] = useState('light');
+  
+  return (
+    &lt;ThemeContext.Provider value={{ theme, setTheme }}&gt;
+      {children}
+    &lt;/ThemeContext.Provider&gt;
+  );
+}
+
+// Använda context
+function ThemedButton() {
+  const { theme, setTheme } = useContext(ThemeContext);
+  
+  return (
+    &lt;button 
+      className={`btn btn-${theme}`}
+      onClick={() =&gt; setTheme(theme === 'light' ? 'dark' : 'light')}
+    &gt;
+      Current theme: {theme}
+    &lt;/button&gt;
+  );
+}
+
+// App med Context Provider
+function App() {
+  return (
+    &lt;ThemeProvider&gt;
+      &lt;Header /&gt;
+      &lt;Main /&gt;
+      &lt;ThemedButton /&gt;
+    &lt;/ThemeProvider&gt;
+  );
+}
+</code></pre>
+<p><strong>State vs Props:</strong></p>
+<ul>
+<li><strong>State:</strong> Intern data som komponenten äger och kan ändra</li>
+<li><strong>Props:</strong> Data som skickas från föräldrakomponent, read-only</li>
+</ul>
+<h2 id="fråga-5-event-handling-och-forms"><a class="header" href="#fråga-5-event-handling-och-forms">Fråga 5: Event Handling och Forms</a></h2>
+<p><strong>Intervjuare:</strong> "Visa hur man hanterar formulär och events i React på ett kontrollerat sätt."</p>
+<p><strong>Bra svar:</strong></p>
+<pre><code class="language-jsx">function ContactForm() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: '',
+    subscribe: false
+  });
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Hantera input changes
+  const handleChange = (e) =&gt; {
+    const { name, value, type, checked } = e.target;
+    
+    setFormData(prev =&gt; ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+
+    // Rensa fel när användaren börjar skriva
+    if (errors[name]) {
+      setErrors(prev =&gt; ({
+        ...prev,
+        [name]: ''
+      }));
+    }
+  };
+
+  // Validering
+  const validateForm = () =&gt; {
+    const newErrors = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = 'Namn är obligatoriskt';
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = 'E-post är obligatoriskt';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Ogiltig e-postadress';
+    }
+
+    if (!formData.message.trim()) {
+      newErrors.message = 'Meddelande är obligatoriskt';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  // Hantera form submission
+  const handleSubmit = async (e) =&gt; {
+    e.preventDefault();
+    
+    if (!validateForm()) return;
+
+    setIsSubmitting(true);
+    
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        alert('Meddelande skickat!');
+        setFormData({ name: '', email: '', message: '', subscribe: false });
+      } else {
+        throw new Error('Något gick fel');
+      }
+    } catch (error) {
+      alert('Fel vid sändning: ' + error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;div&gt;
+        &lt;label htmlFor="name"&gt;Namn:&lt;/label&gt;
+        &lt;input
+          type="text"
+          id="name"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          className={errors.name ? 'error' : ''}
+        /&gt;
+        {errors.name &amp;&amp; &lt;span className="error-text"&gt;{errors.name}&lt;/span&gt;}
+      &lt;/div&gt;
+
+      &lt;div&gt;
+        &lt;label htmlFor="email"&gt;E-post:&lt;/label&gt;
+        &lt;input
+          type="email"
+          id="email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          className={errors.email ? 'error' : ''}
+        /&gt;
+        {errors.email &amp;&amp; &lt;span className="error-text"&gt;{errors.email}&lt;/span&gt;}
+      &lt;/div&gt;
+
+      &lt;div&gt;
+        &lt;label htmlFor="message"&gt;Meddelande:&lt;/label&gt;
+        &lt;textarea
+          id="message"
+          name="message"
+          value={formData.message}
+          onChange={handleChange}
+          className={errors.message ? 'error' : ''}
+        /&gt;
+        {errors.message &amp;&amp; &lt;span className="error-text"&gt;{errors.message}&lt;/span&gt;}
+      &lt;/div&gt;
+
+      &lt;div&gt;
+        &lt;label&gt;
+          &lt;input
+            type="checkbox"
+            name="subscribe"
+            checked={formData.subscribe}
+            onChange={handleChange}
+          /&gt;
+          Prenumerera på nyhetsbrev
+        &lt;/label&gt;
+      &lt;/div&gt;
+
+      &lt;button type="submit" disabled={isSubmitting}&gt;
+        {isSubmitting ? 'Skickar...' : 'Skicka'}
+      &lt;/button&gt;
+    &lt;/form&gt;
+  );
+}
+</code></pre>
+<p><strong>Viktiga principer för formulär i React:</strong></p>
+<ul>
+<li>Kontrollerade komponenter (controlled components)</li>
+<li>Hantera all state i React</li>
+<li>Validering både på input och submit</li>
+<li>Förhindra default form behavior med <code>preventDefault()</code></li>
+</ul>
+<h2 id="fråga-6-lists-och-keys"><a class="header" href="#fråga-6-lists-och-keys">Fråga 6: Lists och Keys</a></h2>
+<p><strong>Intervjuare:</strong> "Förklara varför keys är viktiga i React lists och visa best practices."</p>
+<p><strong>Bra svar:</strong></p>
+<pre><code class="language-jsx">function TodoList() {
+  const [todos, setTodos] = useState([
+    { id: 1, text: 'Handla mat', completed: false },
+    { id: 2, text: 'Träna', completed: true },
+    { id: 3, text: 'Studera React', completed: false }
+  ]);
+
+  const toggleTodo = (id) =&gt; {
+    setTodos(todos.map(todo =&gt;
+      todo.id === id ? { ...todo, completed: !todo.completed } : todo
+    ));
+  };
+
+  const deleteTodo = (id) =&gt; {
+    setTodos(todos.filter(todo =&gt; todo.id !== id));
+  };
+
+  return (
+    &lt;ul&gt;
+      {todos.map(todo =&gt; (
+        &lt;TodoItem
+          key={todo.id} // ✅ Använd stabil, unik key
+          todo={todo}
+          onToggle={toggleTodo}
+          onDelete={deleteTodo}
+        /&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+}
+
+function TodoItem({ todo, onToggle, onDelete }) {
+  return (
+    &lt;li className={todo.completed ? 'completed' : ''}&gt;
+      &lt;span onClick={() =&gt; onToggle(todo.id)}&gt;
+        {todo.text}
+      &lt;/span&gt;
+      &lt;button onClick={() =&gt; onDelete(todo.id)}&gt;
+        Ta bort
+      &lt;/button&gt;
+    &lt;/li&gt;
+  );
+}
+
+// ❌ Dåliga exempel på keys:
+// key={index} - problem vid omordning eller radering
+// key={Math.random()} - skapar nya keys vid varje render
+// key={todo.text} - problem om text ändras eller är duplicerad
+
+// ✅ Bra keys:
+// key={todo.id} - stabil unik identifierare
+// key={`${todo.userId}-${todo.timestamp}`} - sammansatt unik key
+</code></pre>
+<p><strong>Varför keys är viktiga:</strong></p>
+<ul>
+<li>React använder keys för att identifiera vilka element som ändrats</li>
+<li>Förbättrar prestanda vid re-rendering</li>
+<li>Förhindrar buggar med component state</li>
+</ul>
+<h2 id="fråga-7-react-router-navigation"><a class="header" href="#fråga-7-react-router-navigation">Fråga 7: React Router Navigation</a></h2>
+<p><strong>Intervjuare:</strong> "Implementera routing med React Router inklusive protected routes."</p>
+<p><strong>Bra svar:</strong></p>
+<pre><code class="language-jsx">import { BrowserRouter, Routes, Route, Navigate, Link, useNavigate } from 'react-router-dom';
+
+// Protected Route Component
+function ProtectedRoute({ children }) {
+  const isAuthenticated = useAuth(); // Custom hook för auth
+
+  return isAuthenticated ? children : &lt;Navigate to="/login" replace /&gt;;
+}
+
+// Navigation Component
+function Navigation() {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () =&gt; {
+    logout();
+    navigate('/');
+  };
+
+  return (
+    &lt;nav&gt;
+      &lt;Link to="/"&gt;Hem&lt;/Link&gt;
+      &lt;Link to="/about"&gt;Om oss&lt;/Link&gt;
+      
+      {user ? (
+        &lt;&gt;
+          &lt;Link to="/dashboard"&gt;Dashboard&lt;/Link&gt;
+          &lt;Link to="/profile"&gt;Profil&lt;/Link&gt;
+          &lt;button onClick={handleLogout}&gt;Logga ut&lt;/button&gt;
+        &lt;/&gt;
+      ) : (
+        &lt;&gt;
+          &lt;Link to="/login"&gt;Logga in&lt;/Link&gt;
+          &lt;Link to="/register"&gt;Registrera&lt;/Link&gt;
+        &lt;/&gt;
+      )}
+    &lt;/nav&gt;
+  );
+}
+
+// Main App with Router
+function App() {
+  return (
+    &lt;AuthProvider&gt;
+      &lt;BrowserRouter&gt;
+        &lt;Navigation /&gt;
+        
+        &lt;Routes&gt;
+          {/* Public routes */}
+          &lt;Route path="/" element={&lt;Home /&gt;} /&gt;
+          &lt;Route path="/about" element={&lt;About /&gt;} /&gt;
+          &lt;Route path="/login" element={&lt;Login /&gt;} /&gt;
+          &lt;Route path="/register" element={&lt;Register /&gt;} /&gt;
+          
+          {/* Protected routes */}
+          &lt;Route 
+            path="/dashboard" 
+            element={
+              &lt;ProtectedRoute&gt;
+                &lt;Dashboard /&gt;
+              &lt;/ProtectedRoute&gt;
+            } 
+          /&gt;
+          &lt;Route 
+            path="/profile" 
+            element={
+              &lt;ProtectedRoute&gt;
+                &lt;Profile /&gt;
+              &lt;/ProtectedRoute&gt;
+            } 
+          /&gt;
+          
+          {/* Dynamic routes */}
+          &lt;Route path="/users/:id" element={&lt;UserProfile /&gt;} /&gt;
+          
+          {/* 404 */}
+          &lt;Route path="*" element={&lt;NotFound /&gt;} /&gt;
+        &lt;/Routes&gt;
+      &lt;/BrowserRouter&gt;
+    &lt;/AuthProvider&gt;
+  );
+}
+
+// Component med URL parameters
+function UserProfile() {
+  const { id } = useParams();
+  const [user, setUser] = useState(null);
+
+  useEffect(() =&gt; {
+    fetchUser(id).then(setUser);
+  }, [id]);
+
+  return user ? &lt;div&gt;{user.name}&lt;/div&gt; : &lt;div&gt;Loading...&lt;/div&gt;;
+}
+</code></pre>
+<p><strong>React Router hooks:</strong></p>
+<ul>
+<li><code>useNavigate()</code> - programmatisk navigation</li>
+<li><code>useParams()</code> - hämta URL-parametrar</li>
+<li><code>useLocation()</code> - få information om current location</li>
+</ul>
+<h2 id="fråga-8-custom-hooks-och-api-integration"><a class="header" href="#fråga-8-custom-hooks-och-api-integration">Fråga 8: Custom Hooks och API Integration</a></h2>
+<p><strong>Intervjuare:</strong> "Skapa en custom hook för API-anrop med loading och error states."</p>
+<p><strong>Bra svar:</strong></p>
+<pre><code class="language-jsx">// Custom hook för API calls
+function useApi(url, options = {}) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const refetch = useCallback(async () =&gt; {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const response = await fetch(url, {
+        headers: {
+          'Content-Type': 'application/json',
+          ...options.headers,
+        },
+        ...options,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      setData(result);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [url, options]);
+
+  useEffect(() =&gt; {
+    refetch();
+  }, [refetch]);
+
+  return { data, loading, error, refetch };
+}
+
+// Custom hook för forms
+function useForm(initialValues, validationRules = {}) {
+  const [values, setValues] = useState(initialValues);
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
+
+  const handleChange = (name, value) =&gt; {
+    setValues(prev =&gt; ({ ...prev, [name]: value }));
+    
+    // Validera när användaren ändrar värde
+    if (touched[name] &amp;&amp; validationRules[name]) {
+      const error = validationRules[name](value);
+      setErrors(prev =&gt; ({ ...prev, [name]: error }));
+    }
+  };
+
+  const handleBlur = (name) =&gt; {
+    setTouched(prev =&gt; ({ ...prev, [name]: true }));
+    
+    // Validera när fält lämnas
+    if (validationRules[name]) {
+      const error = validationRules[name](values[name]);
+      setErrors(prev =&gt; ({ ...prev, [name]: error }));
+    }
+  };
+
+  const isValid = Object.values(errors).every(error =&gt; !error);
+
+  return {
+    values,
+    errors,
+    touched,
+    handleChange,
+    handleBlur,
+    isValid,
+    setValues,
+    setErrors
+  };
+}
+
+// Användning av custom hooks
+function UsersList() {
+  const { data: users, loading, error, refetch } = useApi('/api/users');
+  
+  const {
+    values,
+    errors,
+    handleChange,
+    handleBlur,
+    isValid
+  } = useForm(
+    { name: '', email: '' },
+    {
+      name: (value) =&gt; !value ? 'Namn krävs' : '',
+      email: (value) =&gt; !/\S+@\S+\.\S+/.test(value) ? 'Ogiltig e-post' : ''
+    }
+  );
+
+  if (loading) return &lt;div&gt;Loading users...&lt;/div&gt;;
+  if (error) return &lt;div&gt;Error: {error}&lt;/div&gt;;
+
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;Users&lt;/h2&gt;
+      &lt;button onClick={refetch}&gt;Refresh&lt;/button&gt;
+      
+      &lt;ul&gt;
+        {users?.map(user =&gt; (
+          &lt;li key={user.id}&gt;{user.name} - {user.email}&lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+
+      &lt;form&gt;
+        &lt;input
+          type="text"
+          placeholder="Name"
+          value={values.name}
+          onChange={(e) =&gt; handleChange('name', e.target.value)}
+          onBlur={() =&gt; handleBlur('name')}
+        /&gt;
+        {errors.name &amp;&amp; &lt;span&gt;{errors.name}&lt;/span&gt;}
+        
+        &lt;input
+          type="email"
+          placeholder="Email"
+          value={values.email}
+          onChange={(e) =&gt; handleChange('email', e.target.value)}
+          onBlur={() =&gt; handleBlur('email')}
+        /&gt;
+        {errors.email &amp;&amp; &lt;span&gt;{errors.email}&lt;/span&gt;}
+        
+        &lt;button disabled={!isValid}&gt;Add User&lt;/button&gt;
+      &lt;/form&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<p><strong>Fördelar med custom hooks:</strong></p>
+<ul>
+<li>Återanvändbar logik mellan komponenter</li>
+<li>Separation of concerns</li>
+<li>Lättare testning</li>
+<li>Renare komponentkod</li>
+</ul>
+<h2 id="fråga-9-performance-optimization"><a class="header" href="#fråga-9-performance-optimization">Fråga 9: Performance Optimization</a></h2>
+<p><strong>Intervjuare:</strong> "Vilka tekniker använder du för att optimera React-applikationer?"</p>
+<p><strong>Bra svar:</strong></p>
+<pre><code class="language-jsx">import { memo, useMemo, useCallback, lazy, Suspense } from 'react';
+
+// 1. React.memo för att förhindra onödiga re-renders
+const ExpensiveComponent = memo(function ExpensiveComponent({ data, onClick }) {
+  console.log('ExpensiveComponent rendered');
+  
+  return (
+    &lt;div&gt;
+      &lt;h3&gt;{data.title}&lt;/h3&gt;
+      &lt;button onClick={onClick}&gt;Click me&lt;/button&gt;
+    &lt;/div&gt;
+  );
+});
+
+// 2. useMemo för dyra beräkningar
+function ProductList({ products, searchTerm, sortBy }) {
+  const filteredAndSortedProducts = useMemo(() =&gt; {
+    console.log('Calculating filtered products...');
+    
+    let result = products.filter(product =&gt;
+      product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    
+    result.sort((a, b) =&gt; {
+      if (sortBy === 'price') return a.price - b.price;
+      if (sortBy === 'name') return a.name.localeCompare(b.name);
+      return 0;
+    });
+    
+    return result;
+  }, [products, searchTerm, sortBy]); // Bara omberäkna när dependencies ändras
+
+  return (
+    &lt;div&gt;
+      {filteredAndSortedProducts.map(product =&gt; (
+        &lt;ProductItem key={product.id} product={product} /&gt;
+      ))}
+    &lt;/div&gt;
+  );
+}
+
+// 3. useCallback för att stabilisera funktionsreferenser
+function TodoApp() {
+  const [todos, setTodos] = useState([]);
+  
+  // Utan useCallback skapas en ny funktion vid varje render
+  const handleToggleTodo = useCallback((id) =&gt; {
+    setTodos(prevTodos =&gt;
+      prevTodos.map(todo =&gt;
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo
+      )
+    );
+  }, []); // Tom dependency array eftersom vi använder functional update
+
+  const handleDeleteTodo = useCallback((id) =&gt; {
+    setTodos(prevTodos =&gt; prevTodos.filter(todo =&gt; todo.id !== id));
+  }, []);
+
+  return (
+    &lt;div&gt;
+      {todos.map(todo =&gt; (
+        &lt;TodoItem
+          key={todo.id}
+          todo={todo}
+          onToggle={handleToggleTodo}
+          onDelete={handleDeleteTodo}
+        /&gt;
+      ))}
+    &lt;/div&gt;
+  );
+}
+
+// 4. Lazy loading med React.lazy
+const LazyDashboard = lazy(() =&gt; import('./Dashboard'));
+const LazyProfile = lazy(() =&gt; import('./Profile'));
+
+function App() {
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;Suspense fallback={&lt;div&gt;Loading...&lt;/div&gt;}&gt;
+        &lt;Routes&gt;
+          &lt;Route path="/dashboard" element={&lt;LazyDashboard /&gt;} /&gt;
+          &lt;Route path="/profile" element={&lt;LazyProfile /&gt;} /&gt;
+        &lt;/Routes&gt;
+      &lt;/Suspense&gt;
+    &lt;/BrowserRouter&gt;
+  );
+}
+
+// 5. Virtualisering för stora listor
+import { FixedSizeList as List } from 'react-window';
+
+function VirtualizedList({ items }) {
+  const Row = ({ index, style }) =&gt; (
+    &lt;div style={style}&gt;
+      &lt;div&gt;{items[index].name}&lt;/div&gt;
+    &lt;/div&gt;
+  );
+
+  return (
+    &lt;List
+      height={600} // Höjd på container
+      itemCount={items.length}
+      itemSize={50} // Höjd per item
+    &gt;
+      {Row}
+    &lt;/List&gt;
+  );
+}
+</code></pre>
+<p><strong>Performance tips:</strong></p>
+<ul>
+<li>Använd React DevTools Profiler</li>
+<li>Minimera re-renders med memo/useMemo/useCallback</li>
+<li>Code splitting med lazy loading</li>
+<li>Virtualisering för stora listor</li>
+<li>Optimera bundle size</li>
+<li>Använd production builds</li>
+</ul>
+<h2 id="fråga-10-error-boundaries-och-error-handling"><a class="header" href="#fråga-10-error-boundaries-och-error-handling">Fråga 10: Error Boundaries och Error Handling</a></h2>
+<p><strong>Intervjuare:</strong> "Implementera error boundaries och robustfehantering i React."</p>
+<p><strong>Bra svar:</strong></p>
+<pre><code class="language-jsx">// Error Boundary Class Component
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null, errorInfo: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    // Uppdatera state så nästa render visar fallback UI
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    // Logga felet till error reporting service
+    console.error('Error caught by boundary:', error, errorInfo);
+    
+    this.setState({
+      error: error,
+      errorInfo: errorInfo
+    });
+
+    // Skicka till error monitoring (t.ex. Sentry)
+    // errorReportingService.captureException(error);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        &lt;div className="error-boundary"&gt;
+          &lt;h2&gt;Något gick fel&lt;/h2&gt;
+          &lt;details style={{ whiteSpace: 'pre-wrap' }}&gt;
+            {this.state.error &amp;&amp; this.state.error.toString()}
+            &lt;br /&gt;
+            {this.state.errorInfo.componentStack}
+          &lt;/details&gt;
+          &lt;button onClick={() =&gt; window.location.reload()}&gt;
+            Ladda om sidan
+          &lt;/button&gt;
+        &lt;/div&gt;
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
+// Custom hook för async error handling
+function useAsyncError() {
+  const [, setError] = useState();
+  
+  return useCallback((error) =&gt; {
+    setError(() =&gt; {
+      throw error;
+    });
+  }, []);
+}
+
+// Component med error handling
+function UserProfile({ userId }) {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const throwAsyncError = useAsyncError();
+
+  useEffect(() =&gt; {
+    const fetchUser = async () =&gt; {
+      try {
+        setLoading(true);
+        const response = await fetch(`/api/users/${userId}`);
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch user: ${response.status}`);
+        }
+        
+        const userData = await response.json();
+        setUser(userData);
+      } catch (error) {
+        // Kasta error till Error Boundary
+        throwAsyncError(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, [userId, throwAsyncError]);
+
+  if (loading) return &lt;div&gt;Loading...&lt;/div&gt;;
+  if (!user) return &lt;div&gt;User not found&lt;/div&gt;;
+
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;{user.name}&lt;/h2&gt;
+      &lt;p&gt;{user.email}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+
+// App med Error Boundaries
+function App() {
+  return (
+    &lt;ErrorBoundary&gt;
+      &lt;Router&gt;
+        &lt;Header /&gt;
+        &lt;ErrorBoundary&gt;
+          &lt;Routes&gt;
+            &lt;Route path="/user/:id" element={&lt;UserProfile /&gt;} /&gt;
+            &lt;Route path="/dashboard" element={
+              &lt;ErrorBoundary&gt;
+                &lt;Dashboard /&gt;
+              &lt;/ErrorBoundary&gt;
+            } /&gt;
+          &lt;/Routes&gt;
+        &lt;/ErrorBoundary&gt;
+      &lt;/Router&gt;
+    &lt;/ErrorBoundary&gt;
+  );
+}
+</code></pre>
+<p><strong>Error handling best practices:</strong></p>
+<ul>
+<li>Använd Error Boundaries för att fånga rendering errors</li>
+<li>Implementera graceful degradation</li>
+<li>Logga fel till monitoring services</li>
+<li>Visa användarvänliga felmeddelanden</li>
+<li>Ha fallback UI för kritiska komponenter</li>
+</ul>
+<hr />
+<h2 id="sammanfattning"><a class="header" href="#sammanfattning">Sammanfattning</a></h2>
+<p>Dessa frågor täcker de viktigaste aspekterna av React-utveckling:</p>
+<ul>
+<li><strong>React Fundamentals:</strong> JSX, Virtual DOM, komponenter</li>
+<li><strong>Hooks:</strong> useState, useEffect, custom hooks</li>
+<li><strong>State Management:</strong> Props, Context API, state lifting</li>
+<li><strong>Routing:</strong> React Router, navigation, protected routes</li>
+<li><strong>Performance:</strong> Memo, useMemo, useCallback, lazy loading</li>
+<li><strong>Error Handling:</strong> Error boundaries, async errors</li>
+<li><strong>Best Practices:</strong> Forms, API integration, testing</li>
+</ul>
+<p><strong>Förberedelse-tips:</strong></p>
+<ol>
+<li>Bygg små React-projekt för att öva praktiskt</li>
+<li>Förstå React lifecycle och när olika hooks körs</li>
+<li>Öva på performance-optimering med React DevTools</li>
+<li>Lär dig skillnaden mellan controlled/uncontrolled components</li>
+<li>Förstå när och varför du skulle använda Context vs props</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_8/ovningar.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_8/fordjupning/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_8/ovningar.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_8/fordjupning/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

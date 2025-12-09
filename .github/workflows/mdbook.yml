@@ -32,7 +32,18 @@ jobs:
       MDBOOK_VERSION: 0.4.52
     steps:
       - uses: actions/checkout@v4
+      - name: Check for pre-built book directory
+        id: check_book
+        run: |
+          if [ -d "book" ] && [ "$(ls -A book)" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "Found pre-built book directory, skipping build"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "No pre-built book directory found, will build"
+          fi
       - name: Install mdBook
+        if: steps.check_book.outputs.exists == 'false'
         run: |
           curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf -y | sh
           rustup update
@@ -42,6 +53,7 @@ jobs:
         id: pages
         uses: actions/configure-pages@v5
       - name: Build with mdBook
+        if: steps.check_book.outputs.exists == 'false'
         run: mdbook build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

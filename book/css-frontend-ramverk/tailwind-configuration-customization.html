@@ -1,0 +1,407 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Konfiguration och anpassning - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="tailwind-css--konfigurering-och-anpassning"><a class="header" href="#tailwind-css--konfigurering-och-anpassning">Tailwind CSS – Konfigurering och Anpassning</a></h1>
+<h2 id="introduktion"><a class="header" href="#introduktion">Introduktion</a></h2>
+<p>Tailwind CSS är mycket flexibelt och kan enkelt anpassas för att passa dina projektbehov. Genom att använda <code>tailwind.config.js</code> kan du:</p>
+<ul>
+<li>Lägga till egna färger, typsnitt och spacing.</li>
+<li>Skräddarsy breakpoints och andra designparametrar.</li>
+<li>Utöka eller skriva över standardinställningarna.</li>
+</ul>
+<p>I denna lektion går vi igenom hur du konfigurerar och anpassar Tailwind CSS, samt hur du kan skapa ett eget tema.</p>
+<hr />
+<h2 id="skapa-och-konfigurera-tailwindconfigjs"><a class="header" href="#skapa-och-konfigurera-tailwindconfigjs">Skapa och konfigurera <code>tailwind.config.js</code></a></h2>
+<p>När du installerar Tailwind CSS genereras en konfigurationsfil med kommandot:</p>
+<pre><code class="language-bash">npx tailwindcss init
+</code></pre>
+<p>Denna fil (<code>tailwind.config.js</code>) används för att anpassa Tailwind. Här är ett exempel på en grundläggande konfigurationsfil:</p>
+<pre><code class="language-javascript">/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+</code></pre>
+<h3 id="viktiga-delar-av-konfigurationsfilen"><a class="header" href="#viktiga-delar-av-konfigurationsfilen">Viktiga delar av konfigurationsfilen:</a></h3>
+<ol>
+<li><strong><code>content</code></strong>: Här anger du vilka filer Tailwind ska genomsöka för att hitta klasser. Detta är viktigt för att Tailwind ska kunna ta bort oanvänd CSS i produktion.</li>
+<li><strong><code>theme</code></strong>: Här kan du anpassa eller utöka standardtemat.</li>
+<li><strong><code>plugins</code></strong>: Här kan du lägga till Tailwind-plugins för extra funktionalitet.</li>
+</ol>
+<hr />
+<h2 id="anpassa-färger"><a class="header" href="#anpassa-färger">Anpassa färger</a></h2>
+<p>Du kan lägga till egna färger eller skriva över standardfärgerna i <code>theme.extend.colors</code>:</p>
+<pre><code class="language-javascript">theme: {
+  extend: {
+    colors: {
+      brand: {
+        light: '#3AB0FF',
+        DEFAULT: '#007BFF',
+        dark: '#0056B3',
+      },
+    },
+  },
+},
+</code></pre>
+<h3 id="användning"><a class="header" href="#användning">Användning:</a></h3>
+<pre><code class="language-html">&lt;div class="bg-brand text-white p-4"&gt;
+  Detta är en komponent med anpassad färg.
+&lt;/div&gt;
+</code></pre>
+<hr />
+<h2 id="anpassa-typsnitt"><a class="header" href="#anpassa-typsnitt">Anpassa typsnitt</a></h2>
+<p>Lägg till egna typsnitt i <code>theme.extend.fontFamily</code>:</p>
+<pre><code class="language-javascript">theme: {
+  extend: {
+    fontFamily: {
+      custom: ['"Open Sans"', 'sans-serif'],
+    },
+  },
+},
+</code></pre>
+<h3 id="användning-1"><a class="header" href="#användning-1">Användning:</a></h3>
+<pre><code class="language-html">&lt;p class="font-custom text-lg"&gt;
+  Detta är text med ett anpassat typsnitt.
+&lt;/p&gt;
+</code></pre>
+<hr />
+<h2 id="anpassa-spacing"><a class="header" href="#anpassa-spacing">Anpassa spacing</a></h2>
+<p>Du kan lägga till egna spacing-värden (t.ex. padding och margin):</p>
+<pre><code class="language-javascript">theme: {
+  extend: {
+    spacing: {
+      '72': '18rem',
+      '84': '21rem',
+      '96': '24rem',
+    },
+  },
+},
+</code></pre>
+<h3 id="användning-2"><a class="header" href="#användning-2">Användning:</a></h3>
+<pre><code class="language-html">&lt;div class="p-72 bg-gray-200"&gt;
+  Detta element har 18rem padding.
+&lt;/div&gt;
+</code></pre>
+<hr />
+<h2 id="anpassa-breakpoints"><a class="header" href="#anpassa-breakpoints">Anpassa breakpoints</a></h2>
+<p>Om du vill ändra standard-breakpoints kan du göra det i <code>theme.screens</code>:</p>
+<pre><code class="language-javascript">theme: {
+  screens: {
+    sm: '480px',
+    md: '768px',
+    lg: '1024px',
+    xl: '1280px',
+    '2xl': '1536px',
+  },
+},
+</code></pre>
+<hr />
+<h2 id="lägg-till-plugins"><a class="header" href="#lägg-till-plugins">Lägg till plugins</a></h2>
+<p>Tailwind har ett stort ekosystem av plugins. Du kan lägga till plugins som <code>@tailwindcss/forms</code> för att förbättra formulärstilar:</p>
+<pre><code class="language-bash">npm install @tailwindcss/forms
+</code></pre>
+<p>Lägg sedan till pluginet i <code>tailwind.config.js</code>:</p>
+<pre><code class="language-javascript">plugins: [
+  require('@tailwindcss/forms'),
+],
+</code></pre>
+<hr />
+<h2 id="exempel-skapa-ett-anpassat-tema"><a class="header" href="#exempel-skapa-ett-anpassat-tema">Exempel: Skapa ett anpassat tema</a></h2>
+<p>Här är ett exempel på en komplett konfigurationsfil med ett anpassat tema:</p>
+<pre><code class="language-javascript">/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        brand: {
+          light: '#3AB0FF',
+          DEFAULT: '#007BFF',
+          dark: '#0056B3',
+        },
+      },
+      fontFamily: {
+        custom: ['"Open Sans"', 'sans-serif'],
+      },
+      spacing: {
+        '72': '18rem',
+        '84': '21rem',
+        '96': '24rem',
+      },
+    },
+  },
+  plugins: [
+    require('@tailwindcss/forms'),
+  ],
+}
+</code></pre>
+<hr />
+<h2 id="Övning-skapa-ett-anpassat-kort-med-eget-tema"><a class="header" href="#Övning-skapa-ett-anpassat-kort-med-eget-tema">Övning: Skapa ett anpassat kort med eget tema</a></h2>
+<h3 id="uppgift"><a class="header" href="#uppgift">Uppgift</a></h3>
+<p>Skapa ett kort som använder ett anpassat tema. Kortet ska innehålla:</p>
+<ol>
+<li>En rubrik med ett anpassat typsnitt.</li>
+<li>En bakgrundsfärg från det anpassade färgschemat.</li>
+<li>Padding och margin från de anpassade spacing-värdena.</li>
+<li>En knapp med en hover-effekt som använder det anpassade färgschemat.</li>
+</ol>
+<h3 id="exempel-på-html-struktur"><a class="header" href="#exempel-på-html-struktur">Exempel på HTML-struktur</a></h3>
+<pre><code class="language-html">&lt;div class="max-w-md mx-auto bg-brand-light text-white p-72 rounded-lg shadow-lg"&gt;
+  &lt;h2 class="text-2xl font-custom"&gt;Anpassat kort&lt;/h2&gt;
+  &lt;p class="mt-4"&gt;
+    Detta kort använder ett anpassat tema med egna färger, typsnitt och spacing.
+  &lt;/p&gt;
+  &lt;button class="mt-6 px-4 py-2 bg-brand hover:bg-brand-dark rounded"&gt;
+    Klicka här
+  &lt;/button&gt;
+&lt;/div&gt;
+</code></pre>
+<h3 id="krav"><a class="header" href="#krav">Krav</a></h3>
+<ul>
+<li>Lägg till de anpassade färgerna, typsnitten och spacing-värdena i <code>tailwind.config.js</code>.</li>
+<li>Använd Tailwinds utility-klasser för att bygga kortet.</li>
+</ul>
+<h3 id="utmaning"><a class="header" href="#utmaning">Utmaning</a></h3>
+<ul>
+<li>Lägg till en responsiv design så att kortet ändrar storlek på olika skärmstorlekar.</li>
+<li>Lägg till en animation som gör att hover-effekten övergångar mjukt.</li>
+</ul>
+<hr />
+<h2 id="sammanfattning"><a class="header" href="#sammanfattning">Sammanfattning</a></h2>
+<ul>
+<li><strong>Konfiguration</strong>: Använd <code>tailwind.config.js</code> för att anpassa Tailwind CSS.</li>
+<li><strong>Anpassningar</strong>: Lägg till egna färger, typsnitt, spacing och breakpoints.</li>
+<li><strong>Plugins</strong>: Utöka funktionaliteten med Tailwind-plugins.</li>
+<li><strong>Praktisk tillämpning</strong>: Skapa komponenter som använder ditt anpassade tema.</li>
+</ul>
+<p>För mer information, besök <a href="https://tailwindcss.com/docs/configuration">Tailwind CSS Dokumentation</a>.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../css-frontend-ramverk/tailwind-states-interactivity.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../css-frontend-ramverk/tailwind-build-a-site.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../css-frontend-ramverk/tailwind-states-interactivity.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../css-frontend-ramverk/tailwind-build-a-site.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

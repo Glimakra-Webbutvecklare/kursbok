@@ -1,0 +1,780 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>CSS-enheter: Absoluta och relativa mått - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="css-enheter-absoluta-och-relativa-mått"><a class="header" href="#css-enheter-absoluta-och-relativa-mått">CSS-enheter: Absoluta och relativa mått</a></h1>
+<p>Att förstå olika CSS-enheter är avgörande för att skapa flexibla, responsiva och tillgängliga webbsidor. CSS erbjuder många olika enheter för att mäta storlekar, avstånd och positioner. Att välja rätt enhet för rätt situation gör skillnaden mellan en sida som fungerar bra på alla enheter och en som bara fungerar på en specifik skärmstorlek.</p>
+<blockquote>
+<p><strong>Motivation:</strong><br />
+Med kunskap om olika CSS-enheter kan du skapa webbsidor som anpassar sig till användarens inställningar, fungerar på alla enheter och är tillgängliga för alla användare. Du lär dig när du ska använda pixlar, procent, rem eller andra enheter.</p>
+</blockquote>
+<hr />
+<h2 id="kategorier-av-css-enheter"><a class="header" href="#kategorier-av-css-enheter">Kategorier av CSS-enheter</a></h2>
+<p>CSS-enheter delas in i två huvudkategorier:</p>
+<ol>
+<li><strong>Absoluta enheter (absolute units):</strong> Har en fast storlek som inte ändras baserat på andra element eller inställningar.</li>
+<li><strong>Relativa enheter (relative units):</strong> Storlek som beräknas i förhållande till något annat (t.ex. förälderelementet, fontstorlek eller viewport).</li>
+</ol>
+<hr />
+<h2 id="absoluta-enheter"><a class="header" href="#absoluta-enheter">Absoluta enheter</a></h2>
+<p>Absoluta enheter har alltid samma storlek, oavsett kontext. De är mest användbara för media som har en känd, fast storlek (som tryck).</p>
+<h3 id="pixlar-px--den-vanligaste-absoluta-enheten"><a class="header" href="#pixlar-px--den-vanligaste-absoluta-enheten">Pixlar (px) – Den vanligaste absoluta enheten</a></h3>
+<ul>
+<li><strong>Vad det är:</strong> En pixel på skärmen. I CSS är 1px definierat som 1/96 av en tum.</li>
+<li><strong>Användning:</strong> Borders, små detaljer, exakt positionering.</li>
+</ul>
+<pre><code class="language-css">.border-example {
+  border: 2px solid #333;  /* Exakt 2 pixlar bred border */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);  /* Skugga med pixlar */
+}
+
+.precise-spacing {
+  margin-top: 24px;  /* Exakt avstånd */
+}
+</code></pre>
+<h3 id="andra-absoluta-enheter-sällan-använda-på-webben"><a class="header" href="#andra-absoluta-enheter-sällan-använda-på-webben">Andra absoluta enheter (sällan använda på webben)</a></h3>
+<pre><code class="language-css">/* Dessa används främst för tryck, inte webben */
+.print-example {
+  width: 2in;    /* Tum (inches) */
+  height: 5cm;   /* Centimeter */
+  font-size: 12pt; /* Punkter (points) */
+}
+</code></pre>
+<blockquote>
+<p><strong>Tips:</strong> Använd främst <code>px</code> bland de absoluta enheterna för webbutveckling. De andra är mest relevanta för tryckta medier.</p>
+</blockquote>
+<hr />
+<h2 id="relativa-enheter"><a class="header" href="#relativa-enheter">Relativa enheter</a></h2>
+<p>Relativa enheter anpassar sig till sin kontext, vilket gör dem perfekta för responsiv design och tillgänglighet.</p>
+<h3 id="procent---relativt-till-förälderelement"><a class="header" href="#procent---relativt-till-förälderelement">Procent (%) – Relativt till förälderelement</a></h3>
+<ul>
+<li><strong>Vad det är:</strong> Procent av förälderelement motsvarande egenskap.</li>
+<li><strong>Användning:</strong> Bredder i responsiva layouter, höjder, positionering.</li>
+</ul>
+<pre><code class="language-css">.container {
+  width: 80%;        /* 80% av förälderns bredd */
+  max-width: 1200px; /* Men aldrig mer än 1200px */
+  margin: 0 auto;    /* Centrerar containern */
+}
+
+.sidebar {
+  width: 25%;        /* En fjärdedel av förälderns bredd */
+  float: left;
+}
+
+.main-content {
+  width: 75%;        /* Tre fjärdedelar av förälderns bredd */
+  float: right;
+}
+</code></pre>
+<h3 id="em-em--relativt-till-förälderns-fontstorlek"><a class="header" href="#em-em--relativt-till-förälderns-fontstorlek">Em (em) – Relativt till förälderns fontstorlek</a></h3>
+<ul>
+<li><strong>Vad det är:</strong> 1em = förälderelement <code>font-size</code>.</li>
+<li><strong>Problem:</strong> Kan ge oväntade resultat vid nesting (kapsling).</li>
+<li><strong>Användning:</strong> Padding och margin som ska skala med text.</li>
+</ul>
+<pre><code class="language-css">.parent {
+  font-size: 20px;
+}
+
+.child {
+  font-size: 1.5em;    /* 1.5 × 20px = 30px */
+  padding: 0.5em;      /* 0.5 × 30px = 15px (baserat på EGEN font-size!) */
+  margin-bottom: 1em;  /* 1 × 30px = 30px */
+}
+</code></pre>
+<h3 id="root-em-rem--relativt-till-rotfontstorlek"><a class="header" href="#root-em-rem--relativt-till-rotfontstorlek">Root Em (rem) – Relativt till rotfontstorlek</a></h3>
+<ul>
+<li><strong>Vad det är:</strong> 1rem = root-elementets (<code>&lt;html&gt;</code>) <code>font-size</code> (standard 16px).</li>
+<li><strong>Fördelar:</strong> Förutsägbar, respekterar användarinställningar, ingen nesting-problematik.</li>
+<li><strong>Användning:</strong> Fontstorlekar, padding, margin, spacing.</li>
+</ul>
+<pre><code class="language-css">html {
+  font-size: 16px; /* Bas-fontstorlek (ofta webbläsarens standard) */
+}
+
+.heading {
+  font-size: 2rem;     /* 2 × 16px = 32px */
+  margin-bottom: 1rem; /* 1 × 16px = 16px */
+}
+
+.small-text {
+  font-size: 0.875rem; /* 0.875 × 16px = 14px */
+  padding: 0.5rem;     /* 0.5 × 16px = 8px */
+}
+</code></pre>
+<h3 id="viewport-enheter--relativt-till-skärmstorlek"><a class="header" href="#viewport-enheter--relativt-till-skärmstorlek">Viewport-enheter – Relativt till skärmstorlek</a></h3>
+<p>Dessa enheter baseras på webbläsarfönstrets (viewport) dimensioner:</p>
+<ul>
+<li><strong>vw (viewport width):</strong> 1vw = 1% av viewport-bredden</li>
+<li><strong>vh (viewport height):</strong> 1vh = 1% av viewport-höjden</li>
+<li><strong>vmin:</strong> 1vmin = 1% av den <em>mindre</em> dimensionen (bredd eller höjd)</li>
+<li><strong>vmax:</strong> 1vmax = 1% av den <em>större</em> dimensionen</li>
+</ul>
+<pre><code class="language-css">.hero-section {
+  height: 100vh;        /* Tar upp hela skärmhöjden */
+  background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+}
+
+.full-width-text {
+  font-size: 5vw;       /* Text som skalas med skärmbredd */
+  max-font-size: 3rem;  /* Men inte större än 3rem */
+}
+
+.square {
+  width: 50vmin;        /* Kvadrat som alltid får plats på skärmen */
+  height: 50vmin;
+  background: coral;
+}
+</code></pre>
+<hr />
+<h2 id="jämförelse-av-enheter-visualisering"><a class="header" href="#jämförelse-av-enheter-visualisering">Jämförelse av enheter: Visualisering</a></h2>
+<pre class="mermaid">flowchart TD
+    A[CSS-enheter] --&gt; B[Absoluta enheter]
+    A --&gt; C[Relativa enheter]
+    
+    B --&gt; D[&quot;px (pixlar)&lt;br/&gt;📏 Fast storlek&lt;br/&gt;Bäst för: borders, detaljer&quot;]
+    B --&gt; E[&quot;pt, cm, in&lt;br/&gt;📄 För tryck&lt;br/&gt;Sällan använda på webben&quot;]
+    
+    C --&gt; F[&quot;% (procent)&lt;br/&gt;👨‍👩‍👧‍👦 Relativt till förälder&lt;br/&gt;Bäst för: layoutbredder&quot;]
+    C --&gt; G[&quot;em&lt;br/&gt;📝 Relativt till förälderns font&lt;br/&gt;Kan ge nesting-problem&quot;]
+    C --&gt; H[&quot;rem&lt;br/&gt;🌐 Relativt till root font&lt;br/&gt;Förutsägbar, tillgänglig&quot;]
+    C --&gt; I[&quot;vw, vh&lt;br/&gt;📱 Relativt till viewport&lt;br/&gt;Responsiv utan media queries&quot;]
+    
+    style D fill:#ffe6e6,stroke:#cc0000
+    style F fill:#e6f3ff,stroke:#0066cc
+    style G fill:#fff0e6,stroke:#ff6600
+    style H fill:#e6ffe6,stroke:#00cc00
+    style I fill:#f0e6ff,stroke:#9900cc
+</pre>
+<p><em>Diagram: Översikt över CSS-enheter och deras användningsområden.</em></p>
+<hr />
+<h2 id="praktiska-exempel-och-användningsfall"><a class="header" href="#praktiska-exempel-och-användningsfall">Praktiska exempel och användningsfall</a></h2>
+<h3 id="exempel-1-responsiv-typografi-med-rem"><a class="header" href="#exempel-1-responsiv-typografi-med-rem">Exempel 1: Responsiv typografi med rem</a></h3>
+<pre><code class="language-css">/* Bas-fontstorlek som användaren kan ändra */
+html {
+  font-size: 16px; /* Fallback för äldre webbläsare */
+  font-size: 1rem; /* Respekterar användarens inställningar */
+}
+
+/* Typografisk skala med rem */
+.text-xs { font-size: 0.75rem; }  /* 12px */
+.text-sm { font-size: 0.875rem; } /* 14px */
+.text-base { font-size: 1rem; }   /* 16px */
+.text-lg { font-size: 1.125rem; } /* 18px */
+.text-xl { font-size: 1.25rem; }  /* 20px */
+.text-2xl { font-size: 1.5rem; }  /* 24px */
+.text-3xl { font-size: 1.875rem; }/* 30px */
+
+/* Spacing som följer samma skala */
+.spacing-sm { margin: 0.5rem; }   /* 8px */
+.spacing-md { margin: 1rem; }     /* 16px */
+.spacing-lg { margin: 1.5rem; }   /* 24px */
+</code></pre>
+<h3 id="exempel-2-flexibel-layout-med-procent-och-max-width"><a class="header" href="#exempel-2-flexibel-layout-med-procent-och-max-width">Exempel 2: Flexibel layout med procent och max-width</a></h3>
+<pre><code class="language-css">.page-layout {
+  width: 100%;           /* Full bredd på små skärmar */
+  max-width: 1200px;     /* Begränsa på stora skärmar */
+  margin: 0 auto;        /* Centrera */
+  padding: 0 5%;         /* Responsive padding */
+}
+
+.two-column {
+  width: 100%;
+  overflow: hidden;      /* Clearfix för floats */
+}
+
+.main-content {
+  width: 65%;            /* 65% av containerns bredd */
+  float: left;           /* Placera till vänster */
+  padding-right: 2rem;   /* Avstånd till sidebar */
+}
+
+.sidebar {
+  width: 30%;            /* 30% av containerns bredd */
+  float: right;          /* Placera till höger */
+}
+</code></pre>
+<h3 id="exempel-3-viewport-enheter-för-hero-sektion"><a class="header" href="#exempel-3-viewport-enheter-för-hero-sektion">Exempel 3: Viewport-enheter för hero-sektion</a></h3>
+<pre><code class="language-css">.hero {
+  height: 100vh;               /* Full skärmhöjd */
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  text-align: center;
+  padding-top: 20vh;           /* Padding i viewport-enheter */
+}
+
+.hero-title {
+  font-size: 5vw;              /* Text som skalas med skärmbredd */
+  color: white;
+  margin: 0;
+  max-width: 800px;            /* Begränsa textbredden */
+  margin: 0 auto;              /* Centrera texten */
+}
+
+.hero-subtitle {
+  font-size: 2.5vw;
+  margin-top: 1rem;
+  opacity: 0.9;
+  color: white;
+}
+</code></pre>
+<h3 id="exempel-4-kombinera-enheter-för-optimal-design"><a class="header" href="#exempel-4-kombinera-enheter-för-optimal-design">Exempel 4: Kombinera enheter för optimal design</a></h3>
+<pre><code class="language-css">.card {
+  width: 100%;                    /* Full bredd i container */
+  max-width: 400px;               /* Max-bredd i px */
+  padding: 1.5rem;                /* Padding i rem */
+  margin-bottom: 2rem;            /* Margin i rem */
+  border: 1px solid #e0e0e0;      /* Border i px */
+  border-radius: 0.5rem;          /* Border-radius i rem */
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1); /* Skugga i px */
+  float: left;                    /* För att placera kort bredvid varandra */
+  margin-right: 2%;               /* Margin i procent för responsive avstånd */
+}
+
+.card-title {
+  font-size: 1.25rem;             /* Titel i rem */
+  margin-bottom: 0.75rem;         /* Margin i rem */
+  color: #333;
+}
+
+.card-text {
+  font-size: 1rem;                /* Text i rem */
+  line-height: 1.6;               /* Unitless line-height */
+  color: #666;
+}
+</code></pre>
+<hr />
+<h2 id="grundläggande-övningar-med-css-enheter"><a class="header" href="#grundläggande-övningar-med-css-enheter">Grundläggande övningar med CSS-enheter</a></h2>
+<p>Nu är det dags att praktisera! Här följer övningar som fokuserar på att förstå och använda olika CSS-enheter i verkliga situationer.</p>
+<hr />
+<h2 id="bästa-praxis-för-css-enheter"><a class="header" href="#bästa-praxis-för-css-enheter">Bästa praxis för CSS-enheter</a></h2>
+<h3 id="1-typografi-och-spacing"><a class="header" href="#1-typografi-och-spacing">1. Typografi och spacing</a></h3>
+<pre><code class="language-css">/* ✅ Rekommenderat: rem för text och spacing */
+.good-typography {
+  font-size: 1.125rem;      /* 18px om root är 16px */
+  line-height: 1.6;         /* Unitless för bästa resultat */
+  margin-bottom: 1.5rem;    /* 24px spacing */
+  padding: 1rem 1.5rem;     /* Padding som skalas med text */
+}
+</code></pre>
+<h3 id="2-layouter-och-containrar"><a class="header" href="#2-layouter-och-containrar">2. Layouter och containrar</a></h3>
+<pre><code class="language-css">/* ✅ Rekommenderat: procent med max-width */
+.good-layout {
+  width: 100%;              /* Flexibel bredd */
+  max-width: 1200px;        /* Begränsa på stora skärmar */
+  margin: 0 auto;           /* Centrera */
+  padding: 0 5%;            /* Responsive padding */
+}
+</code></pre>
+<h3 id="3-detaljer-och-borders"><a class="header" href="#3-detaljer-och-borders">3. Detaljer och borders</a></h3>
+<pre><code class="language-css">/* ✅ Rekommenderat: px för exakta detaljer */
+.good-details {
+  border: 1px solid #ccc;   /* Exakt border */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Exakt skugga */
+  border-radius: 0.25rem;   /* Rundade hörn i rem */
+}
+</code></pre>
+<h3 id="4-responsiv-design-med-viewport-enheter"><a class="header" href="#4-responsiv-design-med-viewport-enheter">4. Responsiv design med viewport-enheter</a></h3>
+<pre><code class="language-css">/* ✅ Rekommenderat: viewport-enheter för responsiv design */
+.good-responsive {
+  font-size: 3vw;              /* Text som skalas med skärmbredd */
+  padding: 4vw 2vw;            /* Responsiv padding */
+  width: 90%;                  /* Flexibel bredd */
+  max-width: 800px;            /* Men begränsa på stora skärmar */
+}
+</code></pre>
+<hr />
+<h2 id="vanliga-misstag-och-hur-man-undviker-dem"><a class="header" href="#vanliga-misstag-och-hur-man-undviker-dem">Vanliga misstag och hur man undviker dem</a></h2>
+<h3 id="-misstag-1-använd-em-för-allt"><a class="header" href="#-misstag-1-använd-em-för-allt">❌ Misstag 1: Använd em för allt</a></h3>
+<pre><code class="language-css">/* Problematiskt: em kan ge oväntade resultat vid nesting */
+.parent {
+  font-size: 1.2em;
+}
+.child {
+  font-size: 1.2em; /* Blir 1.2 × 1.2 = 1.44× större än förväntat */
+}
+</code></pre>
+<h3 id="-lösning-använd-rem-för-förutsägbarhet"><a class="header" href="#-lösning-använd-rem-för-förutsägbarhet">✅ Lösning: Använd rem för förutsägbarhet</a></h3>
+<pre><code class="language-css">.parent {
+  font-size: 1.2rem; /* 1.2 × root font-size */
+}
+.child {
+  font-size: 1.2rem; /* Samma som parent, förutsägbart */
+}
+</code></pre>
+<h3 id="-misstag-2-fasta-höjder-med-vh-på-mobil"><a class="header" href="#-misstag-2-fasta-höjder-med-vh-på-mobil">❌ Misstag 2: Fasta höjder med vh på mobil</a></h3>
+<pre><code class="language-css">/* Problematiskt: mobila webbläsare ändrar vh när UI visas/döljs */
+.mobile-hero {
+  height: 100vh; /* Kan orsaka scrollbars på mobil */
+}
+</code></pre>
+<h3 id="-lösning-använd-min-height-istället"><a class="header" href="#-lösning-använd-min-height-istället">✅ Lösning: Använd min-height istället</a></h3>
+<pre><code class="language-css">.mobile-hero {
+  min-height: 100vh;     /* Minst full höjd, undviker scrollbars */
+  padding: 2rem 0;       /* Säkerställ lite padding */
+}
+</code></pre>
+<hr />
+<h2 id="praktiska-övningar"><a class="header" href="#praktiska-övningar">Praktiska övningar</a></h2>
+<h3 id="Övning-1-typografisk-skala-med-rem"><a class="header" href="#Övning-1-typografisk-skala-med-rem">Övning 1: Typografisk skala med rem</a></h3>
+<p>Skapa en typografisk skala som respekterar användarinställningar:</p>
+<pre><code class="language-html">&lt;div class="typography-example"&gt;
+  &lt;h1 class="text-3xl"&gt;Stor rubrik&lt;/h1&gt;
+  &lt;h2 class="text-2xl"&gt;Mellan rubrik&lt;/h2&gt;
+  &lt;h3 class="text-xl"&gt;Liten rubrik&lt;/h3&gt;
+  &lt;p class="text-base"&gt;Vanlig brödtext med bra läsbarhet.&lt;/p&gt;
+  &lt;small class="text-sm"&gt;Liten text för fotnoter.&lt;/small&gt;
+&lt;/div&gt;
+</code></pre>
+<pre><code class="language-css">/* Din uppgift: Skapa en sammanhängande typografisk skala */
+.text-sm { 
+  font-size: /* 0.875rem (14px om root är 16px) */; 
+}
+.text-base { 
+  font-size: 1rem; /* 16px om root är 16px */
+  line-height: 1.6; /* Bra radavstånd */
+}
+.text-xl { 
+  font-size: /* 1.25rem (20px) */; 
+}
+.text-2xl { 
+  font-size: /* 1.5rem (24px) */; 
+}
+.text-3xl { 
+  font-size: /* 1.875rem (30px) */; 
+}
+
+/* Bonusuppgift: Lägg till margin-bottom som skalas med textstorleken */
+</code></pre>
+<h3 id="Övning-2-responsiv-layout-med-procent-och-float"><a class="header" href="#Övning-2-responsiv-layout-med-procent-och-float">Övning 2: Responsiv layout med procent och float</a></h3>
+<p>Skapa en tvåkolumnslayout som fungerar på olika skärmstorlekar:</p>
+<pre><code class="language-html">&lt;div class="page-wrapper"&gt;
+  &lt;div class="container"&gt;
+    &lt;main class="main-content"&gt;
+      &lt;h1&gt;Huvudinnehåll&lt;/h1&gt;
+      &lt;p&gt;Detta innehåll ska ta upp större delen av utrymmet...&lt;/p&gt;
+    &lt;/main&gt;
+    &lt;aside class="sidebar"&gt;
+      &lt;h2&gt;Sidebar&lt;/h2&gt;
+      &lt;p&gt;Extra information som tar mindre plats...&lt;/p&gt;
+    &lt;/aside&gt;
+    &lt;div class="clearfix"&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<pre><code class="language-css">/* Din uppgift: Gör denna layout responsiv med procent och float */
+.container {
+  width: /* 90% för små skärmar */;
+  max-width: /* 1200px för stora skärmar */;
+  margin: /* centrera med auto */;
+  padding: /* 2rem i rem-enheter */;
+}
+
+.main-content {
+  width: /* 70% av containerns bredd */;
+  float: /* placera till vänster */;
+  padding-right: /* 2rem för avstånd till sidebar */;
+}
+
+.sidebar {
+  width: /* 25% av containerns bredd */;
+  float: /* placera till höger */;
+  background-color: #f8f9fa;
+  padding: /* 1rem */;
+}
+
+.clearfix {
+  clear: both; /* Rensa floats */
+}
+</code></pre>
+<h3 id="Övning-3-viewport-enheter-för-hero-sektion"><a class="header" href="#Övning-3-viewport-enheter-för-hero-sektion">Övning 3: Viewport-enheter för hero-sektion</a></h3>
+<p>Skapa en hero-sektion som anpassar sig till skärmstorlek:</p>
+<pre><code class="language-html">&lt;section class="hero"&gt;
+  &lt;div class="hero-content"&gt;
+    &lt;h1 class="hero-title"&gt;Välkommen till vår webbsida&lt;/h1&gt;
+    &lt;p class="hero-text"&gt;En underrubrik som beskriver vad vi gör&lt;/p&gt;
+    &lt;button class="hero-button"&gt;Kom igång&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/section&gt;
+</code></pre>
+<pre><code class="language-css">/* Din uppgift: Använd viewport-enheter för responsiv hero-sektion */
+.hero {
+  height: /* 100vh för full skärmhöjd */;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  text-align: center;
+  padding-top: /* 25vh för att centrera innehållet */;
+  color: white;
+}
+
+.hero-title {
+  font-size: /* 6vw för text som skalas med skärmbredd */;
+  margin: 0 0 1rem 0;
+  max-width: /* 800px för att begränsa på stora skärmar */;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hero-text {
+  font-size: /* 2.5vw för mindre text */;
+  margin-bottom: /* 2rem */;
+  opacity: 0.9;
+}
+
+.hero-button {
+  padding: /* 1rem 2rem i rem */;
+  font-size: /* 1.125rem */;
+  background: white;
+  color: #667eea;
+  border: none;
+  border-radius: /* 0.5rem */;
+}
+</code></pre>
+<h3 id="Övning-4-kort-layout-med-olika-enheter"><a class="header" href="#Övning-4-kort-layout-med-olika-enheter">Övning 4: Kort-layout med olika enheter</a></h3>
+<p>Skapa kort som använder olika enheter för optimal design:</p>
+<pre><code class="language-html">&lt;div class="cards-container"&gt;
+  &lt;div class="card"&gt;
+    &lt;h3 class="card-title"&gt;Kort 1&lt;/h3&gt;
+    &lt;p class="card-text"&gt;Beskrivning av innehåll i detta kort.&lt;/p&gt;
+  &lt;/div&gt;
+  &lt;div class="card"&gt;
+    &lt;h3 class="card-title"&gt;Kort 2&lt;/h3&gt;
+    &lt;p class="card-text"&gt;Beskrivning av innehåll i detta kort.&lt;/p&gt;
+  &lt;/div&gt;
+  &lt;div class="card"&gt;
+    &lt;h3 class="card-title"&gt;Kort 3&lt;/h3&gt;
+    &lt;p class="card-text"&gt;Beskrivning av innehåll i detta kort.&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<pre><code class="language-css">/* Din uppgift: Kombinera olika enheter för optimal design */
+.cards-container {
+  width: /* 100% */;
+  max-width: /* 1200px */;
+  margin: /* 0 auto för centrering */;
+  padding: /* 2rem */;
+  overflow: hidden; /* Clearfix för floats */
+}
+
+.card {
+  width: /* 30% för tre kort per rad */;
+  float: left;
+  margin-right: /* 5% för avstånd mellan kort */;
+  margin-bottom: /* 2rem */;
+  padding: /* 1.5rem i rem */;
+  border: /* 1px solid #e0e0e0 i px */;
+  border-radius: /* 0.5rem */;
+  box-shadow: /* 0 2px 4px rgba(0,0,0,0.1) i px */;
+}
+
+.card:nth-child(3n) {
+  margin-right: 0; /* Ta bort margin från varje tredje kort */
+}
+
+.card-title {
+  font-size: /* 1.25rem */;
+  margin-bottom: /* 0.75rem */;
+  color: #333;
+}
+
+.card-text {
+  font-size: /* 1rem */;
+  line-height: /* 1.6 unitless */;
+  color: #666;
+  margin: 0;
+}
+</code></pre>
+<h3 id="Övning-5-navigationsbar-med-procent-och-rem"><a class="header" href="#Övning-5-navigationsbar-med-procent-och-rem">Övning 5: Navigationsbar med procent och rem</a></h3>
+<p>Skapa en navigationsbar som kombinerar olika enheter:</p>
+<pre><code class="language-html">&lt;nav class="navbar"&gt;
+  &lt;div class="nav-container"&gt;
+    &lt;div class="nav-logo"&gt;Min Webbsida&lt;/div&gt;
+    &lt;ul class="nav-menu"&gt;
+      &lt;li class="nav-item"&gt;&lt;a href="#" class="nav-link"&gt;Hem&lt;/a&gt;&lt;/li&gt;
+      &lt;li class="nav-item"&gt;&lt;a href="#" class="nav-link"&gt;Om oss&lt;/a&gt;&lt;/li&gt;
+      &lt;li class="nav-item"&gt;&lt;a href="#" class="nav-link"&gt;Tjänster&lt;/a&gt;&lt;/li&gt;
+      &lt;li class="nav-item"&gt;&lt;a href="#" class="nav-link"&gt;Kontakt&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/nav&gt;
+</code></pre>
+<pre><code class="language-css">/* Din uppgift: Skapa en responsiv navbar */
+.navbar {
+  width: /* 100% */;
+  background-color: #333;
+  padding: /* 1rem 0 i rem */;
+}
+
+.nav-container {
+  width: /* 90% */;
+  max-width: /* 1200px */;
+  margin: /* 0 auto */;
+  overflow: hidden; /* Clearfix */
+}
+
+.nav-logo {
+  float: left;
+  color: white;
+  font-size: /* 1.5rem */;
+  font-weight: bold;
+  padding: /* 0.5rem 0 */;
+}
+
+.nav-menu {
+  float: right;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-item {
+  float: left;
+  margin-left: /* 2rem */;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  padding: /* 0.5rem 1rem */;
+  display: block;
+  font-size: /* 1rem */;
+}
+
+.nav-link:hover {
+  background-color: #555;
+  border-radius: /* 0.25rem */;
+}
+</code></pre>
+<hr />
+<h2 id="sammanfattning"><a class="header" href="#sammanfattning">Sammanfattning</a></h2>
+<ul>
+<li><strong>Absoluta enheter</strong> (<code>px</code>) är bäst för exakta detaljer som borders, skuggor och små justeringar.</li>
+<li><strong>Relativa enheter</strong> (<code>rem</code>, <code>%</code>, <code>vw/vh</code>) skapar flexibla, responsiva och tillgängliga designer.</li>
+<li><strong>rem</strong> är ofta det bästa valet för typografi och spacing eftersom det är förutsägbart och respekterar användarinställningar.</li>
+<li><strong>Procent</strong> är perfekt för layoutbredder i kombination med <code>max-width</code> och <code>margin: 0 auto</code> för centrering.</li>
+<li><strong>Viewport-enheter</strong> (<code>vw</code>, <code>vh</code>) gör det möjligt att skapa element som skalas med skärmstorlek.</li>
+<li><strong>Float och clearfix</strong> är grundläggande tekniker för att skapa layouter med procent-baserade bredder.</li>
+<li>Att kombinera olika enheter (px för borders, rem för text, % för bredder) ger optimal flexibilitet och kontroll.</li>
+</ul>
+<p>Genom att välja rätt enhet för varje situation och förstå hur de fungerar tillsammans skapar du webbsidor som fungerar bra för alla användare på alla enheter.</p>
+<hr />
+<p><em>I nästa avsnitt tittar vi på boxmodellen, som beskriver hur utrymme hanteras runt HTML-element.</em></p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_3/selektorer.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_3/boxmodellen.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_3/selektorer.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_3/boxmodellen.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

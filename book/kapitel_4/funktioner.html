@@ -1,0 +1,828 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Funktioner och scope - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="funktioner-i-javascript"><a class="header" href="#funktioner-i-javascript">Funktioner i JavaScript</a></h1>
+<p>Funktioner är en av de viktigaste byggstenarna i JavaScript. De gör det möjligt att återanvända kod, strukturera programmet och dela upp logik i mindre, hanterbara delar.</p>
+<p>Tänk på en funktion som en <strong>recept</strong> – en instruktion för hur man gör något. När du behöver göra det, anropar du receptet (funktionen) och får tillbaka resultatet.</p>
+<hr />
+<h2 id="vad-är-en-funktion"><a class="header" href="#vad-är-en-funktion">Vad är en funktion?</a></h2>
+<p>En <strong>funktion</strong> är en namngiven kodblock som kan köras (anropas) flera gånger. Du kan skicka in värden (argument) till funktionen och få tillbaka ett resultat (return-värde).</p>
+<p>Istället för att upprepa samma kod på flera ställen, kan du skriva koden en gång i en funktion och anropa den när du behöver den.</p>
+<pre class="mermaid">flowchart LR
+    A[Argument/Input] --&gt; B[Funktion]
+    B --&gt; C[Return-värde/Output]
+    
+    style A fill:#e1f5ff
+    style B fill:#fff4e1
+    style C fill:#e1ffe1
+</pre>
+<p><strong>Förklaring:</strong></p>
+<ul>
+<li>Funktionen tar emot <strong>argument</strong> (input) – värden som skickas in när funktionen anropas.</li>
+<li>Funktionen <strong>utför en uppgift</strong> – kör koden som finns inuti funktionen.</li>
+<li>Funktionen <strong>returnerar ett värde</strong> (output) – skickar tillbaka ett resultat till den som anropade funktionen.</li>
+</ul>
+<p><strong>Exempel:</strong></p>
+<pre><code class="language-javascript">function add(a, b) {
+  return a + b;  // Returnerar summan
+}
+
+let result = add(3, 5);  // Skickar in 3 och 5, får tillbaka 8
+</code></pre>
+<hr />
+<h2 id="skapa-en-funktion"><a class="header" href="#skapa-en-funktion">Skapa en funktion</a></h2>
+<p>För att skapa en funktion använder du nyckelordet <code>function</code> följt av funktionens namn. Efter namnet kommer parenteser <code>()</code> där du kan ange parametrar (argument som funktionen tar emot), och sedan ett klammerpar <code>{}</code> som innehåller koden som ska köras.</p>
+<p><strong>Grundstruktur:</strong></p>
+<pre><code class="language-javascript">function functionName() {
+  // Din kod här
+}
+</code></pre>
+<h3 id="uppgift-1-skapa-din-första-funktion"><a class="header" href="#uppgift-1-skapa-din-första-funktion">Uppgift 1: Skapa din första funktion</a></h3>
+<p>Skapa en funktion som heter <code>greet</code> och som skriver ut "Hej!" i konsolen.</p>
+<pre><code class="language-javascript">// Skriv din funktion här
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">function greet() {
+  console.log("Hej!");
+}
+</code></pre>
+</details>
+<hr />
+<h2 id="anropa-en-funktion"><a class="header" href="#anropa-en-funktion">Anropa en funktion</a></h2>
+<p>När du har skapat en funktion, anropar du den genom att skriva funktionens namn följt av parenteser <code>()</code>.</p>
+<pre><code class="language-javascript">greet(); // Anropar funktionen greet
+</code></pre>
+<h3 id="uppgift-2-anropa-din-funktion"><a class="header" href="#uppgift-2-anropa-din-funktion">Uppgift 2: Anropa din funktion</a></h3>
+<p>I uppgift 1 skapade du funktionen <code>greet</code>. Anropa den nu så att "Hej!" skrivs ut i konsolen.</p>
+<pre><code class="language-javascript">function greet() {
+  console.log("Hej!");
+}
+
+// Anropa funktionen här
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">function greet() {
+  console.log("Hej!");
+}
+
+greet(); // Skriver ut: Hej!
+</code></pre>
+</details>
+<hr />
+<h2 id="funktioner-med-argument-parametrar"><a class="header" href="#funktioner-med-argument-parametrar">Funktioner med argument (parametrar)</a></h2>
+<p>Funktioner kan ta emot värden som kallas <strong>argument</strong> eller <strong>parametrar</strong>. Dessa värden kan användas inuti funktionen.</p>
+<p>När du deklarerar funktionen anger du parametrarnas namn i parenteserna:</p>
+<pre><code class="language-javascript">function greet(name) {
+  // name är en parameter som funktionen tar emot
+}
+</code></pre>
+<h3 id="uppgift-3-hälsa-på-någon"><a class="header" href="#uppgift-3-hälsa-på-någon">Uppgift 3: Hälsa på någon</a></h3>
+<p>Skapa en funktion <code>sayHello</code> som tar emot en parameter <code>name</code> och skriver ut "Hej, [namn]!" där [namn] är värdet som skickas in.</p>
+<pre><code class="language-javascript">// Skriv din funktion här
+sayHello("Anna"); // Ska skriva ut: Hej, Anna!
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">function sayHello(name) {
+  console.log("Hej, " + name + "!");
+}
+
+sayHello("Anna"); // Skriver ut: Hej, Anna!
+sayHello("Erik"); // Skriver ut: Hej, Erik!
+</code></pre>
+</details>
+<h3 id="uppgift-4-funktion-med-flera-argument"><a class="header" href="#uppgift-4-funktion-med-flera-argument">Uppgift 4: Funktion med flera argument</a></h3>
+<p>Skapa en funktion <code>introduce</code> som tar emot två parametrar: <code>firstName</code> och <code>lastName</code>, och skriver ut "Hej, jag heter [förnamn] [efternamn]".</p>
+<pre><code class="language-javascript">// Skriv din funktion här
+introduce("Anna", "Andersson"); // Ska skriva ut: Hej, jag heter Anna Andersson
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">function introduce(firstName, lastName) {
+  console.log("Hej, jag heter " + firstName + " " + lastName);
+}
+
+introduce("Anna", "Andersson"); // Skriver ut: Hej, jag heter Anna Andersson
+</code></pre>
+</details>
+<hr />
+<h2 id="returnera-värden"><a class="header" href="#returnera-värden">Returnera värden</a></h2>
+<p>En funktion kan returnera ett värde med nyckelordet <code>return</code>. När <code>return</code> körs avslutas funktionen och värdet skickas tillbaka till den som anropade funktionen.</p>
+<p><strong>Viktigt:</strong> När <code>return</code> körs, avslutas funktionen direkt. Ingen kod efter <code>return</code> i samma funktion kommer att köras.</p>
+<p>Om inget <code>return</code> anges returnerar funktionen automatiskt <code>undefined</code>.</p>
+<h3 id="uppgift-5-returnera-ett-värde"><a class="header" href="#uppgift-5-returnera-ett-värde">Uppgift 5: Returnera ett värde</a></h3>
+<p>Skapa en funktion <code>add</code> som tar två parametrar <code>a</code> och <code>b</code>, och returnerar summan av dem.</p>
+<pre><code class="language-javascript">// Skriv din funktion här
+let result = add(3, 5);
+console.log(result); // Ska skriva ut: 8
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">function add(a, b) {
+  return a + b;
+}
+
+let result = add(3, 5);
+console.log(result); // Skriver ut: 8
+</code></pre>
+</details>
+<h3 id="uppgift-6-beräkna-area"><a class="header" href="#uppgift-6-beräkna-area">Uppgift 6: Beräkna area</a></h3>
+<p>Skapa en funktion <code>calculateArea</code> som tar två parametrar: <code>width</code> och <code>height</code>, och returnerar arean (bredd × höjd).</p>
+<pre><code class="language-javascript">// Skriv din funktion här
+let area = calculateArea(5, 10);
+console.log(area); // Ska skriva ut: 50
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">function calculateArea(width, height) {
+  return width * height;
+}
+
+let area = calculateArea(5, 10);
+console.log(area); // Skriver ut: 50
+</code></pre>
+</details>
+<hr />
+<h2 id="funktioner-som-variabler-funktionella-uttryck"><a class="header" href="#funktioner-som-variabler-funktionella-uttryck">Funktioner som variabler (funktionella uttryck)</a></h2>
+<p>Du kan också spara en funktion i en variabel. Detta kallas för ett <strong>funktionellt uttryck</strong> (function expression).</p>
+<p>Istället för:</p>
+<pre><code class="language-javascript">function subtract(a, b) {
+  return a - b;
+}
+</code></pre>
+<p>Kan du skriva:</p>
+<pre><code class="language-javascript">const subtract = function(a, b) {
+  return a - b;
+};
+</code></pre>
+<p>Funktionen kan anropas på samma sätt som vanliga funktioner.</p>
+<h3 id="uppgift-7-funktionellt-uttryck"><a class="header" href="#uppgift-7-funktionellt-uttryck">Uppgift 7: Funktionellt uttryck</a></h3>
+<p>Skapa en funktion <code>multiply</code> som ett funktionellt uttryck (spara i en variabel). Funktionen ska ta två parametrar och returnera deras produkt.</p>
+<pre><code class="language-javascript">// Skriv din funktion här som ett funktionellt uttryck
+let product = multiply(4, 7);
+console.log(product); // Ska skriva ut: 28
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">const multiply = function(a, b) {
+  return a * b;
+};
+
+let product = multiply(4, 7);
+console.log(product); // Skriver ut: 28
+</code></pre>
+</details>
+<hr />
+<h2 id="arrow-functions"><a class="header" href="#arrow-functions">Arrow functions</a></h2>
+<p>Ett modernt och kortare sätt att skriva funktioner är med <strong>arrow functions</strong> (pilfunktioner). De använder syntaxen <code>() =&gt; {}</code>.</p>
+<p>Istället för:</p>
+<pre><code class="language-javascript">const divide = function(a, b) {
+  return a / b;
+};
+</code></pre>
+<p>Kan du skriva:</p>
+<pre><code class="language-javascript">const divide = (a, b) =&gt; {
+  return a / b;
+};
+</code></pre>
+<h3 id="kortare-syntax-för-arrow-functions"><a class="header" href="#kortare-syntax-för-arrow-functions">Kortare syntax för arrow functions</a></h3>
+<p>Om funktionen bara returnerar ett värde (har en enda <code>return</code>-sats), kan du skriva ännu kortare:</p>
+<pre><code class="language-javascript">const double = (x) =&gt; x * 2;
+// eller utan parenteser runt en parameter:
+const double = x =&gt; x * 2;
+</code></pre>
+<p>Detta är samma som:</p>
+<pre><code class="language-javascript">const double = (x) =&gt; {
+  return x * 2;
+};
+</code></pre>
+<h3 id="uppgift-8-arrow-function"><a class="header" href="#uppgift-8-arrow-function">Uppgift 8: Arrow function</a></h3>
+<p>Skriv om funktionen <code>add</code> från uppgift 5 som en arrow function.</p>
+<pre><code class="language-javascript">// Skriv din arrow function här
+let sum = add(10, 5);
+console.log(sum); // Ska skriva ut: 15
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">const add = (a, b) =&gt; {
+  return a + b;
+};
+
+let sum = add(10, 5);
+console.log(sum); // Skriver ut: 15
+</code></pre>
+<p>Eller med kortare syntax:</p>
+<pre><code class="language-javascript">const add = (a, b) =&gt; a + b;
+
+let sum = add(10, 5);
+console.log(sum); // Skriver ut: 15
+</code></pre>
+</details>
+<h3 id="uppgift-9-kort-arrow-function"><a class="header" href="#uppgift-9-kort-arrow-function">Uppgift 9: Kort arrow function</a></h3>
+<p>Skapa en arrow function <code>square</code> som tar ett tal och returnerar talet i kvadrat. Använd den korta syntaxen (utan <code>return</code> och klammerpar).</p>
+<pre><code class="language-javascript">// Skriv din arrow function här
+let result = square(4);
+console.log(result); // Ska skriva ut: 16
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">const square = x =&gt; x * x;
+
+let result = square(4);
+console.log(result); // Skriver ut: 16
+</code></pre>
+</details>
+<hr />
+<h2 id="funktioner-och-scope"><a class="header" href="#funktioner-och-scope">Funktioner och scope</a></h2>
+<p>Variabler som deklareras inuti en funktion är <strong>lokala</strong> för den funktionen och kan inte nås utanför. Detta kallas för <strong>scope</strong> (räckvidd).</p>
+<pre><code class="language-javascript">function testScope() {
+  let lokal = "Jag finns bara här";
+  console.log(lokal); // Fungerar
+}
+testScope();
+// console.log(lokal); // Fel! lokal är inte definierad här
+</code></pre>
+<p>Variabler som deklareras utanför funktioner är <strong>globala</strong> och kan nås överallt.</p>
+<h3 id="uppgift-10-förstå-scope"><a class="header" href="#uppgift-10-förstå-scope">Uppgift 10: Förstå scope</a></h3>
+<p>Titta på koden nedan. Vad kommer att skrivas ut i konsolen? Försök tänka igenom det innan du testar.</p>
+<pre><code class="language-javascript">let global = "Jag är global";
+
+function test() {
+  let local = "Jag är lokal";
+  console.log(global); // Vad kommer att hända här?
+  console.log(local);  // Och här?
+}
+
+test();
+console.log(global); // Vad kommer att hända här?
+// console.log(local); // Vad händer om du tar bort kommentaren?
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">let global = "Jag är global";
+
+function test() {
+  let local = "Jag är lokal";
+  console.log(global); // Skriver ut: "Jag är global" (global kan nås)
+  console.log(local);  // Skriver ut: "Jag är lokal" (local finns i funktionen)
+}
+
+test();
+console.log(global); // Skriver ut: "Jag är global" (global kan nås)
+// console.log(local); // Fel! local finns inte utanför funktionen
+</code></pre>
+<p><strong>Förklaring:</strong></p>
+<ul>
+<li><code>global</code> kan nås både inuti och utanför funktionen eftersom den är global.</li>
+<li><code>local</code> kan bara nås inuti funktionen där den deklareras.</li>
+</ul>
+</details>
+<hr />
+<h2 id="funktioner-som-argument-callback-functions"><a class="header" href="#funktioner-som-argument-callback-functions">Funktioner som argument (callback functions)</a></h2>
+<p>Funktioner kan skickas som argument till andra funktioner. Detta är vanligt i t.ex. eventhantering och array-metoder. En funktion som skickas som argument kallas ofta för en <strong>callback function</strong>.</p>
+<h3 id="uppgift-11-enkel-callback"><a class="header" href="#uppgift-11-enkel-callback">Uppgift 11: Enkel callback</a></h3>
+<p>Skapa en funktion <code>processNumber</code> som tar två parametrar: ett tal <code>num</code> och en funktion <code>callback</code>. Funktionen ska anropa <code>callback</code> med <code>num</code> som argument.</p>
+<p>Anropa sedan <code>processNumber</code> med talet 5 och en callback-funktion som skriver ut talet multiplicerat med 2.</p>
+<pre><code class="language-javascript">function processNumber(num, callback) {
+  // Skriv din kod här
+}
+
+// Anropa processNumber med talet 5 och en callback
+// Callback ska skriva ut: 10
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">function processNumber(num, callback) {
+  callback(num);
+}
+
+// Med en namngiven funktion:
+function double(x) {
+  console.log(x * 2);
+}
+processNumber(5, double); // Skriver ut: 10
+
+// Eller med en anonym funktion:
+processNumber(5, function(x) {
+  console.log(x * 2);
+}); // Skriver ut: 10
+
+// Eller med arrow function:
+processNumber(5, (x) =&gt; console.log(x * 2)); // Skriver ut: 10
+</code></pre>
+</details>
+<hr />
+<h2 id="sammanfattning"><a class="header" href="#sammanfattning">Sammanfattning</a></h2>
+<ul>
+<li>Funktioner gör det möjligt att återanvända och strukturera kod.</li>
+<li>Du kan skapa funktioner med <code>function</code>-syntax, funktionella uttryck eller arrow functions.</li>
+<li>Funktioner kan ta emot argument (parametrar) och returnera värden med <code>return</code>.</li>
+<li>Variabler inuti funktioner är lokala (scope) och kan inte nås utanför.</li>
+<li>Funktioner kan skickas som argument till andra funktioner (callback functions).</li>
+<li>Arrow functions (<code>() =&gt; {}</code>) är ett modernt och kortare sätt att skriva funktioner.</li>
+</ul>
+<p>Att förstå och använda funktioner är avgörande för att skriva effektiv och läsbar JavaScript.</p>
+<hr />
+<h2 id="Övningar"><a class="header" href="#Övningar">Övningar</a></h2>
+<h3 id="Övning-1-hälsningsfunktion"><a class="header" href="#Övning-1-hälsningsfunktion">Övning 1: Hälsningsfunktion</a></h3>
+<p>Skapa en funktion <code>greetUser</code> som tar emot ett namn och en tidpunkt (t.ex. "morgon" eller "kväll") och returnerar en hälsning. Till exempel: "God morgon, Anna!" eller "God kväll, Erik!".</p>
+<pre><code class="language-javascript">// Skriv din funktion här
+let greeting = greetUser("Anna", "morgon");
+console.log(greeting); // Ska skriva ut: "God morgon, Anna!"
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">function greetUser(name, time) {
+  if (time === "morgon") {
+    return "God morgon, " + name + "!";
+  } else if (time === "kväll") {
+    return "God kväll, " + name + "!";
+  } else {
+    return "Hej, " + name + "!";
+  }
+}
+
+let greeting = greetUser("Anna", "morgon");
+console.log(greeting); // Skriver ut: "God morgon, Anna!"
+</code></pre>
+<p>Eller med arrow function:</p>
+<pre><code class="language-javascript">const greetUser = (name, time) =&gt; {
+  if (time === "morgon") {
+    return "God morgon, " + name + "!";
+  } else if (time === "kväll") {
+    return "God kväll, " + name + "!";
+  } else {
+    return "Hej, " + name + "!";
+  }
+};
+</code></pre>
+</details>
+<hr />
+<h3 id="Övning-2-beräkna-medelvärde"><a class="header" href="#Övning-2-beräkna-medelvärde">Övning 2: Beräkna medelvärde</a></h3>
+<p>Skapa en funktion <code>calculateAverage</code> som tar emot en array med tal och returnerar medelvärdet. Tänk på att använda en loop för att summera alla tal.</p>
+<pre><code class="language-javascript">// Skriv din funktion här
+let numbers = [10, 20, 30, 40, 50];
+let average = calculateAverage(numbers);
+console.log(average); // Ska skriva ut: 30
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">function calculateAverage(numbers) {
+  let sum = 0;
+  for (let i = 0; i &lt; numbers.length; i++) {
+    sum += numbers[i];
+  }
+  return sum / numbers.length;
+}
+
+let numbers = [10, 20, 30, 40, 50];
+let average = calculateAverage(numbers);
+console.log(average); // Skriver ut: 30
+</code></pre>
+<p>Eller med arrow function:</p>
+<pre><code class="language-javascript">const calculateAverage = (numbers) =&gt; {
+  let sum = 0;
+  for (let num of numbers) {
+    sum += num;
+  }
+  return sum / numbers.length;
+};
+</code></pre>
+</details>
+<hr />
+<h3 id="Övning-3-kontrollera-jämntudda"><a class="header" href="#Övning-3-kontrollera-jämntudda">Övning 3: Kontrollera jämnt/udda</a></h3>
+<p>Skapa en funktion <code>isEven</code> som tar emot ett tal och returnerar <code>true</code> om talet är jämnt, annars <code>false</code>. Använd arrow function.</p>
+<pre><code class="language-javascript">// Skriv din funktion här
+console.log(isEven(4));  // Ska skriva ut: true
+console.log(isEven(7));  // Ska skriva ut: false
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">const isEven = (num) =&gt; {
+  return num % 2 === 0;
+};
+
+console.log(isEven(4));  // Skriver ut: true
+console.log(isEven(7));  // Skriver ut: false
+</code></pre>
+<p>Eller med kortare syntax:</p>
+<pre><code class="language-javascript">const isEven = num =&gt; num % 2 === 0;
+</code></pre>
+</details>
+<hr />
+<h3 id="Övning-4-funktioner-i-en-array"><a class="header" href="#Övning-4-funktioner-i-en-array">Övning 4: Funktioner i en array</a></h3>
+<p>Skapa tre funktioner: <code>add</code>, <code>subtract</code> och <code>multiply</code>. Sedan skapa en array som innehåller dessa funktioner och använd en loop för att anropa alla funktioner med talen 10 och 5.</p>
+<pre><code class="language-javascript">// Skriv dina funktioner här
+
+// Skapa array med funktioner
+
+// Använd loop för att anropa alla funktioner
+// Förväntad utskrift:
+// 15 (10 + 5)
+// 5 (10 - 5)
+// 50 (10 * 5)
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">const add = (a, b) =&gt; a + b;
+const subtract = (a, b) =&gt; a - b;
+const multiply = (a, b) =&gt; a * b;
+
+const operations = [add, subtract, multiply];
+
+for (let operation of operations) {
+  console.log(operation(10, 5));
+}
+// Skriver ut:
+// 15
+// 5
+// 50
+</code></pre>
+</details>
+<hr />
+<h3 id="Övning-5-funktion-som-returnerar-en-funktion"><a class="header" href="#Övning-5-funktion-som-returnerar-en-funktion">Övning 5: Funktion som returnerar en funktion</a></h3>
+<p>Skapa en funktion <code>createMultiplier</code> som tar ett tal som parameter och returnerar en ny funktion. Den returnerade funktionen ska multiplicera ett tal med det tal som skickades in till <code>createMultiplier</code>.</p>
+<pre><code class="language-javascript">// Skriv din funktion här
+let double = createMultiplier(2);
+let triple = createMultiplier(3);
+
+console.log(double(5));  // Ska skriva ut: 10
+console.log(triple(4));  // Ska skriva ut: 12
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">function createMultiplier(multiplier) {
+  return function(num) {
+    return num * multiplier;
+  };
+}
+
+let double = createMultiplier(2);
+let triple = createMultiplier(3);
+
+console.log(double(5));  // Skriver ut: 10
+console.log(triple(4));  // Skriver ut: 12
+</code></pre>
+<p>Eller med arrow functions:</p>
+<pre><code class="language-javascript">const createMultiplier = (multiplier) =&gt; {
+  return (num) =&gt; num * multiplier;
+};
+
+// Eller kortare:
+const createMultiplier = multiplier =&gt; num =&gt; num * multiplier;
+</code></pre>
+</details>
+<hr />
+<h3 id="Övning-6-filterfunktion"><a class="header" href="#Övning-6-filterfunktion">Övning 6: Filterfunktion</a></h3>
+<p>Skapa en funktion <code>filterArray</code> som tar emot en array med tal och en funktion som filter. Funktionen ska returnera en ny array med alla tal som uppfyller filtervillkoret.</p>
+<pre><code class="language-javascript">// Skriv din funktion här
+let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+// Filtrera alla jämna tal
+let evenNumbers = filterArray(numbers, /* din filter-funktion */);
+console.log(evenNumbers); // Ska skriva ut: [2, 4, 6, 8, 10]
+
+// Filtrera alla tal större än 5
+let largeNumbers = filterArray(numbers, /* din filter-funktion */);
+console.log(largeNumbers); // Ska skriva ut: [6, 7, 8, 9, 10]
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">function filterArray(arr, filterFn) {
+  let result = [];
+  for (let item of arr) {
+    if (filterFn(item)) {
+      result.push(item);
+    }
+  }
+  return result;
+}
+
+let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+// Filtrera alla jämna tal
+let evenNumbers = filterArray(numbers, (num) =&gt; num % 2 === 0);
+console.log(evenNumbers); // Skriver ut: [2, 4, 6, 8, 10]
+
+// Filtrera alla tal större än 5
+let largeNumbers = filterArray(numbers, (num) =&gt; num &gt; 5);
+console.log(largeNumbers); // Skriver ut: [6, 7, 8, 9, 10]
+</code></pre>
+</details>
+<hr />
+<h3 id="Övning-7-kalkylator-med-funktioner"><a class="header" href="#Övning-7-kalkylator-med-funktioner">Övning 7: Kalkylator med funktioner</a></h3>
+<p>Skapa en enkel kalkylator med funktioner. Skapa funktioner för de fyra räknesätten: <code>add</code>, <code>subtract</code>, <code>multiply</code>, <code>divide</code>. Skapa sedan en funktion <code>calculate</code> som tar tre parametrar: två tal och en operator (som sträng, t.ex. "+", "-", "*", "/") och använder rätt funktion baserat på operatorn.</p>
+<pre><code class="language-javascript">// Skriv dina funktioner här
+console.log(calculate(10, 5, "+"));  // Ska skriva ut: 15
+console.log(calculate(10, 5, "-"));  // Ska skriva ut: 5
+console.log(calculate(10, 5, "*"));  // Ska skriva ut: 50
+console.log(calculate(10, 5, "/"));  // Ska skriva ut: 2
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">const add = (a, b) =&gt; a + b;
+const subtract = (a, b) =&gt; a - b;
+const multiply = (a, b) =&gt; a * b;
+const divide = (a, b) =&gt; a / b;
+
+function calculate(a, b, operator) {
+  if (operator === "+") {
+    return add(a, b);
+  } else if (operator === "-") {
+    return subtract(a, b);
+  } else if (operator === "*") {
+    return multiply(a, b);
+  } else if (operator === "/") {
+    return divide(a, b);
+  } else {
+    return "Okänd operator";
+  }
+}
+
+console.log(calculate(10, 5, "+"));  // Skriver ut: 15
+console.log(calculate(10, 5, "-"));  // Skriver ut: 5
+console.log(calculate(10, 5, "*"));  // Skriver ut: 50
+console.log(calculate(10, 5, "/"));  // Skriver ut: 2
+</code></pre>
+<p>Alternativ med switch:</p>
+<pre><code class="language-javascript">function calculate(a, b, operator) {
+  switch (operator) {
+    case "+":
+      return add(a, b);
+    case "-":
+      return subtract(a, b);
+    case "*":
+      return multiply(a, b);
+    case "/":
+      return divide(a, b);
+    default:
+      return "Okänd operator";
+  }
+}
+</code></pre>
+</details>
+<hr />
+<h3 id="Övning-8-funktion-med-valfritt-antal-argument"><a class="header" href="#Övning-8-funktion-med-valfritt-antal-argument">Övning 8: Funktion med valfritt antal argument</a></h3>
+<p>Skapa en funktion <code>sum</code> som kan ta emot ett valfritt antal argument och returnera summan av alla. Tips: Använd <code>arguments</code>-objektet eller rest-parametern (<code>...</code>).</p>
+<pre><code class="language-javascript">// Skriv din funktion här
+console.log(sum(1, 2, 3));           // Ska skriva ut: 6
+console.log(sum(1, 2, 3, 4, 5));    // Ska skriva ut: 15
+console.log(sum(10));                // Ska skriva ut: 10
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<p>Med rest-parameter (rekommenderat):</p>
+<pre><code class="language-javascript">function sum(...numbers) {
+  let total = 0;
+  for (let num of numbers) {
+    total += num;
+  }
+  return total;
+}
+
+console.log(sum(1, 2, 3));           // Skriver ut: 6
+console.log(sum(1, 2, 3, 4, 5));    // Skriver ut: 15
+console.log(sum(10));                // Skriver ut: 10
+</code></pre>
+<p>Med arrow function:</p>
+<pre><code class="language-javascript">const sum = (...numbers) =&gt; {
+  let total = 0;
+  for (let num of numbers) {
+    total += num;
+  }
+  return total;
+};
+</code></pre>
+<p>Med <code>arguments</code>-objektet (äldre metod):</p>
+<pre><code class="language-javascript">function sum() {
+  let total = 0;
+  for (let i = 0; i &lt; arguments.length; i++) {
+    total += arguments[i];
+  }
+  return total;
+}
+</code></pre>
+</details>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_4/variabler.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_4/kontrollstrukturer.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_4/variabler.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_4/kontrollstrukturer.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,357 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Praktiska övningar - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="praktiska-övningar-html-och-git"><a class="header" href="#praktiska-övningar-html-och-git">Praktiska övningar: HTML och Git</a></h1>
+<p>Teori är bra, men det bästa sättet att lära sig HTML och Git är att använda dem! Här är några övningar för att befästa kunskaperna från detta kapitel.</p>
+<blockquote>
+<p><strong>Mål:</strong><br />
+Praktiskt tillämpa HTML-taggar för struktur och semantik, samt använda grundläggande Git-kommandon för att spåra och spara ändringar lokalt och på GitHub.</p>
+</blockquote>
+<p><strong>Förutsättningar:</strong><br />
+Du har VS Code (eller annan editor), Git och en terminal installerad. Du har också ett GitHub-konto.</p>
+<hr />
+<h2 id="Övning-1-skapa-en-enkel-om-mig-sida"><a class="header" href="#Övning-1-skapa-en-enkel-om-mig-sida">Övning 1: Skapa en enkel "Om Mig"-sida</a></h2>
+<ol>
+<li>
+<p><strong>Skapa projektmapp:</strong><br />
+Skapa en ny mapp, t.ex. <code>om-mig-sida</code>.</p>
+</li>
+<li>
+<p><strong>Initiera Git:</strong><br />
+Öppna terminalen, navigera till mappen (<code>cd om-mig-sida</code>) och kör:</p>
+<pre><code class="language-bash">git init
+</code></pre>
+</li>
+<li>
+<p><strong>Skapa HTML-fil:</strong><br />
+Skapa en fil med namnet <code>index.html</code> i mappen.</p>
+</li>
+<li>
+<p><strong>Grundstruktur:</strong><br />
+Lägg till grundläggande HTML5-struktur i <code>index.html</code>:</p>
+<ul>
+<li><code>&lt;!DOCTYPE html&gt;</code></li>
+<li><code>&lt;html lang="sv"&gt;</code></li>
+<li><code>&lt;head&gt;</code> med <code>&lt;meta charset="UTF-8"&gt;</code> och <code>&lt;title&gt;</code></li>
+<li><code>&lt;body&gt;</code></li>
+</ul>
+<p>Ge sidan en passande titel, t.ex. "Om [Ditt Namn]".</p>
+</li>
+<li>
+<p><strong>Lägg till innehåll i <code>&lt;body&gt;</code>:</strong></p>
+<ul>
+<li>En huvudrubrik (<code>&lt;h1&gt;</code>) med ditt namn.</li>
+<li>En kort paragraf (<code>&lt;p&gt;</code>) som introducerar dig.</li>
+<li>En underrubrik (<code>&lt;h2&gt;</code>) för "Mina intressen".</li>
+<li>En oordnad lista (<code>&lt;ul&gt;</code>) med några av dina intressen (<code>&lt;li&gt;</code>).</li>
+<li>En underrubrik (<code>&lt;h2&gt;</code>) för "Kontakt".</li>
+<li>En paragraf (<code>&lt;p&gt;</code>) med en länk (<code>&lt;a&gt;</code>) till din (påhittade eller riktiga) e-postadress (<code>href="mailto:din.epost@example.com"</code>).</li>
+<li>(Valfritt) En bild (<code>&lt;img&gt;</code>) på dig själv eller något relaterat. Glöm inte <code>alt</code>-attributet!</li>
+</ul>
+</li>
+<li>
+<p><strong>Första commit:</strong></p>
+<pre><code class="language-bash">git status
+git add index.html
+git commit -m "Skapa grundläggande Om Mig-sida med innehåll"
+</code></pre>
+</li>
+<li>
+<p><strong>Validera (bonus):</strong><br />
+Klistra in din HTML-kod i <a href="https://validator.w3.org/">W3C Markup Validation Service</a> för att kontrollera att den är korrekt.</p>
+</li>
+<li>
+<p><strong>Visa i webbläsare:</strong><br />
+Öppna <code>index.html</code> i din webbläsare.</p>
+</li>
+</ol>
+<hr />
+<h2 id="Övning-2-semantisk-struktur-och-fler-ändringar"><a class="header" href="#Övning-2-semantisk-struktur-och-fler-ändringar">Övning 2: Semantisk struktur och fler ändringar</a></h2>
+<ol>
+<li>
+<p><strong>Fortsätt i samma projekt.</strong></p>
+</li>
+<li>
+<p><strong>Lägg till semantiska element:</strong></p>
+<ul>
+<li>Omslut rubriken och introduktionen med <code>&lt;header&gt;</code>.</li>
+<li>Omslut huvudinnehållet (intressen, kontakt) med <code>&lt;main&gt;</code>.</li>
+<li>Lägg till en <code>&lt;footer&gt;</code> längst ner, t.ex. med copyright.</li>
+<li>Om du har flera tydliga delar i <code>&lt;main&gt;</code>, omslut dem med <code>&lt;section&gt;</code> och ge varje sektion en egen rubrik (<code>&lt;h2&gt;</code>).</li>
+</ul>
+</li>
+<li>
+<p><strong>Commit:</strong></p>
+<pre><code class="language-bash">git status
+git add .
+git commit -m "Lägg till semantisk struktur (header, main, footer, sections)"
+</code></pre>
+</li>
+<li>
+<p><strong>Visa historik:</strong></p>
+<pre><code class="language-bash">git log --oneline
+</code></pre>
+</li>
+</ol>
+<hr />
+<h2 id="Övning-3-koppla-till-github"><a class="header" href="#Övning-3-koppla-till-github">Övning 3: Koppla till GitHub</a></h2>
+<ol>
+<li>
+<p><strong>Skapa repo på GitHub:</strong><br />
+Skapa ett nytt, tomt repository på GitHub (utan README, .gitignore eller license).</p>
+</li>
+<li>
+<p><strong>Koppla lokalt till remote:</strong><br />
+Följ instruktionerna från GitHub ("…or push an existing repository").<br />
+Byt ut URL:en mot den från ditt repo:</p>
+<pre><code class="language-bash">git remote add origin https://github.com/ditt-anvandarnamn/om-mig-sida.git
+git branch -M main
+git push -u origin main
+</code></pre>
+</li>
+<li>
+<p><strong>Verifiera:</strong><br />
+Gå till din repository-sida på GitHub och kontrollera att din <code>index.html</code> och dina commits syns.</p>
+</li>
+<li>
+<p><strong>Gör en liten ändring:</strong><br />
+Lägg till ytterligare ett intresse i listan i <code>index.html</code>.</p>
+</li>
+<li>
+<p><strong>Commit och push:</strong></p>
+<pre><code class="language-bash">git status
+git add .
+git commit -m "Lägg till ett till intresse"
+git push
+</code></pre>
+</li>
+<li>
+<p><strong>Verifiera igen:</strong><br />
+Uppdatera sidan på GitHub och kontrollera att ändringen syns.</p>
+</li>
+</ol>
+<hr />
+<h2 id="sammanfattning-och-nästa-steg"><a class="header" href="#sammanfattning-och-nästa-steg">Sammanfattning och nästa steg</a></h2>
+<p>Genom dessa övningar har du praktiskt skapat en enkel HTML-sida, strukturerat den semantiskt och använt Git för att spåra ändringar lokalt och synkronisera dem med ett remote-repository på GitHub. Detta är grunden för arbetsflödet vi kommer använda genom resten av kursen.</p>
+<p>I nästa kapitel introducerar vi CSS för att börja styla våra HTML-sidor och ge dem ett visuellt utseende.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_2/mer-git-kommandon.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_2/teknisk-intervju.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_2/mer-git-kommandon.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_2/teknisk-intervju.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

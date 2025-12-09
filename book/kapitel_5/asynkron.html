@@ -1,0 +1,331 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Asynkron programmering - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="asynkron-programmering-i-javascript"><a class="header" href="#asynkron-programmering-i-javascript">Asynkron Programmering i JavaScript</a></h1>
+<p>I grund och botten är JavaScript ett <strong>single-threaded</strong> (entrådat) språk. Det betyder att det bara kan göra en sak i taget, steg för steg, i den ordning koden är skriven. Tänk dig en kock som bara kan hacka en grönsak åt gången innan hen går vidare till nästa.</p>
+<p><strong>Varför är detta viktigt?</strong></p>
+<p>Om JavaScript bara kan göra en sak i taget, vad händer när en uppgift tar lång tid? Till exempel:</p>
+<ul>
+<li>Vänta på svar från en server (nätverksanrop).</li>
+<li>Läsa en stor fil från hårddisken.</li>
+<li>Komplexa beräkningar.</li>
+<li>Vänta en viss tid (t.ex. med <code>setTimeout</code>).</li>
+</ul>
+<p>I ett strikt synkront flöde skulle hela programmet (och ofta hela webbläsarens flik!) stanna upp och vänta tills den tidskrävande uppgiften är klar. Detta kallas <strong>blockering</strong> (blocking) och leder till en dålig användarupplevelse – sidan fryster och blir oresponsiv.</p>
+<pre><code class="language-javascript">// Synkront exempel (simulerat)
+console.log("Startar uppgift...");
+
+// Simulerar en tidskrävande operation (blockerar i 5 sekunder)
+const start = Date.now();
+while (Date.now() &lt; start + 5000) {
+  // Gör ingenting, bara väntar...
+}
+
+console.log("Uppgiften klar!"); // Denna loggas först efter 5 sekunder
+console.log("Annan kod körs..."); // Denna måste också vänta
+</code></pre>
+<p>Under de 5 sekunderna i exemplet ovan skulle webbsidan vara helt fryst.</p>
+<h2 id="den-asynkrona-lösningen-callback-funktioner"><a class="header" href="#den-asynkrona-lösningen-callback-funktioner">Den Asynkrona Lösningen: Callback-funktioner</a></h2>
+<p>För att undvika blockering använder JavaScript (och dess körmiljöer som webbläsare och Node.js) en <strong>asynkron</strong> modell för tidskrävande operationer. Istället för att vänta, säger JavaScript: "Starta den här uppgiften, och när den är klar, kör den här specifika funktionen".</p>
+<p>Denna specifika funktion som skickas med för att köras senare kallas en <strong>callback-funktion</strong> (återanropsfunktion).</p>
+<pre><code class="language-javascript">console.log("Startar timer...");
+
+// setTimeout är en asynkron funktion
+setTimeout(() =&gt; {
+  // Detta är callback-funktionen
+  console.log("Timer klar efter 2 sekunder!");
+}, 2000); // 2000 millisekunder = 2 sekunder
+
+console.log("Timer startad, fortsätter med annan kod...");
+
+// Output:
+// Startar timer...
+// Timer startad, fortsätter med annan kod...
+// (efter 2 sekunder)
+// Timer klar efter 2 sekunder!
+</code></pre>
+<p>Notera hur <code>setTimeout</code> inte blockerar. Koden fortsätter direkt till nästa <code>console.log</code>, och callback-funktionen körs först när timern har gått ut.</p>
+<h2 id="händelseloopen-the-event-loop"><a class="header" href="#händelseloopen-the-event-loop">Händelseloopen (The Event Loop)</a></h2>
+<p>Men hur fungerar detta bakom kulisserna? Hur kan JavaScript, som är entrådat, hantera saker som händer "samtidigt"?</p>
+<p>Nyckeln är <strong>händelseloopen</strong> (event loop) och samarbete mellan JavaScript-motorn och dess körmiljö (t.ex. webbläsaren).</p>
+<ol>
+<li><strong>Call Stack (Anropsstacken):</strong> Här exekveras den vanliga, synkrona JavaScript-koden. Funktioner läggs på stacken när de anropas och tas bort när de är klara.</li>
+<li><strong>Web APIs (Webbläsar-API:er):</strong> När JavaScript stöter på en asynkron operation (som <code>setTimeout</code>, <code>fetch</code>, DOM-händelser), skickas den vidare till ett webbläsar-API som hanterar den utanför JavaScripts huvudtråd.</li>
+<li><strong>Callback Queue (Callback-kön) / Task Queue:</strong> När webbläsar-API:et är klart med sin uppgift (t.ex. timern har gått ut, data har hämtats), läggs den tillhörande callback-funktionen i en kö.</li>
+<li><strong>Event Loop (Händelseloopen):</strong> Detta är en process som ständigt övervakar två saker: Är anropsstacken (Call Stack) tom? Finns det något i callback-kön?</li>
+<li><strong>Exekvering:</strong> Om anropsstacken är tom och det finns en callback i kön, plockar händelseloopen den första callback-funktionen från kön och lägger den på anropsstacken för att köras.</li>
+</ol>
+<pre class="mermaid">graph TD
+    subgraph JavaScript Engine
+        CS[Call Stack]
+    end
+
+    subgraph Browser/Node APIs
+        WA[Web APIs (setTimeout, fetch, DOM etc.)]
+    end
+
+    subgraph Task Queues
+        CQ[Callback Queue (Tasks)]
+        MQ[Microtask Queue (Promises etc.)] -- Högre prioritet --&gt; EL
+    end
+
+    EL{Event Loop} -- Checks if Call Stack is empty --&gt; CS
+
+    CS -- Runs sync code --&gt; CS
+    CS -- Calls async func --&gt; WA
+    WA -- Callback ready --&gt; CQ
+    WA -- Promise resolved/rejected --&gt; MQ
+
+    EL -- Checks queues --&gt; CQ
+    EL -- Checks queues --&gt; MQ
+
+    MQ -- Has task &amp; CS empty --&gt; EL
+    CQ -- Has task &amp; CS empty &amp; MQ empty --&gt; EL
+
+    EL -- Moves callback --&gt; CS
+
+    style WA fill:#f9d,stroke:#333,stroke-width:2px
+    style CS fill:#ccf,stroke:#333,stroke-width:2px
+    style CQ fill:#dfd,stroke:#333,stroke-width:2px
+    style MQ fill:#ffe,stroke:#333,stroke-width:2px
+    style EL fill:#eee,stroke:#333,stroke-width:4px
+</pre>
+<p><em>Diagrammet ovan illustrerar flödet: Synkron kod körs på Call Stack. Asynkrona operationer skickas till Web APIs. När de är klara hamnar deras callbacks i Callback Queue (för t.ex. <code>setTimeout</code>) eller Microtask Queue (för t.ex. Promises - dessa har högre prioritet). Event Loop kontrollerar kontinuerligt om Call Stack är tom och flyttar sedan uppgifter från köerna (Microtask först) till Call Stack för exekvering.</em></p>
+<p><strong>Analogi:</strong> Tänk dig en restaurangkock (JavaScript Call Stack) som bara kan laga en rätt i taget. När en gäst beställer något som tar lång tid (t.ex. en långkokt gryta - en asynkron operation), tar en servitör (Web API) beställningen och sätter igång grytan på en annan spis. Kocken fortsätter med andra snabba beställningar. När grytan är klar, säger servitören till via en bong (Callback läggs i kön). När kocken är klar med det hen höll på med (Call Stack är tom), tittar hen på bongarna (Event Loop kollar kön) och tar nästa färdiga rätt (Callback flyttas till Call Stack) för att lägga upp den.</p>
+<p>Detta system gör att JavaScript kan hantera många operationer utan att blockera huvudtråden, vilket håller webbsidan responsiv.</p>
+<h2 id="callback-hell"><a class="header" href="#callback-hell">Callback Hell</a></h2>
+<p>Callbacks är grundläggande, men när man har flera asynkrona operationer som beror på varandra kan det leda till djupt nästlad kod, ofta kallat "Callback Hell" eller "Pyramid of Doom".</p>
+<pre><code class="language-javascript">// Exempel på Callback Hell (konceptuellt)
+operation1((resultat1) =&gt; {
+  console.log("Klar med 1");
+  operation2(resultat1, (resultat2) =&gt; {
+    console.log("Klar med 2");
+    operation3(resultat2, (resultat3) =&gt; {
+      console.log("Klar med 3");
+      // ...och så vidare...
+    });
+  });
+});
+</code></pre>
+<p>Denna kod blir svårläst och svår att underhålla. Detta är ett av huvudproblemen som <strong>Promises</strong>, vilka vi tittar på i nästa avsnitt, löser.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_5/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_5/promises.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_5/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_5/promises.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

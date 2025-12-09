@@ -1,0 +1,759 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Kontrollstrukturer och loopar - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="kontrollstrukturer-i-javascript"><a class="header" href="#kontrollstrukturer-i-javascript">Kontrollstrukturer i JavaScript</a></h1>
+<p>Kontrollstrukturer är byggstenarna som styr <strong>flödet</strong> i ett program. Med hjälp av dessa kan vi bestämma <em>vilken kod</em> som ska köras, <em>när</em> och <em>hur många gånger</em>.</p>
+<p>Tänk dig att du är en vägvisare på en korsning: beroende på vilken väg en bil tar kommer den att hamna på olika platser. På samma sätt kan ditt program ta olika vägar beroende på villkor och upprepa handlingar när det behövs.</p>
+<p>De vanligaste kontrollstrukturerna är <strong>villkorssatser</strong> (if/else) och <strong>loopar</strong> (for, while).</p>
+<hr />
+<h2 id="villkorssatser-if-else-if-else"><a class="header" href="#villkorssatser-if-else-if-else">Villkorssatser (if, else if, else)</a></h2>
+<p>Med villkorssatser kan vi utföra olika kod beroende på om ett visst villkor är sant eller falskt. Det är som att fatta beslut: "Om det regnar, ta med ett paraply. Annars, gå ut som vanligt."</p>
+<h3 id="grundstrukturen"><a class="header" href="#grundstrukturen">Grundstrukturen</a></h3>
+<p>En <code>if</code>-sats börjar alltid med ett villkor. Om villkoret är sant, körs koden inuti måsvingarna <code>{}</code>.</p>
+<p>Prova att skriva en enkel if-sats som kontrollerar om en ålder är större än eller lika med 18. Om det är sant, skriv ut "Du är myndig.":</p>
+<pre><code class="language-javascript">let age = 18;
+
+// Skriv din if-sats här
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">let age = 18;
+
+if (age &gt;= 18) {
+  console.log("Du är myndig.");
+}
+</code></pre>
+</details>
+<h3 id="lägg-till-else"><a class="header" href="#lägg-till-else">Lägg till else</a></h3>
+<p>Nu ska vi lägga till en <code>else</code>-sats som körs om villkoret inte är sant. Komplettera koden så att den även hanterar fallet när personen inte är myndig:</p>
+<pre><code class="language-javascript">let age = 15;
+
+if (age &gt;= 18) {
+  // Skriv vad som ska hända här
+} else {
+  // Skriv vad som ska hända här
+}
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">let age = 15;
+
+if (age &gt;= 18) {
+  console.log("Du är myndig.");
+} else {
+  console.log("Du är inte myndig.");
+}
+</code></pre>
+</details>
+<h3 id="använd-else-if-för-flera-villkor"><a class="header" href="#använd-else-if-för-flera-villkor">Använd else if för flera villkor</a></h3>
+<p>Ibland behöver vi kontrollera flera olika villkor. Då kan vi använda <code>else if</code>. Skriv en kod som kontrollerar om temperaturen är kall (mindre än 10), lagom (mellan 10 och 25), eller varm (över 25):</p>
+<pre><code class="language-javascript">let temp = 20;
+
+// Skriv din if-else if-else struktur här
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">let temp = 20;
+
+if (temp &lt; 10) {
+  console.log("Det är kallt!");
+} else if (temp &lt;= 25) {
+  console.log("Lagom varmt!");
+} else {
+  console.log("Det är varmt!");
+}
+</code></pre>
+</details>
+<h3 id="flödesdiagram-för-ifelse"><a class="header" href="#flödesdiagram-för-ifelse">Flödesdiagram för if/else</a></h3>
+<p>Här är ett diagram som visar hur flödet går i en if/else-sats:</p>
+<pre class="mermaid">flowchart TD
+    Start([Start]) --&gt; Villkor{Villkor&lt;br/&gt;sant?}
+    Villkor --&gt;|Ja| Kod1[Kör kod i if-block]
+    Villkor --&gt;|Nej| Villkor2{Annat villkor&lt;br/&gt;sant?}
+    Villkor2 --&gt;|Ja| Kod2[Kör kod i else if-block]
+    Villkor2 --&gt;|Nej| Kod3[Kör kod i else-block]
+    Kod1 --&gt; Slut([Slut])
+    Kod2 --&gt; Slut
+    Kod3 --&gt; Slut
+</pre>
+<hr />
+<h2 id="jämförelseoperatorer"><a class="header" href="#jämförelseoperatorer">Jämförelseoperatorer</a></h2>
+<p>För att skapa villkor använder vi jämförelseoperatorer. Dessa operatorer jämför värden och returnerar <code>true</code> eller <code>false</code>.</p>
+<h3 id="operatorer"><a class="header" href="#operatorer">Operatorer</a></h3>
+<ul>
+<li><code>===</code>  lika med (värde och typ) - använd denna!</li>
+<li><code>!==</code>  inte lika med (värde och typ)</li>
+<li><code>&gt;</code>    större än</li>
+<li><code>&lt;</code>    mindre än</li>
+<li><code>&gt;=</code>   större än eller lika med</li>
+<li><code>&lt;=</code>   mindre än eller lika med</li>
+</ul>
+<p><strong>Viktigt:</strong> I modern JavaScript använder vi <code>===</code> istället för <code>==</code> eftersom <code>===</code> kontrollerar både värde och typ, vilket ger mer förutsägbara resultat.</p>
+<h3 id="Övning-med-operatorer"><a class="header" href="#Övning-med-operatorer">Övning med operatorer</a></h3>
+<p>Skriv en if-sats som kontrollerar om variabeln <code>x</code> är lika med 5. Om det är sant, skriv ut "x är 5":</p>
+<pre><code class="language-javascript">let x = 5;
+
+// Skriv din if-sats här
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">let x = 5;
+
+if (x === 5) {
+  console.log("x är 5");
+}
+</code></pre>
+</details>
+<p>Nu ska du kontrollera om <code>x</code> är större än 3. Skriv en if-sats för det:</p>
+<pre><code class="language-javascript">let x = 5;
+
+// Skriv din if-sats här
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">let x = 5;
+
+if (x &gt; 3) {
+  console.log("x är större än 3");
+}
+</code></pre>
+</details>
+<hr />
+<h2 id="logiska-operatorer"><a class="header" href="#logiska-operatorer">Logiska operatorer</a></h2>
+<p>Ibland behöver vi kombinera flera villkor. Då använder vi logiska operatorer:</p>
+<ul>
+<li><code>&amp;&amp;</code>  och (båda villkoren måste vara sanna)</li>
+<li><code>||</code>  eller (minst ett villkor måste vara sant)</li>
+<li><code>!</code>   inte (vänder på sant/falskt)</li>
+</ul>
+<h3 id="Övning-med--och"><a class="header" href="#Övning-med--och">Övning med &amp;&amp; (och)</a></h3>
+<p>Skriv en if-sats som kontrollerar om temperaturen är mellan 15 och 25 grader. Använd operatorn <code>&amp;&amp;</code>:</p>
+<pre><code class="language-javascript">let temp = 20;
+
+// Skriv din if-sats här
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">let temp = 20;
+
+if (temp &gt; 15 &amp;&amp; temp &lt; 25) {
+  console.log("Lagom varmt!");
+}
+</code></pre>
+</details>
+<h3 id="Övning-med--eller"><a class="header" href="#Övning-med--eller">Övning med || (eller)</a></h3>
+<p>Skriv en if-sats som kontrollerar om åldern är mindre än 13 eller större än 65. Om något av villkoren är sant, skriv ut "Du kan få rabatt":</p>
+<pre><code class="language-javascript">let age = 12;
+
+// Skriv din if-sats här
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">let age = 12;
+
+if (age &lt; 13 || age &gt; 65) {
+  console.log("Du kan få rabatt");
+}
+</code></pre>
+</details>
+<hr />
+<h2 id="switch-sats"><a class="header" href="#switch-sats">Switch-sats</a></h2>
+<p>När du har många möjliga värden att jämföra mot kan <code>switch</code> vara tydligare än många <code>if/else</code>. Det är som en växelspår: beroende på vilket spår växeln är på, tar tåget olika vägar.</p>
+<h3 id="grundstrukturen-1"><a class="header" href="#grundstrukturen-1">Grundstrukturen</a></h3>
+<p>En <code>switch</code>-sats börjar med värdet som ska jämföras, sedan följer olika <code>case</code>-block. Glöm inte <code>break</code> efter varje case, annars fortsätter koden att köra in i nästa case!</p>
+<h3 id="flödesdiagram-för-switch"><a class="header" href="#flödesdiagram-för-switch">Flödesdiagram för switch</a></h3>
+<p>Här är ett diagram som visar hur flödet går i en switch-sats:</p>
+<pre class="mermaid">flowchart TD
+    Start([Start]) --&gt; Värdet[Värde att jämföra]
+    Värdet --&gt; Jämför{Värde matchar&lt;br/&gt;case?}
+    Jämför --&gt;|Case 1| Kod1[Kör kod i case 1]
+    Jämför --&gt;|Case 2| Kod2[Kör kod i case 2]
+    Jämför --&gt;|Ingen match| Kod3[Kör kod i default]
+    Kod1 --&gt; Break1{Break?}
+    Kod2 --&gt; Break2{Break?}
+    Break1 --&gt;|Ja| Slut([Slut])
+    Break1 --&gt;|Nej| Fallthrough[Fallthrough till nästa case]
+    Break2 --&gt;|Ja| Slut
+    Break2 --&gt;|Nej| Fallthrough
+    Fallthrough --&gt; Kod2
+    Kod3 --&gt; Slut
+</pre>
+<p>Skriv en switch-sats som kontrollerar värdet av <code>day</code> och skriver ut olika meddelanden för "måndag", "tisdag" och alla andra dagar (använd <code>default</code>):</p>
+<pre><code class="language-javascript">let day = "tisdag";
+
+// Skriv din switch-sats här
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">let day = "tisdag";
+
+switch (day) {
+  case "måndag":
+    console.log("Ny vecka!");
+    break;
+  case "tisdag":
+    console.log("Andra dagen.");
+    break;
+  default:
+    console.log("Någon annan dag.");
+}
+</code></pre>
+</details>
+<hr />
+<h2 id="loopar"><a class="header" href="#loopar">Loopar</a></h2>
+<p>Loopar används för att upprepa kod flera gånger. Det är som att säga "Gör detta igen och igen tills ett villkor är uppfyllt."</p>
+<h3 id="for-loop"><a class="header" href="#for-loop">For-loop</a></h3>
+<p>En <code>for</code>-loop har tre delar:</p>
+<ol>
+<li><strong>Start</strong>: Var börjar vi? (t.ex. <code>let i = 0</code>)</li>
+<li><strong>Villkor</strong>: När ska vi sluta? (t.ex. <code>i &lt; 5</code>)</li>
+<li><strong>Steg</strong>: Hur ändrar vi värdet? (t.ex. <code>i++</code>)</li>
+</ol>
+<h3 id="flödesdiagram-för-for-loop"><a class="header" href="#flödesdiagram-för-for-loop">Flödesdiagram för for-loop</a></h3>
+<p>Här är ett diagram som visar hur flödet går i en for-loop:</p>
+<pre class="mermaid">flowchart TD
+    Start([Start]) --&gt; Init[Initialisera variabel&lt;br/&gt;let i = 0]
+    Init --&gt; Villkor{Villkor sant?&lt;br/&gt;i &lt; 5}
+    Villkor --&gt;|Nej| Slut([Slut])
+    Villkor --&gt;|Ja| Kod[Kör kod i loopen]
+    Kod --&gt; Steg[Öka variabel&lt;br/&gt;i++]
+    Steg --&gt; Villkor
+</pre>
+<p>Skriv en for-loop som räknar från 0 till 4 och skriver ut varje tal:</p>
+<pre><code class="language-javascript">// Skriv din for-loop här
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">for (let i = 0; i &lt; 5; i++) {
+  console.log("i är nu: " + i);
+}
+</code></pre>
+</details>
+<p>Nu ska du skriva en for-loop som räknar från 1 till 10:</p>
+<pre><code class="language-javascript">// Skriv din for-loop här
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">for (let i = 1; i &lt;= 10; i++) {
+  console.log(i);
+}
+</code></pre>
+</details>
+<h3 id="while-loop"><a class="header" href="#while-loop">While-loop</a></h3>
+<p>En <code>while</code>-loop körs så länge ett villkor är sant. Det är som att säga "Gör detta så länge villkoret är sant."</p>
+<h3 id="flödesdiagram-för-while-loop"><a class="header" href="#flödesdiagram-för-while-loop">Flödesdiagram för while-loop</a></h3>
+<p>Här är ett diagram som visar hur flödet går i en while-loop:</p>
+<pre class="mermaid">flowchart TD
+    Start([Start]) --&gt; Villkor{Villkor sant?&lt;br/&gt;count &lt; 3}
+    Villkor --&gt;|Nej| Slut([Slut])
+    Villkor --&gt;|Ja| Kod[Kör kod i loopen]
+    Kod --&gt; Uppdatera[Uppdatera variabel&lt;br/&gt;count++]
+    Uppdatera --&gt; Villkor
+</pre>
+<p>Skriv en while-loop som räknar från 0 till 2 och skriver ut varje tal. Kom ihåg att öka räknaren inuti loopen:</p>
+<pre><code class="language-javascript">let count = 0;
+
+// Skriv din while-loop här
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">let count = 0;
+while (count &lt; 3) {
+  console.log("Räknare: " + count);
+  count++;
+}
+</code></pre>
+</details>
+<h3 id="när-använder-man-for-vs-while"><a class="header" href="#när-använder-man-for-vs-while">När använder man for vs while?</a></h3>
+<ul>
+<li>Använd <code>for</code> när du vet hur många gånger loopen ska köras.</li>
+<li>Använd <code>while</code> när du inte vet exakt hur många gånger, men vet ett villkor som måste vara sant.</li>
+</ul>
+<hr />
+<h2 id="break-och-continue"><a class="header" href="#break-och-continue">Break och continue</a></h2>
+<p>Ibland behöver vi extra kontroll i våra loopar:</p>
+<ul>
+<li><code>break</code> – Avbryter loopen direkt och hoppar ut.</li>
+<li><code>continue</code> – Hoppar över resten av koden i loopen och går till nästa varv.</li>
+</ul>
+<h3 id="flödesdiagram-för-break-och-continue"><a class="header" href="#flödesdiagram-för-break-och-continue">Flödesdiagram för break och continue</a></h3>
+<p>Här är diagram som visar hur <code>break</code> och <code>continue</code> påverkar flödet:</p>
+<p><strong>Break:</strong></p>
+<pre class="mermaid">flowchart TD
+    Start([Start loopen]) --&gt; Villkor{Villkor sant?}
+    Villkor --&gt;|Nej| Slut([Slut])
+    Villkor --&gt;|Ja| BreakVillkor{Break&lt;br/&gt;villkor?}
+    BreakVillkor --&gt;|Ja| Avbryt[Avbryt loopen]
+    BreakVillkor --&gt;|Nej| Kod[Kör kod]
+    Avbryt --&gt; Slut
+    Kod --&gt; Uppdatera[Uppdatera variabel]
+    Uppdatera --&gt; Villkor
+</pre>
+<p><strong>Continue:</strong></p>
+<pre class="mermaid">flowchart TD
+    Start([Start loopen]) --&gt; Villkor{Villkor sant?}
+    Villkor --&gt;|Nej| Slut([Slut])
+    Villkor --&gt;|Ja| ContinueVillkor{Continue&lt;br/&gt;villkor?}
+    ContinueVillkor --&gt;|Ja| HoppaÖver[Hoppa över resten]
+    ContinueVillkor --&gt;|Nej| Kod[Kör kod]
+    HoppaÖver --&gt; Uppdatera[Uppdatera variabel]
+    Kod --&gt; Uppdatera
+    Uppdatera --&gt; Villkor
+</pre>
+<h3 id="Övning-med-break"><a class="header" href="#Övning-med-break">Övning med break</a></h3>
+<p>Skriv en for-loop som går från 0 till 5, men avbryter när <code>i</code> är lika med 3. Vad tror du kommer att skrivas ut?</p>
+<pre><code class="language-javascript">// Skriv din for-loop med break här
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">for (let i = 0; i &lt; 5; i++) {
+  if (i === 3) break;
+  console.log(i);
+}
+// Utskrift: 0, 1, 2
+</code></pre>
+</details>
+<h3 id="Övning-med-continue"><a class="header" href="#Övning-med-continue">Övning med continue</a></h3>
+<p>Skriv en for-loop som går från 0 till 5, men hoppar över när <code>i</code> är lika med 2. Vad tror du kommer att skrivas ut?</p>
+<pre><code class="language-javascript">// Skriv din for-loop med continue här
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">for (let i = 0; i &lt; 5; i++) {
+  if (i === 2) continue;
+  console.log(i);
+}
+// Utskrift: 0, 1, 3, 4
+</code></pre>
+</details>
+<hr />
+<h2 id="sammanfattning"><a class="header" href="#sammanfattning">Sammanfattning</a></h2>
+<ul>
+<li>Kontrollstrukturer styr flödet i programmet.</li>
+<li>Använd <code>if</code>, <code>else if</code>, <code>else</code> och <code>switch</code> för att fatta beslut.</li>
+<li>Använd <code>for</code> och <code>while</code> för att upprepa kod.</li>
+<li>Jämförelse- och logiska operatorer hjälper dig att skapa villkor.</li>
+<li><code>break</code> och <code>continue</code> ger extra kontroll i loopar.</li>
+</ul>
+<p>Att behärska kontrollstrukturer är avgörande för att kunna skriva logisk och flexibel kod. I nästa avsnitt ska vi se hur JavaScript kan interagera med själva HTML-sidan.</p>
+<hr />
+<h2 id="Övningar"><a class="header" href="#Övningar">Övningar</a></h2>
+<h3 id="1-while-loop---räkna-ner"><a class="header" href="#1-while-loop---räkna-ner">1. While-loop - räkna ner</a></h3>
+<p>Skriv en while-loop som räknar ner från 10 till 0 och skriver ut varje tal.</p>
+<pre><code class="language-js">let count = 10;
+// fortsätt med din lösning
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-js">let count = 10;
+while (count &gt;= 0) {
+    console.log(count);
+    count--;
+}
+// Utskrift: 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0
+</code></pre>
+</details>
+<h3 id="2-array-transformation"><a class="header" href="#2-array-transformation">2. Array-transformation</a></h3>
+<p>Skapa en array med temperaturer i Celsius och använd <code>map</code> för att konvertera dem till Fahrenheit.
+(Formel: F = C * 9/5 + 32)</p>
+<pre><code class="language-js">let celsiusTemp = [0, 10, 20, 30, 40];
+// fortsätt med din lösning
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-js">let celsiusTemp = [0, 10, 20, 30, 40];
+let fahrenheitTemp = celsiusTemp.map(temp =&gt; temp * 9/5 + 32);
+console.log(fahrenheitTemp);
+// Utskrift: [32, 50, 68, 86, 104]
+</code></pre>
+</details>
+<h3 id="3-filtrering-med-foreach"><a class="header" href="#3-filtrering-med-foreach">3. Filtrering med forEach</a></h3>
+<p>Använd <code>forEach</code> för att skriva ut alla jämna tal i en array.</p>
+<pre><code class="language-js">let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+// fortsätt med din lösning
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-js">let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+numbers.forEach(num =&gt; {
+    if (num % 2 === 0) {
+        console.log(num);
+    }
+});
+// Utskrift: 2, 4, 6, 8, 10
+</code></pre>
+</details>
+<h3 id="4-if-sats-med-flera-villkor"><a class="header" href="#4-if-sats-med-flera-villkor">4. If-sats med flera villkor</a></h3>
+<p>Skriv en if-sats som kontrollerar om en person är myndig (18+) och har körkort. Om båda villkoren är sanna, skriv ut "Du kan köra bil". Om personen är myndig men saknar körkort, skriv ut "Du behöver ta körkort". Annars skriv ut "Du är för ung".</p>
+<pre><code class="language-js">let age = 20;
+let hasLicense = true;
+// fortsätt med din lösning
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-js">let age = 20;
+let hasLicense = true;
+
+if (age &gt;= 18 &amp;&amp; hasLicense) {
+    console.log("Du kan köra bil");
+} else if (age &gt;= 18 &amp;&amp; !hasLicense) {
+    console.log("Du behöver ta körkort");
+} else {
+    console.log("Du är för ung");
+}
+</code></pre>
+</details>
+<h3 id="5-for-loop-med-array"><a class="header" href="#5-for-loop-med-array">5. For-loop med array</a></h3>
+<p>Skriv en for-loop som går igenom en array med namn och skriver ut "Hej, [namn]" för varje namn.</p>
+<pre><code class="language-js">let names = ["Anna", "Erik", "Sara", "Marcus"];
+// fortsätt med din lösning
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-js">let names = ["Anna", "Erik", "Sara", "Marcus"];
+for (let i = 0; i &lt; names.length; i++) {
+    console.log("Hej, " + names[i]);
+}
+// Utskrift:
+// Hej, Anna
+// Hej, Erik
+// Hej, Sara
+// Hej, Marcus
+</code></pre>
+</details>
+<h3 id="6-switch-med-veckodagar"><a class="header" href="#6-switch-med-veckodagar">6. Switch med veckodagar</a></h3>
+<p>Skriv en switch-sats som tar en veckodag och skriver ut om det är en vardag eller helg. Måndag-fredag är vardagar, lördag och söndag är helger.</p>
+<pre><code class="language-js">let day = "lördag";
+// fortsätt med din lösning
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-js">let day = "lördag";
+
+switch (day) {
+    case "måndag":
+    case "tisdag":
+    case "onsdag":
+    case "torsdag":
+    case "fredag":
+        console.log("Det är en vardag");
+        break;
+    case "lördag":
+    case "söndag":
+        console.log("Det är helg!");
+        break;
+    default:
+        console.log("Okänd dag");
+}
+</code></pre>
+</details>
+<h3 id="7-summa-med-loop"><a class="header" href="#7-summa-med-loop">7. Summa med loop</a></h3>
+<p>Skriv en for-loop som beräknar summan av alla tal från 1 till 10.</p>
+<pre><code class="language-js">let sum = 0;
+// fortsätt med din lösning
+console.log("Summan är: " + sum);
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-js">let sum = 0;
+for (let i = 1; i &lt;= 10; i++) {
+    sum = sum + i;
+}
+console.log("Summan är: " + sum);
+// Utskrift: Summan är: 55
+</code></pre>
+</details>
+<h3 id="8-temperaturbedömning"><a class="header" href="#8-temperaturbedömning">8. Temperaturbedömning</a></h3>
+<p>Skriv kod som kontrollerar temperaturen och skriver ut:</p>
+<ul>
+<li>"Mycket kallt" om temperaturen är under 0</li>
+<li>"Kallt" om temperaturen är 0-10</li>
+<li>"Mild" om temperaturen är 11-20</li>
+<li>"Varmt" om temperaturen är 21-30</li>
+<li>"Mycket varmt" om temperaturen är över 30</li>
+</ul>
+<pre><code class="language-js">let temp = 15;
+// fortsätt med din lösning
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-js">let temp = 15;
+
+if (temp &lt; 0) {
+    console.log("Mycket kallt");
+} else if (temp &lt;= 10) {
+    console.log("Kallt");
+} else if (temp &lt;= 20) {
+    console.log("Mild");
+} else if (temp &lt;= 30) {
+    console.log("Varmt");
+} else {
+    console.log("Mycket varmt");
+}
+</code></pre>
+</details>
+<h3 id="9-filtrera-och-transformera"><a class="header" href="#9-filtrera-och-transformera">9. Filtrera och transformera</a></h3>
+<p>Skapa en array med tal från 1 till 20. Använd <code>filter</code> och <code>map</code> för att:</p>
+<ol>
+<li>Filtrera ut alla jämna tal</li>
+<li>Multiplicera varje jämnt tal med 2</li>
+<li>Skriv ut resultatet</li>
+</ol>
+<pre><code class="language-js">let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+// fortsätt med din lösning
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-js">let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+
+let evenNumbers = numbers.filter(num =&gt; num % 2 === 0);
+let doubled = evenNumbers.map(num =&gt; num * 2);
+console.log(doubled);
+// Utskrift: [4, 8, 12, 16, 20, 24, 28, 32, 36, 40]
+</code></pre>
+</details>
+<h3 id="10-kombinera-loop-och-villkor"><a class="header" href="#10-kombinera-loop-och-villkor">10. Kombinera loop och villkor</a></h3>
+<p>Skriv en for-loop som går från 1 till 20 och skriver ut:</p>
+<ul>
+<li>"Fizz" om talet är delbart med 3</li>
+<li>"Buzz" om talet är delbart med 5</li>
+<li>"FizzBuzz" om talet är delbart med både 3 och 5</li>
+<li>Talet själv i alla andra fall</li>
+</ul>
+<pre><code class="language-js">// fortsätt med din lösning
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-js">for (let i = 1; i &lt;= 20; i++) {
+    if (i % 3 === 0 &amp;&amp; i % 5 === 0) {
+        console.log("FizzBuzz");
+    } else if (i % 3 === 0) {
+        console.log("Fizz");
+    } else if (i % 5 === 0) {
+        console.log("Buzz");
+    } else {
+        console.log(i);
+    }
+}
+</code></pre>
+</details>
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_4/funktioner.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_4/dom-manipulation-events.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_4/funktioner.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_4/dom-manipulation-events.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

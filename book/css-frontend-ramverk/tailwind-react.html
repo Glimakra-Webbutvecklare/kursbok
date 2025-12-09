@@ -1,0 +1,427 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Tailwind och React - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="arbeta-med-tailwind-css-och-react-med-vite"><a class="header" href="#arbeta-med-tailwind-css-och-react-med-vite">Arbeta med Tailwind CSS och React med Vite</a></h1>
+<h2 id="introduktion"><a class="header" href="#introduktion">Introduktion</a></h2>
+<p>Att använda Tailwind CSS tillsammans med React och Vite är ett effektivt sätt att bygga moderna och responsiva webbapplikationer. Vite är ett snabbt byggverktyg som gör utvecklingsprocessen smidig, medan Tailwind CSS erbjuder utility-first-klasser för att snabbt styla komponenter.</p>
+<p>I denna lektion går vi igenom:</p>
+<ol>
+<li>Hur du installerar och konfigurerar Tailwind CSS i ett React-projekt med Vite.</li>
+<li>Hur du använder Tailwind CSS i React-komponenter.</li>
+<li>Best practices för att arbeta med Tailwind och React.</li>
+</ol>
+<hr />
+<h2 id="steg-1-skapa-ett-react-projekt-med-vite"><a class="header" href="#steg-1-skapa-ett-react-projekt-med-vite">Steg 1: Skapa ett React-projekt med Vite</a></h2>
+<h3 id="skapa-ett-nytt-projekt"><a class="header" href="#skapa-ett-nytt-projekt">Skapa ett nytt projekt</a></h3>
+<p>Skapa ett nytt React-projekt med Vite:</p>
+<pre><code class="language-bash">npm create vite@latest my-app --template react
+cd my-app
+npm install
+</code></pre>
+<h3 id="installera-tailwind-css"><a class="header" href="#installera-tailwind-css">Installera Tailwind CSS</a></h3>
+<p>Installera Tailwind CSS och dess beroenden:</p>
+<pre><code class="language-bash">npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
+</code></pre>
+<h3 id="konfigurera-tailwind"><a class="header" href="#konfigurera-tailwind">Konfigurera Tailwind</a></h3>
+<p>Uppdatera <code>tailwind.config.js</code> för att inkludera alla filer där du använder Tailwind-klasser:</p>
+<pre><code class="language-javascript">// filepath: tailwind.config.js
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+</code></pre>
+<h3 id="lägg-till-tailwind-i-din-css"><a class="header" href="#lägg-till-tailwind-i-din-css">Lägg till Tailwind i din CSS</a></h3>
+<p>Skapa eller uppdatera filen <code>src/index.css</code> och inkludera Tailwinds direktiv:</p>
+<pre><code class="language-css">@tailwind base;
+@tailwind components;
+@tailwind utilities;
+</code></pre>
+<h3 id="starta-projektet"><a class="header" href="#starta-projektet">Starta projektet</a></h3>
+<p>Starta utvecklingsservern för att verifiera att Tailwind fungerar:</p>
+<pre><code class="language-bash">npm run dev
+</code></pre>
+<hr />
+<h2 id="steg-2-använda-tailwind-css-i-react-komponenter"><a class="header" href="#steg-2-använda-tailwind-css-i-react-komponenter">Steg 2: Använda Tailwind CSS i React-komponenter</a></h2>
+<h3 id="exempel-skapa-en-knappkomponent"><a class="header" href="#exempel-skapa-en-knappkomponent">Exempel: Skapa en knappkomponent</a></h3>
+<p>Här är ett exempel på en enkel knappkomponent som använder Tailwind CSS:</p>
+<pre><code class="language-jsx">// filepath: src/components/Button.jsx
+export default function Button({ text, onClick }) {
+  return (
+    &lt;button
+      className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      onClick={onClick}
+    &gt;
+      {text}
+    &lt;/button&gt;
+  );
+}
+</code></pre>
+<h3 id="exempel-skapa-en-kortkomponent"><a class="header" href="#exempel-skapa-en-kortkomponent">Exempel: Skapa en kortkomponent</a></h3>
+<p>Här är ett exempel på en kortkomponent som använder Tailwind CSS:</p>
+<pre><code class="language-jsx">// filepath: src/components/Card.jsx
+export default function Card({ title, description }) {
+  return (
+    &lt;div className="max-w-sm bg-white rounded-lg shadow-md overflow-hidden"&gt;
+      &lt;div className="p-4"&gt;
+        &lt;h2 className="text-lg font-bold text-gray-800"&gt;{title}&lt;/h2&gt;
+        &lt;p className="text-gray-600"&gt;{description}&lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<h3 id="använd-komponenterna-i-din-app"><a class="header" href="#använd-komponenterna-i-din-app">Använd komponenterna i din app</a></h3>
+<p>Importera och använd komponenterna i din <code>App.jsx</code>:</p>
+<pre><code class="language-jsx">// filepath: src/App.jsx
+import Button from "./components/Button";
+import Card from "./components/Card";
+
+function App() {
+  return (
+    &lt;div className="p-6 bg-gray-100 min-h-screen"&gt;
+      &lt;h1 className="text-2xl font-bold text-gray-800 mb-4"&gt;Välkommen till min app&lt;/h1&gt;
+      &lt;Card
+        title="Korttitel"
+        description="Detta är en beskrivning av kortet."
+      /&gt;
+      &lt;Button text="Klicka här" onClick={() =&gt; alert("Knappen klickades!")} /&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default App;
+</code></pre>
+<hr />
+<h2 id="best-practices-för-tailwind-css-och-react"><a class="header" href="#best-practices-för-tailwind-css-och-react">Best Practices för Tailwind CSS och React</a></h2>
+<h3 id="1-håll-komponenterna-små-och-återanvändbara"><a class="header" href="#1-håll-komponenterna-små-och-återanvändbara">1. <strong>Håll komponenterna små och återanvändbara</strong></a></h3>
+<ul>
+<li>Dela upp din kod i små, återanvändbara komponenter.</li>
+<li>Exempel: Skapa separata komponenter för knappar, kort, formulärfält, etc.</li>
+</ul>
+<h3 id="2-använd-tailwinds-konfigurationsfil"><a class="header" href="#2-använd-tailwinds-konfigurationsfil">2. <strong>Använd Tailwinds konfigurationsfil</strong></a></h3>
+<ul>
+<li>Anpassa Tailwind i <code>tailwind.config.js</code> för att skapa ett konsekvent design-system.</li>
+<li>Lägg till egna färger, typsnitt och spacing.</li>
+</ul>
+<h3 id="3-använd-conditional-classnames"><a class="header" href="#3-använd-conditional-classnames">3. <strong>Använd conditional classnames</strong></a></h3>
+<ul>
+<li>Använd bibliotek som <code>clsx</code> eller <code>classnames</code> för att hantera dynamiska klasser i React:</li>
+</ul>
+<pre><code class="language-bash">npm install clsx
+</code></pre>
+<p>Exempel:</p>
+<pre><code class="language-jsx">import clsx from "clsx";
+
+export default function Button({ isPrimary }) {
+  return (
+    &lt;button
+      className={clsx(
+        "px-4 py-2 rounded",
+        isPrimary ? "bg-blue-500 text-white" : "bg-gray-200 text-black"
+      )}
+    &gt;
+      Klicka här
+    &lt;/button&gt;
+  );
+}
+</code></pre>
+<h3 id="4-använd-tailwinds-plugins"><a class="header" href="#4-använd-tailwinds-plugins">4. <strong>Använd Tailwinds plugins</strong></a></h3>
+<ul>
+<li>Dra nytta av Tailwinds plugins för att utöka funktionaliteten, t.ex.:
+<ul>
+<li><code>@tailwindcss/forms</code> för formulärstilar.</li>
+<li><code>@tailwindcss/typography</code> för bättre textformatering.</li>
+</ul>
+</li>
+</ul>
+<h3 id="5-håll-html-strukturen-ren"><a class="header" href="#5-håll-html-strukturen-ren">5. <strong>Håll HTML-strukturen ren</strong></a></h3>
+<ul>
+<li>Undvik att lägga för många klasser direkt i JSX. Använd komponentklasser eller utility-klasser strategiskt.</li>
+</ul>
+<hr />
+<h2 id="Övning-bygg-en-enkel-profilkomponent"><a class="header" href="#Övning-bygg-en-enkel-profilkomponent">Övning: Bygg en enkel profilkomponent</a></h2>
+<h3 id="uppgift"><a class="header" href="#uppgift">Uppgift</a></h3>
+<p>Skapa en profilkomponent som innehåller:</p>
+<ol>
+<li>En profilbild.</li>
+<li>Ett namn och en titel.</li>
+<li>En knapp för att följa användaren.</li>
+</ol>
+<h3 id="krav"><a class="header" href="#krav">Krav</a></h3>
+<ul>
+<li>Använd Tailwinds utility-klasser för styling.</li>
+<li>Gör komponenten responsiv så att den ser bra ut på både mobil och desktop.</li>
+</ul>
+<h3 id="exempel-på-html-struktur"><a class="header" href="#exempel-på-html-struktur">Exempel på HTML-struktur</a></h3>
+<pre><code class="language-jsx">// filepath: src/components/ProfileCard.jsx
+export default function ProfileCard({ name, title, image }) {
+  return (
+    &lt;div className="max-w-sm bg-white rounded-lg shadow-md overflow-hidden"&gt;
+      &lt;img className="w-full h-48 object-cover" src={image} alt={name} /&gt;
+      &lt;div className="p-4"&gt;
+        &lt;h2 className="text-lg font-bold text-gray-800"&gt;{name}&lt;/h2&gt;
+        &lt;p className="text-gray-600"&gt;{title}&lt;/p&gt;
+        &lt;button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"&gt;
+          Följ
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<h3 id="använd-komponenten"><a class="header" href="#använd-komponenten">Använd komponenten</a></h3>
+<p>Importera och använd komponenten i din app:</p>
+<pre><code class="language-jsx">// filepath: src/App.jsx
+import ProfileCard from "./components/ProfileCard";
+
+function App() {
+  return (
+    &lt;div className="p-6 bg-gray-100 min-h-screen"&gt;
+      &lt;ProfileCard
+        name="John Doe"
+        title="Webbutvecklare"
+        image="https://via.placeholder.com/150"
+      /&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default App;
+</code></pre>
+<hr />
+<h2 id="sammanfattning"><a class="header" href="#sammanfattning">Sammanfattning</a></h2>
+<ul>
+<li><strong>Installation</strong>: Installera och konfigurera Tailwind CSS i ditt React-projekt med Vite.</li>
+<li><strong>Komponenter</strong>: Använd Tailwind CSS för att snabbt styla React-komponenter.</li>
+<li><strong>Best Practices</strong>: Håll komponenterna små och återanvändbara, använd conditional classnames och dra nytta av Tailwinds plugins.</li>
+</ul>
+<p>För mer information, besök <a href="https://tailwindcss.com/docs">Tailwind CSS Dokumentation</a> och <a href="https://reactjs.org/">React Dokumentation</a>.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../css-frontend-ramverk/tailwind-components.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../SCSS/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../css-frontend-ramverk/tailwind-components.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../SCSS/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

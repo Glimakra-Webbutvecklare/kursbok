@@ -1,0 +1,425 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Selektorer, färger och typografi - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="selektorer-färger-och-typografi-i-css"><a class="header" href="#selektorer-färger-och-typografi-i-css">Selektorer, färger och typografi i CSS</a></h1>
+<p>Att kunna välja ut och styla rätt HTML-element är grunden i CSS. I detta kapitel lär du dig använda <strong>selektorer</strong> (selectors), ange färger på olika sätt och styra textens utseende (typografi).</p>
+<blockquote>
+<p><strong>Motivation:</strong><br />
+Med selektorer kan du styra exakt vilka delar av din webbsida som ska få särskild stil. Färg och typografi gör sidan mer läsbar och tilltalande.</p>
+</blockquote>
+<p><strong>Språkpolicy:</strong><br />
+Svenska används i förklaringar, men engelska tekniska termer anges i parentes första gången de nämns. Variabel- och klassnamn skrivs på engelska.</p>
+<hr />
+<h2 id="css-selektorer-att-välja-rätt-element"><a class="header" href="#css-selektorer-att-välja-rätt-element">CSS-selektorer: Att välja rätt element</a></h2>
+<p>Selektorer är mönster som matchar HTML-element. Här är de vanligaste:</p>
+<h3 id="1-elementselektor-type-selector"><a class="header" href="#1-elementselektor-type-selector">1. Elementselektor (type selector)</a></h3>
+<ul>
+<li><strong>Syntax:</strong> Elementets namn, t.ex. <code>p</code>, <code>h1</code>, <code>div</code>.</li>
+<li><strong>Vad den gör:</strong> Väljer <em>alla</em> element av den typen.</li>
+</ul>
+<pre><code class="language-css">p {
+  line-height: 1.6;
+}
+h2 {
+  color: navy;
+}
+</code></pre>
+<h3 id="2-klassselektor-class-selector"><a class="header" href="#2-klassselektor-class-selector">2. Klassselektor (class selector)</a></h3>
+<ul>
+<li><strong>Syntax:</strong> Punkt (<code>.</code>) följt av klassnamnet, t.ex. <code>.important</code>.</li>
+<li><strong>Vad den gör:</strong> Väljer alla element med angiven klass. Ett element kan ha flera klasser.</li>
+</ul>
+<pre><code class="language-html">&lt;p class="important"&gt;Detta är viktigt.&lt;/p&gt;
+&lt;span class="important highlight"&gt;Markerad text.&lt;/span&gt;
+&lt;button class="button"&gt;Klicka här&lt;/button&gt;
+</code></pre>
+<pre><code class="language-css">.important {
+  font-weight: bold;
+}
+.highlight {
+  background-color: yellow;
+}
+.button {
+  padding: 10px 15px;
+  border: 1px solid gray;
+}
+</code></pre>
+<h3 id="3-id-selektor-id-selector"><a class="header" href="#3-id-selektor-id-selector">3. ID-selektor (ID selector)</a></h3>
+<ul>
+<li><strong>Syntax:</strong> Hash (<code>#</code>) följt av ID-namnet, t.ex. <code>#header</code>.</li>
+<li><strong>Vad den gör:</strong> Väljer det <em>enda</em> element med angivet ID.</li>
+<li><strong>Viktigt:</strong> Ett ID ska vara unikt på sidan.</li>
+</ul>
+<pre><code class="language-html">&lt;header id="header"&gt;...&lt;/header&gt;
+</code></pre>
+<pre><code class="language-css">#header {
+  background-color: #f0f0f0;
+  padding: 20px;
+}
+</code></pre>
+<h3 id="4-attributselektor-attribute-selector"><a class="header" href="#4-attributselektor-attribute-selector">4. Attributselektor (attribute selector)</a></h3>
+<ul>
+<li><strong>Syntax:</strong> Elementnamn följt av hakparenteser, t.ex. <code>a[target="_blank"]</code>.</li>
+<li><strong>Vad den gör:</strong> Väljer element baserat på attribut och/eller värde.</li>
+</ul>
+<pre><code class="language-css">a[target="_blank"] {
+  color: green;
+}
+input[type="text"] {
+  border: 1px solid #ccc;
+}
+</code></pre>
+<h3 id="5-kombinatorer-combinators"><a class="header" href="#5-kombinatorer-combinators">5. Kombinatorer (combinators)</a></h3>
+<p>Kombinera selektorer för mer specifika regler:</p>
+<ul>
+<li><strong>Gruppering (grouping):</strong> Komma (<code>,</code>) för att ge flera selektorer samma stil.
+<pre><code class="language-css">h1, h2, h3 {
+  font-family: Georgia, serif;
+}
+</code></pre>
+</li>
+<li><strong>Selektor för ättling (descendant combinator):</strong> Mellanslag (<code> </code>) för att välja element som är ättlingar (barn, barnbarn, etc.) till ett annat element.
+<pre><code class="language-css">nav ul {
+  list-style: none;
+}
+</code></pre>
+</li>
+<li><strong>Barnselektor (child combinator):</strong> Större än-tecken (<code>&gt;</code>) för att välja direkta barn.
+<pre><code class="language-css">ul &gt; li {
+  margin-bottom: 5px;
+}
+</code></pre>
+</li>
+</ul>
+<blockquote>
+<p><strong>Specificitet:</strong><br />
+ID-selektorer (<code>#id</code>) är starkare än klass- och attributselektorer (<code>.class</code>, <code>[attr]</code>), som är starkare än elementselektorer (<code>p</code>). När du kombinerar selektorer ökar specificiteten.</p>
+</blockquote>
+<hr />
+<h2 id="färger-i-css"><a class="header" href="#färger-i-css">Färger i CSS</a></h2>
+<p>Du kan ange färger på flera sätt:</p>
+<ul>
+<li><strong>Namngivna färger (named colors):</strong> T.ex. <code>red</code>, <code>blue</code>, <code>lightgray</code>.
+<pre><code class="language-css">body { background-color: lightgray; }
+</code></pre>
+</li>
+<li><strong>Hexadecimala koder (HEX):</strong> T.ex. <code>#FF0000</code> (röd), <code>#333</code> (mörkgrå).
+<pre><code class="language-css">h1 { color: #3A8DDE; }
+</code></pre>
+</li>
+<li><strong>RGB/RGBA:</strong> T.ex. <code>rgb(51, 51, 51)</code>, <code>rgba(0, 0, 0, 0.5)</code>.
+<pre><code class="language-css">p { color: rgb(51, 51, 51); }
+.overlay { background-color: rgba(0, 0, 0, 0.5); }
+</code></pre>
+</li>
+<li><strong>HSL/HSLA:</strong> T.ex. <code>hsl(210, 100%, 50%)</code>.
+<pre><code class="language-css">button { background-color: hsl(210, 100%, 50%); }
+</code></pre>
+</li>
+</ul>
+<hr />
+<h2 id="grundläggande-typografi"><a class="header" href="#grundläggande-typografi">Grundläggande typografi</a></h2>
+<p>Typografi handlar om textens utseende. Några viktiga egenskaper:</p>
+<ul>
+<li><code>font-family</code>: Typsnitt. Ange gärna flera alternativ.
+<pre><code class="language-css">body {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+}
+code {
+  font-family: Consolas, Monaco, monospace;
+}
+</code></pre>
+</li>
+<li><code>font-size</code>: Textstorlek, t.ex. <code>16px</code>, <code>2rem</code>.
+<pre><code class="language-css">p { font-size: 16px; }
+h1 { font-size: 2.5rem; }
+</code></pre>
+</li>
+<li><code>font-weight</code>: Tjocklek, t.ex. <code>normal</code>, <code>bold</code>, <code>300</code>.
+<pre><code class="language-css">strong { font-weight: bold; }
+.subtle { font-weight: 300; }
+</code></pre>
+</li>
+<li><code>font-style</code>: Stil, t.ex. <code>normal</code>, <code>italic</code>.
+<pre><code class="language-css">em { font-style: italic; }
+</code></pre>
+</li>
+<li><code>color</code>: Textfärg.
+<pre><code class="language-css">a { color: #007bff; }
+</code></pre>
+</li>
+<li><code>text-align</code>: Justering, t.ex. <code>left</code>, <code>center</code>.
+<pre><code class="language-css">h1 { text-align: center; }
+</code></pre>
+</li>
+<li><code>line-height</code>: Radavstånd, t.ex. <code>1.6</code>.
+<pre><code class="language-css">p { line-height: 1.6; }
+</code></pre>
+</li>
+<li><code>text-decoration</code>: Dekoration, t.ex. understrykning.
+<pre><code class="language-css">a { text-decoration: none; }
+a:hover { text-decoration: underline; }
+</code></pre>
+</li>
+</ul>
+<hr />
+<h2 id="praktiska-exempel"><a class="header" href="#praktiska-exempel">Praktiska exempel</a></h2>
+<h3 id="exempel-kombinera-selektorer-och-färg"><a class="header" href="#exempel-kombinera-selektorer-och-färg">Exempel: Kombinera selektorer och färg</a></h3>
+<pre><code class="language-html">&lt;ul&gt;
+  &lt;li class="important"&gt;Viktigt&lt;/li&gt;
+  &lt;li&gt;Vanligt&lt;/li&gt;
+  &lt;li class="highlight"&gt;Markerat&lt;/li&gt;
+&lt;/ul&gt;
+</code></pre>
+<pre><code class="language-css">li {
+  color: #333;
+}
+.important {
+  color: red;
+  font-weight: bold;
+}
+.highlight {
+  background: yellow;
+}
+</code></pre>
+<h3 id="exempel-typografi-och-färg"><a class="header" href="#exempel-typografi-och-färg">Exempel: Typografi och färg</a></h3>
+<pre><code class="language-html">&lt;p class="info"&gt;Informationstext&lt;/p&gt;
+</code></pre>
+<pre><code class="language-css">.info {
+  font-family: Arial, sans-serif;
+  font-size: 1.2rem;
+  color: hsl(210, 100%, 40%);
+  line-height: 1.5;
+}
+</code></pre>
+<hr />
+<h2 id="sammanfattning"><a class="header" href="#sammanfattning">Sammanfattning</a></h2>
+<ul>
+<li>CSS-selektorer (element, klass, ID, attribut, kombinatorer) låter dig välja vilka HTML-element du vill styla.</li>
+<li>Färger kan anges med namn, HEX, RGB(A) eller HSL(A).</li>
+<li>Typografiska egenskaper styr textens utseende och läsbarhet.</li>
+<li>Att behärska selektorer och grundläggande styling är fundamentalt för att skapa visuellt tilltalande webbsidor.</li>
+</ul>
+<hr />
+<p><em>I nästa avsnitt tittar vi på box model, som beskriver hur utrymme hanteras runt HTML-element.</em></p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_3/css-intro.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_3/css-units.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_3/css-intro.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_3/css-units.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

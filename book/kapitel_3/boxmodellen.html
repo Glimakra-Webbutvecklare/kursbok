@@ -1,0 +1,610 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Boxmodellen och layoutprinciper - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="box-model-och-grundläggande-layout-i-css"><a class="header" href="#box-model-och-grundläggande-layout-i-css">Box model och grundläggande layout i CSS</a></h1>
+<p>Att förstå <strong>CSS box model</strong> är avgörande för att kunna skapa tydliga och flexibla layouter på webbsidor. Box model beskriver hur varje HTML-element ritas upp som en rektangulär låda och hur dess storlek och avstånd till andra element beräknas.</p>
+<blockquote>
+<p><strong>Motivation:</strong><br />
+Med kunskap om box model kan du styra exakt hur mycket plats ett element tar, hur det placeras och hur det samspelar med andra delar av sidan. Det är grunden för all layout i CSS.</p>
+</blockquote>
+<hr />
+<h2 id="box-model-delar"><a class="header" href="#box-model-delar">Box model: delar</a></h2>
+<p>Varje låda i CSS består av fyra lager, utifrån och in:</p>
+<ol>
+<li>
+<p><strong>Margin (marginal):</strong><br />
+Yttersta lagret. Skapar ett genomskinligt utrymme <em>utanför</em> elementets kantlinje (border). Används för att skapa avstånd mellan olika element.</p>
+</li>
+<li>
+<p><strong>Border (kantlinje):</strong><br />
+Ramen runt elementet. Har tjocklek, stil (t.ex. solid, dashed) och färg.</p>
+</li>
+<li>
+<p><strong>Padding (utfyllnad):</strong><br />
+Genomskinligt utrymme <em>innanför</em> kantlinjen, men <em>utanför</em> innehållet. Skapar luft mellan kanten och innehållet.</p>
+</li>
+<li>
+<p><strong>Content (innehåll):</strong><br />
+Själva innehållet i elementet (t.ex. text eller bild). Dimensionerna styrs av <code>width</code> och <code>height</code> (eller av innehållet om inget anges).</p>
+</li>
+</ol>
+<hr />
+<h2 id="visualisering-av-css-box-model"><a class="header" href="#visualisering-av-css-box-model">Visualisering av CSS Box Model</a></h2>
+<pre class="mermaid">block-beta
+    columns 1
+    block:margin[&quot;Margin (marginal)&quot;]
+        block:border[&quot;Border (kantlinje)&quot;]
+            block:padding[&quot;Padding (utfyllnad)&quot;]
+                block:content[&quot;Content (innehåll)&lt;br/&gt;width × height&quot;]
+            end
+        end
+    end
+    
+    classDef marginStyle fill:#f9f9f9,stroke:#999,stroke-width:2px,stroke-dasharray: 5 5
+    classDef borderStyle fill:#ffe6e6,stroke:#cc0000,stroke-width:3px
+    classDef paddingStyle fill:#e6ffe6,stroke:#009900,stroke-width:2px
+    classDef contentStyle fill:#e6e6ff,stroke:#0000cc,stroke-width:2px
+    
+    class margin marginStyle
+    class border borderStyle
+    class padding paddingStyle
+    class content contentStyle
+</pre>
+<p><em>Diagram: CSS box model visar hur varje element består av fyra lager som omsluter varandra.</em></p>
+<hr />
+<h2 id="css-egenskaper-för-box-model"><a class="header" href="#css-egenskaper-för-box-model">CSS-egenskaper för box model</a></h2>
+<ul>
+<li><code>width</code>, <code>height</code>: Anger bredd och höjd för <strong>content</strong>-området.</li>
+<li><code>padding</code>: Luft innanför kantlinjen.</li>
+<li><code>border</code>: Själva ramen runt elementet.</li>
+<li><code>margin</code>: Luft utanför kantlinjen.</li>
+</ul>
+<hr />
+<h2 id="exempel-1-enkel-box"><a class="header" href="#exempel-1-enkel-box">Exempel 1: Enkel box</a></h2>
+<pre><code class="language-css">.box {
+  width: 200px;
+  padding: 16px;
+  border: 2px solid #333;
+  margin: 24px;
+  background-color: #eef;
+}
+</code></pre>
+<pre><code class="language-html">&lt;div class="box"&gt;
+  Detta är en enkel box med padding, border och margin.
+&lt;/div&gt;
+</code></pre>
+<hr />
+<h2 id="exempel-2-jämförelse-mellan-content-box-och-border-box"><a class="header" href="#exempel-2-jämförelse-mellan-content-box-och-border-box">Exempel 2: Jämförelse mellan content-box och border-box</a></h2>
+<pre><code class="language-css">.box-content {
+  width: 200px;
+  padding: 20px;
+  border: 4px solid #0077cc;
+  margin: 16px;
+  box-sizing: content-box;
+  background: #d0f0ff;
+}
+
+.box-border {
+  width: 200px;
+  padding: 20px;
+  border: 4px solid #cc7700;
+  margin: 16px;
+  box-sizing: border-box;
+  background: #fff0d0;
+}
+</code></pre>
+<pre><code class="language-html">&lt;div class="box-content"&gt;
+  box-sizing: content-box (standard)&lt;br&gt;
+  Total bredd: 200px + 2×20px (padding) + 2×4px (border) = 248px
+&lt;/div&gt;
+&lt;div class="box-border"&gt;
+  box-sizing: border-box&lt;br&gt;
+  Total bredd: 200px (inklusive padding och border)
+&lt;/div&gt;
+</code></pre>
+<hr />
+<h2 id="exempel-3-flera-boxar-med-olika-margin-och-padding"><a class="header" href="#exempel-3-flera-boxar-med-olika-margin-och-padding">Exempel 3: Flera boxar med olika margin och padding</a></h2>
+<pre><code class="language-css">.box-small {
+  width: 120px;
+  padding: 8px;
+  border: 2px dashed #888;
+  margin: 8px;
+  background: #f9f9f9;
+}
+
+.box-large {
+  width: 240px;
+  padding: 32px;
+  border: 4px solid #444;
+  margin: 32px;
+  background: #e0e0e0;
+}
+</code></pre>
+<pre><code class="language-html">&lt;div class="box-small"&gt;
+  Liten box med liten padding och margin.
+&lt;/div&gt;
+&lt;div class="box-large"&gt;
+  Stor box med stor padding och margin.
+&lt;/div&gt;
+</code></pre>
+<hr />
+<h2 id="exempel-4-Ärftlighet-och-box-model"><a class="header" href="#exempel-4-Ärftlighet-och-box-model">Exempel 4: Ärftlighet och box model</a></h2>
+<p>Vissa egenskaper, som <code>color</code> och <code>font-family</code>, ärvs av barn-element. Andra, som <code>margin</code> och <code>padding</code>, ärvs inte.</p>
+<pre><code class="language-css">.parent-box {
+  color: darkblue;
+  font-family: Verdana, sans-serif;
+  border: 2px solid #222;
+  padding: 12px;
+  margin: 20px;
+}
+.child-box {
+  border: 1px dotted #555;
+  padding: 8px;
+  margin: 10px;
+}
+</code></pre>
+<pre><code class="language-html">&lt;div class="parent-box"&gt;
+  Förälder (parent-box)
+  &lt;div class="child-box"&gt;
+    Barn (child-box) ärver färg och font, men har egna margin och padding.
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<hr />
+<h2 id="analogier"><a class="header" href="#analogier">Analogier</a></h2>
+<p>Tänk dig box model som en flyttkartong:</p>
+<ul>
+<li><strong>Content:</strong> Själva sakerna i kartongen.</li>
+<li><strong>Padding:</strong> Bubbelplast runt sakerna.</li>
+<li><strong>Border:</strong> Själva kartongen.</li>
+<li><strong>Margin:</strong> Luft mellan kartongen och andra kartonger.</li>
+</ul>
+<hr />
+<h2 id="sammanfattning"><a class="header" href="#sammanfattning">Sammanfattning</a></h2>
+<ul>
+<li>Box model styr hur HTML-element tar plats och placeras på sidan.</li>
+<li>Den består av margin, border, padding och content.</li>
+<li>Med rätt användning av box model kan du skapa flexibla och snygga layouter.</li>
+<li>Använd gärna <code>box-sizing: border-box;</code> för enklare storleksberäkningar.</li>
+</ul>
+<hr />
+<h1 id="blockelement-och-inline-element-i-css"><a class="header" href="#blockelement-och-inline-element-i-css">Blockelement och inline-element i CSS</a></h1>
+<blockquote>
+<p><strong>Motivation:</strong><br />
+När du bygger webbsidor behöver du förstå hur olika HTML-element beter sig i layouten. Vissa element tar upp hela bredden (block), medan andra bara tar den plats de behöver (inline). Denna kunskap är grundläggande för att kunna skapa välstrukturerade och snygga webbsidor.</p>
+</blockquote>
+<h2 id="vad-är-blockelement"><a class="header" href="#vad-är-blockelement">Vad är blockelement?</a></h2>
+<p>Blockelement (block elements) är HTML-element som automatiskt tar upp hela bredden av sin förälder och börjar på en ny rad. Exempel på blockelement är <code>&lt;div&gt;</code>, <code>&lt;p&gt;</code>, <code>&lt;h1&gt;</code>, <code>&lt;ul&gt;</code>, och <code>&lt;li&gt;</code>. De används för att bygga sidans struktur.</p>
+<p><strong>Egenskaper för blockelement:</strong></p>
+<ul>
+<li>Börjar alltid på en ny rad.</li>
+<li>Tar upp hela tillgängliga bredden.</li>
+<li>Det går att ange <code>width</code>, <code>height</code>, <code>margin</code> och <code>padding</code>.</li>
+</ul>
+<p><strong>Exempel:</strong></p>
+<pre><code class="language-html">&lt;div style="background: #e0e0ff; margin-bottom: 8px;"&gt;Detta är ett blockelement&lt;/div&gt;
+&lt;p style="background: #ffe0e0;"&gt;Detta är också ett blockelement&lt;/p&gt;
+</code></pre>
+<hr />
+<h2 id="vad-är-inline-element"><a class="header" href="#vad-är-inline-element">Vad är inline-element?</a></h2>
+<p>Inline-element (inline elements) är HTML-element som bara tar upp så mycket plats som behövs för sitt innehåll och ligger kvar på samma rad som andra element. Exempel på inline-element är <code>&lt;span&gt;</code>, <code>&lt;a&gt;</code>, <code>&lt;strong&gt;</code>, och <code>&lt;em&gt;</code>.</p>
+<p><strong>Egenskaper för inline-element:</strong></p>
+<ul>
+<li>Börjar inte på en ny rad.</li>
+<li>Tar bara upp så mycket plats som behövs.</li>
+<li><code>width</code> och <code>height</code> har ingen effekt.</li>
+<li>Endast horisontell <code>padding</code> och <code>margin</code> fungerar som väntat.</li>
+</ul>
+<p><strong>Exempel:</strong></p>
+<pre><code class="language-html">&lt;p&gt;
+  Detta är &lt;span style="background: #e0ffe0;"&gt;ett inline-element&lt;/span&gt; mitt i en text.
+&lt;/p&gt;
+</code></pre>
+<hr />
+<h2 id="jämförelse-block-vs-inline"><a class="header" href="#jämförelse-block-vs-inline">Jämförelse: block vs inline</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>Egenskap</th><th>Blockelement</th><th>Inline-element</th></tr></thead><tbody>
+<tr><td>Ny rad</td><td>Ja</td><td>Nej</td></tr>
+<tr><td>Bredd</td><td>Hela förälderns</td><td>Innehållets bredd</td></tr>
+<tr><td><code>width</code>/<code>height</code></td><td>Ja</td><td>Nej</td></tr>
+<tr><td><code>margin</code>/<code>padding</code></td><td>Ja</td><td>Endast horisontellt</td></tr>
+</tbody></table>
+</div>
+<h3 id="visualisering-block-vs-inline"><a class="header" href="#visualisering-block-vs-inline">Visualisering: Block vs Inline</a></h3>
+<pre class="mermaid">flowchart TD
+    subgraph container1 [&quot;Container med block-element&quot;]
+        block1[&quot;📦 Block element&lt;br/&gt;tar hela bredden av containern&quot;]
+        block2[&quot;📦 Nästa block element&lt;br/&gt;börjar på ny rad&quot;]
+    end
+    
+    subgraph container2 [&quot;Container med inline-element&quot;]
+        inline1[&quot;📝 Inline&quot;] ~~~ inline2[&quot;📝 Inline&quot;] ~~~ inline3[&quot;📝 Inline&quot;]
+        note[&quot;↑ Alla ligger på samma rad&quot;]
+    end
+    
+    style container1 fill:#f8f9fa,stroke:#6c757d,stroke-width:2px
+    style container2 fill:#f8f9fa,stroke:#6c757d,stroke-width:2px
+    style block1 fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    style block2 fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    style inline1 fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    style inline2 fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    style inline3 fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    style note fill:#f1f3f4,stroke:#9aa0a6,stroke-width:1px
+</pre>
+<p><em>Diagram: Block-element tar upp hela bredden och börjar på ny rad, medan inline-element ligger på samma rad.</em></p>
+<hr />
+<h1 id="positionering-av-element-med-css"><a class="header" href="#positionering-av-element-med-css">Positionering av element med CSS</a></h1>
+<blockquote>
+<p><strong>Motivation:</strong><br />
+Ibland räcker det inte med det normala flödet av element på en webbsida. Du kanske vill placera en meny som följer med när användaren scrollar, eller positionera en popup exakt där du vill ha den. CSS positionering ger dig full kontroll över var element hamnar på sidan.</p>
+</blockquote>
+<p>CSS erbjuder flera sätt att positionera element på en webbsida. Här är de vanligaste positioneringsmetoderna:</p>
+<h2 id="1-static-standard"><a class="header" href="#1-static-standard">1. Static (standard)</a></h2>
+<p>Alla element har <code>position: static;</code> som standard. De placeras i sidans normala flöde.</p>
+<pre><code class="language-css">.static-box {
+  position: static;
+}
+</code></pre>
+<hr />
+<h2 id="2-relative"><a class="header" href="#2-relative">2. Relative</a></h2>
+<p>Med <code>position: relative;</code> kan du flytta ett element i förhållande till dess ursprungliga plats med hjälp av <code>top</code>, <code>right</code>, <code>bottom</code> och <code>left</code>.</p>
+<pre><code class="language-css">.relative-box {
+  position: relative;
+  left: 30px;
+  top: 10px;
+  background: #d0ffd0;
+}
+</code></pre>
+<hr />
+<h2 id="3-absolute"><a class="header" href="#3-absolute">3. Absolute</a></h2>
+<p><code>position: absolute;</code> placerar elementet i förhållande till närmaste förfader med <code>position: relative;</code> (eller till sidans kant om ingen sådan finns). Elementet tas bort från det normala flödet.</p>
+<pre><code class="language-css">.parent {
+  position: relative;
+  width: 300px;
+  height: 200px;
+  background: #f0f0f0;
+}
+.child {
+  position: absolute;
+  top: 20px;
+  left: 40px;
+  background: #ffd0d0;
+  padding: 8px;
+}
+</code></pre>
+<pre><code class="language-html">&lt;div class="parent"&gt;
+  &lt;div class="child"&gt;Absolut positionerad&lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<hr />
+<h2 id="4-fixed"><a class="header" href="#4-fixed">4. Fixed</a></h2>
+<p>Med <code>position: fixed;</code> placeras elementet i förhållande till webbläsarfönstret och stannar kvar även när du scrollar.</p>
+<pre><code class="language-css">.fixed-box {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  background: #d0e0ff;
+  padding: 10px;
+}
+</code></pre>
+<hr />
+<h2 id="5-sticky"><a class="header" href="#5-sticky">5. Sticky</a></h2>
+<p><code>position: sticky;</code> gör att elementet beter sig som <code>relative</code> tills du scrollar till en viss punkt, då blir det <code>fixed</code>.</p>
+<pre><code class="language-css">.sticky-header {
+  position: sticky;
+  top: 0;
+  background: #fffbe0;
+  padding: 10px;
+}
+</code></pre>
+<hr />
+<h2 id="illustration-css-positionering"><a class="header" href="#illustration-css-positionering">Illustration: CSS-positionering</a></h2>
+<pre class="mermaid">flowchart TD
+    A[&quot;🌐 Normalt sidflöde&lt;br/&gt;(Document flow)&quot;]
+    B[&quot;📦 Static&lt;br/&gt;position: static&lt;br/&gt;&lt;i&gt;Standard beteende&lt;/i&gt;&quot;]
+    C[&quot;📍 Relative&lt;br/&gt;position: relative&lt;br/&gt;&lt;i&gt;Flyttas från ursprunglig plats&lt;/i&gt;&quot;]
+    D[&quot;🎯 Absolute&lt;br/&gt;position: absolute&lt;br/&gt;&lt;i&gt;Positioneras mot närmaste relative-förälder&lt;/i&gt;&quot;]
+    E[&quot;📌 Fixed&lt;br/&gt;position: fixed&lt;br/&gt;&lt;i&gt;Följer webbläsarfönstret&lt;/i&gt;&quot;]
+    F[&quot;🔗 Sticky&lt;br/&gt;position: sticky&lt;br/&gt;&lt;i&gt;Static tills scroll-gräns nås&lt;/i&gt;&quot;]
+
+    A --&gt; B
+    B -.-&gt; C
+    A -.-&gt; D
+    A -.-&gt; E
+    B -.-&gt; F
+
+    style A fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
+    style B fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    style C fill:#e8f5e8,stroke:#388e3c,stroke-width:2px
+    style D fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    style E fill:#ffebee,stroke:#d32f2f,stroke-width:2px
+    style F fill:#f1f8e9,stroke:#689f38,stroke-width:2px
+</pre>
+<p><em>Diagram: Olika positioneringsmetoder i CSS och hur de förhåller sig till det normala sidflödet.</em></p>
+<hr />
+<h2 id="praktiskt-exempel-skapa-en-enkel-header-med-navigation"><a class="header" href="#praktiskt-exempel-skapa-en-enkel-header-med-navigation">Praktiskt exempel: Skapa en enkel header med navigation</a></h2>
+<p>Här är ett praktiskt exempel som kombinerar box model, block/inline-element och positionering:</p>
+<pre><code class="language-css">/* Header som följer med när man scrollar */
+.header {
+  position: sticky;
+  top: 0;
+  background: #2c3e50;
+  padding: 16px 24px;
+  margin: 0;
+  border-bottom: 3px solid #3498db;
+  box-sizing: border-box;
+}
+
+/* Logo som blockelement */
+.logo {
+  display: inline-block;
+  color: white;
+  font-size: 24px;
+  margin: 0;
+  padding: 8px 0;
+}
+
+/* Navigation med inline-element */
+.nav {
+  float: right;
+}
+
+.nav a {
+  display: inline-block;
+  color: white;
+  text-decoration: none;
+  padding: 12px 16px;
+  margin: 0 4px;
+  border-radius: 4px;
+}
+
+.nav a:hover {
+  background: #34495e;
+}
+</code></pre>
+<pre><code class="language-html">&lt;header class="header"&gt;
+  &lt;h1 class="logo"&gt;Min Webbsida&lt;/h1&gt;
+  &lt;nav class="nav"&gt;
+    &lt;a href="#hem"&gt;Hem&lt;/a&gt;
+    &lt;a href="#om"&gt;Om oss&lt;/a&gt;
+    &lt;a href="#kontakt"&gt;Kontakt&lt;/a&gt;
+  &lt;/nav&gt;
+&lt;/header&gt;
+</code></pre>
+<p><strong>Förklaring av exemplet:</strong></p>
+<ul>
+<li><code>position: sticky</code> gör att headern följer med när användaren scrollar</li>
+<li><code>box-sizing: border-box</code> inkluderar padding och border i den totala bredden</li>
+<li>Logo använder <code>display: inline-block</code> för att kunna styra storlek men ligga på samma rad som navigationen</li>
+<li>Navigation-länkar använder <code>padding</code> för klickbar yta och <code>margin</code> för avstånd mellan länkar</li>
+</ul>
+<hr />
+<h2 id="sammanfattning-1"><a class="header" href="#sammanfattning-1">Sammanfattning</a></h2>
+<ul>
+<li><strong>Box model</strong> styr hur HTML-element tar plats och placeras på sidan</li>
+<li><strong>Blockelement</strong> bygger sidans grundstruktur och tar upp hela bredden</li>
+<li><strong>Inline-element</strong> ligger kvar på samma rad och tar bara upp så mycket plats som behövs</li>
+<li>Med <strong>position</strong> kan du styra exakt var element hamnar på sidan</li>
+<li>Kombinera dessa tekniker för att skapa flexibla och responsiva layouter</li>
+<li>Använd <code>box-sizing: border-box</code> för enklare storleksberäkningar i moderna webbsidor</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_3/css-units.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_3/responsiv-design.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_3/css-units.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_3/responsiv-design.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,831 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Mer Git kommandon - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="mer-git-kommandon"><a class="header" href="#mer-git-kommandon">Mer Git-kommandon</a></h1>
+<h2 id="introduktion-till-avancerade-git-tekniker"><a class="header" href="#introduktion-till-avancerade-git-tekniker">Introduktion till avancerade Git-tekniker</a></h2>
+<p>Nu när du behärskar grunderna i Git är det dags att utforska mer avancerade kommandon och tekniker. Dessa verktyg ger dig större kontroll över ditt versionshanteringssystem och gör dig till en mer effektiv utvecklare.</p>
+<pre class="mermaid">graph TD
+    A[Git Grundläggande] --&gt; B[Branching &amp; Checkout]
+    A --&gt; C[Merge &amp; Rebase]
+    A --&gt; D[Konflikthantering]
+    A --&gt; E[Konfiguration]
+    
+    B --&gt; B1[git checkout]
+    B --&gt; B2[git switch]
+    B --&gt; B3[Detached HEAD]
+    
+    C --&gt; C1[git merge]
+    C --&gt; C2[git rebase]
+    C --&gt; C3[Fast-forward]
+    
+    D --&gt; D1[Merge conflicts]
+    D --&gt; D2[Konfliktlösning]
+    D --&gt; D3[Merge tools]
+    
+    E --&gt; E1[git config]
+    E --&gt; E2[Globala inställningar]
+    E --&gt; E3[SSH-nycklar]
+</pre>
+<h2 id="git-checkout---navigera-mellan-brancher-och-commits"><a class="header" href="#git-checkout---navigera-mellan-brancher-och-commits">Git Checkout - Navigera mellan brancher och commits</a></h2>
+<p><code>git checkout</code> är ett mångsidigt kommando som låter dig "hoppa" mellan olika versioner av ditt projekt.</p>
+<h3 id="växla-mellan-brancher"><a class="header" href="#växla-mellan-brancher">Växla mellan brancher</a></h3>
+<pre><code class="language-bash"># Visa alla brancher
+git branch
+
+# Skapa och växla till ny branch
+git checkout -b ny-funktion
+
+# Växla till befintlig branch
+git checkout main
+git checkout utveckling
+
+# Kort för att skapa branch från specifik commit
+git checkout -b bugfix-123 abc1234
+</code></pre>
+<h3 id="checkout-till-specifika-commits"><a class="header" href="#checkout-till-specifika-commits">Checkout till specifika commits</a></h3>
+<pre><code class="language-bash"># Visa commit-historik
+git log --oneline
+
+# Gå till specifik commit (skapar "detached HEAD")
+git checkout abc1234
+
+# Gå tillbaka till senaste commit på current branch
+git checkout main
+</code></pre>
+<h3 id="detached-head-state"><a class="header" href="#detached-head-state">Detached HEAD State</a></h3>
+<p>När du gör <code>checkout</code> till en specifik commit hamnar du i "detached HEAD" tillstånd:</p>
+<pre class="mermaid">graph LR
+    A[Commit A] --&gt; B[Commit B]
+    B --&gt; C[Commit C]
+    C --&gt; D[Commit D]
+    
+    HEAD --&gt;|Normal| D
+    HEAD2[HEAD detached] --&gt;|git checkout B| B
+    
+    subgraph &quot;Normal state&quot;
+        HEAD
+        D
+    end
+    
+    subgraph &quot;Detached HEAD&quot;
+        HEAD2
+        B
+    end
+</pre>
+<pre><code class="language-bash"># Om du är i detached HEAD och vill behålla ändringar
+git switch -c ny-branch-namn
+
+# Eller gå tillbaka utan att spara ändringar
+git switch main
+</code></pre>
+<h3 id="Återställa-filer-med-checkout"><a class="header" href="#Återställa-filer-med-checkout">Återställa filer med checkout</a></h3>
+<pre><code class="language-bash"># Återställ en specifik fil till senaste commit
+git checkout -- fil.txt
+
+# Återställ fil till specifik commit
+git checkout abc1234 -- fil.txt
+
+# Återställ alla filer i katalog
+git checkout -- .
+</code></pre>
+<h2 id="git-switch---modernare-sätt-att-växla-branches"><a class="header" href="#git-switch---modernare-sätt-att-växla-branches">Git Switch - Modernare sätt att växla branches</a></h2>
+<p><code>git switch</code> introducerades i Git 2.23 som ett tydligare alternativ till <code>git checkout</code> för branch-hantering:</p>
+<pre><code class="language-bash"># Växla till befintlig branch
+git switch main
+git switch utveckling
+
+# Skapa och växla till ny branch
+git switch -c ny-funktion
+
+# Växla tillbaka till föregående branch
+git switch -
+
+# Återgå till main från detached HEAD
+git switch main
+</code></pre>
+<p><strong>Fördelar med <code>git switch</code>:</strong></p>
+<ul>
+<li>Tydligare syfte (endast för brancher)</li>
+<li>Säkrare (mindre risk för misstag)</li>
+<li>Modernare syntax</li>
+</ul>
+<h2 id="merge-och-rebase---kombinera-ändringar"><a class="header" href="#merge-och-rebase---kombinera-ändringar">Merge och Rebase - Kombinera ändringar</a></h2>
+<h3 id="git-merge---traditionell-sammanfogning"><a class="header" href="#git-merge---traditionell-sammanfogning">Git Merge - Traditionell sammanfogning</a></h3>
+<pre><code class="language-bash"># Gå till target branch (oftast main)
+git switch main
+
+# Hämta senaste ändringar
+git pull origin main
+
+# Merge in branch
+git merge funktions-branch
+
+# Push merged result
+git push origin main
+</code></pre>
+<h4 id="merge-strategier-visualiserade"><a class="header" href="#merge-strategier-visualiserade">Merge-strategier visualiserade</a></h4>
+<pre class="mermaid">graph LR
+    A[Commit A] --&gt; B[Commit B]
+    B --&gt; C[Commit C]
+    
+    A --&gt; D[Commit D]
+    D --&gt; E[Commit E]
+    
+    C --&gt; F[Merge Commit]
+    E --&gt; F
+    
+    subgraph &quot;main branch&quot;
+        A
+        B
+        C
+        F
+    end
+    
+    subgraph &quot;feature branch&quot;
+        D
+        E
+    end
+</pre>
+<h4 id="fast-forward-merge"><a class="header" href="#fast-forward-merge">Fast-forward merge</a></h4>
+<p>När target branch inte har nya commits:</p>
+<pre><code class="language-bash"># Main branch har inga nya commits sedan branch skapades
+git merge funktions-branch
+# Resulterar i fast-forward (ingen merge commit)
+</code></pre>
+<pre class="mermaid">graph LR
+    A[Commit A] --&gt; B[Commit B]
+    B --&gt; C[Commit C]
+    C --&gt; D[Commit D]
+    
+    subgraph &quot;Före merge&quot;
+        A
+        B
+        MAIN[main] --&gt; B
+        C
+        D
+        FEATURE[feature] --&gt; D
+    end
+    
+    subgraph &quot;Efter fast-forward&quot;
+        A2[Commit A] --&gt; B2[Commit B]
+        B2 --&gt; C2[Commit C]
+        C2 --&gt; D2[Commit D]
+        MAIN2[main] --&gt; D2
+    end
+</pre>
+<h3 id="git-rebase---omskrivning-av-historik"><a class="header" href="#git-rebase---omskrivning-av-historik">Git Rebase - Omskrivning av historik</a></h3>
+<p>Rebase "flyttar" dina commits till toppen av target branch:</p>
+<pre><code class="language-bash"># Gå till din feature branch
+git switch funktions-branch
+
+# Rebase mot main
+git rebase main
+
+# Om inga konflikter: push (kan kräva force)
+git push --force-with-lease origin funktions-branch
+</code></pre>
+<h4 id="rebase-vs-merge-visualiserat"><a class="header" href="#rebase-vs-merge-visualiserat">Rebase vs Merge visualiserat</a></h4>
+<pre class="mermaid">graph TD
+    subgraph &quot;Original state&quot;
+        A1[A] --&gt; B1[B]
+        A1 --&gt; C1[C]
+        C1 --&gt; D1[D]
+    end
+    
+    subgraph &quot;Efter Merge&quot;
+        A2[A] --&gt; B2[B]
+        A2 --&gt; C2[C] 
+        C2 --&gt; D2[D]
+        B2 --&gt; M[Merge commit]
+        D2 --&gt; M
+    end
+    
+    subgraph &quot;Efter Rebase&quot;
+        A3[A] --&gt; B3[B]
+        B3 --&gt; C3[C']
+        C3 --&gt; D3[D']
+    end
+</pre>
+<h4 id="interaktiv-rebase"><a class="header" href="#interaktiv-rebase">Interaktiv rebase</a></h4>
+<pre><code class="language-bash"># Redigera de senaste 3 commits
+git rebase -i HEAD~3
+
+# Öppnar editor med alternativ:
+# pick = använd commit
+# reword = ändra commit-meddelande  
+# edit = redigera commit
+# squash = kombinera med föregående commit
+# drop = ta bort commit
+</code></pre>
+<p><strong>När ska du använda vad?</strong></p>
+<ul>
+<li><strong>Merge</strong>: Bevarar historik, säkrare, bra för publika branches</li>
+<li><strong>Rebase</strong>: Renare historik, linjär utveckling, bra för feature branches</li>
+</ul>
+<h2 id="konflikthantering-merge-conflicts"><a class="header" href="#konflikthantering-merge-conflicts">Konflikthantering (Merge Conflicts)</a></h2>
+<p>Konflikter uppstår när Git inte kan automatiskt kombinera ändringar.</p>
+<h3 id="förstå-konflikter"><a class="header" href="#förstå-konflikter">Förstå konflikter</a></h3>
+<pre><code class="language-bash"># När merge skapar konflikter
+git merge funktions-branch
+# Output: CONFLICT (content): Merge conflict in fil.txt
+</code></pre>
+<h3 id="konfliktmarkering-i-filer"><a class="header" href="#konfliktmarkering-i-filer">Konfliktmarkering i filer</a></h3>
+<pre><code class="language-javascript">// fil.txt efter konflikt
+function calculateTotal(items) {
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+    return items.reduce((sum, item) =&gt; sum + item.price, 0);
+=======
+    return items.reduce((total, item) =&gt; total + item.cost, 0);
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; funktions-branch
+}
+</code></pre>
+<p><strong>Förklaring:</strong></p>
+<ul>
+<li><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code>: Början på dina ändringar (current branch)</li>
+<li><code>=======</code>: Skiljelinje mellan versioner</li>
+<li><code>&gt;&gt;&gt;&gt;&gt;&gt;&gt; branch-name</code>: Slut på den andra branchens ändringar</li>
+</ul>
+<h3 id="lösa-konflikter"><a class="header" href="#lösa-konflikter">Lösa konflikter</a></h3>
+<h4 id="manuell-lösning"><a class="header" href="#manuell-lösning">Manuell lösning</a></h4>
+<pre><code class="language-bash"># 1. Öppna fil och redigera manuellt
+# Ta bort konfliktmarkeringar och välj önskad version
+
+# 2. Lägg till den lösta filen
+git add fil.txt
+
+# 3. Slutför merge
+git commit
+# (eller för rebase: git rebase --continue)
+</code></pre>
+<h4 id="använda-merge-tools"><a class="header" href="#använda-merge-tools">Använda merge tools</a></h4>
+<pre><code class="language-bash"># Konfigurera merge tool (en gång)
+git config --global merge.tool vimdiff
+# eller: vscode, meld, kdiff3, etc.
+
+# Starta merge tool vid konflikt
+git mergetool
+
+# Efter lösning av alla konflikter
+git commit
+</code></pre>
+<h3 id="förebygga-konflikter"><a class="header" href="#förebygga-konflikter">Förebygga konflikter</a></h3>
+<pre><code class="language-bash"># Håll din branch uppdaterad
+git switch main
+git pull origin main
+git switch funktions-branch
+git rebase main  # eller git merge main
+
+# Små, frekventa commits
+# Kommunicera med teamet om stora ändringar
+# Använd .gitattributes för specifika filtyper
+</code></pre>
+<h2 id="git-config---anpassa-din-git-miljö"><a class="header" href="#git-config---anpassa-din-git-miljö">Git Config - Anpassa din Git-miljö</a></h2>
+<h3 id="nivåer-av-konfiguration"><a class="header" href="#nivåer-av-konfiguration">Nivåer av konfiguration</a></h3>
+<p>Git har tre nivåer av konfiguration:</p>
+<pre><code class="language-bash"># System-nivå (alla användare)
+git config --system
+
+# Global nivå (din användare)
+git config --global
+
+# Repository-nivå (endast detta projekt)
+git config --local
+</code></pre>
+<h3 id="grundläggande-konfiguration"><a class="header" href="#grundläggande-konfiguration">Grundläggande konfiguration</a></h3>
+<pre><code class="language-bash"># Sätt användarinfo (obligatoriskt)
+git config --global user.name "Ditt Namn"
+git config --global user.email "din.email@example.com"
+
+# Standardeditor
+git config --global core.editor "code --wait"  # VS Code
+git config --global core.editor "vim"          # Vim
+git config --global core.editor "nano"         # Nano
+
+# Standardbranch-namn
+git config --global init.defaultBranch main
+
+# Radslut-hantering (viktigt för Windows/Mac/Linux)
+git config --global core.autocrlf input     # Mac/Linux
+git config --global core.autocrlf true      # Windows
+</code></pre>
+<h3 id="alias-för-vanliga-kommandon"><a class="header" href="#alias-för-vanliga-kommandon">Alias för vanliga kommandon</a></h3>
+<pre><code class="language-bash"># Skapa användbara alias
+git config --global alias.st status
+git config --global alias.co checkout
+git config --global alias.br branch
+git config --global alias.ci commit
+
+# Avancerade alias
+git config --global alias.unstage 'reset HEAD --'
+git config --global alias.last 'log -1 HEAD'
+git config --global alias.visual '!gitk'
+
+# Vacker log output
+git config --global alias.lg "log --oneline --decorate --graph --all"
+
+# Använd alias
+git st        # istället för git status
+git lg        # vacker log output
+</code></pre>
+<h3 id="konfigurationsfil"><a class="header" href="#konfigurationsfil">Konfigurationsfil</a></h3>
+<pre><code class="language-bash"># Visa all konfiguration
+git config --list
+
+# Visa var konfiguration kommer ifrån
+git config --list --show-origin
+
+# Redigera global konfiguration direkt
+git config --global --edit
+</code></pre>
+<p>Exempel på <code>.gitconfig</code> fil:</p>
+<pre><code class="language-ini">[user]
+    name = Ditt Namn
+    email = din.email@example.com
+
+[core]
+    editor = code --wait
+    autocrlf = input
+
+[init]
+    defaultBranch = main
+
+[alias]
+    st = status
+    co = checkout
+    br = branch
+    ci = commit
+    lg = log --oneline --decorate --graph --all
+
+[push]
+    default = simple
+
+[pull]
+    rebase = false
+</code></pre>
+<h2 id="ssh-nycklar-för-githubgitlab"><a class="header" href="#ssh-nycklar-för-githubgitlab">SSH-nycklar för GitHub/GitLab</a></h2>
+<h3 id="generera-ssh-nyckel"><a class="header" href="#generera-ssh-nyckel">Generera SSH-nyckel</a></h3>
+<pre><code class="language-bash"># Generera ny SSH-nyckel
+ssh-keygen -t ed25519 -C "din.email@example.com"
+
+# För äldre system som inte stödjer ed25519
+ssh-keygen -t rsa -b 4096 -C "din.email@example.com"
+
+# Starta SSH agent
+eval "$(ssh-agent -s)"
+
+# Lägg till nyckel till agent
+ssh-add ~/.ssh/id_ed25519
+</code></pre>
+<h3 id="konfiguration-för-github"><a class="header" href="#konfiguration-för-github">Konfiguration för GitHub</a></h3>
+<pre><code class="language-bash"># Kopiera publik nyckel (Mac)
+pbcopy &lt; ~/.ssh/id_ed25519.pub
+
+# Linux
+cat ~/.ssh/id_ed25519.pub
+
+# Lägg till i GitHub under Settings &gt; SSH and GPG keys
+
+# Testa anslutningen
+ssh -T git@github.com
+</code></pre>
+<h2 id="avancerade-git-kommandon-för-nyfikna"><a class="header" href="#avancerade-git-kommandon-för-nyfikna">Avancerade Git-kommandon för nyfikna</a></h2>
+<h3 id="git-cherry-pick"><a class="header" href="#git-cherry-pick">Git Cherry-pick</a></h3>
+<p>Välj specifika commits från andra branches:</p>
+<pre><code class="language-bash"># Applicera en specifik commit på current branch
+git cherry-pick abc1234
+
+# Cherry-pick flera commits
+git cherry-pick abc1234 def5678
+
+# Cherry-pick ett intervall
+git cherry-pick abc1234..def5678
+</code></pre>
+<pre class="mermaid">graph LR
+    A[A] --&gt; B[B]
+    A --&gt; C[C]
+    C --&gt; D[D]
+    D --&gt; E[E]
+    
+    B --&gt; F[F]
+    F --&gt; G[G]
+    
+    G --&gt; H[D']
+    
+    subgraph &quot;main branch&quot;
+        A
+        B
+        F
+        G
+        H
+    end
+    
+    subgraph &quot;feature branch&quot;
+        C
+        D
+        E
+    end
+</pre>
+<h3 id="git-stash---temporär-lagring"><a class="header" href="#git-stash---temporär-lagring">Git Stash - Temporär lagring</a></h3>
+<pre><code class="language-bash"># Spara ändringar temporärt
+git stash
+
+# Spara med meddelande
+git stash push -m "Work in progress på login"
+
+# Lista alla stashes
+git stash list
+
+# Applicera senaste stash
+git stash pop
+
+# Applicera specifik stash
+git stash apply stash@{2}
+
+# Ta bort stash utan att applicera
+git stash drop stash@{1}
+</code></pre>
+<h3 id="git-worktree---flera-arbetsytor"><a class="header" href="#git-worktree---flera-arbetsytor">Git Worktree - Flera arbetsytor</a></h3>
+<pre><code class="language-bash"># Skapa ny worktree för branch
+git worktree add ../projekt-hotfix hotfix-branch
+
+# Lista alla worktrees
+git worktree list
+
+# Ta bort worktree
+git worktree remove ../projekt-hotfix
+</code></pre>
+<h3 id="git-reflog---Återhämtning"><a class="header" href="#git-reflog---Återhämtning">Git Reflog - Återhämtning</a></h3>
+<pre><code class="language-bash"># Visa vad som hänt med HEAD
+git reflog
+
+# Återställ till tidigare state
+git reset --hard HEAD@{2}
+
+# Hitta "förlorade" commits
+git reflog --all
+</code></pre>
+<h3 id="git-bisect---hitta-buggar"><a class="header" href="#git-bisect---hitta-buggar">Git Bisect - Hitta buggar</a></h3>
+<pre><code class="language-bash"># Starta bisect-session
+git bisect start
+
+# Markera aktuell commit som dålig
+git bisect bad
+
+# Markera tidigare bra commit
+git bisect good abc1234
+
+# Git checkar ut commit i mitten - testa och markera
+git bisect bad    # eller git bisect good
+
+# Fortsätt tills Git hittar problematisk commit
+git bisect reset  # avsluta
+</code></pre>
+<h3 id="git-hooks---automatisering"><a class="header" href="#git-hooks---automatisering">Git Hooks - Automatisering</a></h3>
+<pre><code class="language-bash"># Navigera till hooks-mappen
+cd .git/hooks
+
+# Skapa pre-commit hook
+nano pre-commit
+
+# Exempel: Kör tests innan commit
+#!/bin/bash
+npm test
+if [ $? -ne 0 ]; then
+    echo "Tests failed, commit aborted"
+    exit 1
+fi
+
+# Gör executable
+chmod +x pre-commit
+</code></pre>
+<h2 id="git-submodules---externa-repositories"><a class="header" href="#git-submodules---externa-repositories">Git Submodules - Externa repositories</a></h2>
+<pre><code class="language-bash"># Lägg till submodule
+git submodule add https://github.com/user/repo.git libs/external
+
+# Klona projekt med submodules
+git clone --recurse-submodules https://github.com/user/project.git
+
+# Uppdatera submodules
+git submodule update --remote
+</code></pre>
+<h2 id="bästa-praxis-och-tips"><a class="header" href="#bästa-praxis-och-tips">Bästa praxis och tips</a></h2>
+<h3 id="commit-meddelanden"><a class="header" href="#commit-meddelanden">Commit-meddelanden</a></h3>
+<pre><code class="language-bash"># Bra struktur för commit-meddelanden
+# &lt;typ&gt;: &lt;kort beskrivning&gt;
+# 
+# &lt;längre beskrivning vid behov&gt;
+# 
+# &lt;referenser till issues&gt;
+
+# Exempel:
+feat: add user authentication system
+
+Implement login/logout functionality with JWT tokens.
+Includes password hashing and session management.
+
+Fixes #123
+</code></pre>
+<h3 id="branch-namngivning"><a class="header" href="#branch-namngivning">Branch-namngivning</a></h3>
+<pre><code class="language-bash"># Bra branch-namns konventioner
+feature/user-authentication
+bugfix/login-error-handling
+hotfix/security-vulnerability
+release/v2.1.0
+</code></pre>
+<h3 id="git-flow-vs-github-flow"><a class="header" href="#git-flow-vs-github-flow">Git Flow vs GitHub Flow</a></h3>
+<p><strong>Git Flow</strong> - Komplexare, strukturerad:</p>
+<ul>
+<li><code>main</code> - produktionskod</li>
+<li><code>develop</code> - utvecklingsbranch</li>
+<li><code>feature/*</code> - nya funktioner</li>
+<li><code>release/*</code> - release förberedelser</li>
+<li><code>hotfix/*</code> - kritiska fixes</li>
+</ul>
+<p><strong>GitHub Flow</strong> - Enklare, snabbare:</p>
+<ul>
+<li><code>main</code> - alltid deploybar</li>
+<li><code>feature/*</code> - korta feature branches</li>
+<li>Pull requests för review</li>
+<li>Deploy direkt från main</li>
+</ul>
+<h2 id="felsökning-och-problemlösning"><a class="header" href="#felsökning-och-problemlösning">Felsökning och problemlösning</a></h2>
+<h3 id="vanliga-problem-och-lösningar"><a class="header" href="#vanliga-problem-och-lösningar">Vanliga problem och lösningar</a></h3>
+<h4 id="undo-senaste-commit-behåll-ändringar"><a class="header" href="#undo-senaste-commit-behåll-ändringar">Undo senaste commit (behåll ändringar)</a></h4>
+<pre><code class="language-bash">git reset --soft HEAD~1
+</code></pre>
+<h4 id="undo-senaste-commit-ta-bort-ändringar"><a class="header" href="#undo-senaste-commit-ta-bort-ändringar">Undo senaste commit (ta bort ändringar)</a></h4>
+<pre><code class="language-bash">git reset --hard HEAD~1
+</code></pre>
+<h4 id="Ändra-senaste-commit-meddelande"><a class="header" href="#Ändra-senaste-commit-meddelande">Ändra senaste commit-meddelande</a></h4>
+<pre><code class="language-bash">git commit --amend -m "Nytt meddelande"
+</code></pre>
+<h4 id="lägg-till-fil-till-senaste-commit"><a class="header" href="#lägg-till-fil-till-senaste-commit">Lägg till fil till senaste commit</a></h4>
+<pre><code class="language-bash">git add glömd-fil.txt
+git commit --amend --no-edit
+</code></pre>
+<h4 id="Återställa-fil-till-specifik-version"><a class="header" href="#Återställa-fil-till-specifik-version">Återställa fil till specifik version</a></h4>
+<pre><code class="language-bash">git checkout abc1234 -- fil.txt
+</code></pre>
+<h4 id="push-refuseras-diverged-history"><a class="header" href="#push-refuseras-diverged-history">Push refuseras (diverged history)</a></h4>
+<pre><code class="language-bash"># Se vad som skiljer
+git log --oneline origin/main..main
+
+# Option 1: Pull och merge
+git pull origin main
+
+# Option 2: Pull och rebase
+git pull --rebase origin main
+
+# Option 3: Force push (FARLIGT - använd bara på egna branches)
+git push --force-with-lease origin main
+</code></pre>
+<h3 id="debug-git-kommandon"><a class="header" href="#debug-git-kommandon">Debug Git-kommandon</a></h3>
+<pre><code class="language-bash"># Visa vad Git gör
+export GIT_TRACE=1
+git status
+
+# Debug merge
+export GIT_MERGE_VERBOSITY=2
+git merge branch-name
+
+# Visa konfiguration
+git config --list --show-origin
+</code></pre>
+<h2 id="sammanfattning"><a class="header" href="#sammanfattning">Sammanfattning</a></h2>
+<p>Du har nu lärt dig avancerade Git-tekniker som gör dig till en mer kompetent utvecklare:</p>
+<ul>
+<li><strong>Checkout och Switch</strong>: Navigera mellan branches och commits säkert</li>
+<li><strong>Merge vs Rebase</strong>: Förstå när och hur du ska kombinera ändringar</li>
+<li><strong>Konflikthantering</strong>: Lösa merge conflicts effektivt</li>
+<li><strong>Konfiguration</strong>: Anpassa Git för din arbetsrutation</li>
+<li><strong>Avancerade verktyg</strong>: Cherry-pick, stash, reflog och mer</li>
+</ul>
+<h3 id="nästa-steg"><a class="header" href="#nästa-steg">Nästa steg</a></h3>
+<ul>
+<li>Experimentera med dessa kommandon i test-repositories</li>
+<li>Lär dig Git hooks för automatisering</li>
+<li>Utforska Git GUIs som Sourcetree eller GitKraken</li>
+<li>Fördjupa dig i Git internals för ännu djupare förståelse</li>
+</ul>
+<p>Git är ett kraftfullt verktyg - med dessa kunskaper kan du hantera även komplexa utvecklingsprojekt med självförtroende!</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_2/github.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_2/ovningar.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_2/github.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_2/ovningar.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

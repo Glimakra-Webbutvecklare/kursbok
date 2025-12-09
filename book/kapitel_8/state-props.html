@@ -1,0 +1,1003 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>State och Props - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="lägga-till-interaktivitet-props-state-och-events"><a class="header" href="#lägga-till-interaktivitet-props-state-och-events">Lägga till Interaktivitet: Props, State och Events</a></h1>
+<p>Komponenter behöver ofta interagera med varandra och reagera på användarinteraktion. React använder <strong>props</strong> för att skicka data och <strong>state</strong> för att komma ihåg saker. Tillsammans gör de dina komponenter interaktiva!</p>
+<p><strong>Mål:</strong> Lära sig skicka data med props, hantera användarinteraktion med events och ge komponenter minne med state.</p>
+<h2 id="skicka-data-med-props"><a class="header" href="#skicka-data-med-props">Skicka Data med Props</a></h2>
+<p>React-komponenter använder <strong>props</strong> för att kommunicera med varandra. Varje föräldrakomponent kan skicka information till sina barnkomponenter genom att ge dem props.</p>
+<h3 id="grundläggande-props"><a class="header" href="#grundläggande-props">Grundläggande Props</a></h3>
+<pre><code class="language-jsx">// Komponent som tar emot props
+function Avatar({ person, size }) {
+  return (
+    &lt;img
+      className="avatar"
+      src={person.imageUrl}
+      alt={person.name}
+      width={size}
+      height={size}
+    /&gt;
+  );
+}
+
+// Föräldrakomponent som skickar props
+function Profile() {
+  return (
+    &lt;Avatar
+      size={100}
+      person={{ 
+        name: 'Katsuko Saruhashi', 
+        imageUrl: 'https://i.imgur.com/YfeOqp2s.jpg' 
+      }}
+    /&gt;
+  );
+}
+</code></pre>
+<h3 id="props-kan-vara-vilken-datatyp-som-helst"><a class="header" href="#props-kan-vara-vilken-datatyp-som-helst">Props kan vara vilken datatyp som helst</a></h3>
+<pre><code class="language-jsx">function Card({ title, children, isHighlighted, tags, onClose }) {
+  return (
+    &lt;div className={`card ${isHighlighted ? 'highlighted' : ''}`}&gt;
+      &lt;div className="card-header"&gt;
+        &lt;h3&gt;{title}&lt;/h3&gt;
+        &lt;button onClick={onClose}&gt;×&lt;/button&gt;
+      &lt;/div&gt;
+      &lt;div className="card-body"&gt;
+        {children}
+      &lt;/div&gt;
+      &lt;div className="card-footer"&gt;
+        {tags.map(tag =&gt; (
+          &lt;span key={tag} className="tag"&gt;{tag}&lt;/span&gt;
+        ))}
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}
+
+// Användning - skicka olika datatyper som props
+function App() {
+  return (
+    &lt;Card
+      title="Min artikel"                    // string
+      isHighlighted={true}                   // boolean
+      tags={['react', 'javascript', 'web']} // array
+      onClose={() =&gt; alert('Stänger!')}     // function
+    &gt;
+      &lt;p&gt;Detta är innehållet i kortet.&lt;/p&gt;   {/* children */}
+    &lt;/Card&gt;
+  );
+}
+</code></pre>
+<h2 id="reagera-på-events"><a class="header" href="#reagera-på-events">Reagera på Events</a></h2>
+<p>Du kan reagera på events genom att deklarera <strong>event handler</strong>-funktioner inuti dina komponenter:</p>
+<pre><code class="language-jsx">function Button() {
+  function handleClick() {
+    alert('Du klickade på mig!');
+  }
+
+  return (
+    &lt;button onClick={handleClick}&gt;
+      Klicka mig
+    &lt;/button&gt;
+  );
+}
+</code></pre>
+<p>Observera att <code>onClick={handleClick}</code> inte har parenteser i slutet! Anropa inte event handler-funktionen: du behöver bara <strong>skicka den nedåt</strong>. React kommer att anropa din event handler när användaren klickar på knappen.</p>
+<h3 id="event-handlers-kan-vara-inline"><a class="header" href="#event-handlers-kan-vara-inline">Event Handlers kan vara inline</a></h3>
+<pre><code class="language-jsx">function Button() {
+  return (
+    &lt;button onClick={() =&gt; alert('Du klickade på mig!')}&gt;
+      Klicka mig
+    &lt;/button&gt;
+  );
+}
+</code></pre>
+<h3 id="skicka-event-handlers-som-props"><a class="header" href="#skicka-event-handlers-som-props">Skicka Event Handlers som Props</a></h3>
+<p>Ofta vill du att föräldrakomponenten ska specificera en barnkomponents event handler:</p>
+<pre><code class="language-jsx">function Button({ onClick, children }) {
+  return (
+    &lt;button onClick={onClick}&gt;
+      {children}
+    &lt;/button&gt;
+  );
+}
+
+function PlayButton({ movieName }) {
+  function handlePlayClick() {
+    alert(`Spelar ${movieName}!`);
+  }
+
+  return (
+    &lt;Button onClick={handlePlayClick}&gt;
+      Spela "{movieName}"
+    &lt;/Button&gt;
+  );
+}
+
+function UploadButton() {
+  return (
+    &lt;Button onClick={() =&gt; alert('Laddar upp!')}&gt;
+      Ladda upp bild
+    &lt;/Button&gt;
+  );
+}
+</code></pre>
+<h2 id="state-en-komponents-minne"><a class="header" href="#state-en-komponents-minne">State: En Komponents Minne</a></h2>
+<p>Komponenter behöver ofta ändra vad som visas på skärmen som resultat av interaktion. Att skriva i formuläret bör uppdatera input-fältet, att klicka på "nästa" i en bildkarusell bör ändra vilken bild som visas, att klicka på "köp" bör lägga en produkt i kundvagnen. Komponenter behöver "komma ihåg" saker: det aktuella input-värdet, den aktuella bilden, kundvagnen. I React kallas denna typ av komponentspecifikt minne <strong>state</strong>.</p>
+<h3 id="lägga-till-state-i-en-komponent"><a class="header" href="#lägga-till-state-i-en-komponent">Lägga till State i en Komponent</a></h3>
+<p>För att lägga till state i en komponent, importera <code>useState</code> från React:</p>
+<pre><code class="language-jsx">import { useState } from 'react';
+
+function MyButton() {
+  const [count, setCount] = useState(0);
+
+  function handleClick() {
+    setCount(count + 1);
+  }
+
+  return (
+    &lt;button onClick={handleClick}&gt;
+      Klickad {count} gånger
+    &lt;/button&gt;
+  );
+}
+</code></pre>
+<p><code>useState</code> returnerar två saker:</p>
+<ol>
+<li><strong>Det aktuella state-värdet</strong> (<code>count</code>)</li>
+<li><strong>En funktion för att uppdatera det</strong> (<code>setCount</code>)</li>
+</ol>
+<p>Du kan ge dem vilka namn du vill, men konventionen är att skriva <code>[something, setSomething]</code>.</p>
+<h3 id="state-är-isolerat-och-privat"><a class="header" href="#state-är-isolerat-och-privat">State är isolerat och privat</a></h3>
+<p>State är lokalt för en komponentinstans på skärmen. Med andra ord, <strong>om du renderar samma komponent två gånger får varje kopia sin egen state</strong>:</p>
+<pre><code class="language-jsx">function MyApp() {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Räknare som uppdateras oberoende&lt;/h1&gt;
+      &lt;MyButton /&gt;
+      &lt;MyButton /&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<p>Observera hur varje knapp "kommer ihåg" sin egen <code>count</code>-state och inte påverkar den andra.</p>
+<h3 id="olika-typer-av-state"><a class="header" href="#olika-typer-av-state">Olika Typer av State</a></h3>
+<p>State kan innehålla vilken typ av JavaScript-värde som helst:</p>
+<pre><code class="language-jsx">import { useState } from 'react';
+
+function Form() {
+  // Olika typer av state
+  const [name, setName] = useState('');           // string
+  const [age, setAge] = useState(0);              // number  
+  const [isSubscribed, setIsSubscribed] = useState(false); // boolean
+  const [hobbies, setHobbies] = useState([]);     // array
+  
+  return (
+    &lt;div&gt;
+      &lt;input 
+        value={name}
+        onChange={(e) =&gt; setName(e.target.value)}
+        placeholder="Ditt namn"
+      /&gt;
+      &lt;p&gt;Hej {name}!&lt;/p&gt;
+      
+      &lt;input 
+        type="number"
+        value={age}
+        onChange={(e) =&gt; setAge(Number(e.target.value))}
+        placeholder="Din ålder"
+      /&gt;
+      &lt;p&gt;Du är {age} år gammal.&lt;/p&gt;
+      
+      &lt;label&gt;
+        &lt;input 
+          type="checkbox"
+          checked={isSubscribed}
+          onChange={(e) =&gt; setIsSubscribed(e.target.checked)}
+        /&gt;
+        Prenumerera på nyhetsbrev
+      &lt;/label&gt;
+      &lt;p&gt;{isSubscribed ? 'Du är prenumerant!' : 'Du är inte prenumerant.'}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<h3 id="state-och-props-tillsammans"><a class="header" href="#state-och-props-tillsammans">State och Props Tillsammans</a></h3>
+<p>Ofta använder du state och props tillsammans. Här är ett exempel där en föräldrakomponent håller state och skickar det till barnkomponenter via props:</p>
+<pre><code class="language-jsx">function Counter() {
+  const [count, setCount] = useState(0);
+
+  function handleIncrement() {
+    setCount(count + 1);
+  }
+
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;Räknare&lt;/h2&gt;
+      &lt;CounterDisplay count={count} /&gt;
+      &lt;CounterButton onClick={handleIncrement} /&gt;
+    &lt;/div&gt;
+  );
+}
+
+function CounterDisplay({ count }) {
+  return &lt;p&gt;Aktuellt värde: {count}&lt;/p&gt;;
+}
+
+function CounterButton({ onClick }) {
+  return (
+    &lt;button onClick={onClick}&gt;
+      Öka med 1
+    &lt;/button&gt;
+  );
+}
+</code></pre>
+<p>I detta exempel:</p>
+<ul>
+<li><code>Counter</code> äger state (<code>count</code>)</li>
+<li><code>CounterDisplay</code> får <code>count</code> via props</li>
+<li><code>CounterButton</code> får <code>onClick</code> funktionen via props</li>
+<li>När knappen klickas uppdateras state, vilket orsakar en re-render</li>
+</ul>
+<h3 id="state-batching-och-funktionella-updates"><a class="header" href="#state-batching-och-funktionella-updates">State Batching och Funktionella Updates</a></h3>
+<pre><code class="language-jsx">function AdvancedCounter() {
+  const [count, setCount] = useState(0);
+
+  // ❌ Problematiskt - baserat på nuvarande värde
+  const incrementTwice = () =&gt; {
+    setCount(count + 1);
+    setCount(count + 1); // Fortfarande baserat på samma värde!
+  };
+
+  // ✅ Bättre - funktionell update
+  const incrementTwiceProperly = () =&gt; {
+    setCount(prev =&gt; prev + 1);
+    setCount(prev =&gt; prev + 1); // Använder uppdaterat värde
+  };
+
+  // ✅ Batch updates automatiskt
+  const handleMultipleUpdates = () =&gt; {
+    setCount(prev =&gt; prev + 1);
+    // React batchar dessa tillsammans
+    console.log('This will run after all updates');
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;Count: {count}&lt;/p&gt;
+      &lt;button onClick={incrementTwice}&gt;+2 (Fel)&lt;/button&gt;
+      &lt;button onClick={incrementTwiceProperly}&gt;+2 (Rätt)&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<h2 id="useeffect-hook-side-effects-och-lifecycle"><a class="header" href="#useeffect-hook-side-effects-och-lifecycle">useEffect Hook: Side Effects och Lifecycle</a></h2>
+<p><code>useEffect</code> hanterar "side effects" - allt som inte är direkt kopplat till rendering.</p>
+<h3 id="grundläggande-useeffect-patterns"><a class="header" href="#grundläggande-useeffect-patterns">Grundläggande useEffect Patterns</a></h3>
+<pre><code class="language-jsx">import { useState, useEffect } from 'react';
+
+function UserProfile({ userId }) {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Pattern 1: Kör efter varje render
+  useEffect(() =&gt; {
+    console.log('Component rendered');
+  });
+
+  // Pattern 2: Kör bara en gång (componentDidMount)
+  useEffect(() =&gt; {
+    console.log('Component mounted');
+  }, []); // Tom dependency array
+
+  // Pattern 3: Kör när specifika värden ändras (med AbortController)
+  useEffect(() =&gt; {
+    if (!userId) return;
+
+    const controller = new AbortController();
+    const { signal } = controller;
+
+    const fetchUser = async () =&gt; {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        const response = await fetch(`/api/users/${userId}`, { signal });
+        if (!response.ok) throw new Error('Användare hittades inte');
+        
+        const userData = await response.json();
+        setUser(userData);
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          setError(err.message);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+    return () =&gt; controller.abort();
+  }, [userId]); // Kör när userId ändras
+
+  // Pattern 4: Cleanup (componentWillUnmount)
+  useEffect(() =&gt; {
+    const timer = setInterval(() =&gt; {
+      console.log('Timer tick');
+    }, 1000);
+
+    // Cleanup function
+    return () =&gt; {
+      clearInterval(timer);
+      console.log('Timer cleared');
+    };
+  }, []);
+
+  if (loading) return &lt;div&gt;Laddar...&lt;/div&gt;;
+  if (error) return &lt;div&gt;Fel: {error}&lt;/div&gt;;
+  if (!user) return &lt;div&gt;Ingen användare vald&lt;/div&gt;;
+
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;{user.name}&lt;/h2&gt;
+      &lt;p&gt;{user.email}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<h3 id="useeffect-best-practices"><a class="header" href="#useeffect-best-practices">useEffect Best Practices</a></h3>
+<pre><code class="language-jsx">function SearchComponent() {
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() =&gt; {
+    // Undvik onödiga API-anrop
+    if (!query.trim()) {
+      setResults([]);
+      return;
+    }
+
+    const searchTimer = setTimeout(async () =&gt; {
+      setLoading(true);
+      
+      try {
+        const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+        const data = await response.json();
+        setResults(data.results);
+      } catch (error) {
+        console.error('Search failed:', error);
+        setResults([]);
+      } finally {
+        setLoading(false);
+      }
+    }, 300); // Debounce 300ms
+
+    // Cleanup - avbryt föregående timer
+    return () =&gt; clearTimeout(searchTimer);
+  }, [query]);
+
+  return (
+    &lt;div&gt;
+      &lt;input
+        type="text"
+        value={query}
+        onChange={(e) =&gt; setQuery(e.target.value)}
+        placeholder="Sök..."
+      /&gt;
+      
+      {loading &amp;&amp; &lt;p&gt;Söker...&lt;/p&gt;}
+      
+      &lt;ul&gt;
+        {results.map(result =&gt; (
+          &lt;li key={result.id}&gt;{result.title}&lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<p>Observera: aktivera ESLint-regeln <code>react-hooks/exhaustive-deps</code> för att fånga saknade beroenden i hooks och undvika subtila buggar.</p>
+<h2 id="props-drilling-problem-och-lösningar"><a class="header" href="#props-drilling-problem-och-lösningar">Props Drilling: Problem och Lösningar</a></h2>
+<p><strong>Props drilling</strong> uppstår när data behöver passas genom många komponentnivåer.</p>
+<pre><code class="language-jsx">// ❌ Props drilling problem
+function App() {
+  const [user, setUser] = useState({ name: 'Anna', theme: 'dark' });
+  
+  return (
+    &lt;div&gt;
+      &lt;Header user={user} setUser={setUser} /&gt;
+      &lt;Main user={user} setUser={setUser} /&gt;
+    &lt;/div&gt;
+  );
+}
+
+function Header({ user, setUser }) {
+  return (
+    &lt;header&gt;
+      &lt;Logo /&gt;
+      &lt;Navigation user={user} setUser={setUser} /&gt;
+    &lt;/header&gt;
+  );
+}
+
+function Navigation({ user, setUser }) {
+  return (
+    &lt;nav&gt;
+      &lt;UserMenu user={user} setUser={setUser} /&gt;
+    &lt;/nav&gt;
+  );
+}
+
+function UserMenu({ user, setUser }) {
+  const toggleTheme = () =&gt; {
+    setUser(prev =&gt; ({
+      ...prev,
+      theme: prev.theme === 'light' ? 'dark' : 'light'
+    }));
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;span&gt;Hej {user.name}!&lt;/span&gt;
+      &lt;button onClick={toggleTheme}&gt;
+        Tema: {user.theme}
+      &lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<h2 id="context-api-global-state-management"><a class="header" href="#context-api-global-state-management">Context API: Global State Management</a></h2>
+<p>Context API löser props drilling genom att skapa en "global" state som komponenter kan accessa direkt.</p>
+<pre><code class="language-jsx">import { createContext, useContext, useState } from 'react';
+
+// 1. Skapa Context
+const UserContext = createContext();
+
+// 2. Skapa Provider Component
+function UserProvider({ children }) {
+  const [user, setUser] = useState({
+    name: 'Anna',
+    theme: 'light',
+    isAuthenticated: false
+  });
+
+  const login = (userData) =&gt; {
+    setUser(prev =&gt; ({
+      ...prev,
+      ...userData,
+      isAuthenticated: true
+    }));
+  };
+
+  const logout = () =&gt; {
+    setUser({
+      name: '',
+      theme: 'light',
+      isAuthenticated: false
+    });
+  };
+
+  const toggleTheme = () =&gt; {
+    setUser(prev =&gt; ({
+      ...prev,
+      theme: prev.theme === 'light' ? 'dark' : 'light'
+    }));
+  };
+
+  const value = {
+    user,
+    login,
+    logout,
+    toggleTheme
+  };
+
+  return (
+    &lt;UserContext.Provider value={value}&gt;
+      {children}
+    &lt;/UserContext.Provider&gt;
+  );
+}
+
+// 3. Custom hook för att använda context
+function useUser() {
+  const context = useContext(UserContext);
+  
+  if (!context) {
+    throw new Error('useUser must be used within UserProvider');
+  }
+  
+  return context;
+}
+
+// 4. Använd Context i komponenter
+function App() {
+  return (
+    &lt;UserProvider&gt;
+      &lt;div className="app"&gt;
+        &lt;Header /&gt;
+        &lt;Main /&gt;
+        &lt;Footer /&gt;
+      &lt;/div&gt;
+    &lt;/UserProvider&gt;
+  );
+}
+
+function Header() {
+  return (
+    &lt;header&gt;
+      &lt;Logo /&gt;
+      &lt;Navigation /&gt;
+    &lt;/header&gt;
+  );
+}
+
+// Ingen props drilling längre!
+function Navigation() {
+  const { user, toggleTheme, logout } = useUser();
+
+  return (
+    &lt;nav&gt;
+      &lt;span&gt;Hej {user.name}!&lt;/span&gt;
+      &lt;button onClick={toggleTheme}&gt;
+        Tema: {user.theme}
+      &lt;/button&gt;
+      {user.isAuthenticated &amp;&amp; (
+        &lt;button onClick={logout}&gt;
+          Logga ut
+        &lt;/button&gt;
+      )}
+    &lt;/nav&gt;
+  );
+}
+
+function Main() {
+  const { user } = useUser();
+  
+  return (
+    &lt;main className={`theme-${user.theme}`}&gt;
+      {user.isAuthenticated ? (
+        &lt;Dashboard /&gt;
+      ) : (
+        &lt;LoginForm /&gt;
+      )}
+    &lt;/main&gt;
+  );
+}
+
+function LoginForm() {
+  const { login } = useUser();
+  const [formData, setFormData] = useState({ name: '', email: '' });
+
+  const handleSubmit = (e) =&gt; {
+    e.preventDefault();
+    login(formData);
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;input
+        type="text"
+        value={formData.name}
+        onChange={(e) =&gt; setFormData(prev =&gt; ({ ...prev, name: e.target.value }))}
+        placeholder="Namn"
+      /&gt;
+      &lt;input
+        type="email"
+        value={formData.email}
+        onChange={(e) =&gt; setFormData(prev =&gt; ({ ...prev, email: e.target.value }))}
+        placeholder="E-post"
+      /&gt;
+      &lt;button type="submit"&gt;Logga in&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}
+</code></pre>
+<h2 id="avancerade-state-patterns"><a class="header" href="#avancerade-state-patterns">Avancerade State Patterns</a></h2>
+<h3 id="custom-hooks-för-state-logic"><a class="header" href="#custom-hooks-för-state-logic">Custom Hooks för State Logic</a></h3>
+<pre><code class="language-jsx">// Custom hook för formulärhantering
+function useForm(initialValues) {
+  const [values, setValues] = useState(initialValues);
+  const [errors, setErrors] = useState({});
+
+  const setValue = (name, value) =&gt; {
+    setValues(prev =&gt; ({ ...prev, [name]: value }));
+    // Rensa fel när användaren rättar
+    if (errors[name]) {
+      setErrors(prev =&gt; ({ ...prev, [name]: '' }));
+    }
+  };
+
+  const setError = (name, error) =&gt; {
+    setErrors(prev =&gt; ({ ...prev, [name]: error }));
+  };
+
+  const reset = () =&gt; {
+    setValues(initialValues);
+    setErrors({});
+  };
+
+  return {
+    values,
+    errors,
+    setValue,
+    setError,
+    reset
+  };
+}
+
+// Custom hook för localStorage
+function useLocalStorage(key, defaultValue) {
+  const [value, setValue] = useState(() =&gt; {
+    try {
+      const item = window.localStorage.getItem(key);
+      return item ? JSON.parse(item) : defaultValue;
+    } catch (error) {
+      console.error(`Error reading localStorage key "${key}":`, error);
+      return defaultValue;
+    }
+  });
+
+  const setStoredValue = (newValue) =&gt; {
+    try {
+      setValue(newValue);
+      window.localStorage.setItem(key, JSON.stringify(newValue));
+    } catch (error) {
+      console.error(`Error setting localStorage key "${key}":`, error);
+    }
+  };
+
+  return [value, setStoredValue];
+}
+
+// Användning av custom hooks
+function UserPreferences() {
+  const { values, setValue, errors, setError } = useForm({
+    theme: 'light',
+    language: 'sv',
+    notifications: true
+  });
+
+  const [settings, setSettings] = useLocalStorage('userSettings', values);
+
+  const handleSave = () =&gt; {
+    if (!values.language) {
+      setError('language', 'Språk är obligatoriskt');
+      return;
+    }
+
+    setSettings(values);
+    alert('Inställningar sparade!');
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;Användarinställningar&lt;/h2&gt;
+      
+      &lt;select
+        value={values.theme}
+        onChange={(e) =&gt; setValue('theme', e.target.value)}
+      &gt;
+        &lt;option value="light"&gt;Ljust tema&lt;/option&gt;
+        &lt;option value="dark"&gt;Mörkt tema&lt;/option&gt;
+      &lt;/select&gt;
+
+      &lt;select
+        value={values.language}
+        onChange={(e) =&gt; setValue('language', e.target.value)}
+      &gt;
+        &lt;option value=""&gt;Välj språk&lt;/option&gt;
+        &lt;option value="sv"&gt;Svenska&lt;/option&gt;
+        &lt;option value="en"&gt;Engelska&lt;/option&gt;
+      &lt;/select&gt;
+      {errors.language &amp;&amp; &lt;span className="error"&gt;{errors.language}&lt;/span&gt;}
+
+      &lt;label&gt;
+        &lt;input
+          type="checkbox"
+          checked={values.notifications}
+          onChange={(e) =&gt; setValue('notifications', e.target.checked)}
+        /&gt;
+        Aktivera notifikationer
+      &lt;/label&gt;
+
+      &lt;button onClick={handleSave}&gt;Spara inställningar&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<h2 id="best-practices-för-state-management"><a class="header" href="#best-practices-för-state-management">Best Practices för State Management</a></h2>
+<h3 id="1-håll-state-så-lokalt-som-möjligt"><a class="header" href="#1-håll-state-så-lokalt-som-möjligt">1. Håll State så Lokalt som Möjligt</a></h3>
+<pre><code class="language-jsx">// ❌ Onödig global state
+function App() {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState('');
+  
+  return (
+    &lt;div&gt;
+      &lt;Header /&gt;
+      &lt;Main modalOpen={modalOpen} setModalOpen={setModalOpen} /&gt;
+      {modalOpen &amp;&amp; &lt;Modal content={modalContent} /&gt;}
+    &lt;/div&gt;
+  );
+}
+
+// ✅ Lokal state där den behövs
+function ProductCard({ product }) {
+  const [showDetails, setShowDetails] = useState(false);
+  
+  return (
+    &lt;div className="product-card"&gt;
+      &lt;h3&gt;{product.name}&lt;/h3&gt;
+      &lt;button onClick={() =&gt; setShowDetails(!showDetails)}&gt;
+        {showDetails ? 'Dölj' : 'Visa'} detaljer
+      &lt;/button&gt;
+      {showDetails &amp;&amp; &lt;ProductDetails product={product} /&gt;}
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<h3 id="2-normalisera-komplex-state"><a class="header" href="#2-normalisera-komplex-state">2. Normalisera Komplex State</a></h3>
+<pre><code class="language-jsx">// ❌ Nested state structure
+const [state, setState] = useState({
+  posts: [
+    {
+      id: 1,
+      title: 'Post 1',
+      author: { id: 1, name: 'Anna' },
+      comments: [
+        { id: 1, text: 'Bra inlägg!', author: { id: 2, name: 'Erik' } }
+      ]
+    }
+  ]
+});
+
+// ✅ Normalized state structure
+const [state, setState] = useState({
+  posts: { 1: { id: 1, title: 'Post 1', authorId: 1, commentIds: [1] } },
+  authors: { 1: { id: 1, name: 'Anna' }, 2: { id: 2, name: 'Erik' } },
+  comments: { 1: { id: 1, text: 'Bra inlägg!', authorId: 2 } }
+});
+</code></pre>
+<h2 id="sammanfattning"><a class="header" href="#sammanfattning">Sammanfattning</a></h2>
+<p>Nu kan du skapa interaktiva React-komponenter:</p>
+<ul>
+<li><strong>Props</strong> skickar data från föräldra- till barnkomponenter</li>
+<li><strong>Event handlers</strong> låter komponenter reagera på användarinteraktion</li>
+<li><strong>State</strong> ger komponenter minne med <code>useState</code></li>
+<li><strong>State är privat</strong> - varje komponentinstans har sin egen state</li>
+<li><strong>State + Props</strong> skapar dataflöde mellan komponenter</li>
+</ul>
+<h2 id="vad-händer-härnäst"><a class="header" href="#vad-händer-härnäst">Vad händer härnäst?</a></h2>
+<p>Nu när dina komponenter kan ta emot data och reagera på interaktion är det dags att bygga riktiga applikationer! I nästa avsnitt lär du dig:</p>
+<ul>
+<li><strong>Formulär</strong> - hantera användarinput på ett kontrollerat sätt</li>
+<li><strong>API-integration</strong> - hämta data från servrar</li>
+<li><strong>Routing</strong> - navigera mellan olika vyer</li>
+<li><strong>Deployment</strong> - publicera din app på internet</li>
+</ul>
+<p><strong>Redo för nästa steg?</strong> Gå vidare till <strong>Formulär i React</strong> för att lära dig hantera användarinput!</p>
+<hr />
+<h2 id="fördjupning-avancerade-state-patterns"><a class="header" href="#fördjupning-avancerade-state-patterns">Fördjupning: Avancerade State-patterns</a></h2>
+<p><em>Denna sektion täcker mer avancerade ämnen som du kan hoppa över först och komma tillbaka till senare.</em></p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_8/komponenter.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_8/routing.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_8/komponenter.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_8/routing.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

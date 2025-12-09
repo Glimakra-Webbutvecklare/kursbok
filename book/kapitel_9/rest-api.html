@@ -1,0 +1,1494 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>RESTful API:er - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="restful-apier---professionella-web-apier"><a class="header" href="#restful-apier---professionella-web-apier">RESTful API:er - Professionella Web-API:er</a></h1>
+<p>REST (Representational State Transfer) är en arkitekturstil för att designa webb-API:er som är intuitive, skalbar och enkla att använda. RESTful API:er har blivit standarden för modern webbutveckling och är fundamentala för att skapa robusta backend-tjänster.</p>
+<h2 id="vad-är-en-restful-api"><a class="header" href="#vad-är-en-restful-api">Vad är en RESTful API?</a></h2>
+<p>REST är en uppsättning designprinciper som definierar hur webb-API:er ska struktureras:</p>
+<ul>
+<li><strong>Stateless</strong>: Varje request innehåller all information som behövs</li>
+<li><strong>Client-Server Architecture</strong>: Tydlig separation mellan klient och server</li>
+<li><strong>Cacheable</strong>: Responses kan cachas för bättre prestanda</li>
+<li><strong>Uniform Interface</strong>: Konsekvent sätt att interagera med resurser</li>
+<li><strong>Layered System</strong>: Arkitekturen kan ha flera lager</li>
+<li><strong>Code on Demand</strong> (valfritt): Servern kan skicka körbar kod</li>
+</ul>
+<h3 id="rest-vs-andra-api-stilar"><a class="header" href="#rest-vs-andra-api-stilar">REST vs Andra API-stilar</a></h3>
+<pre><code class="language-javascript">// REST - Resursbaserat
+GET    /api/users           // Hämta alla användare
+GET    /api/users/123       // Hämta specifik användare
+POST   /api/users           // Skapa ny användare
+PUT    /api/users/123       // Uppdatera användare
+DELETE /api/users/123       // Ta bort användare
+
+// RPC-stil (Remote Procedure Call) - Funktionsbaserat
+POST /api/getUsers
+POST /api/createUser
+POST /api/updateUser
+POST /api/deleteUser
+
+// GraphQL - Query-baserat
+POST /api/graphql
+{
+  query: "{ users { id name email } }"
+}
+</code></pre>
+<h2 id="http-metoder-och-deras-användning"><a class="header" href="#http-metoder-och-deras-användning">HTTP-metoder och deras användning</a></h2>
+<p>Varje HTTP-metod har ett specifikt syfte i RESTful design. Låt oss gå igenom varje metod steg för steg.</p>
+<h3 id="get---hämta-data"><a class="header" href="#get---hämta-data">GET - Hämta data</a></h3>
+<p>GET används för att hämta data från servern. Det är en <strong>säker</strong> metod - den ändrar aldrig data, bara läser.</p>
+<h4 id="steg-1-grundläggande-get"><a class="header" href="#steg-1-grundläggande-get">Steg 1: Grundläggande GET</a></h4>
+<p>Låt oss börja enkelt. Skapa en route som hämtar alla böcker från databasen.</p>
+<pre><code class="language-javascript">app.get('/api/books', async (req, res) =&gt; {
+  // TODO: Hämta alla böcker från databasen
+  // Tips: Använd Book.find() utan parametrar
+  
+  // TODO: Returnera böckerna som JSON
+  // Tips: Använd res.json()
+  
+  // TODO: Lägg till felhantering
+  // Tips: Använd try/catch och returnera status 500 vid fel
+});
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">app.get('/api/books', async (req, res) =&gt; {
+  try {
+    const books = await Book.find();
+    res.json(books);
+  } catch (error) {
+    res.status(500).json({ error: 'Kunde inte hämta böcker' });
+  }
+});
+</code></pre>
+<p><strong>Förklaring:</strong></p>
+<ul>
+<li><code>Book.find()</code> hämtar alla dokument från Book-kollektionen</li>
+<li><code>res.json()</code> skickar tillbaka data som JSON</li>
+<li>try/catch hanterar eventuella fel från databasen</li>
+</ul>
+</details>
+<h4 id="steg-2-hämta-specifik-resurs"><a class="header" href="#steg-2-hämta-specifik-resurs">Steg 2: Hämta specifik resurs</a></h4>
+<p>Nu ska du lägga till stöd för att hämta en specifik bok baserat på ID.</p>
+<pre><code class="language-javascript">app.get('/api/books/:id', async (req, res) =&gt; {
+  // TODO: Hämta ID från URL-parametern
+  // Tips: Använd req.params.id
+  
+  // TODO: Hitta boken med detta ID
+  // Tips: Använd Book.findById()
+  
+  // TODO: Om boken inte finns, returnera 404
+  // Tips: Kontrollera om resultatet är null
+  
+  // TODO: Om boken finns, returnera den
+});
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">app.get('/api/books/:id', async (req, res) =&gt; {
+  try {
+    const book = await Book.findById(req.params.id);
+    if (!book) {
+      return res.status(404).json({ error: 'Bok inte hittad' });
+    }
+    res.json(book);
+  } catch (error) {
+    res.status(500).json({ error: 'Fel vid hämtning av bok' });
+  }
+});
+</code></pre>
+<p><strong>Förklaring:</strong></p>
+<ul>
+<li><code>:id</code> i routen blir tillgängligt via <code>req.params.id</code></li>
+<li><code>findById()</code> returnerar <code>null</code> om dokumentet inte finns</li>
+<li>Statuskod 404 betyder "Not Found"</li>
+</ul>
+</details>
+<h4 id="steg-3-filtrera-med-query-parameters"><a class="header" href="#steg-3-filtrera-med-query-parameters">Steg 3: Filtrera med query parameters</a></h4>
+<p>Query parameters låter klienten filtrera resultatet. Du ska stödja filtrering efter kategori och författare.</p>
+<pre><code class="language-javascript">app.get('/api/books', async (req, res) =&gt; {
+  // TODO: Hämta query parameters för category och author
+  // Tips: Använd req.query
+  
+  // TODO: Skapa ett filter-objekt
+  // Tips: Lägg bara till filter om parametern finns
+  
+  // TODO: För author, använd case-insensitive sökning
+  // Tips: Använd new RegExp(author, 'i')
+  
+  // TODO: Hämta böcker med filtret
+  // Tips: Book.find(filter)
+  
+  // TODO: Returnera filtrerade böcker
+});
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">app.get('/api/books', async (req, res) =&gt; {
+  const { category, author } = req.query;
+  
+  const filter = {};
+  if (category) filter.category = category;
+  if (author) filter.author = new RegExp(author, 'i');
+  
+  try {
+    const books = await Book.find(filter);
+    res.json(books);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+</code></pre>
+<p><strong>Förklaring:</strong></p>
+<ul>
+<li>Query parameters finns i <code>req.query</code></li>
+<li><code>RegExp</code> med flaggan 'i' gör sökningen case-insensitive</li>
+<li>Filter-objektet är tomt om inga parametrar skickas (hämtar då alla)</li>
+</ul>
+</details>
+<h4 id="steg-4-implementera-paginering"><a class="header" href="#steg-4-implementera-paginering">Steg 4: Implementera paginering</a></h4>
+<p>Lägg till stöd för paginering med <code>page</code> och <code>limit</code> query parameters.</p>
+<pre><code class="language-javascript">app.get('/api/books', async (req, res) =&gt; {
+  // TODO: Hämta page och limit från query parameters
+  // Tips: Sätt default-värden (page = 1, limit = 10)
+  
+  // TODO: Beräkna skip-värde
+  // Tips: skip = (page - 1) * limit
+  
+  // TODO: Hämta böcker med limit och skip
+  // Tips: Book.find().skip().limit()
+  
+  // TODO: Hämta totalt antal böcker
+  // Tips: Book.countDocuments()
+  
+  // TODO: Returnera böcker med pagination-info
+  // Tips: Inkludera page, limit, total, pages
+});
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">app.get('/api/books', async (req, res) =&gt; {
+  const { page = 1, limit = 10 } = req.query;
+  const skip = (page - 1) * limit;
+  
+  try {
+    const [books, total] = await Promise.all([
+      Book.find().skip(skip).limit(parseInt(limit)),
+      Book.countDocuments()
+    ]);
+    
+    res.json({
+      books,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total,
+        pages: Math.ceil(total / limit)
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+</code></pre>
+<p><strong>Förklaring:</strong></p>
+<ul>
+<li><code>skip()</code> hoppar över dokument</li>
+<li><code>limit()</code> begränsar antalet resultat</li>
+<li><code>Promise.all()</code> kör flera queries parallellt</li>
+<li>Pagination-info hjälper klienten navigera</li>
+</ul>
+</details>
+<h3 id="post---skapa-ny-resurs"><a class="header" href="#post---skapa-ny-resurs">POST - Skapa ny resurs</a></h3>
+<p>POST används för att skapa nya resurser. Vi behöver validera input och hantera fel.</p>
+<h4 id="steg-1-grundläggande-post-route"><a class="header" href="#steg-1-grundläggande-post-route">Steg 1: Grundläggande POST-route</a></h4>
+<pre><code class="language-javascript">app.post('/api/books', async (req, res) =&gt; {
+  // TODO: Hämta data från request body
+  // Tips: req.body innehåller skickad JSON
+  
+  // TODO: Kontrollera att title och author finns
+  // Tips: Returnera 400 Bad Request om de saknas
+  
+  // TODO: Skapa ny bok
+  // Tips: new Book({ ... }) sedan .save()
+  
+  // TODO: Returnera den skapade boken med status 201
+  // Tips: res.status(201).json()
+  
+  // TODO: Lägg till felhantering
+});
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">app.post('/api/books', async (req, res) =&gt; {
+  try {
+    const { title, author } = req.body;
+    
+    if (!title || !author) {
+      return res.status(400).json({ 
+        error: 'Titel och författare krävs' 
+      });
+    }
+    
+    const book = new Book({
+      title: title.trim(),
+      author: author.trim()
+    });
+    
+    const savedBook = await book.save();
+    res.status(201).json(savedBook);
+    
+  } catch (error) {
+    res.status(500).json({ error: 'Kunde inte skapa bok' });
+  }
+});
+</code></pre>
+<p><strong>Förklaring:</strong></p>
+<ul>
+<li>Status 201 betyder "Created"</li>
+<li><code>.trim()</code> tar bort extra mellanslag</li>
+<li><code>.save()</code> sparar till databasen</li>
+</ul>
+</details>
+<h4 id="steg-2-lägg-till-konfliktkontroll"><a class="header" href="#steg-2-lägg-till-konfliktkontroll">Steg 2: Lägg till konfliktkontroll</a></h4>
+<p>Förbättra din POST-route genom att kontrollera om ISBN redan finns.</p>
+<pre><code class="language-javascript">app.post('/api/books', async (req, res) =&gt; {
+  try {
+    const { title, author, isbn } = req.body;
+    
+    // TODO: Om isbn finns i req.body, kontrollera om det redan finns
+    // Tips: Använd Book.findOne({ isbn })
+    
+    // TODO: Om det finns, returnera status 409 Conflict
+    // Tips: Inkludera ett lämpligt felmeddelande
+    
+    // TODO: Annars fortsätt med att skapa boken
+  } catch (error) {
+    // TODO: Hantera valideringsfel
+    // Tips: Kontrollera error.name === 'ValidationError'
+  }
+});
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">app.post('/api/books', async (req, res) =&gt; {
+  try {
+    const { title, author, isbn, publishedYear, category } = req.body;
+    
+    if (!title || !author) {
+      return res.status(400).json({ 
+        error: 'Titel och författare krävs' 
+      });
+    }
+    
+    if (isbn) {
+      const existingBook = await Book.findOne({ isbn });
+      if (existingBook) {
+        return res.status(409).json({ 
+          error: 'En bok med detta ISBN finns redan' 
+        });
+      }
+    }
+    
+    const book = new Book({
+      title: title.trim(),
+      author: author.trim(),
+      isbn,
+      publishedYear,
+      category
+    });
+    
+    const savedBook = await book.save();
+    
+    res.status(201)
+       .location(`/api/books/${savedBook._id}`)
+       .json(savedBook);
+       
+  } catch (error) {
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({ 
+        error: 'Valideringsfel',
+        details: Object.values(error.errors).map(e =&gt; e.message)
+      });
+    }
+    res.status(500).json({ error: 'Kunde inte skapa bok' });
+  }
+});
+</code></pre>
+<p><strong>Förklaring:</strong></p>
+<ul>
+<li>Status 409 betyder "Conflict" - resursen finns redan</li>
+<li><code>Location</code> header visar var den nya resursen finns</li>
+<li>ValidationError hanteras separat för bättre felmeddelanden</li>
+</ul>
+</details>
+<h3 id="put---uppdatera-hel-resurs"><a class="header" href="#put---uppdatera-hel-resurs">PUT - Uppdatera hel resurs</a></h3>
+<p>PUT används för att ersätta en hel resurs. Alla fält måste skickas med.</p>
+<h4 id="Övning-implementera-put"><a class="header" href="#Övning-implementera-put">Övning: Implementera PUT</a></h4>
+<pre><code class="language-javascript">app.put('/api/books/:id', async (req, res) =&gt; {
+  // TODO: Hämta ID från req.params
+  // TODO: Hämta data från req.body
+  // TODO: Validera att title och author finns (returnera 400 om ej)
+  // TODO: Uppdatera boken med findByIdAndUpdate
+  // Tips: Använd { new: true, runValidators: true }
+  // TODO: Uppdatera updatedAt till new Date()
+  // TODO: Om boken inte finns, returnera 404
+  // TODO: Returnera den uppdaterade boken
+});
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">app.put('/api/books/:id', async (req, res) =&gt; {
+  try {
+    const { title, author, isbn, publishedYear, category } = req.body;
+    
+    if (!title || !author) {
+      return res.status(400).json({ 
+        error: 'Titel och författare krävs' 
+      });
+    }
+    
+    const updatedBook = await Book.findByIdAndUpdate(
+      req.params.id,
+      {
+        title: title.trim(),
+        author: author.trim(),
+        isbn,
+        publishedYear,
+        category,
+        updatedAt: new Date()
+      },
+      { 
+        new: true, // Returnera uppdaterat dokument
+        runValidators: true // Kör schemavalidering
+      }
+    );
+    
+    if (!updatedBook) {
+      return res.status(404).json({ error: 'Bok inte hittad' });
+    }
+    
+    res.json(updatedBook);
+    
+  } catch (error) {
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({ 
+        error: 'Valideringsfel',
+        details: Object.values(error.errors).map(e =&gt; e.message)
+      });
+    }
+    res.status(500).json({ error: 'Kunde inte uppdatera bok' });
+  }
+});
+</code></pre>
+<p><strong>Förklaring:</strong></p>
+<ul>
+<li>PUT ersätter hela resursen (till skillnad från PATCH som uppdaterar delvis)</li>
+<li><code>new: true</code> returnerar det uppdaterade dokumentet istället för det gamla</li>
+<li><code>runValidators: true</code> säkerställer att schemat valideras</li>
+</ul>
+</details>
+<h3 id="patch---delvis-uppdatering"><a class="header" href="#patch---delvis-uppdatering">PATCH - Delvis uppdatering</a></h3>
+<p>PATCH används för att uppdatera endast de fält som skickas med.</p>
+<h4 id="Övning-implementera-patch"><a class="header" href="#Övning-implementera-patch">Övning: Implementera PATCH</a></h4>
+<pre><code class="language-javascript">app.patch('/api/books/:id', async (req, res) =&gt; {
+  // TODO: Definiera vilka fält som får uppdateras
+  // Tips: Skapa en array med tillåtna fält
+  
+  // TODO: Filtrera req.body så endast tillåtna fält ingår
+  // Tips: Loopa över Object.keys(req.body)
+  
+  // TODO: Kontrollera att minst ett fält ska uppdateras
+  // Tips: Returnera 400 om updates är tomt
+  
+  // TODO: Lägg till updatedAt
+  // TODO: Uppdatera med findByIdAndUpdate
+  // Tips: Använd { $set: updates }
+  // TODO: Returnera uppdaterad bok eller 404
+});
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">app.patch('/api/books/:id', async (req, res) =&gt; {
+  try {
+    const allowedUpdates = ['title', 'author', 'isbn', 'publishedYear', 'category'];
+    const updates = {};
+    
+    Object.keys(req.body).forEach(key =&gt; {
+      if (allowedUpdates.includes(key)) {
+        updates[key] = req.body[key];
+      }
+    });
+    
+    if (Object.keys(updates).length === 0) {
+      return res.status(400).json({ 
+        error: 'Inga giltiga fält att uppdatera' 
+      });
+    }
+    
+    updates.updatedAt = new Date();
+    
+    const updatedBook = await Book.findByIdAndUpdate(
+      req.params.id,
+      { $set: updates },
+      { new: true, runValidators: true }
+    );
+    
+    if (!updatedBook) {
+      return res.status(404).json({ error: 'Bok inte hittad' });
+    }
+    
+    res.json(updatedBook);
+    
+  } catch (error) {
+    res.status(500).json({ error: 'Kunde inte uppdatera bok' });
+  }
+});
+</code></pre>
+<p><strong>Förklaring:</strong></p>
+<ul>
+<li><code>$set</code> i MongoDB uppdaterar endast de angivna fälten</li>
+<li><code>allowedUpdates</code> förhindrar att användaren uppdaterar skyddade fält</li>
+<li>PATCH är mer flexibel än PUT eftersom bara vissa fält behöver skickas</li>
+</ul>
+</details>
+<h3 id="delete---ta-bort-resurs"><a class="header" href="#delete---ta-bort-resurs">DELETE - Ta bort resurs</a></h3>
+<p>DELETE används för att ta bort resurser från systemet.</p>
+<h4 id="Övning-implementera-delete"><a class="header" href="#Övning-implementera-delete">Övning: Implementera DELETE</a></h4>
+<pre><code class="language-javascript">app.delete('/api/books/:id', async (req, res) =&gt; {
+  // TODO: Hämta ID från req.params
+  // TODO: Ta bort boken med findByIdAndDelete
+  // TODO: Om boken inte finns, returnera 404
+  // TODO: Om boken togs bort, returnera status 204
+  // Tips: 204 No Content har ingen body
+});
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">app.delete('/api/books/:id', async (req, res) =&gt; {
+  try {
+    const deletedBook = await Book.findByIdAndDelete(req.params.id);
+    
+    if (!deletedBook) {
+      return res.status(404).json({ error: 'Bok inte hittad' });
+    }
+    
+    res.status(204).send();
+    
+  } catch (error) {
+    res.status(500).json({ error: 'Kunde inte ta bort bok' });
+  }
+});
+</code></pre>
+<p><strong>Förklaring:</strong></p>
+<ul>
+<li>Status 204 betyder "No Content" - operationen lyckades men inget returneras</li>
+<li><code>.send()</code> utan argument skickar en tom response</li>
+</ul>
+</details>
+<h4 id="extra-bulk-delete"><a class="header" href="#extra-bulk-delete">Extra: Bulk delete</a></h4>
+<p>Om du behöver ta bort flera resurser samtidigt:</p>
+<pre><code class="language-javascript">app.delete('/api/books', async (req, res) =&gt; {
+  // TODO: Hämta array med IDs från req.body
+  // TODO: Validera att ids är en array
+  // TODO: Ta bort alla böcker med dessa IDs
+  // Tips: Använd deleteMany med { _id: { $in: ids } }
+  // TODO: Returnera antal borttagna böcker
+});
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">app.delete('/api/books', async (req, res) =&gt; {
+  try {
+    const { ids } = req.body;
+    
+    if (!ids || !Array.isArray(ids)) {
+      return res.status(400).json({ 
+        error: 'IDs måste vara en array' 
+      });
+    }
+    
+    const result = await Book.deleteMany({ 
+      _id: { $in: ids } 
+    });
+    
+    res.json({ 
+      message: `${result.deletedCount} böcker borttagna`,
+      deletedCount: result.deletedCount
+    });
+    
+  } catch (error) {
+    res.status(500).json({ error: 'Kunde inte ta bort böcker' });
+  }
+});
+</code></pre>
+<p><strong>Förklaring:</strong></p>
+<ul>
+<li><code>$in</code> är en MongoDB-operator som matchar värden i en array</li>
+<li><code>deleteMany</code> returnerar information om hur många som togs bort</li>
+</ul>
+</details>
+<h2 id="http-statuskoder"><a class="header" href="#http-statuskoder">HTTP-statuskoder</a></h2>
+<p>Statuskoder är viktiga för att kommunicera resultatet av en request. De är indelade i kategorier:</p>
+<ul>
+<li><strong>2xx</strong>: Success (framgång)</li>
+<li><strong>4xx</strong>: Client Error (fel i request)</li>
+<li><strong>5xx</strong>: Server Error (fel på servern)</li>
+</ul>
+<h3 id="Övning-välj-rätt-statuskod"><a class="header" href="#Övning-välj-rätt-statuskod">Övning: Välj rätt statuskod</a></h3>
+<p>För varje scenario nedan, välj vilken statuskod som är lämplig:</p>
+<ol>
+<li>
+<p>En användare skapas framgångsrikt</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+200 OK</li>
+<li><input disabled="" type="checkbox"/>
+201 Created</li>
+<li><input disabled="" type="checkbox"/>
+204 No Content</li>
+</ul>
+</li>
+<li>
+<p>En bok tas bort framgångsrikt</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+200 OK</li>
+<li><input disabled="" type="checkbox"/>
+201 Created</li>
+<li><input disabled="" type="checkbox"/>
+204 No Content</li>
+</ul>
+</li>
+<li>
+<p>En bok med ID 123 finns inte</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+400 Bad Request</li>
+<li><input disabled="" type="checkbox"/>
+404 Not Found</li>
+<li><input disabled="" type="checkbox"/>
+500 Internal Server Error</li>
+</ul>
+</li>
+<li>
+<p>En request saknar required fält</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+400 Bad Request</li>
+<li><input disabled="" type="checkbox"/>
+404 Not Found</li>
+<li><input disabled="" type="checkbox"/>
+422 Unprocessable Entity</li>
+</ul>
+</li>
+<li>
+<p>En användare försöker skapa en bok med ISBN som redan finns</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+400 Bad Request</li>
+<li><input disabled="" type="checkbox"/>
+409 Conflict</li>
+<li><input disabled="" type="checkbox"/>
+422 Unprocessable Entity</li>
+</ul>
+</li>
+</ol>
+<details>
+<summary>Svar</summary>
+<ol>
+<li><strong>201 Created</strong> - Används när en ny resurs skapas framgångsrikt</li>
+<li><strong>204 No Content</strong> - Används vid DELETE när operationen lyckades men ingen data returneras</li>
+<li><strong>404 Not Found</strong> - Resursen som efterfrågas finns inte</li>
+<li><strong>400 Bad Request</strong> eller <strong>422 Unprocessable Entity</strong> - Båda är acceptabla, 422 är mer specifik för valideringsfel</li>
+<li><strong>409 Conflict</strong> - Resursen finns redan (konflikt)</li>
+</ol>
+</details>
+<h3 id="vanliga-statuskoder"><a class="header" href="#vanliga-statuskoder">Vanliga statuskoder</a></h3>
+<p>Här är en översikt över vanliga statuskoder du kommer använda:</p>
+<pre><code class="language-javascript">// Success codes (2xx)
+res.status(200).json(data);        // OK - lyckad GET, PUT, PATCH
+res.status(201).json(newResource); // Created - lyckad POST
+res.status(204).send();            // No Content - lyckad DELETE
+
+// Client error codes (4xx)
+res.status(400).json({ error: 'Bad Request - fel input' });
+res.status(401).json({ error: 'Unauthorized - autentisering krävs' });
+res.status(403).json({ error: 'Forbidden - otillåten åtkomst' });
+res.status(404).json({ error: 'Not Found - resurs finns inte' });
+res.status(409).json({ error: 'Conflict - resurs finns redan' });
+res.status(422).json({ error: 'Unprocessable Entity - valideringsfel' });
+
+// Server error codes (5xx)
+res.status(500).json({ error: 'Internal Server Error' });
+res.status(503).json({ error: 'Service Unavailable' });
+</code></pre>
+<h3 id="Övning-implementera-felhantering"><a class="header" href="#Övning-implementera-felhantering">Övning: Implementera felhantering</a></h3>
+<p>Skapa en hjälpfunktion <code>sendError</code> som gör felhanteringen mer konsekvent.</p>
+<pre><code class="language-javascript">// TODO: Skriv funktionen sendError
+const sendError = (res, statusCode, message, details = null) =&gt; {
+  // TODO: Skapa ett error-objekt med message
+  // TODO: Lägg till details om det finns
+  // TODO: Returnera med rätt statuskod
+};
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">const sendError = (res, statusCode, message, details = null) =&gt; {
+  const error = { error: message };
+  if (details) error.details = details;
+  res.status(statusCode).json(error);
+};
+
+// Användning:
+sendError(res, 400, 'Valideringsfel', ['Title krävs', 'Author krävs']);
+sendError(res, 404, 'Bok inte hittad');
+</code></pre>
+<p><strong>Förklaring:</strong></p>
+<ul>
+<li>Denna funktion gör felhanteringen mer konsekvent</li>
+<li><code>details</code> är valfritt och kan innehålla mer specifik information</li>
+<li>Används för att undvika repetition i koden</li>
+</ul>
+</details>
+<h2 id="designprinciper-för-restful-apier"><a class="header" href="#designprinciper-för-restful-apier">Designprinciper för RESTful API:er</a></h2>
+<h3 id="1-använd-substantiv-inte-verb"><a class="header" href="#1-använd-substantiv-inte-verb">1. Använd substantiv, inte verb</a></h3>
+<p>REST API:er arbetar med <strong>resurser</strong>, inte <strong>åtgärder</strong>. HTTP-metoden säger vad vi gör, URL:en säger med vad.</p>
+<h4 id="Övning-identifiera-felaktiga-routes"><a class="header" href="#Övning-identifiera-felaktiga-routes">Övning: Identifiera felaktiga routes</a></h4>
+<p>Vilka av dessa routes följer inte REST-principerna? Förbättra dem.</p>
+<pre><code class="language-javascript">GET    /api/getUsers        // ❌
+POST   /api/createUser      // ❌
+GET    /api/userById        // ❌
+DELETE /api/removeUser/:id  // ❌
+</code></pre>
+<details>
+<summary>Rätt svar</summary>
+<pre><code class="language-javascript">GET    /api/users           // ✅
+POST   /api/users           // ✅
+GET    /api/users/:id       // ✅
+DELETE /api/users/:id       // ✅
+</code></pre>
+<p><strong>Regel:</strong> URL:en ska vara ett substantiv (resurs), inte ett verb (åtgärd). HTTP-metoden (GET, POST, PUT, DELETE) indikerar åtgärden.</p>
+</details>
+<h3 id="2-hierarkiska-resurser"><a class="header" href="#2-hierarkiska-resurser">2. Hierarkiska resurser</a></h3>
+<p>När en resurs hör till en annan, reflektera det i URL-strukturen.</p>
+<h4 id="Övning-designa-routes-för-användare-och-inlägg"><a class="header" href="#Övning-designa-routes-för-användare-och-inlägg">Övning: Designa routes för användare och inlägg</a></h4>
+<p>En användare har flera inlägg. Designa routes för att:</p>
+<ul>
+<li>Hämta alla inlägg för en specifik användare</li>
+<li>Skapa ett nytt inlägg för en användare</li>
+<li>Hämta ett specifikt inlägg</li>
+<li>Uppdatera ett inlägg</li>
+<li>Ta bort ett inlägg</li>
+</ul>
+<p>Skriv dina förslag här:</p>
+<pre><code>// TODO: Skriv dina routes här
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">GET    /api/users/123/posts          // Användarens inlägg
+POST   /api/users/123/posts          // Skapa inlägg för användare
+GET    /api/users/123/posts/456      // Specifikt inlägg
+PUT    /api/users/123/posts/456      // Uppdatera inlägg
+DELETE /api/users/123/posts/456      // Ta bort inlägg
+</code></pre>
+<p><strong>Implementation:</strong></p>
+<pre><code class="language-javascript">app.get('/api/users/:userId/posts', async (req, res) =&gt; {
+  try {
+    const posts = await Post.find({ author: req.params.userId });
+    res.json(posts);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+</code></pre>
+<p><strong>Förklaring:</strong></p>
+<ul>
+<li>Nested routes visar relationen mellan resurser</li>
+<li><code>:userId</code> och <code>:postId</code> är route-parametrar</li>
+<li>Filteret <code>{ author: req.params.userId }</code> säkerställer att endast användarens inlägg hämtas</li>
+</ul>
+</details>
+<h3 id="3-filtrera-sortera-och-paginera"><a class="header" href="#3-filtrera-sortera-och-paginera">3. Filtrera, sortera och paginera</a></h3>
+<p>Query parameters ger flexibilitet utan att ändra URL-strukturen.</p>
+<h4 id="Övning-implementera-avancerad-filtrering"><a class="header" href="#Övning-implementera-avancerad-filtrering">Övning: Implementera avancerad filtrering</a></h4>
+<p>Implementera en GET-route som stödjer:</p>
+<ul>
+<li>Filtrering efter kategori</li>
+<li>Prisintervall (minPrice, maxPrice)</li>
+<li>Sökning i namn och beskrivning</li>
+<li>Sortering efter valfritt fält</li>
+<li>Paginering</li>
+</ul>
+<pre><code class="language-javascript">app.get('/api/products', async (req, res) =&gt; {
+  // TODO: Extrahera alla query parameters
+  // TODO: Bygg filter för category, price range, och search
+  // Tips: Använd $or för search, $gte och $lte för price
+  // TODO: Bygg sort-objekt
+  // TODO: Implementera pagination
+  // TODO: Returnera produkter med pagination-info
+});
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">app.get('/api/products', async (req, res) =&gt; {
+  const {
+    category,
+    minPrice,
+    maxPrice,
+    sortBy = 'name',
+    order = 'asc',
+    page = 1,
+    limit = 20,
+    search
+  } = req.query;
+  
+  try {
+    const filter = {};
+    if (category) filter.category = category;
+    
+    if (minPrice || maxPrice) {
+      filter.price = {};
+      if (minPrice) filter.price.$gte = Number(minPrice);
+      if (maxPrice) filter.price.$lte = Number(maxPrice);
+    }
+    
+    if (search) {
+      filter.$or = [
+        { name: new RegExp(search, 'i') },
+        { description: new RegExp(search, 'i') }
+      ];
+    }
+    
+    const sort = {};
+    sort[sortBy] = order === 'desc' ? -1 : 1;
+    
+    const skip = (page - 1) * limit;
+    
+    const [products, total] = await Promise.all([
+      Product.find(filter)
+        .sort(sort)
+        .skip(skip)
+        .limit(Number(limit)),
+      Product.countDocuments(filter)
+    ]);
+    
+    res.json({
+      products,
+      pagination: {
+        page: Number(page),
+        limit: Number(limit),
+        total,
+        pages: Math.ceil(total / limit),
+        hasNext: page * limit &lt; total,
+        hasPrev: page &gt; 1
+      },
+      filters: {
+        category,
+        priceRange: { min: minPrice, max: maxPrice },
+        search
+      }
+    });
+    
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+</code></pre>
+<p><strong>Förklaring:</strong></p>
+<ul>
+<li><code>$gte</code> (greater than or equal) och <code>$lte</code> (less than or equal) för prisintervall</li>
+<li><code>$or</code> låter dig söka i flera fält samtidigt</li>
+<li><code>hasNext</code> och <code>hasPrev</code> hjälper klienten veta om det finns fler sidor</li>
+</ul>
+</details>
+<h2 id="bygga-ett-restful-api-med-express"><a class="header" href="#bygga-ett-restful-api-med-express">Bygga ett RESTful API med Express</a></h2>
+<p>Vi ska bygga ett komplett API för en bokhandel steg för steg.</p>
+<h3 id="steg-1-projektstruktur-och-grundläggande-setup"><a class="header" href="#steg-1-projektstruktur-och-grundläggande-setup">Steg 1: Projektstruktur och grundläggande setup</a></h3>
+<p>Skapa en ny Express-applikation och konfigurera grundläggande middleware.</p>
+<pre><code class="language-javascript">// TODO: Importera express och mongoose
+// TODO: Skapa app-instans
+// TODO: Konfigurera JSON-middleware
+// Tips: app.use(express.json())
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">import express from 'express';
+import mongoose from 'mongoose';
+
+const app = express();
+app.use(express.json());
+</code></pre>
+<p><strong>Förklaring:</strong></p>
+<ul>
+<li><code>express.json()</code> middleware parsar JSON från request body</li>
+<li>Detta behövs för POST och PUT requests</li>
+</ul>
+</details>
+<h3 id="steg-2-skapa-book-modellen"><a class="header" href="#steg-2-skapa-book-modellen">Steg 2: Skapa Book-modellen</a></h3>
+<p>Definiera ett Mongoose-schema för böcker.</p>
+<pre><code class="language-javascript">// TODO: Skapa bookSchema med följande fält:
+// - title (String, required, trimmed)
+// - author (String, required, trimmed)
+// - isbn (String, unique, optional)
+// - publishedYear (Number, 1000 till nuvarande år)
+// - category (Enum: 'fiction', 'non-fiction', etc., required)
+// - price (Number, required, min 0)
+// - inStock (Boolean, default true)
+// - description (String, optional)
+// - createdAt och updatedAt (Date, defaults)
+// TODO: Skapa Book-modellen från schemat
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">const bookSchema = new mongoose.Schema({
+  title: { type: String, required: true, trim: true },
+  author: { type: String, required: true, trim: true },
+  isbn: { type: String, unique: true, sparse: true },
+  publishedYear: { 
+    type: Number, 
+    min: 1000, 
+    max: new Date().getFullYear() 
+  },
+  category: { 
+    type: String, 
+    enum: ['fiction', 'non-fiction', 'science', 'history', 'biography'],
+    required: true 
+  },
+  price: { type: Number, required: true, min: 0 },
+  inStock: { type: Boolean, default: true },
+  description: String,
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+});
+
+const Book = mongoose.model('Book', bookSchema);
+</code></pre>
+<p><strong>Förklaring:</strong></p>
+<ul>
+<li><code>trim: true</code> tar bort extra mellanslag automatiskt</li>
+<li><code>unique: true, sparse: true</code> gör ISBN unikt men tillåter null</li>
+<li><code>enum</code> begränsar vilka värden som är tillåtna</li>
+<li><code>default</code> sätter värden automatiskt om de inte anges</li>
+</ul>
+</details>
+<h3 id="steg-3-implementera-get-apibooks-med-alla-funktioner"><a class="header" href="#steg-3-implementera-get-apibooks-med-alla-funktioner">Steg 3: Implementera GET /api/books med alla funktioner</a></h3>
+<p>Nu ska du implementera en komplett GET-route med filtrering, sortering och paginering.</p>
+<pre><code class="language-javascript">// TODO: Skapa en metod getAllBooks som hanterar:
+// - Filtrering (category, author, search, price range, inStock)
+// - Sortering (sortBy, order)
+// - Paginering (page, limit)
+// - Returnera med pagination-info
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">const getAllBooks = async (req, res) =&gt; {
+  try {
+    const { 
+      category, 
+      author, 
+      minPrice, 
+      maxPrice, 
+      inStock,
+      search,
+      sortBy = 'title',
+      order = 'asc',
+      page = 1,
+      limit = 10 
+    } = req.query;
+    
+    const filter = {};
+    if (category) filter.category = category;
+    if (author) filter.author = new RegExp(author, 'i');
+    if (inStock !== undefined) filter.inStock = inStock === 'true';
+    
+    if (minPrice || maxPrice) {
+      filter.price = {};
+      if (minPrice) filter.price.$gte = Number(minPrice);
+      if (maxPrice) filter.price.$lte = Number(maxPrice);
+    }
+    
+    if (search) {
+      filter.$or = [
+        { title: new RegExp(search, 'i') },
+        { author: new RegExp(search, 'i') },
+        { description: new RegExp(search, 'i') }
+      ];
+    }
+    
+    const sort = { [sortBy]: order === 'desc' ? -1 : 1 };
+    const skip = (page - 1) * limit;
+    
+    const [books, total] = await Promise.all([
+      Book.find(filter)
+        .sort(sort)
+        .skip(skip)
+        .limit(Number(limit)),
+      Book.countDocuments(filter)
+    ]);
+    
+    res.json({
+      books,
+      pagination: {
+        page: Number(page),
+        limit: Number(limit),
+        total,
+        pages: Math.ceil(total / limit)
+      }
+    });
+    
+  } catch (error) {
+    res.status(500).json({ error: 'Kunde inte hämta böcker' });
+  }
+};
+</code></pre>
+</details>
+<h3 id="steg-4-validering-med-express-validator"><a class="header" href="#steg-4-validering-med-express-validator">Steg 4: Validering med express-validator</a></h3>
+<p>Använd middleware för validering istället för manuell kontroll.</p>
+<pre><code class="language-javascript">// TODO: Importera body och validationResult från express-validator
+// TODO: Skapa validateBook middleware-array med valideringar:
+// - title: notEmpty, trim, isLength 1-200
+// - author: notEmpty, trim, isLength 1-100
+// - isbn: optional, isISBN
+// - publishedYear: optional, isInt 1000-nuvarande år
+// - category: isIn enum-värden
+// - price: isFloat min 0
+// - description: optional, isLength max 1000
+// TODO: Skapa handleValidation middleware som kontrollerar errors
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">import { body, validationResult } from 'express-validator';
+
+const validateBook = [
+  body('title').notEmpty().trim().isLength({ min: 1, max: 200 }),
+  body('author').notEmpty().trim().isLength({ min: 1, max: 100 }),
+  body('isbn').optional().isISBN(),
+  body('publishedYear').optional().isInt({ min: 1000, max: new Date().getFullYear() }),
+  body('category').isIn(['fiction', 'non-fiction', 'science', 'history', 'biography']),
+  body('price').isFloat({ min: 0 }),
+  body('description').optional().isLength({ max: 1000 })
+];
+
+const handleValidation = (req, res, next) =&gt; {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      error: 'Valideringsfel',
+      details: errors.array()
+    });
+  }
+  next();
+};
+</code></pre>
+<p><strong>Förklaring:</strong></p>
+<ul>
+<li><code>express-validator</code> ger kraftfulla valideringsfunktioner</li>
+<li><code>validationResult</code> samlar alla valideringsfel</li>
+<li>Middleware kan användas på flera routes</li>
+</ul>
+</details>
+<h3 id="steg-5-komplett-api-struktur"><a class="header" href="#steg-5-komplett-api-struktur">Steg 5: Komplett API-struktur</a></h3>
+<p>Nu ska du sätta ihop allt: routes, error handling, och health check.</p>
+<pre><code class="language-javascript">// TODO: Skapa alla routes för books (GET, GET by id, POST, PUT, DELETE)
+// Tips: Skapa funktioner för getAllBooks, getBookById, createBook, updateBook, deleteBook
+// TODO: Lägg till health check endpoint
+// TODO: Lägg till 404 handler för /api/* routes
+// TODO: Lägg till global error handler
+// TODO: Exportera app
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">// Controller functions
+const getAllBooks = async (req, res) =&gt; {
+  // ... (se tidigare implementation)
+};
+
+const getBookById = async (req, res) =&gt; {
+  try {
+    const book = await Book.findById(req.params.id);
+    if (!book) {
+      return res.status(404).json({ error: 'Bok inte hittad' });
+    }
+    res.json(book);
+  } catch (error) {
+    res.status(500).json({ error: 'Kunde inte hämta bok' });
+  }
+};
+
+const createBook = async (req, res) =&gt; {
+  try {
+    const book = new Book(req.body);
+    const savedBook = await book.save();
+    res.status(201)
+       .location(`/api/books/${savedBook._id}`)
+       .json(savedBook);
+  } catch (error) {
+    if (error.code === 11000) {
+      return res.status(409).json({ error: 'ISBN finns redan' });
+    }
+    res.status(500).json({ error: 'Kunde inte skapa bok' });
+  }
+};
+
+const updateBook = async (req, res) =&gt; {
+  try {
+    req.body.updatedAt = new Date();
+    const book = await Book.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+    if (!book) {
+      return res.status(404).json({ error: 'Bok inte hittad' });
+    }
+    res.json(book);
+  } catch (error) {
+    res.status(500).json({ error: 'Kunde inte uppdatera bok' });
+  }
+};
+
+const deleteBook = async (req, res) =&gt; {
+  try {
+    const book = await Book.findByIdAndDelete(req.params.id);
+    if (!book) {
+      return res.status(404).json({ error: 'Bok inte hittad' });
+    }
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ error: 'Kunde inte ta bort bok' });
+  }
+};
+
+// API Routes
+app.get('/api/books', getAllBooks);
+app.get('/api/books/:id', getBookById);
+app.post('/api/books', validateBook, handleValidation, createBook);
+app.put('/api/books/:id', validateBook, handleValidation, updateBook);
+app.delete('/api/books/:id', deleteBook);
+
+// Health check
+app.get('/api/health', (req, res) =&gt; {
+  res.json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
+  });
+});
+
+// 404 handler
+app.use('/api/*', (req, res) =&gt; {
+  res.status(404).json({ error: 'Endpoint finns inte' });
+});
+
+// Global error handler
+app.use((err, req, res, next) =&gt; {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Något gick fel!' });
+});
+
+export default app;
+</code></pre>
+<p><strong>Förklaring:</strong></p>
+<ul>
+<li>Funktionsbaserade controllers är enklare än klasser för REST routes</li>
+<li>Health check används för att verifiera att API:et är igång</li>
+<li>404 handler fångar alla okända API-routes</li>
+<li>Global error handler fångar oväntade fel</li>
+<li>Middleware körs i ordning deklarerats</li>
+</ul>
+</details>
+<h2 id="api-dokumentation-och-testning"><a class="header" href="#api-dokumentation-och-testning">API-dokumentation och testning</a></h2>
+<h3 id="openapiswagger-dokumentation"><a class="header" href="#openapiswagger-dokumentation">OpenAPI/Swagger dokumentation</a></h3>
+<p>OpenAPI (tidigare Swagger) är ett standardformat för att dokumentera REST API:er.</p>
+<pre><code class="language-javascript">/**
+ * @swagger
+ * /api/books:
+ *   get:
+ *     summary: Hämta alla böcker
+ *     parameters:
+ *       - in: query
+ *         name: category
+ *         schema:
+ *           type: string
+ *         description: Filtrera efter kategori
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         description: Sidnummer för pagination
+ *     responses:
+ *       200:
+ *         description: Lista av böcker
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 books:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Book'
+ *                 pagination:
+ *                   type: object
+ */
+</code></pre>
+<h3 id="testning-med-curl"><a class="header" href="#testning-med-curl">Testning med cURL</a></h3>
+<p>cURL är ett verktyg för att testa API:er från kommandoraden.</p>
+<pre><code class="language-bash"># Hämta alla böcker
+curl -X GET "http://localhost:3000/api/books"
+
+# Hämta böcker med filter
+curl -X GET "http://localhost:3000/api/books?category=fiction&amp;page=1&amp;limit=5"
+
+# Skapa ny bok
+curl -X POST "http://localhost:3000/api/books" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "1984",
+    "author": "George Orwell",
+    "category": "fiction",
+    "price": 199,
+    "publishedYear": 1949
+  }'
+
+# Uppdatera bok
+curl -X PUT "http://localhost:3000/api/books/BOOK_ID" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "1984 - Updated",
+    "author": "George Orwell",
+    "category": "fiction",
+    "price": 249,
+    "publishedYear": 1949
+  }'
+
+# Ta bort bok
+curl -X DELETE "http://localhost:3000/api/books/BOOK_ID"
+</code></pre>
+<h2 id="best-practices-för-restful-apier"><a class="header" href="#best-practices-för-restful-apier">Best Practices för RESTful API:er</a></h2>
+<h3 id="1-rate-limiting"><a class="header" href="#1-rate-limiting">1. Rate Limiting</a></h3>
+<p>Rate limiting skyddar ditt API från överbelastning och missbruk.</p>
+<h4 id="Övning-implementera-rate-limiting"><a class="header" href="#Övning-implementera-rate-limiting">Övning: Implementera rate limiting</a></h4>
+<pre><code class="language-javascript">// TODO: Importera express-rate-limit
+// TODO: Skapa en limiter med:
+// - windowMs: 15 minuter
+// - max: 100 requests per IP
+// - Ett passande felmeddelande
+// TODO: Applicera på /api/ routes
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">import rateLimit from 'express-rate-limit';
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minuter
+  max: 100, // Max 100 requests per IP
+  message: {
+    error: 'För många förfrågningar, försök igen senare'
+  }
+});
+
+app.use('/api/', limiter);
+</code></pre>
+<p><strong>Förklaring:</strong></p>
+<ul>
+<li><code>windowMs</code> definierar tidsfönstret</li>
+<li><code>max</code> är max antal requests inom fönstret</li>
+<li>Rate limiting skyddar mot DDoS-attacker och missbruk</li>
+</ul>
+</details>
+<h3 id="2-cors-hantering"><a class="header" href="#2-cors-hantering">2. CORS-hantering</a></h3>
+<p>CORS (Cross-Origin Resource Sharing) behövs när frontend och backend körs på olika domäner.</p>
+<h4 id="Övning-konfigurera-cors"><a class="header" href="#Övning-konfigurera-cors">Övning: Konfigurera CORS</a></h4>
+<pre><code class="language-javascript">// TODO: Importera cors
+// TODO: Konfigurera CORS med:
+// - Tillåtna origins (localhost:3000 och din produktionsdomain)
+// - Tillåtna metoder (GET, POST, PUT, DELETE)
+// - Tillåtna headers (Content-Type, Authorization)
+// TODO: Applicera på app
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">import cors from 'cors';
+
+app.use(cors({
+  origin: ['http://localhost:3000', 'https://myapp.com'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+</code></pre>
+<p><strong>Förklaring:</strong></p>
+<ul>
+<li>CORS måste konfigureras korrekt för att frontend ska kunna anropa API:et</li>
+<li><code>origin</code> specificerar vilka domäner som tillåts</li>
+<li><code>methods</code> och <code>allowedHeaders</code> begränsar vad som är tillåtet</li>
+</ul>
+</details>
+<h3 id="3-säkerhet"><a class="header" href="#3-säkerhet">3. Säkerhet</a></h3>
+<p>Säkerhet är kritiskt för produktions-API:er.</p>
+<h4 id="Övning-lägg-till-säkerhetsheaders"><a class="header" href="#Övning-lägg-till-säkerhetsheaders">Övning: Lägg till säkerhetsheaders</a></h4>
+<pre><code class="language-javascript">// TODO: Importera helmet
+// TODO: Applicera helmet middleware
+// TODO: Begränsa JSON body size till 10mb
+// Tips: Använd express.json({ limit: '10mb' })
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-javascript">import helmet from 'helmet';
+
+app.use(helmet()); // Säkerhetshuvuden
+app.use(express.json({ limit: '10mb' })); // Begränsa request size
+</code></pre>
+<p><strong>Förklaring:</strong></p>
+<ul>
+<li><code>helmet</code> lägger till säkerhetsheaders automatiskt</li>
+<li>Body size limit skyddar mot stora requests som kan överbelasta servern</li>
+<li>Dessa är grundläggande säkerhetsåtgärder som bör vara standard</li>
+</ul>
+</details>
+<h3 id="vanliga-misstag"><a class="header" href="#vanliga-misstag">Vanliga misstag</a></h3>
+<ol>
+<li><strong>Glömma felhantering:</strong> Alltid använd try/catch i async routes</li>
+<li><strong>Felaktig 404-hantering:</strong> Kontrollera om resultatet är null innan du använder det</li>
+<li><strong>Exponera interna fel:</strong> Skicka inte <code>error.message</code> direkt till klienten i produktion</li>
+<li><strong>Glömma validering:</strong> Validera alltid användarinput</li>
+<li><strong>Sakna rate limiting:</strong> Låt inte en användare överbelasta ditt API</li>
+</ol>
+<h2 id="sammanfattning"><a class="header" href="#sammanfattning">Sammanfattning</a></h2>
+<p>RESTful API:er ger dig en solid grund för att bygga skalbara och underhållbara backend-tjänster. Genom att följa REST-principerna skapar du API:er som är intuitiva för utvecklare att använda och enkla att underhålla över tid.</p>
+<h3 id="viktiga-takeaways"><a class="header" href="#viktiga-takeaways">Viktiga takeaways:</a></h3>
+<ul>
+<li><strong>HTTP-metoder</strong> har specifika syften (GET=hämta, POST=skapa, PUT=ersätta, PATCH=uppdatera, DELETE=ta bort)</li>
+<li><strong>Statuskoder</strong> kommunicerar resultatet tydligt</li>
+<li><strong>Resursbaserade URL:er</strong> gör API:et intuitivt</li>
+<li><strong>Validering och felhantering</strong> är kritiskt för robusthet</li>
+<li><strong>Best practices</strong> (rate limiting, CORS, säkerhet) gör API:et produktionsklart</li>
+</ul>
+<h3 id="nästa-steg"><a class="header" href="#nästa-steg">Nästa steg:</a></h3>
+<ul>
+<li>Lär dig om <strong>autentisering och säkerhet</strong> för att skydda dina API:er</li>
+<li>Implementera <strong>testning</strong> för dina API-endpoints</li>
+<li>Utforska <strong>API-dokumentation</strong> med Swagger/OpenAPI</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_9/expressjs.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_9/mongodb.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_9/expressjs.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_9/mongodb.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,342 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Responsiv design - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="responsiv-design-med-media-queries"><a class="header" href="#responsiv-design-med-media-queries">Responsiv design med Media Queries</a></h1>
+<p>Idag surfar människor på webben från en mängd olika enheter: stora datorskärmar, bärbara datorer, surfplattor och mobiler av alla storlekar. En modern webbplats måste kunna anpassa sin layout och sitt innehåll för att se bra ut och vara användbar på alla dessa skärmar. Detta kallas <strong>responsiv web design (responsive web design, RWD)</strong>.</p>
+<blockquote>
+<p><strong>Motivation:</strong><br />
+Responsiv design gör att din webbplats fungerar och ser bra ut på alla enheter, vilket förbättrar användarupplevelsen och gör sidan mer tillgänglig.</p>
+</blockquote>
+<hr />
+<h2 id="varför-responsiv-design"><a class="header" href="#varför-responsiv-design">Varför responsiv design?</a></h2>
+<ul>
+<li><strong>Användarupplevelse:</strong> En sida som är designad för en stor skärm blir ofta svår att använda på en mobil (pyttesmå texter, knappar som är svåra att träffa, behov av att zooma och panorera). Responsiv design ger en optimerad upplevelse oavsett enhet.</li>
+<li><strong>SEO:</strong> Google prioriterar mobilvänliga webbplatser i sina sökresultat.</li>
+<li><strong>Underhåll:</strong> Istället för att bygga och underhålla separata webbplatser för dator och mobil (vilket var vanligt förr), har man en enda kodbas som anpassar sig.</li>
+</ul>
+<hr />
+<h2 id="nyckelkomponenter-i-responsiv-design"><a class="header" href="#nyckelkomponenter-i-responsiv-design">Nyckelkomponenter i responsiv design</a></h2>
+<ol>
+<li><strong>Flexibel grid-baserad layout:</strong> Använd relativa enheter (som procent <code>%</code>, <code>fr</code> i CSS Grid eller Flexbox) istället för fasta pixelvärden för att skapa kolumner och layoutelement som kan ändra storlek.</li>
+<li><strong>Flexibla bilder och media:</strong> Se till att bilder och andra mediafiler skalar ner proportionerligt för att passa mindre skärmar, t.ex. med <code>max-width: 100%;</code>.</li>
+<li><strong>Media Queries:</strong> Använd CSS Media Queries för att applicera olika stilregler vid olika skärmstorlekar eller andra enhetsegenskaper.</li>
+</ol>
+<hr />
+<h2 id="viewport-meta-taggen"><a class="header" href="#viewport-meta-taggen">Viewport meta-taggen</a></h2>
+<p>Det allra första steget för att göra en sida responsiv är att inkludera <strong>viewport meta-taggen</strong> i HTML-dokumentets <code>&lt;head&gt;</code>:</p>
+<pre><code class="language-html">&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+</code></pre>
+<ul>
+<li><strong>Vad den gör:</strong> Talar om för webbläsaren (särskilt på mobila enheter) hur den ska hantera sidans dimensioner och skalning.
+<ul>
+<li><code>width=device-width</code>: Sätter sidans bredd till att vara densamma som enhetens skärmbredd.</li>
+<li><code>initial-scale=1.0</code>: Sätter den initiala zoomnivån till 100% (ingen zoom från start).</li>
+</ul>
+</li>
+<li><strong>Utan denna tagg</strong> kommer mobila webbläsare ofta att försöka visa sidan som om den vore på en datorskärm och sedan förminska den, vilket leder till oläslig text och dålig användarupplevelse.</li>
+</ul>
+<hr />
+<h2 id="media-queries-anpassa-stilar-för-olika-skärmar"><a class="header" href="#media-queries-anpassa-stilar-för-olika-skärmar">Media Queries: Anpassa stilar för olika skärmar</a></h2>
+<p>Media Queries är kärnan i hur vi applicerar olika CSS-regler baserat på enhetens egenskaper. Den vanligaste egenskapen att titta på är skärmens bredd.</p>
+<ul>
+<li><strong>Syntax:</strong> En Media Query skrivs med <code>@media</code> följt av en eller flera villkor inom parentes. CSS-reglerna som ska gälla <em>endast</em> när villkoret är uppfyllt placeras inom måsvingar (<code>{ }</code>).</li>
+</ul>
+<pre><code class="language-css">/* Standardstilar (gäller alltid, ofta för mindre skärmar först – mobile-first design) */
+body {
+  font-size: 16px;
+}
+.container {
+  width: 95%; /* Smalare på små skärmar */
+  margin: 0 auto;
+}
+
+/* Stilar som appliceras ENDAST när skärmbredden är 768px ELLER MER */
+@media (min-width: 768px) {
+  body {
+    font-size: 18px; /* Lite större text på större skärmar */
+  }
+  .container {
+    width: 80%; /* Bredare container på större skärmar */
+    max-width: 960px; /* Men inte bredare än 960px */
+  }
+  /* Fler regler för layout, t.ex. visa element sida vid sida */
+}
+
+/* Stilar som appliceras ENDAST när skärmbredden är 1200px ELLER MER */
+@media (min-width: 1200px) {
+  body {
+    background-color: lightblue;
+  }
+  /* Ännu fler anpassningar för riktigt stora skärmar */
+}
+</code></pre>
+<ul>
+<li>
+<p><strong>Vanliga villkor:</strong></p>
+<ul>
+<li><code>min-width</code>: Applicerar reglerna när skärmbredden är <em>minst</em> det angivna värdet.</li>
+<li><code>max-width</code>: Applicerar reglerna när skärmbredden är <em>högst</em> det angivna värdet.</li>
+<li>Man kan kombinera villkor med <code>and</code>, <code>or</code>, <code>not</code>.</li>
+<li>Man kan också testa andra egenskaper som <code>orientation</code> (portrait/landscape), <code>resolution</code>, etc.</li>
+</ul>
+</li>
+<li>
+<p><strong>Breakpoints (brytpunkter):</strong> De specifika skärmbredder där layouten eller stilarna ändras (t.ex. <code>768px</code>, <code>1200px</code> i exemplet ovan) kallas <strong>breakpoints</strong>. Valet av breakpoints beror på designen och innehållet, inte nödvändigtvis på specifika enheters exakta dimensioner. Vanliga breakpoints kan vara runt t.ex. 600px, 768px, 992px, 1200px.</p>
+</li>
+</ul>
+<hr />
+<h2 id="relativa-enheter"><a class="header" href="#relativa-enheter">Relativa enheter</a></h2>
+<p>För att skapa flexibla och responsiva designer är det ofta bättre att använda <strong>relativa CSS-enheter</strong> istället för fasta (<code>px</code>):</p>
+<ul>
+<li><code>%</code> (procent): Relativt till förälderelementets motsvarande egenskap (t.ex. <code>width: 50%;</code> tar upp halva förälderns bredd).</li>
+<li><code>em</code>: Relativt till <em>förälderelementets</em> <code>font-size</code>.</li>
+<li><code>rem</code> (root em): Relativt till <strong>rot-elementets</strong> (<code>&lt;html&gt;</code>) <code>font-size</code>. <strong>Rekommenderas ofta</strong> för textstorlekar och ibland för padding/margin, eftersom det gör det enkelt att skala hela gränssnittet genom att bara ändra rot-fontstorleken (vilket också respekterar användarens webbläsarinställningar).</li>
+<li><code>vw</code> (viewport width): 1vw är 1% av webbläsarfönstrets bredd.</li>
+<li><code>vh</code> (viewport height): 1vh är 1% av webbläsarfönstrets höjd.</li>
+</ul>
+<p>Genom att använda dessa enheter kan element och text anpassa sin storlek mer flytande när fönsterstorleken ändras.</p>
+<hr />
+<h2 id="illustration-media-queries-och-breakpoints"><a class="header" href="#illustration-media-queries-och-breakpoints">Illustration: Media Queries och breakpoints</a></h2>
+<pre class="mermaid">flowchart TD
+    A[Bas-CSS för mobil]
+    B{Breakpoint: min-width 768px}
+    C{Breakpoint: min-width 1200px}
+    D[Stilar för surfplatta/laptop]
+    E[Stilar för desktop]
+
+    A --&gt; B
+    B --&gt; D
+    D --&gt; C
+    C --&gt; E
+</pre>
+<hr />
+<h2 id="sammanfattning"><a class="header" href="#sammanfattning">Sammanfattning</a></h2>
+<ul>
+<li>Responsiv design handlar om att skapa webbplatser som fungerar bra på alla enheter.</li>
+<li>Detta uppnås genom flexibla layouter, flexibla bilder och framför allt <strong>Media Queries</strong>.</li>
+<li>Glöm inte <strong>viewport meta-taggen</strong> i HTML:ens <code>&lt;head&gt;</code>.</li>
+<li>Media Queries (<code>@media</code>) låter oss applicera olika CSS-regler vid specifika <strong>breakpoints</strong> (oftast baserat på <code>min-width</code> eller <code>max-width</code>).</li>
+<li>Att använda <strong>relativa enheter</strong> som <code>rem</code> och <code>%</code> bidrar också till flexibiliteten.</li>
+</ul>
+<p>I nästa avsnitt tittar vi specifikt på mobile-first design</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_3/boxmodellen.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_3/mobile-first.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_3/boxmodellen.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_3/mobile-first.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

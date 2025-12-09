@@ -1,0 +1,339 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Introduktion till JavaScript - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="introduktion-till-javascript"><a class="header" href="#introduktion-till-javascript">Introduktion till JavaScript</a></h1>
+<p>JavaScript är det programmeringsspråk som gör webbsidor interaktiva och dynamiska. Med JavaScript kan du reagera på användarens handlingar, ändra innehåll på sidan utan att ladda om den, skapa spel, animationer och mycket mer. Nästan alla moderna webbplatser använder JavaScript på något sätt.</p>
+<hr />
+<h2 id="vad-är-javascript"><a class="header" href="#vad-är-javascript">Vad är JavaScript?</a></h2>
+<ul>
+<li><strong>JavaScript</strong> är ett skriptspråk som körs i webbläsaren (client-side), men kan även köras på servrar (t.ex. med Node.js).</li>
+<li>Det är ett av de tre grundläggande språken för webben:
+<ol>
+<li><strong>HTML</strong> – strukturen på sidan</li>
+<li><strong>CSS</strong> – utseendet och layouten</li>
+<li><strong>JavaScript</strong> – interaktivitet och logik</li>
+</ol>
+</li>
+</ul>
+<hr />
+<h2 id="varför-använda-javascript"><a class="header" href="#varför-använda-javascript">Varför använda JavaScript?</a></h2>
+<ul>
+<li><strong>Interaktivitet:</strong> Gör det möjligt att reagera på klick, tangenttryckningar, formulär och andra händelser.</li>
+<li><strong>Dynamiskt innehåll:</strong> Ändra text, bilder och layout utan att ladda om sidan.</li>
+<li><strong>Validering:</strong> Kontrollera formulär innan de skickas till servern.</li>
+<li><strong>Animationer:</strong> Skapa rörelse och effekter.</li>
+<li><strong>Kommunikation:</strong> Hämta och skicka data till andra tjänster (API:er) utan att ladda om sidan.</li>
+</ul>
+<hr />
+<h2 id="hur-lägger-man-till-javascript-i-en-webbsida"><a class="header" href="#hur-lägger-man-till-javascript-i-en-webbsida">Hur lägger man till JavaScript i en webbsida?</a></h2>
+<p>JavaScript kan inkluderas på två huvudsakliga sätt:</p>
+<h3 id="1-inbäddat-i-html-filen"><a class="header" href="#1-inbäddat-i-html-filen">1. Inbäddat i HTML-filen</a></h3>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang="sv"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;title&gt;Min första JS-sida&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Hej!&lt;/h1&gt;
+  &lt;script&gt;
+    console.log("Sidan är laddad!");
+    alert("Välkommen till min sida!");
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<h3 id="2-extern-javascript-fil"><a class="header" href="#2-extern-javascript-fil">2. Extern JavaScript-fil</a></h3>
+<p>Det rekommenderas att lägga JavaScript i en separat fil för bättre struktur och återanvändbarhet.</p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang="sv"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;title&gt;Extern JS&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Exempel&lt;/h1&gt;
+  &lt;script src="script.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p><strong>I filen <code>script.js</code>:</strong></p>
+<pre><code class="language-javascript">console.log("Detta kommer från en extern fil!");
+</code></pre>
+<h3 id="3-importera-javascript-som-modul"><a class="header" href="#3-importera-javascript-som-modul">3. Importera JavaScript som modul</a></h3>
+<p>Du kan också inkludera JavaScript som en modul med attributet <code>type="module"</code>. Det gör det möjligt att använda <code>import</code> och <code>export</code> för att dela kod mellan filer.</p>
+<pre><code class="language-html">&lt;script type="module" src="main.js"&gt;&lt;/script&gt;
+</code></pre>
+<p><strong>I filen <code>main.js</code>:</strong></p>
+<pre><code class="language-javascript">import { minFunktion } from './utils.js';
+
+minFunktion();
+</code></pre>
+<p>Detta är användbart för större projekt där du vill strukturera din kod i flera filer.</p>
+<h2 id="namngivning-av-javascript-filer"><a class="header" href="#namngivning-av-javascript-filer">Namngivning av JavaScript-filer</a></h2>
+<p>När du skapar JavaScript-filer är det viktigt att ge dem tydliga och beskrivande namn. Det gör det enklare att förstå vad filen innehåller och underlättar när projektet växer.</p>
+<ul>
+<li>
+<p><strong>Korta filnamn:</strong><br />
+Används ofta för enklare eller generella skript.</p>
+<ul>
+<li><code>script.js</code></li>
+<li><code>main.js</code></li>
+<li><code>app.js</code></li>
+</ul>
+</li>
+<li>
+<p><strong>Längre och mer beskrivande filnamn:</strong><br />
+För större projekt eller specifika funktioner är det vanligt att använda camelCase (små bokstäver och stor bokstav för varje nytt ord).</p>
+<ul>
+<li><code>userProfile.js</code></li>
+<li><code>dataFetcher.js</code></li>
+<li><code>formValidator.js</code></li>
+</ul>
+</li>
+</ul>
+<p>Att använda beskrivande namn gör koden lättare att underhålla och förstå för både dig själv och andra utvecklare.</p>
+<hr />
+<h2 id="grunder-variabler-och-utskrift"><a class="header" href="#grunder-variabler-och-utskrift">Grunder: Variabler och utskrift</a></h2>
+<h3 id="variabler"><a class="header" href="#variabler">Variabler</a></h3>
+<p>En variabel används för att spara data som kan användas senare.</p>
+<pre><code class="language-javascript">let namn = "Anna";
+let alder = 25;
+</code></pre>
+<h3 id="utskrift"><a class="header" href="#utskrift">Utskrift</a></h3>
+<ul>
+<li><strong>Till konsolen:</strong><br />
+<code>console.log("Hej!");</code></li>
+<li><strong>Som popup:</strong><br />
+<code>alert("Varning!");</code></li>
+</ul>
+<hr />
+<h2 id="sammanfattning"><a class="header" href="#sammanfattning">Sammanfattning</a></h2>
+<ul>
+<li>JavaScript gör webbsidor interaktiva och dynamiska.</li>
+<li>Det kan läggas till direkt i HTML eller i en extern fil.</li>
+<li>Med JavaScript kan du skapa allt från enkla effekter till avancerade webbapplikationer.</li>
+<li>Nästa steg är att lära dig grunderna i programmering med JavaScript: variabler, datatyper, operatorer och logik.</li>
+</ul>
+<p>Nu är du redo att börja skriva din första JavaScript</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_4/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_4/variabler.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_4/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_4/variabler.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>
