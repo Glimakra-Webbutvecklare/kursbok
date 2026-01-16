@@ -120,309 +120,337 @@ Servern fungerar som den enda källan till sanning (single source of truth). All
 
 Nätverkslatens (network latency) är tiden det tar för data att resa från klient till server och tillbaka. För multiplayer-spel kan detta skapa märkbara förseningar.
 
-### Client-side Prediction
+### Client-side Prediction (översikt)
 
-Tänk på det som att "gissa" vad som kommer att hända medan du väntar på serverns svar:
+Client-side prediction är en teknik där klienten "gissar" vad som kommer att hända och visar resultatet direkt, medan den väntar på serverns bekräftelse. När serverns svar kommer korrigeras eventuella skillnader. Detta gör spelet kännas mer responsivt trots nätverksfördröjning. Detaljerad implementation av client-side prediction och server reconciliation ligger utanför denna moduls scope.
+
+## Bygg en enkel multiplayer-server: Steg för steg
+
+Låt oss bygga en enkel multiplayer-server steg för steg. Vi börjar med grunderna och bygger vidare.
+
+### Steg 1: Grundläggande server-setup
+
+Först behöver vi en WebSocket-server som lyssnar på anslutningar:
 
 ```javascript
-// Enkel client-side prediction
-class GameClient {
+// SERVER - Steg 1: Grundläggande setup
+const WebSocket = require('ws');
+const wss = new WebSocket.Server({ port: 3000 });
+
+// Vi använder Map för att lagra spelare eftersom Map är mer robust
+// för dynamiska nycklar och ger oss bättre prestanda vid många spelare
+const gameState = {
+  players: new Map() // playerId -> { x, y, color }
+};
+
+wss.on('connection', (ws) => {
+  console.log('Ny anslutning');
+  // Här kommer vi hantera anslutningar...
+});
+```
+
+**Uppgift**: Skapa en fil `server.js` och sätt upp grundstrukturen ovan. Testa att starta servern med `node server.js`.
+
+### Steg 2: Hantera nya spelare
+
+När en spelare ansluter behöver vi:
+1. Skapa ett unikt ID för spelaren
+2. Lägga till spelaren i `gameState`
+3. Skicka initialt tillstånd tillbaka
+
+```javascript
+wss.on('connection', (ws) => {
+  // Skapa unikt ID för spelaren
+  const playerId = Math.random().toString(36).substr(2, 9);
+  
+  // Lägg till spelare med startposition och färg
+  gameState.players.set(playerId, {
+    id: playerId,
+    x: Math.random() * 400,  // Slumpmässig x-position
+    y: Math.random() * 400,   // Slumpmässig y-position
+    color: `#${Math.floor(Math.random()*16777215).toString(16)}` // Slumpmässig färg
+  });
+  
+  // Skicka initialt tillstånd till den nya spelaren
+  ws.send(JSON.stringify({
+    type: 'init',
+    playerId: playerId,
+    gameState: Array.from(gameState.players.values())
+  }));
+  
+  // TODO: Skicka till alla andra spelare att någon ny anslöt
+});
+```
+
+**Uppgift**: Implementera funktionen `broadcastToOthers()` som skickar meddelanden till alla utom en specifik spelare. Tänk på att kontrollera att WebSocket-anslutningen är öppen innan du skickar.
+
+### Steg 3: Hantera spelarrörelser
+
+När en spelare vill röra sig skickar klienten ett meddelande. Servern måste:
+1. Validera och uppdatera positionen (auktoritativt)
+2. Skicka den nya positionen till alla spelare
+
+```javascript
+ws.on('message', (message) => {
+  const data = JSON.parse(message);
+  
+  if (data.type === 'move') {
+    const player = gameState.players.get(playerId);
+    if (!player) return;
+    
+    // SERVER VALIDERAR OCH UPPDATERAR (auktoritativt)
+    const speed = 5;
+    // TODO: Implementera rörelselogik för alla fyra riktningar
+    // Tänk på att begränsa positionerna till kanvas-storleken (0-400)
+    
+    // TODO: Skicka uppdaterad position till alla spelare
+  }
+});
+```
+
+**Uppgift**: Implementera rörelselogiken för alla fyra riktningar (up, down, left, right). Använd `Math.max()` och `Math.min()` för att hålla positionerna inom gränserna.
+
+### Steg 4: Hantera när spelare lämnar
+
+När en spelare kopplar från måste vi:
+1. Ta bort spelaren från `gameState`
+2. Meddela alla andra spelare
+
+```javascript
+ws.on('close', () => {
+  // TODO: Ta bort spelaren från gameState
+  // TODO: Meddela alla andra spelare att spelaren lämnade
+});
+```
+
+**Uppgift**: Implementera hanteringen när en spelare kopplar från.
+
+### Steg 5: Klienten - Grundstruktur
+
+Nu ska vi bygga klienten. Börja med grundstrukturen:
+
+```javascript
+// KLIENT - Steg 1: Grundstruktur
+class SimpleGameClient {
   constructor() {
     this.socket = new WebSocket('ws://localhost:3000');
-    this.localPlayer = { x: 100, y: 100 };
-    this.inputHistory = [];
-  }
-  
-  handleInput(direction) {
-    const input = {
-      direction: direction,
-      timestamp: Date.now(),
-      sequenceNumber: this.getNextSequence()
-    };
+
+    // Map är en inbyggd datastruktur i JavaScript som låter dig lagra nyckel-värde-par,
+    // där nycklarna kan vara av vilken typ som helst (t.ex. strängar, siffror, objekt).
+    // I multiplayer-spel passar Map bättre än vanliga objekt för att lagra spelare,
+    // eftersom varje spelare kan ha ett unikt id (t.ex. en socket-id) som nyckel.
+    // Det blir enkelt att lägga till, ta bort och slå upp spelare utan krockar mellan olika typer av nycklar.
+    this.players = new Map(); 
+    this.myPlayerId = null;
     
-    // Spara för senare reconciliation
-    this.inputHistory.push(input);
-    
-    // Applicera omedelbart lokalt (prediction)
-    this.movePlayer(this.localPlayer, direction);
-    
-    // Skicka till server
-    this.socket.send(JSON.stringify({
-      type: 'player_input',
-      input: input
-    }));
-  }
-  
-  movePlayer(player, direction) {
-    const speed = 5;
-    switch (direction) {
-      case 'up': player.y -= speed; break;
-      case 'down': player.y += speed; break;
-      case 'left': player.x -= speed; break;
-      case 'right': player.x += speed; break;
-    }
+    // TODO: Sätt upp event listeners för meddelanden från servern
   }
 }
 ```
 
-### Server Reconciliation
+**Uppgift**: Skapa en HTML-fil med en `<canvas>` (id: `gameCanvas`, storlek 400x400) och en `GameClient`-klass. Anslut till servern.
 
-När servern skickar tillbaka den "riktiga" positionen måste klienten jämföra och korrigera eventuella skillnader:
+### Steg 6: Hantera meddelanden från servern
+
+Klienten måste hantera olika typer av meddelanden:
 
 ```javascript
-// Hantera serveruppdateringar
-onServerUpdate(serverState) {
-  const serverPlayer = serverState.players[this.playerId];
-  const localPlayer = this.localPlayer;
+this.socket.onmessage = (event) => {
+  const data = JSON.parse(event.data);
   
-  // Beräkna skillnad i position
-  const positionDiff = Math.sqrt(
-    Math.pow(serverPlayer.x - localPlayer.x, 2) +
-    Math.pow(serverPlayer.y - localPlayer.y, 2)
-  );
-  
-  // Om skillnaden är för stor, korrigera
-  if (positionDiff > 5) {
-    this.reconcileWithServer(serverPlayer);
+  if (data.type === 'init') {
+    // TODO: Spara ditt eget playerId
+    // TODO: Lägg till alla spelare från gameState
+    // TODO: Rendera spelet
   }
-}
+  
+  if (data.type === 'player_joined') {
+    // TODO: Lägg till den nya spelaren
+    // TODO: Rendera spelet
+  }
+  
+  if (data.type === 'player_moved') {
+    // TODO: Uppdatera spelarens position från servern
+    // TODO: Rendera spelet
+  }
+  
+  if (data.type === 'player_left') {
+    // TODO: Ta bort spelaren
+    // TODO: Rendera spelet
+  }
+};
+```
 
-reconcileWithServer(serverPlayer) {
-  // Sätt till serverns position
-  this.localPlayer.x = serverPlayer.x;
-  this.localPlayer.y = serverPlayer.y;
+**Uppgift**: Implementera hanteringen för alla meddelandetyper. Kom ihåg att klienten bara visar vad servern säger - den uppdaterar inte positioner själv.
+
+### Steg 7: Skicka input till servern
+
+Klienten skickar input när spelaren trycker på piltangenterna:
+
+```javascript
+document.addEventListener('keydown', (e) => {
+  if (!this.myPlayerId) return;
   
-  // Återapplicera inputs som servern inte hade sett ännu
-  const serverTime = serverPlayer.timestamp;
-  const inputsToReplay = this.inputHistory.filter(
-    input => input.timestamp > serverTime
-  );
+  // TODO: Konvertera tangenttryckningar till riktningar
+  // ArrowUp -> 'up', ArrowDown -> 'down', etc.
+  // const direction = ...
   
-  inputsToReplay.forEach(input => {
-    this.movePlayer(this.localPlayer, input.direction);
-  });
+  if (direction) {
+    // TODO: Skicka meddelande till servern med typ 'move' och riktningen
+  }
+});
+```
+
+**Uppgift**: Implementera tangentlyssnaren som skickar rörelsekommandon till servern.
+
+### Steg 8: Rendera spelet
+
+Slutligen behöver vi rendera alla spelare:
+
+```javascript
+render() {
+  const canvas = document.getElementById('gameCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, 400, 400);
+  
+  // TODO: Loopa över alla spelare och rita dem
+  // Tips: Använd player.color för färg, player.x och player.y för position
+  // Rita en kvadrat (20x20 pixlar) för varje spelare
+  // Markera din egen spelare med en svart kant
 }
 ```
 
-## Interpolation för mjuk rörelse
+**Uppgift**: Implementera render-funktionen. Testa att öppna flera flikar och se att spelarna syns för varandra.
 
-För att andra spelares rörelser ska se mjuka ut använder vi interpolation - som att "fylla i luckorna" mellan positionsuppdateringar:
+**Viktiga lärdomar:**
+- Servern är auktoritativ - den bestämmer alla positioner
+- Klienten skickar bara input och visar vad servern säger
+- Alla spelare får samma uppdateringar från servern
+- Detta gör det enkelt att validera och förhindra fusk
 
-```javascript
-// Mjuk rörelse för andra spelare
-class NetworkedPlayer {
-  constructor() {
-    this.positions = []; // Buffer av positioner från server
-    this.renderPosition = { x: 0, y: 0 };
-    this.interpolationDelay = 100; // 100ms fördröjning
-  }
-  
-  addServerPosition(position, timestamp) {
-    this.positions.push({
-      x: position.x,
-      y: position.y,
-      timestamp: timestamp
-    });
-    
-    // Behåll bara de senaste positionerna
-    const cutoff = Date.now() - 1000;
-    this.positions = this.positions.filter(p => p.timestamp > cutoff);
-  }
-  
-  update() {
-    const renderTime = Date.now() - this.interpolationDelay;
-    
-    // Hitta två positioner att interpolera mellan
-    let before = null;
-    let after = null;
-    
-    for (let i = 0; i < this.positions.length - 1; i++) {
-      if (this.positions[i].timestamp <= renderTime &&
-          this.positions[i + 1].timestamp >= renderTime) {
-        before = this.positions[i];
-        after = this.positions[i + 1];
-        break;
-      }
-    }
-    
-    if (before && after) {
-      // Interpolera mellan positionerna
-      const totalTime = after.timestamp - before.timestamp;
-      const targetTime = renderTime - before.timestamp;
-      const ratio = targetTime / totalTime;
-      
-      this.renderPosition.x = before.x + (after.x - before.x) * ratio;
-      this.renderPosition.y = before.y + (after.y - before.y) * ratio;
-    }
-  }
-}
-```
+### Utöka med Room Management
 
-## Room Management (Rumhantering)
+I exemplet ovan är alla spelare i samma "rum". Låt oss lägga till möjligheten att organisera spelare i separata spelrum.
 
-I de flesta multiplayer-spel behöver spelare organiseras i rooms (spelrum) eller lobbies:
+#### Steg 1: Skapa GameRoom-klassen
+
+Först behöver vi en klass som representerar ett spelrum:
 
 ```javascript
-// Enkel rumhantering
 class GameRoom {
   constructor(roomId, maxPlayers = 4) {
     this.id = roomId;
-    this.players = new Map();
+    this.players = new Map(); // playerId -> { socket, playerData }
     this.maxPlayers = maxPlayers;
-    this.gameState = 'waiting'; // waiting, playing, finished
-  }
-  
-  addPlayer(playerId, playerData) {
-    if (this.players.size >= this.maxPlayers) {
-      return { success: false, reason: 'Rummet är fullt' };
-    }
-    
-    this.players.set(playerId, {
-      id: playerId,
-      ...playerData,
-      ready: false
-    });
-    
-    // Meddela alla i rummet
-    this.broadcast({
-      type: 'player_joined',
-      player: playerData,
-      playerCount: this.players.size
-    });
-    
-    return { success: true };
-  }
-  
-  broadcast(message) {
-    this.players.forEach((player) => {
-      if (player.socket && player.socket.readyState === WebSocket.OPEN) {
-        player.socket.send(JSON.stringify(message));
-      }
-    });
-  }
-}
-```
-
-## Säkerhet och anti-cheat
-
-Multiplayer-spel är måltavlor för fuskare. Här är grundläggande säkerhetsåtgärder:
-
-### Input Validation (Indatavalidering)
-
-```javascript
-// Validera all input på servern
-class InputValidator {
-  static validateMove(player, input) {
-    // Kontrollera att input har rätt format
-    if (typeof input.direction !== 'string') {
-      return false;
-    }
-    
-    // Kontrollera giltiga riktningar
-    const validDirections = ['up', 'down', 'left', 'right'];
-    if (!validDirections.includes(input.direction)) {
-      return false;
-    }
-    
-    // Kontrollera hastighet (anti-speed hack)
-    const maxSpeed = 300; // pixels per sekund
-    const timeDiff = Date.now() - player.lastMoveTime;
-    const maxDistance = (maxSpeed * timeDiff) / 1000;
-    
-    if (player.distanceMoved > maxDistance) {
-      console.log(`Misstänkt hastighetsfusk från spelare ${player.id}`);
-      return false;
-    }
-    
-    return true;
-  }
-}
-```
-
-### Rate Limiting
-
-Förhindra spam genom att begränsa hur ofta en spelare kan skicka inputs:
-
-```javascript
-class RateLimiter {
-  constructor() {
-    this.playerInputCounts = new Map();
-    this.maxInputsPerSecond = 60;
-  }
-  
-  checkInputRate(playerId) {
-    const now = Date.now();
-    const playerData = this.playerInputCounts.get(playerId) || {
-      inputs: [],
-      lastCleanup: now
+    this.gameState = {
+      players: new Map() // Lokal gameState för detta rum
     };
-    
-    // Rensa gamla inputs varje sekund
-    if (now - playerData.lastCleanup > 1000) {
-      playerData.inputs = playerData.inputs.filter(
-        timestamp => now - timestamp < 1000
-      );
-      playerData.lastCleanup = now;
-    }
-    
-    // Lägg till ny input
-    playerData.inputs.push(now);
-    this.playerInputCounts.set(playerId, playerData);
-    
-    return playerData.inputs.length <= this.maxInputsPerSecond;
   }
+  
+  // TODO: Implementera addPlayer-metoden
+  // Den ska:
+  // 1. Kontrollera om rummet är fullt
+  // 2. Lägga till spelaren i både players och gameState
+  // 3. Skicka meddelande till alla i rummet
+  // 4. Returnera { success: true/false, reason: ... }
+  
+  // TODO: Implementera removePlayer-metoden
+  // Den ska ta bort spelaren och meddela andra
+  
+  // TODO: Implementera handleMove-metoden
+  // Den ska hantera rörelser (samma logik som tidigare)
+  
+  // TODO: Implementera broadcast-metoden
+  // Den ska skicka meddelanden till alla spelare i rummet
 }
 ```
 
-## Praktiska användningsområden
+**Uppgift**: Implementera `GameRoom`-klassen. Tänk på att varje rum har sin egen `gameState` så att spelare i olika rum inte ser varandra.
 
-### Realtidsstrategi (RTS)
-- Synkroniserade commands (kommandon) mellan spelare
-- Fog of war (krigsdimma) implementering
-- Resource management (resurshantering)
+#### Steg 2: Hantera rum i servern
 
-### Action-spel
-- Snabb input-respons krävs
-- Kollisionsdetektering i realtid
-- Smooth movement interpolation
+Nu behöver vi en Map för att lagra alla rum och uppdatera connection-hanteraren:
 
-### Turn-based spel
-- Enklare att implementera
-- Mindre krav på latens
-- Fokus på fair turn management
+```javascript
+const rooms = new Map(); // roomId -> GameRoom
 
-## Best Practices
+wss.on('connection', (ws) => {
+  const playerId = Math.random().toString(36).substr(2, 9);
+  let currentRoom = null;
+  
+  ws.on('message', (message) => {
+    const data = JSON.parse(message);
+    
+    if (data.type === 'join_room') {
+      const roomId = data.roomId || 'default';
+      
+      // TODO: Skapa rum om det inte finns
+      // TODO: Försök lägga till spelaren i rummet
+      // TODO: Om lyckat, spara currentRoom och skicka init-meddelande
+      // TODO: Om misslyckat, skicka felmeddelande
+    }
+    
+    if (data.type === 'move' && currentRoom) {
+      // TODO: Hantera rörelse via rummet
+    }
+  });
+  
+  ws.on('close', () => {
+    // TODO: Ta bort spelaren från rummet
+    // TODO: Ta bort rummet om det blir tomt
+  });
+});
+```
 
-**Arkitekturval**:
-- Använd authoritative server för competitive spel
-- Överväg P2P för casual co-op spel
-- Planera för skalbarhet från början
+**Uppgift**: Implementera rumhanteringen. Testa att skapa flera rum och se att spelare i olika rum inte ser varandra.
 
-**Prestanda**:
-- Optimera nätverkstrafik genom att bara skicka förändringar
-- Använd object pooling för ofta skapade objekt
-- Implementera lag compensation tekniker
+#### Steg 3: Uppdatera klienten
 
-**Säkerhet**:
-- Validera all input på servern
-- Implementera rate limiting
-- Använd SSL/TLS (wss://) för säker kommunikation
+Klienten behöver skicka ett `join_room`-meddelande när den ansluter:
 
-**Användarupplevelse**:
-- Implementera reconnection-hantering
-- Visa tydliga felmeddelanden
-- Ge feedback för nätverksstatus
+```javascript
+// I konstruktorn, efter att socket skapats:
+this.socket.onopen = () => {
+  // TODO: Skicka join_room-meddelande
+  // Använd ett rum-ID eller 'default' om inget anges
+};
+```
+
+**Uppgift**: Lägg till möjlighet att välja rum-ID (t.ex. via en input-ruta) och ansluta till det rummet.
+
+### Utöka för olika speltyper
+
+Den grundläggande strukturen kan anpassas för olika speltyper. Här är några idéer att experimentera med:
+
+**Turn-based spel** (t.ex. schack, brädpel):
+- Lägg till `gameState.currentTurn` som håller koll på vems tur det är
+- Validera på servern att bara spelaren vars tur det är kan göra drag
+- Skicka meddelande när turen är över så nästa spelare kan agera
+- **Uppgift**: Försök implementera en enkel turordning där spelare växlar tur
+
+**Action-spel** (t.ex. platformer, racing):
+- Öka uppdateringsfrekvensen (lägre intervall i `setInterval`)
+- Lägg till kollisionsdetektering på servern innan position uppdateras
+- **Uppgift**: Lägg till en enkel kollisionsdetektering - t.ex. förhindra att spelare går utanför kanvasen eller kolliderar med varandra
+
+**Realtidsstrategi** (RTS):
+- Istället för direkt rörelse, låt spelare skicka "kommandon" (t.ex. "flytta till position X,Y")
+- Servern köar kommandona och kör dem i turordning
+- **Uppgift**: Skapa ett enkelt commands-system där spelare kan skicka kommandon som servern kör asynkront
 
 ## Sammanfattning
 
-Multiplayer-spelutveckling kombinerar flera komplexa tekniker:
+I detta kapitel har vi byggt en enkel multiplayer-server steg för steg:
 
-1. **Nätverkarkitektur**: Välj rätt struktur för ditt spel
-2. **Tillståndssynkronisering**: Håll alla klienter uppdaterade
-3. **Latenskompensation**: Gör spelet responsivt trots nätverksfördröjning
-4. **Säkerhet**: Skydda mot fusk och attacker
-5. **Skalbarhet**: Planera för tillväxt
+1. **Grundstruktur**: Servern är auktoritativ - den validerar och uppdaterar allt spelstatus
+2. **Klientens roll**: Skicka input, ta emot uppdateringar, rendera vad servern säger
+3. **Utbyggbarhet**: Samma grund kan utökas med rumhantering, turordning, kommandon m.m.
 
-Med en solid förståelse av dessa principer kan du bygga engagerande multiplayer-upplevelser som spelarna kommer att älska!
+**Viktiga lärdomar:**
+- Använd `Map` för att hantera dynamiska spelare effektivt
+- Servern bestämmer allt - klienten är bara en "vy" av serverns tillstånd
+- Alla spelare måste få samma uppdateringar för konsistens
+- Bygg steg för steg - börja enkelt och lägg till funktioner när du behöver dem
 
-**Nästa steg**: Testa att implementera en enkel multiplayer-demo med 2-4 spelare för att praktisera dessa koncept.
+**Nästa steg**: Experimentera med att lägga till nya funktioner till din server. Kanske en poängräkning, objekt att samla, eller en enkel spellogik?
+
