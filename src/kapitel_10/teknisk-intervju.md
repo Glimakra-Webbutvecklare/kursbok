@@ -108,9 +108,15 @@ canvas.addEventListener('mousedown', (e) => {
     isDrawing = true;
     
     // Få musposition relativt canvas
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+
+    // alternativ med offset property
+    const x = e.offsetX;
+    const y = e.offsetY;
+
+    // alternativ med getBoundingClientRect()
+    // const rect = canvas.getBoundingClientRect();
+    // const x = e.clientX - rect.left;
+    // const y = e.clientY - rect.top;
     
     // Starta ny linje
     ctx.beginPath();
