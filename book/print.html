@@ -30532,103 +30532,11 @@ function joinChat() {
   }
 }
 </code></pre>
-<h3 id="styling"><a class="header" href="#styling">Styling</a></h3>
-<pre><code class="language-css">.chat-container {
-  display: grid;
-  grid-template-columns: 200px 1fr;
-  grid-template-rows: 1fr auto;
-  height: 100vh;
-  font-family: Arial, sans-serif;
-}
-
-.users-list {
-  background: #f5f5f5;
-  padding: 1rem;
-  border-right: 1px solid #ddd;
-  grid-row: 1 / 3;
-}
-
-.users-list h3 {
-  margin-top: 0;
-  color: #666;
-}
-
-.online-user {
-  padding: 0.5rem;
-  margin: 0.25rem 0;
-  background: #e8f5e8;
-  border-radius: 4px;
-  font-size: 0.9rem;
-}
-
-.chat-messages {
-  padding: 1rem;
-  overflow-y: auto;
-  max-height: 70vh;
-}
-
-.message {
-  margin-bottom: 0.5rem;
-  padding: 0.5rem;
-  border-radius: 4px;
-  background: #f9f9f9;
-}
-
-.timestamp {
-  color: #999;
-  font-size: 0.8rem;
-  margin-right: 0.5rem;
-}
-
-.username {
-  font-weight: bold;
-  color: #2196F3;
-  margin-right: 0.5rem;
-}
-
-.system-message {
-  color: #666;
-  font-style: italic;
-  text-align: center;
-  margin: 0.5rem 0;
-}
-
-.message-form {
-  display: flex;
-  padding: 1rem;
-  border-top: 1px solid #ddd;
-  background: #fff;
-}
-
-.message-form input {
-  flex: 1;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  margin-right: 0.5rem;
-}
-
-.message-form button {
-  padding: 0.75rem 1.5rem;
-  background: #2196F3;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.message-form button:hover {
-  background: #1976D2;
-}
-</code></pre>
 <h2 id="best-practices-3"><a class="header" href="#best-practices-3">Best Practices</a></h2>
 <ul>
-<li>Implementera återanslutning (reconnection) för tappade anslutningar</li>
-<li>Använd throttling för att förhindra spam</li>
-<li>Implementera meddelandehistorik med databas</li>
 <li>Säkerställ datavalidering på både klient och server</li>
+<li>Implementera meddelandehistorik med databas</li>
 <li>Använd SSL/TLS för säker kommunikation i produktion</li>
-<li>Hantera fel och edge cases gracefully</li>
 </ul>
 <h2 id="säkerhetsaspekter"><a class="header" href="#säkerhetsaspekter">Säkerhetsaspekter</a></h2>
 <ul>
@@ -31318,547 +31226,6 @@ class BulletManager {
   }
 }
 </code></pre>
-<h2 id="composition-över-inheritance"><a class="header" href="#composition-över-inheritance">Composition över inheritance</a></h2>
-<h3 id="komponent-baserad-arkitektur"><a class="header" href="#komponent-baserad-arkitektur">Komponent-baserad arkitektur</a></h3>
-<pre><code class="language-javascript">// Komponent-baserat system
-class Component {
-  constructor(entity) {
-    this.entity = entity;
-    this.enabled = true;
-  }
-  
-  update(deltaTime) {
-    // Override i subkomponenter
-  }
-}
-
-class PositionComponent extends Component {
-  constructor(entity, x, y) {
-    super(entity);
-    this.x = x;
-    this.y = y;
-  }
-}
-
-class VelocityComponent extends Component {
-  constructor(entity, vx = 0, vy = 0) {
-    super(entity);
-    this.vx = vx;
-    this.vy = vy;
-  }
-  
-  update(deltaTime) {
-    if (this.entity.hasComponent('Position')) {
-      const pos = this.entity.getComponent('Position');
-      pos.x += this.vx * deltaTime / 1000;
-      pos.y += this.vy * deltaTime / 1000;
-    }
-  }
-}
-
-class RenderComponent extends Component {
-  constructor(entity, sprite, width, height) {
-    super(entity);
-    this.sprite = sprite;
-    this.width = width;
-    this.height = height;
-  }
-  
-  render(ctx) {
-    if (!this.enabled) return;
-    
-    const pos = this.entity.getComponent('Position');
-    if (pos) {
-      if (this.sprite) {
-        ctx.drawImage(this.sprite, pos.x, pos.y, this.width, this.height);
-      } else {
-        ctx.fillStyle = '#ff0000';
-        ctx.fillRect(pos.x, pos.y, this.width, this.height);
-      }
-    }
-  }
-}
-
-class HealthComponent extends Component {
-  constructor(entity, maxHealth) {
-    super(entity);
-    this.health = maxHealth;
-    this.maxHealth = maxHealth;
-  }
-  
-  takeDamage(amount) {
-    this.health -= amount;
-    if (this.health &lt;= 0) {
-      this.entity.destroy();
-    }
-  }
-  
-  heal(amount) {
-    this.health = Math.min(this.health + amount, this.maxHealth);
-  }
-}
-
-// Entity som använder komponenter
-class Entity {
-  constructor() {
-    this.components = new Map();
-    this.id = Math.random().toString(36).substr(2, 9);
-  }
-  
-  addComponent(name, component) {
-    this.components.set(name, component);
-    return this;
-  }
-  
-  getComponent(name) {
-    return this.components.get(name);
-  }
-  
-  hasComponent(name) {
-    return this.components.has(name);
-  }
-  
-  removeComponent(name) {
-    this.components.delete(name);
-  }
-  
-  update(deltaTime) {
-    this.components.forEach(component =&gt; {
-      if (component.enabled) {
-        component.update(deltaTime);
-      }
-    });
-  }
-  
-  render(ctx) {
-    const renderComponent = this.getComponent('Render');
-    if (renderComponent) {
-      renderComponent.render(ctx);
-    }
-  }
-}
-
-// Skapa entities med komponenter
-function createPlayer(x, y) {
-  const player = new Entity()
-    .addComponent('Position', new PositionComponent(player, x, y))
-    .addComponent('Velocity', new VelocityComponent(player))
-    .addComponent('Render', new RenderComponent(player, playerSprite, 32, 32))
-    .addComponent('Health', new HealthComponent(player, 100))
-    .addComponent('Input', new InputComponent(player));
-  
-  return player;
-}
-
-function createEnemy(x, y) {
-  const enemy = new Entity()
-    .addComponent('Position', new PositionComponent(enemy, x, y))
-    .addComponent('Velocity', new VelocityComponent(enemy))
-    .addComponent('Render', new RenderComponent(enemy, enemySprite, 24, 24))
-    .addComponent('Health', new HealthComponent(enemy, 50))
-    .addComponent('AI', new AIComponent(enemy, 'basic'));
-  
-  return enemy;
-}
-</code></pre>
-<h2 id="design-patterns-för-spel"><a class="header" href="#design-patterns-för-spel">Design patterns för spel</a></h2>
-<h3 id="state-pattern-för-ai"><a class="header" href="#state-pattern-för-ai">State Pattern för AI</a></h3>
-<pre><code class="language-javascript">// State pattern för fiende-AI
-class AIState {
-  constructor(enemy) {
-    this.enemy = enemy;
-  }
-  
-  enter() {
-    // Initialisering när state aktiveras
-  }
-  
-  update(deltaTime) {
-    // Abstrakt metod
-  }
-  
-  exit() {
-    // Cleanup när state lämnas
-  }
-}
-
-class IdleState extends AIState {
-  constructor(enemy) {
-    super(enemy);
-    this.idleTime = 0;
-    this.maxIdleTime = 2000; // 2 sekunder
-  }
-  
-  update(deltaTime) {
-    this.idleTime += deltaTime;
-    
-    // Kolla om spelare är i närheten
-    const player = game.getPlayer();
-    const distance = this.enemy.distanceTo(player);
-    
-    if (distance &lt; 100) {
-      this.enemy.changeState(new ChaseState(this.enemy));
-    } else if (this.idleTime &gt;= this.maxIdleTime) {
-      this.enemy.changeState(new PatrolState(this.enemy));
-    }
-  }
-}
-
-class ChaseState extends AIState {
-  update(deltaTime) {
-    const player = game.getPlayer();
-    if (!player) return;
-    
-    const distance = this.enemy.distanceTo(player);
-    
-    if (distance &gt; 200) {
-      // Spelaren kom undan
-      this.enemy.changeState(new IdleState(this.enemy));
-    } else if (distance &lt; 30) {
-      // Nära nog för attack
-      this.enemy.changeState(new AttackState(this.enemy));
-    } else {
-      // Jaga spelaren
-      this.enemy.moveTowards(player.x, player.y, deltaTime);
-    }
-  }
-}
-
-class AttackState extends AIState {
-  constructor(enemy) {
-    super(enemy);
-    this.attackTimer = 0;
-    this.attackDuration = 500; // Attack tar 0.5 sekunder
-  }
-  
-  enter() {
-    // Starta attack-animation
-    this.enemy.startAttackAnimation();
-  }
-  
-  update(deltaTime) {
-    this.attackTimer += deltaTime;
-    
-    if (this.attackTimer &gt;= this.attackDuration) {
-      // Utför attack
-      const player = game.getPlayer();
-      if (player &amp;&amp; this.enemy.distanceTo(player) &lt; 30) {
-        player.takeDamage(this.enemy.attackDamage);
-      }
-      
-      this.enemy.changeState(new IdleState(this.enemy));
-    }
-  }
-}
-
-// Enemy med state machine
-class StateMachineEnemy extends Enemy {
-  constructor(x, y) {
-    super(x, y, 100, 'stateMachine');
-    this.currentState = new IdleState(this);
-    this.currentState.enter();
-  }
-  
-  changeState(newState) {
-    this.currentState.exit();
-    this.currentState = newState;
-    this.currentState.enter();
-  }
-  
-  update(deltaTime) {
-    super.update(deltaTime);
-    this.currentState.update(deltaTime);
-  }
-}
-</code></pre>
-<h3 id="observer-pattern-för-events"><a class="header" href="#observer-pattern-för-events">Observer Pattern för events</a></h3>
-<pre><code class="language-javascript">// Event system med Observer pattern
-class EventEmitter {
-  constructor() {
-    this.events = new Map();
-  }
-  
-  on(eventName, callback) {
-    if (!this.events.has(eventName)) {
-      this.events.set(eventName, []);
-    }
-    this.events.get(eventName).push(callback);
-  }
-  
-  off(eventName, callback) {
-    if (this.events.has(eventName)) {
-      const callbacks = this.events.get(eventName);
-      const index = callbacks.indexOf(callback);
-      if (index &gt; -1) {
-        callbacks.splice(index, 1);
-      }
-    }
-  }
-  
-  emit(eventName, ...args) {
-    if (this.events.has(eventName)) {
-      this.events.get(eventName).forEach(callback =&gt; {
-        callback(...args);
-      });
-    }
-  }
-}
-
-// Global event bus
-const gameEvents = new EventEmitter();
-
-// Användning i spelobjekt
-class EventAwarePlayer extends Player {
-  constructor(x, y) {
-    super(x, y);
-    
-    // Lyssna på events
-    gameEvents.on('enemy-killed', this.onEnemyKilled.bind(this));
-    gameEvents.on('item-collected', this.onItemCollected.bind(this));
-  }
-  
-  takeDamage(amount) {
-    super.takeDamage(amount);
-    
-    // Skicka event när spelaren tar skada
-    gameEvents.emit('player-damaged', {
-      player: this,
-      damage: amount,
-      health: this.health
-    });
-  }
-  
-  onEnemyKilled(enemy) {
-    this.score += enemy.scoreValue;
-    gameEvents.emit('score-changed', this.score);
-  }
-  
-  onItemCollected(item) {
-    // Hantera olika item-typer
-    switch (item.type) {
-      case 'health':
-        this.heal(item.value);
-        break;
-      case 'weapon':
-        this.addWeapon(item.weaponType);
-        break;
-    }
-  }
-}
-
-// UI-system som lyssnar på events
-class GameUI {
-  constructor() {
-    gameEvents.on('player-damaged', this.updateHealthBar.bind(this));
-    gameEvents.on('score-changed', this.updateScore.bind(this));
-    gameEvents.on('level-completed', this.showLevelComplete.bind(this));
-  }
-  
-  updateHealthBar(data) {
-    const healthBar = document.getElementById('health-bar');
-    const percentage = (data.health / data.player.maxHealth) * 100;
-    healthBar.style.width = `${percentage}%`;
-  }
-  
-  updateScore(score) {
-    const scoreElement = document.getElementById('score');
-    scoreElement.textContent = `Score: ${score}`;
-  }
-}
-</code></pre>
-<h3 id="factory-pattern-för-object-creation"><a class="header" href="#factory-pattern-för-object-creation">Factory Pattern för object creation</a></h3>
-<pre><code class="language-javascript">// Factory för att skapa olika typer av fiender
-class EnemyFactory {
-  static createEnemy(type, x, y) {
-    switch (type) {
-      case 'grunt':
-        return new GruntEnemy(x, y);
-      case 'tank':
-        return new TankEnemy(x, y);
-      case 'sniper':
-        return new SniperEnemy(x, y);
-      case 'boss':
-        return new BossEnemy(x, y);
-      default:
-        throw new Error(`Unknown enemy type: ${type}`);
-    }
-  }
-  
-  static createWave(waveData) {
-    const enemies = [];
-    
-    waveData.forEach(enemySpec =&gt; {
-      for (let i = 0; i &lt; enemySpec.count; i++) {
-        const x = enemySpec.spawnArea.x + Math.random() * enemySpec.spawnArea.width;
-        const y = enemySpec.spawnArea.y + Math.random() * enemySpec.spawnArea.height;
-        
-        const enemy = this.createEnemy(enemySpec.type, x, y);
-        enemies.push(enemy);
-      }
-    });
-    
-    return enemies;
-  }
-}
-
-// Specialiserade fiendeklasser
-class GruntEnemy extends Enemy {
-  constructor(x, y) {
-    super(x, y, 30, 'basic');
-    this.speed = 80;
-    this.scoreValue = 50;
-    this.attackDamage = 10;
-  }
-}
-
-class TankEnemy extends Enemy {
-  constructor(x, y) {
-    super(x, y, 150, 'defensive');
-    this.speed = 30;
-    this.scoreValue = 200;
-    this.attackDamage = 25;
-    this.armor = 5; // Reducerar skada
-  }
-  
-  takeDamage(amount) {
-    const reducedDamage = Math.max(1, amount - this.armor);
-    super.takeDamage(reducedDamage);
-  }
-}
-
-class SniperEnemy extends Enemy {
-  constructor(x, y) {
-    super(x, y, 40, 'sniper');
-    this.speed = 50;
-    this.scoreValue = 150;
-    this.attackRange = 300;
-    this.attackCooldown = 3000; // 3 sekunder mellan skott
-  }
-  
-  updateAI(deltaTime) {
-    const player = game.getPlayer();
-    if (!player) return;
-    
-    const distance = this.distanceTo(player);
-    
-    if (distance &gt; this.attackRange) {
-      // Rör sig närmare
-      this.moveTowards(player.x, player.y, deltaTime);
-    } else {
-      // Stanna och skjut
-      this.velocity.x = 0;
-      this.velocity.y = 0;
-      this.checkAttack();
-    }
-  }
-}
-
-// Användning av factory
-const wave1 = EnemyFactory.createWave([
-  {
-    type: 'grunt',
-    count: 5,
-    spawnArea: { x: 0, y: 0, width: 100, height: 100 }
-  },
-  {
-    type: 'tank',
-    count: 1,
-    spawnArea: { x: 200, y: 0, width: 50, height: 50 }
-  }
-]);
-
-wave1.forEach(enemy =&gt; game.addEntity(enemy));
-</code></pre>
-<h2 id="best-practices-för-oop-i-spel"><a class="header" href="#best-practices-för-oop-i-spel">Best Practices för OOP i spel</a></h2>
-<h3 id="1-separation-of-concerns"><a class="header" href="#1-separation-of-concerns">1. Separation of Concerns</a></h3>
-<pre><code class="language-javascript">// Separera rendering från logik
-class GameObjectRenderer {
-  static render(gameObject, ctx) {
-    switch (gameObject.constructor.name) {
-      case 'Player':
-        this.renderPlayer(gameObject, ctx);
-        break;
-      case 'Enemy':
-        this.renderEnemy(gameObject, ctx);
-        break;
-      default:
-        this.renderDefault(gameObject, ctx);
-    }
-  }
-  
-  static renderPlayer(player, ctx) {
-    // Specialiserad rendering för spelare
-    ctx.save();
-    
-    // Flicker effect om invulnerable
-    if (player.isInvulnerable &amp;&amp; Math.floor(Date.now() / 100) % 2) {
-      ctx.globalAlpha = 0.5;
-    }
-    
-    ctx.drawImage(player.sprite, player.x, player.y);
-    ctx.restore();
-  }
-}
-</code></pre>
-<h3 id="2-dependency-injection"><a class="header" href="#2-dependency-injection">2. Dependency Injection</a></h3>
-<pre><code class="language-javascript">// Injicera dependencies istället för hårdkodade referenser
-class Enemy {
-  constructor(x, y, gameWorld, soundManager) {
-    this.x = x;
-    this.y = y;
-    this.gameWorld = gameWorld; // Istället för global 'game'
-    this.soundManager = soundManager;
-  }
-  
-  attack() {
-    const target = this.gameWorld.getClosestPlayer(this.x, this.y);
-    if (target) {
-      target.takeDamage(this.attackDamage);
-      this.soundManager.play('enemy-attack');
-    }
-  }
-}
-</code></pre>
-<h3 id="3-interface-liknande-design"><a class="header" href="#3-interface-liknande-design">3. Interface-liknande design</a></h3>
-<pre><code class="language-javascript">// Definiera "interfaces" med mixins
-const Movable = {
-  move(deltaTime) {
-    this.x += this.velocity.x * deltaTime;
-    this.y += this.velocity.y * deltaTime;
-  }
-};
-
-const Collidable = {
-  checkCollision(other) {
-    return this.x &lt; other.x + other.width &amp;&amp;
-           this.x + this.width &gt; other.x &amp;&amp;
-           this.y &lt; other.y + other.height &amp;&amp;
-           this.y + this.height &gt; other.y;
-  }
-};
-
-const Damageable = {
-  takeDamage(amount) {
-    this.health -= amount;
-    if (this.health &lt;= 0) {
-      this.die();
-    }
-  }
-};
-
-// Använd mixins
-class Player {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-    this.health = 100;
-    this.velocity = { x: 0, y: 0 };
-    
-    // Applicera mixins
-    Object.assign(this, Movable, Collidable, Damageable);
-  }
-}
-</code></pre>
 <h2 id="sammanfattning-34"><a class="header" href="#sammanfattning-34">Sammanfattning</a></h2>
 <p>OOP i spelutveckling handlar om att:</p>
 <p><strong>Strukturera kod effektivt</strong>:</p>
@@ -31866,24 +31233,7 @@ class Player {
 <li>Separera olika objekt i egna klasser</li>
 <li>Använd arv för att dela gemensam funktionalitet</li>
 <li>Implementera polymorfism för flexibel hantering</li>
-</ul>
-<p><strong>Hantera komplexitet</strong>:</p>
-<ul>
-<li>Använd composition när det blir för komplext med arv</li>
-<li>Implementera design patterns för vanliga problem</li>
-<li>Separera concerns (logik, rendering, ljud, etc.)</li>
-</ul>
-<p><strong>Skalbarhet</strong>:</p>
-<ul>
-<li>Planera för att lägga till nya objekttyper</li>
-<li>Använd factory patterns för object creation</li>
-<li>Implementera event-system för löst kopplad kommunikation</li>
-</ul>
-<p><strong>Prestanda</strong>:</p>
-<ul>
 <li>Undvik för djup arvshierarki</li>
-<li>Använd object pooling för ofta skapade objekt</li>
-<li>Optimera kritiska update-loopar</li>
 </ul>
 <p>Med dessa principer kan du bygga välstrukturerade spel som är enkla att utöka och underhålla!</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="multiplayer-spel-och-realtidsarkitektur"><a class="header" href="#multiplayer-spel-och-realtidsarkitektur">Multiplayer-spel och realtidsarkitektur</a></h1>
@@ -31989,290 +31339,384 @@ class GameServer {
 <p>Servern fungerar som den enda källan till sanning (single source of truth). Alla klienter måste synkronisera sitt lokala <strong>tillstånd</strong> med serverns auktoritativa tillstånd.</p>
 <h2 id="hantera-nätverkslatens"><a class="header" href="#hantera-nätverkslatens">Hantera nätverkslatens</a></h2>
 <p>Nätverkslatens (network latency) är tiden det tar för data att resa från klient till server och tillbaka. För multiplayer-spel kan detta skapa märkbara förseningar.</p>
-<h3 id="client-side-prediction"><a class="header" href="#client-side-prediction">Client-side Prediction</a></h3>
-<p>Tänk på det som att "gissa" vad som kommer att hända medan du väntar på serverns svar:</p>
-<pre><code class="language-javascript">// Enkel client-side prediction
-class GameClient {
+<h3 id="client-side-prediction-översikt"><a class="header" href="#client-side-prediction-översikt">Client-side Prediction (översikt)</a></h3>
+<p>Client-side prediction är en teknik där klienten "gissar" vad som kommer att hända och visar resultatet direkt, medan den väntar på serverns bekräftelse. När serverns svar kommer korrigeras eventuella skillnader. Detta gör spelet kännas mer responsivt trots nätverksfördröjning. Detaljerad implementation av client-side prediction och server reconciliation ligger utanför denna moduls scope.</p>
+<h2 id="bygg-en-enkel-multiplayer-server-steg-för-steg"><a class="header" href="#bygg-en-enkel-multiplayer-server-steg-för-steg">Bygg en enkel multiplayer-server: Steg för steg</a></h2>
+<p>Låt oss bygga en enkel multiplayer-server steg för steg. Vi börjar med grunderna och bygger vidare.</p>
+<h3 id="steg-1-grundläggande-server-setup"><a class="header" href="#steg-1-grundläggande-server-setup">Steg 1: Grundläggande server-setup</a></h3>
+<p>Först behöver vi en WebSocket-server som lyssnar på anslutningar:</p>
+<pre><code class="language-javascript">// SERVER - Steg 1: Grundläggande setup
+const WebSocket = require('ws');
+const wss = new WebSocket.Server({ port: 3000 });
+
+// Vi använder Map för att lagra spelare eftersom Map är mer robust
+// för dynamiska nycklar och ger oss bättre prestanda vid många spelare
+const gameState = {
+  players: new Map() // playerId -&gt; { x, y, color }
+};
+
+wss.on('connection', (ws) =&gt; {
+  console.log('Ny anslutning');
+  // Här kommer vi hantera anslutningar...
+});
+</code></pre>
+<p><strong>Uppgift</strong>: Skapa en fil <code>server.js</code> och sätt upp grundstrukturen ovan. Testa att starta servern med <code>node server.js</code>.</p>
+<h3 id="steg-2-hantera-nya-spelare"><a class="header" href="#steg-2-hantera-nya-spelare">Steg 2: Hantera nya spelare</a></h3>
+<p>När en spelare ansluter behöver vi:</p>
+<ol>
+<li>Skapa ett unikt ID för spelaren</li>
+<li>Lägga till spelaren i <code>gameState</code></li>
+<li>Skicka initialt tillstånd tillbaka</li>
+</ol>
+<pre><code class="language-javascript">wss.on('connection', (ws) =&gt; {
+  // Skapa unikt ID för spelaren
+  const playerId = Math.random().toString(36).substr(2, 9);
+  
+  // Lägg till spelare med startposition och färg
+  gameState.players.set(playerId, {
+    id: playerId,
+    x: Math.random() * 400,  // Slumpmässig x-position
+    y: Math.random() * 400,   // Slumpmässig y-position
+    color: `#${Math.floor(Math.random()*16777215).toString(16)}` // Slumpmässig färg
+  });
+  
+  // Skicka initialt tillstånd till den nya spelaren
+  ws.send(JSON.stringify({
+    type: 'init',
+    playerId: playerId,
+    gameState: Array.from(gameState.players.values())
+  }));
+  
+  // TODO: Skicka till alla andra spelare att någon ny anslöt
+});
+</code></pre>
+<p><strong>Uppgift</strong>: Implementera funktionen <code>broadcastToOthers()</code> som skickar meddelanden till alla utom en specifik spelare. Tänk på att kontrollera att WebSocket-anslutningen är öppen innan du skickar.</p>
+<h3 id="steg-3-hantera-spelarrörelser"><a class="header" href="#steg-3-hantera-spelarrörelser">Steg 3: Hantera spelarrörelser</a></h3>
+<p>När en spelare vill röra sig skickar klienten ett meddelande. Servern måste:</p>
+<ol>
+<li>Validera och uppdatera positionen (auktoritativt)</li>
+<li>Skicka den nya positionen till alla spelare</li>
+</ol>
+<pre><code class="language-javascript">ws.on('message', (message) =&gt; {
+  const data = JSON.parse(message);
+  
+  if (data.type === 'move') {
+    const player = gameState.players.get(playerId);
+    if (!player) return;
+    
+    // SERVER VALIDERAR OCH UPPDATERAR (auktoritativt)
+    const speed = 5;
+    // TODO: Implementera rörelselogik för alla fyra riktningar
+    // Tänk på att begränsa positionerna till kanvas-storleken (0-400)
+    
+    // TODO: Skicka uppdaterad position till alla spelare
+  }
+});
+</code></pre>
+<p><strong>Uppgift</strong>: Implementera rörelselogiken för alla fyra riktningar (up, down, left, right). Använd <code>Math.max()</code> och <code>Math.min()</code> för att hålla positionerna inom gränserna.</p>
+<h3 id="steg-4-hantera-när-spelare-lämnar"><a class="header" href="#steg-4-hantera-när-spelare-lämnar">Steg 4: Hantera när spelare lämnar</a></h3>
+<p>När en spelare kopplar från måste vi:</p>
+<ol>
+<li>Ta bort spelaren från <code>gameState</code></li>
+<li>Meddela alla andra spelare</li>
+</ol>
+<pre><code class="language-javascript">ws.on('close', () =&gt; {
+  // TODO: Ta bort spelaren från gameState
+  // TODO: Meddela alla andra spelare att spelaren lämnade
+});
+</code></pre>
+<p><strong>Uppgift</strong>: Implementera hanteringen när en spelare kopplar från.</p>
+<h3 id="steg-5-klienten---grundstruktur"><a class="header" href="#steg-5-klienten---grundstruktur">Steg 5: Klienten - Grundstruktur</a></h3>
+<p>Nu ska vi bygga klienten. Börja med grundstrukturen:</p>
+<pre><code class="language-javascript">// KLIENT - Steg 1: Grundstruktur
+class SimpleGameClient {
   constructor() {
     this.socket = new WebSocket('ws://localhost:3000');
-    this.localPlayer = { x: 100, y: 100 };
-    this.inputHistory = [];
-  }
-  
-  handleInput(direction) {
-    const input = {
-      direction: direction,
-      timestamp: Date.now(),
-      sequenceNumber: this.getNextSequence()
-    };
+
+    // Map är en inbyggd datastruktur i JavaScript som låter dig lagra nyckel-värde-par,
+    // där nycklarna kan vara av vilken typ som helst (t.ex. strängar, siffror, objekt).
+    // I multiplayer-spel passar Map bättre än vanliga objekt för att lagra spelare,
+    // eftersom varje spelare kan ha ett unikt id (t.ex. en socket-id) som nyckel.
+    // Det blir enkelt att lägga till, ta bort och slå upp spelare utan krockar mellan olika typer av nycklar.
+    this.players = new Map(); 
+    this.myPlayerId = null;
     
-    // Spara för senare reconciliation
-    this.inputHistory.push(input);
-    
-    // Applicera omedelbart lokalt (prediction)
-    this.movePlayer(this.localPlayer, direction);
-    
-    // Skicka till server
-    this.socket.send(JSON.stringify({
-      type: 'player_input',
-      input: input
-    }));
-  }
-  
-  movePlayer(player, direction) {
-    const speed = 5;
-    switch (direction) {
-      case 'up': player.y -= speed; break;
-      case 'down': player.y += speed; break;
-      case 'left': player.x -= speed; break;
-      case 'right': player.x += speed; break;
-    }
+    // TODO: Sätt upp event listeners för meddelanden från servern
   }
 }
 </code></pre>
-<h3 id="server-reconciliation"><a class="header" href="#server-reconciliation">Server Reconciliation</a></h3>
-<p>När servern skickar tillbaka den "riktiga" positionen måste klienten jämföra och korrigera eventuella skillnader:</p>
-<pre><code class="language-javascript">// Hantera serveruppdateringar
-onServerUpdate(serverState) {
-  const serverPlayer = serverState.players[this.playerId];
-  const localPlayer = this.localPlayer;
+<p><strong>Uppgift</strong>: Skapa en HTML-fil med en <code>&lt;canvas&gt;</code> (id: <code>gameCanvas</code>, storlek 400x400) och en <code>GameClient</code>-klass. Anslut till servern.</p>
+<h3 id="steg-6-hantera-meddelanden-från-servern"><a class="header" href="#steg-6-hantera-meddelanden-från-servern">Steg 6: Hantera meddelanden från servern</a></h3>
+<p>Klienten måste hantera olika typer av meddelanden:</p>
+<pre><code class="language-javascript">this.socket.onmessage = (event) =&gt; {
+  const data = JSON.parse(event.data);
   
-  // Beräkna skillnad i position
-  const positionDiff = Math.sqrt(
-    Math.pow(serverPlayer.x - localPlayer.x, 2) +
-    Math.pow(serverPlayer.y - localPlayer.y, 2)
-  );
-  
-  // Om skillnaden är för stor, korrigera
-  if (positionDiff &gt; 5) {
-    this.reconcileWithServer(serverPlayer);
+  if (data.type === 'init') {
+    // TODO: Spara ditt eget playerId
+    // TODO: Lägg till alla spelare från gameState
+    // TODO: Rendera spelet
   }
+  
+  if (data.type === 'player_joined') {
+    // TODO: Lägg till den nya spelaren
+    // TODO: Rendera spelet
+  }
+  
+  if (data.type === 'player_moved') {
+    // TODO: Uppdatera spelarens position från servern
+    // TODO: Rendera spelet
+  }
+  
+  if (data.type === 'player_left') {
+    // TODO: Ta bort spelaren
+    // TODO: Rendera spelet
+  }
+};
+</code></pre>
+<p><strong>Uppgift</strong>: Implementera hanteringen för alla meddelandetyper. Kom ihåg att klienten bara visar vad servern säger - den uppdaterar inte positioner själv.</p>
+<h3 id="steg-7-skicka-input-till-servern"><a class="header" href="#steg-7-skicka-input-till-servern">Steg 7: Skicka input till servern</a></h3>
+<p>Klienten skickar input när spelaren trycker på piltangenterna:</p>
+<pre><code class="language-javascript">document.addEventListener('keydown', (e) =&gt; {
+  if (!this.myPlayerId) return;
+  
+  // TODO: Konvertera tangenttryckningar till riktningar
+  // ArrowUp -&gt; 'up', ArrowDown -&gt; 'down', etc.
+  // const direction = ...
+  
+  if (direction) {
+    // TODO: Skicka meddelande till servern med typ 'move' och riktningen
+  }
+});
+</code></pre>
+<p><strong>Uppgift</strong>: Implementera tangentlyssnaren som skickar rörelsekommandon till servern.</p>
+<h3 id="steg-8-rendera-spelet"><a class="header" href="#steg-8-rendera-spelet">Steg 8: Rendera spelet</a></h3>
+<p>Slutligen behöver vi rendera alla spelare:</p>
+<pre><code class="language-javascript">render() {
+  const canvas = document.getElementById('gameCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, 400, 400);
+  
+  // TODO: Loopa över alla spelare och rita dem
+  // Tips: Använd player.color för färg, player.x och player.y för position
+  // Rita en kvadrat (20x20 pixlar) för varje spelare
+  // Markera din egen spelare med en svart kant
+}
+</code></pre>
+<p><strong>Uppgift</strong>: Implementera render-funktionen. Testa att öppna flera flikar och se att spelarna syns för varandra.</p>
+<p><strong>Viktiga lärdomar:</strong></p>
+<ul>
+<li>Servern är auktoritativ - den bestämmer alla positioner</li>
+<li>Klienten skickar bara input och visar vad servern säger</li>
+<li>Alla spelare får samma uppdateringar från servern</li>
+<li>Detta gör det enkelt att validera och förhindra fusk</li>
+</ul>
+<h3 id="lobby"><a class="header" href="#lobby">Lobby</a></h3>
+<p>Det är viktigt att låta spelare landa i en lobby med chat innan man faktiskt kör igång spelet. Nedan får ni se steg för steg hur man kan implementera en sådan.</p>
+<h4 id="steg-1-skapa-lobby-klassen"><a class="header" href="#steg-1-skapa-lobby-klassen">Steg 1: Skapa Lobby-klassen</a></h4>
+<p>Vi börjar med en klass som håller reda på spelare, chatmeddelanden och vem som är redo:</p>
+<pre><code class="language-javascript">class Lobby {
+  constructor(lobbyId, maxPlayers = 4) {
+    this.id = lobbyId;
+    this.players = new Map(); // playerId -&gt; { socket, name, ready }
+    this.maxPlayers = maxPlayers;
+    this.chatHistory = []; // { playerId, name, text, ts }
+  }
+  
+  // TODO: Implementera addPlayer-metoden
+  // Den ska:
+  // 1. Kontrollera om lobbyn är full
+  // 2. Lägga till spelaren (name + ready=false)
+  // 3. Skicka en lobby_update till alla
+  // 4. Returnera { success: true/false, reason: ... }
+  
+  // TODO: Implementera removePlayer-metoden
+  // Den ska ta bort spelaren och skicka lobby_update
+  
+  // TODO: Implementera setReady-metoden
+  // Den ska uppdatera ready-status och skicka lobby_update
+  
+  // TODO: Implementera addChatMessage-metoden
+  // Den ska spara meddelandet och broadcasta chat_message
+  
+  // TODO: Implementera canStart-metoden
+  // Den ska returnera true om alla spelare är ready och minst 2 spelare finns
+  
+  // TODO: Implementera broadcast-metoden
+  // Den ska skicka meddelanden till alla spelare i lobbyn
+}
+</code></pre>
+<p><strong>Uppgift</strong>: Implementera <code>Lobby</code>-klassen. Se till att lobbyn håller koll på ready-status och kan avgöra om spelet får starta.</p>
+<h4 id="steg-2-hantera-lobby-på-servern"><a class="header" href="#steg-2-hantera-lobby-på-servern">Steg 2: Hantera lobby på servern</a></h4>
+<p>Nu behöver vi en Map för att lagra lobbyer och uppdatera connection-hanteraren:</p>
+<pre><code class="language-javascript">const lobbies = new Map(); // lobbyId -&gt; Lobby
+
+wss.on('connection', (ws) =&gt; {
+  const playerId = Math.random().toString(36).substr(2, 9);
+  let currentLobby = null;
+  
+  ws.on('message', (message) =&gt; {
+    const data = JSON.parse(message);
+    
+    if (data.type === 'join_lobby') {
+      const lobbyId = data.lobbyId || 'default';
+      const name = data.name || 'Player';
+      
+      // TODO: Skapa lobby om den inte finns
+      // TODO: Försök lägga till spelaren i lobbyn
+      // TODO: Om lyckat, spara currentLobby och skicka lobby_state + chat_history
+      // TODO: Om misslyckat, skicka felmeddelande
+    }
+    
+    if (data.type === 'chat' &amp;&amp; currentLobby) {
+      // TODO: Lägg till chatmeddelande i lobbyn
+    }
+    
+    if (data.type === 'ready' &amp;&amp; currentLobby) {
+      // TODO: Uppdatera ready-status och broadcasta lobby_update
+    }
+    
+    if (data.type === 'start_game' &amp;&amp; currentLobby) {
+      // TODO: Kontrollera currentLobby.canStart()
+      // TODO: Om ok, skicka start_game till alla i lobbyn
+    }
+  });
+  
+  ws.on('close', () =&gt; {
+    // TODO: Ta bort spelaren från lobbyn
+    // TODO: Ta bort lobbyn om den blir tom
+  });
+});
+</code></pre>
+<p><strong>Uppgift</strong>: Implementera lobbyhanteringen. Testa att chatta, toggla ready och starta spelet när alla är redo.</p>
+<h4 id="steg-3-uppdatera-klienten"><a class="header" href="#steg-3-uppdatera-klienten">Steg 3: Uppdatera klienten</a></h4>
+<p>Klienten behöver kunna ansluta till en lobby, skicka chat och toggla ready:</p>
+<pre><code class="language-javascript">// I konstruktorn, efter att socket skapats:
+this.socket.onopen = () =&gt; {
+  // TODO: Skicka join_lobby med lobbyId + namn
+};
+
+sendChat(text) {
+  // TODO: Skicka { type: 'chat', text }
 }
 
-reconcileWithServer(serverPlayer) {
-  // Sätt till serverns position
-  this.localPlayer.x = serverPlayer.x;
-  this.localPlayer.y = serverPlayer.y;
-  
-  // Återapplicera inputs som servern inte hade sett ännu
-  const serverTime = serverPlayer.timestamp;
-  const inputsToReplay = this.inputHistory.filter(
-    input =&gt; input.timestamp &gt; serverTime
-  );
-  
-  inputsToReplay.forEach(input =&gt; {
-    this.movePlayer(this.localPlayer, input.direction);
-  });
+toggleReady() {
+  // TODO: Skicka { type: 'ready', ready: !this.isReady }
+}
+
+startGame() {
+  // TODO: Skicka { type: 'start_game' }
 }
 </code></pre>
-<h2 id="interpolation-för-mjuk-rörelse"><a class="header" href="#interpolation-för-mjuk-rörelse">Interpolation för mjuk rörelse</a></h2>
-<p>För att andra spelares rörelser ska se mjuka ut använder vi interpolation - som att "fylla i luckorna" mellan positionsuppdateringar:</p>
-<pre><code class="language-javascript">// Mjuk rörelse för andra spelare
-class NetworkedPlayer {
-  constructor() {
-    this.positions = []; // Buffer av positioner från server
-    this.renderPosition = { x: 0, y: 0 };
-    this.interpolationDelay = 100; // 100ms fördröjning
-  }
-  
-  addServerPosition(position, timestamp) {
-    this.positions.push({
-      x: position.x,
-      y: position.y,
-      timestamp: timestamp
-    });
-    
-    // Behåll bara de senaste positionerna
-    const cutoff = Date.now() - 1000;
-    this.positions = this.positions.filter(p =&gt; p.timestamp &gt; cutoff);
-  }
-  
-  update() {
-    const renderTime = Date.now() - this.interpolationDelay;
-    
-    // Hitta två positioner att interpolera mellan
-    let before = null;
-    let after = null;
-    
-    for (let i = 0; i &lt; this.positions.length - 1; i++) {
-      if (this.positions[i].timestamp &lt;= renderTime &amp;&amp;
-          this.positions[i + 1].timestamp &gt;= renderTime) {
-        before = this.positions[i];
-        after = this.positions[i + 1];
-        break;
-      }
-    }
-    
-    if (before &amp;&amp; after) {
-      // Interpolera mellan positionerna
-      const totalTime = after.timestamp - before.timestamp;
-      const targetTime = renderTime - before.timestamp;
-      const ratio = targetTime / totalTime;
-      
-      this.renderPosition.x = before.x + (after.x - before.x) * ratio;
-      this.renderPosition.y = before.y + (after.y - before.y) * ratio;
-    }
-  }
-}
-</code></pre>
-<h2 id="room-management-rumhantering"><a class="header" href="#room-management-rumhantering">Room Management (Rumhantering)</a></h2>
-<p>I de flesta multiplayer-spel behöver spelare organiseras i rooms (spelrum) eller lobbies:</p>
-<pre><code class="language-javascript">// Enkel rumhantering
-class GameRoom {
+<p><strong>Uppgift</strong>: Bygg ett enkelt lobby-UI med chatlista, input, ready-knapp och en start-knapp som bara fungerar när alla är redo.</p>
+<h3 id="Överkurs-utöka-med-room-management"><a class="header" href="#Överkurs-utöka-med-room-management">Överkurs: Utöka med Room Management</a></h3>
+<p>I exemplet ovan är alla spelare i samma "rum". Låt oss lägga till möjligheten att organisera spelare i separata spelrum.</p>
+<h4 id="steg-1-skapa-gameroom-klassen"><a class="header" href="#steg-1-skapa-gameroom-klassen">Steg 1: Skapa GameRoom-klassen</a></h4>
+<p>Först behöver vi en klass som representerar ett spelrum:</p>
+<pre><code class="language-javascript">class GameRoom {
   constructor(roomId, maxPlayers = 4) {
     this.id = roomId;
-    this.players = new Map();
+    this.players = new Map(); // playerId -&gt; { socket, playerData }
     this.maxPlayers = maxPlayers;
-    this.gameState = 'waiting'; // waiting, playing, finished
-  }
-  
-  addPlayer(playerId, playerData) {
-    if (this.players.size &gt;= this.maxPlayers) {
-      return { success: false, reason: 'Rummet är fullt' };
-    }
-    
-    this.players.set(playerId, {
-      id: playerId,
-      ...playerData,
-      ready: false
-    });
-    
-    // Meddela alla i rummet
-    this.broadcast({
-      type: 'player_joined',
-      player: playerData,
-      playerCount: this.players.size
-    });
-    
-    return { success: true };
-  }
-  
-  broadcast(message) {
-    this.players.forEach((player) =&gt; {
-      if (player.socket &amp;&amp; player.socket.readyState === WebSocket.OPEN) {
-        player.socket.send(JSON.stringify(message));
-      }
-    });
-  }
-}
-</code></pre>
-<h2 id="säkerhet-och-anti-cheat"><a class="header" href="#säkerhet-och-anti-cheat">Säkerhet och anti-cheat</a></h2>
-<p>Multiplayer-spel är måltavlor för fuskare. Här är grundläggande säkerhetsåtgärder:</p>
-<h3 id="input-validation-indatavalidering"><a class="header" href="#input-validation-indatavalidering">Input Validation (Indatavalidering)</a></h3>
-<pre><code class="language-javascript">// Validera all input på servern
-class InputValidator {
-  static validateMove(player, input) {
-    // Kontrollera att input har rätt format
-    if (typeof input.direction !== 'string') {
-      return false;
-    }
-    
-    // Kontrollera giltiga riktningar
-    const validDirections = ['up', 'down', 'left', 'right'];
-    if (!validDirections.includes(input.direction)) {
-      return false;
-    }
-    
-    // Kontrollera hastighet (anti-speed hack)
-    const maxSpeed = 300; // pixels per sekund
-    const timeDiff = Date.now() - player.lastMoveTime;
-    const maxDistance = (maxSpeed * timeDiff) / 1000;
-    
-    if (player.distanceMoved &gt; maxDistance) {
-      console.log(`Misstänkt hastighetsfusk från spelare ${player.id}`);
-      return false;
-    }
-    
-    return true;
-  }
-}
-</code></pre>
-<h3 id="rate-limiting"><a class="header" href="#rate-limiting">Rate Limiting</a></h3>
-<p>Förhindra spam genom att begränsa hur ofta en spelare kan skicka inputs:</p>
-<pre><code class="language-javascript">class RateLimiter {
-  constructor() {
-    this.playerInputCounts = new Map();
-    this.maxInputsPerSecond = 60;
-  }
-  
-  checkInputRate(playerId) {
-    const now = Date.now();
-    const playerData = this.playerInputCounts.get(playerId) || {
-      inputs: [],
-      lastCleanup: now
+    this.gameState = {
+      players: new Map() // Lokal gameState för detta rum
     };
-    
-    // Rensa gamla inputs varje sekund
-    if (now - playerData.lastCleanup &gt; 1000) {
-      playerData.inputs = playerData.inputs.filter(
-        timestamp =&gt; now - timestamp &lt; 1000
-      );
-      playerData.lastCleanup = now;
-    }
-    
-    // Lägg till ny input
-    playerData.inputs.push(now);
-    this.playerInputCounts.set(playerId, playerData);
-    
-    return playerData.inputs.length &lt;= this.maxInputsPerSecond;
   }
+  
+  // TODO: Implementera addPlayer-metoden
+  // Den ska:
+  // 1. Kontrollera om rummet är fullt
+  // 2. Lägga till spelaren i både players och gameState
+  // 3. Skicka meddelande till alla i rummet
+  // 4. Returnera { success: true/false, reason: ... }
+  
+  // TODO: Implementera removePlayer-metoden
+  // Den ska ta bort spelaren och meddela andra
+  
+  // TODO: Implementera handleMove-metoden
+  // Den ska hantera rörelser (samma logik som tidigare)
+  
+  // TODO: Implementera broadcast-metoden
+  // Den ska skicka meddelanden till alla spelare i rummet
 }
 </code></pre>
-<h2 id="praktiska-användningsområden"><a class="header" href="#praktiska-användningsområden">Praktiska användningsområden</a></h2>
-<h3 id="realtidsstrategi-rts"><a class="header" href="#realtidsstrategi-rts">Realtidsstrategi (RTS)</a></h3>
+<p><strong>Uppgift</strong>: Implementera <code>GameRoom</code>-klassen. Tänk på att varje rum har sin egen <code>gameState</code> så att spelare i olika rum inte ser varandra.</p>
+<h4 id="steg-2-hantera-rum-i-servern"><a class="header" href="#steg-2-hantera-rum-i-servern">Steg 2: Hantera rum i servern</a></h4>
+<p>Nu behöver vi en Map för att lagra alla rum och uppdatera connection-hanteraren:</p>
+<pre><code class="language-javascript">const rooms = new Map(); // roomId -&gt; GameRoom
+
+wss.on('connection', (ws) =&gt; {
+  const playerId = Math.random().toString(36).substr(2, 9);
+  let currentRoom = null;
+  
+  ws.on('message', (message) =&gt; {
+    const data = JSON.parse(message);
+    
+    if (data.type === 'join_room') {
+      const roomId = data.roomId || 'default';
+      
+      // TODO: Skapa rum om det inte finns
+      // TODO: Försök lägga till spelaren i rummet
+      // TODO: Om lyckat, spara currentRoom och skicka init-meddelande
+      // TODO: Om misslyckat, skicka felmeddelande
+    }
+    
+    if (data.type === 'move' &amp;&amp; currentRoom) {
+      // TODO: Hantera rörelse via rummet
+    }
+  });
+  
+  ws.on('close', () =&gt; {
+    // TODO: Ta bort spelaren från rummet
+    // TODO: Ta bort rummet om det blir tomt
+  });
+});
+</code></pre>
+<p><strong>Uppgift</strong>: Implementera rumhanteringen. Testa att skapa flera rum och se att spelare i olika rum inte ser varandra.</p>
+<h4 id="steg-3-uppdatera-klienten-1"><a class="header" href="#steg-3-uppdatera-klienten-1">Steg 3: Uppdatera klienten</a></h4>
+<p>Klienten behöver skicka ett <code>join_room</code>-meddelande när den ansluter:</p>
+<pre><code class="language-javascript">// I konstruktorn, efter att socket skapats:
+this.socket.onopen = () =&gt; {
+  // TODO: Skicka join_room-meddelande
+  // Använd ett rum-ID eller 'default' om inget anges
+};
+</code></pre>
+<p><strong>Uppgift</strong>: Lägg till möjlighet att välja rum-ID (t.ex. via en input-ruta) och ansluta till det rummet.</p>
+<h3 id="Överkurs-utöka-för-olika-speltyper"><a class="header" href="#Överkurs-utöka-för-olika-speltyper">Överkurs: Utöka för olika speltyper</a></h3>
+<p>Den grundläggande strukturen kan anpassas för olika speltyper. Här är några idéer att experimentera med:</p>
+<p><strong>Turn-based spel</strong> (t.ex. schack, brädpel):</p>
 <ul>
-<li>Synkroniserade commands (kommandon) mellan spelare</li>
-<li>Fog of war (krigsdimma) implementering</li>
-<li>Resource management (resurshantering)</li>
+<li>Lägg till <code>gameState.currentTurn</code> som håller koll på vems tur det är</li>
+<li>Validera på servern att bara spelaren vars tur det är kan göra drag</li>
+<li>Skicka meddelande när turen är över så nästa spelare kan agera</li>
+<li><strong>Uppgift</strong>: Försök implementera en enkel turordning där spelare växlar tur</li>
 </ul>
-<h3 id="action-spel"><a class="header" href="#action-spel">Action-spel</a></h3>
+<p><strong>Action-spel</strong> (t.ex. platformer, racing):</p>
 <ul>
-<li>Snabb input-respons krävs</li>
-<li>Kollisionsdetektering i realtid</li>
-<li>Smooth movement interpolation</li>
+<li>Öka uppdateringsfrekvensen (lägre intervall i <code>setInterval</code>)</li>
+<li>Lägg till kollisionsdetektering på servern innan position uppdateras</li>
+<li><strong>Uppgift</strong>: Lägg till en enkel kollisionsdetektering - t.ex. förhindra att spelare går utanför kanvasen eller kolliderar med varandra</li>
 </ul>
-<h3 id="turn-based-spel"><a class="header" href="#turn-based-spel">Turn-based spel</a></h3>
+<p><strong>Realtidsstrategi</strong> (RTS):</p>
 <ul>
-<li>Enklare att implementera</li>
-<li>Mindre krav på latens</li>
-<li>Fokus på fair turn management</li>
-</ul>
-<h2 id="best-practices-4"><a class="header" href="#best-practices-4">Best Practices</a></h2>
-<p><strong>Arkitekturval</strong>:</p>
-<ul>
-<li>Använd authoritative server för competitive spel</li>
-<li>Överväg P2P för casual co-op spel</li>
-<li>Planera för skalbarhet från början</li>
-</ul>
-<p><strong>Prestanda</strong>:</p>
-<ul>
-<li>Optimera nätverkstrafik genom att bara skicka förändringar</li>
-<li>Använd object pooling för ofta skapade objekt</li>
-<li>Implementera lag compensation tekniker</li>
-</ul>
-<p><strong>Säkerhet</strong>:</p>
-<ul>
-<li>Validera all input på servern</li>
-<li>Implementera rate limiting</li>
-<li>Använd SSL/TLS (wss://) för säker kommunikation</li>
-</ul>
-<p><strong>Användarupplevelse</strong>:</p>
-<ul>
-<li>Implementera reconnection-hantering</li>
-<li>Visa tydliga felmeddelanden</li>
-<li>Ge feedback för nätverksstatus</li>
+<li>Istället för direkt rörelse, låt spelare skicka "kommandon" (t.ex. "flytta till position X,Y")</li>
+<li>Servern köar kommandona och kör dem i turordning</li>
+<li><strong>Uppgift</strong>: Skapa ett enkelt commands-system där spelare kan skicka kommandon som servern kör asynkront</li>
 </ul>
 <h2 id="sammanfattning-35"><a class="header" href="#sammanfattning-35">Sammanfattning</a></h2>
-<p>Multiplayer-spelutveckling kombinerar flera komplexa tekniker:</p>
+<p>I detta kapitel har vi byggt en enkel multiplayer-server steg för steg:</p>
 <ol>
-<li><strong>Nätverkarkitektur</strong>: Välj rätt struktur för ditt spel</li>
-<li><strong>Tillståndssynkronisering</strong>: Håll alla klienter uppdaterade</li>
-<li><strong>Latenskompensation</strong>: Gör spelet responsivt trots nätverksfördröjning</li>
-<li><strong>Säkerhet</strong>: Skydda mot fusk och attacker</li>
-<li><strong>Skalbarhet</strong>: Planera för tillväxt</li>
+<li><strong>Grundstruktur</strong>: Servern är auktoritativ - den validerar och uppdaterar allt spelstatus</li>
+<li><strong>Klientens roll</strong>: Skicka input, ta emot uppdateringar, rendera vad servern säger</li>
+<li><strong>Utbyggbarhet</strong>: Samma grund kan utökas med rumhantering, turordning, kommandon m.m.</li>
 </ol>
-<p>Med en solid förståelse av dessa principer kan du bygga engagerande multiplayer-upplevelser som spelarna kommer att älska!</p>
-<p><strong>Nästa steg</strong>: Testa att implementera en enkel multiplayer-demo med 2-4 spelare för att praktisera dessa koncept.</p>
+<p><strong>Viktiga lärdomar:</strong></p>
+<ul>
+<li>Använd <code>Map</code> för att hantera dynamiska spelare effektivt</li>
+<li>Servern bestämmer allt - klienten är bara en "vy" av serverns tillstånd</li>
+<li>Alla spelare måste få samma uppdateringar för konsistens</li>
+<li>Bygg steg för steg - börja enkelt och lägg till funktioner när du behöver dem</li>
+</ul>
+<p><strong>Nästa steg</strong>: Experimentera med att lägga till nya funktioner till din server. Kanske en poängräkning, objekt att samla, eller en enkel spellogik?</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="praktiska-övningar-2"><a class="header" href="#praktiska-övningar-2">Praktiska övningar</a></h1>
 <p>Detta kapitel innehåller många små övningar som täcker alla viktiga koncept inom webbaserad spelutveckling och WebSockets. Varje övning innehåller utförliga instruktioner om vad som behöver göras, så du kan lära dig steg för steg utan att bli överväldigad.</p>
 <h2 id="canvas-api---grundläggande-ritning"><a class="header" href="#canvas-api---grundläggande-ritning">Canvas API - Grundläggande ritning</a></h2>
@@ -33174,9 +32618,15 @@ canvas.addEventListener('mousedown', (e) =&gt; {
     isDrawing = true;
     
     // Få musposition relativt canvas
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+
+    // alternativ med offset property
+    const x = e.offsetX;
+    const y = e.offsetY;
+
+    // alternativ med getBoundingClientRect()
+    // const rect = canvas.getBoundingClientRect();
+    // const x = e.clientX - rect.left;
+    // const y = e.clientY - rect.top;
     
     // Starta ny linje
     ctx.beginPath();
@@ -34451,7 +33901,7 @@ export default {
 <li>Copyright-information.</li>
 </ul>
 <hr />
-<h2 id="best-practices-5"><a class="header" href="#best-practices-5">Best Practices</a></h2>
+<h2 id="best-practices-4"><a class="header" href="#best-practices-4">Best Practices</a></h2>
 <ol>
 <li>
 <p><strong>Håll det enkelt</strong></p>
@@ -35173,22 +34623,6 @@ Den här sammanfattningen fungerar bra som referens i ett GitHub-projekt, underv
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

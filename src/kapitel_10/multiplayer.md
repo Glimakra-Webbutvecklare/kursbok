@@ -328,7 +328,122 @@ render() {
 - Alla spelare får samma uppdateringar från servern
 - Detta gör det enkelt att validera och förhindra fusk
 
-### Utöka med Room Management
+### Lobby
+Det är viktigt att låta spelare landa i en lobby med chat innan man faktiskt kör igång spelet. Nedan får ni se steg för steg hur man kan implementera en sådan.
+
+#### Steg 1: Skapa Lobby-klassen
+
+Vi börjar med en klass som håller reda på spelare, chatmeddelanden och vem som är redo:
+
+```javascript
+class Lobby {
+  constructor(lobbyId, maxPlayers = 4) {
+    this.id = lobbyId;
+    this.players = new Map(); // playerId -> { socket, name, ready }
+    this.maxPlayers = maxPlayers;
+    this.chatHistory = []; // { playerId, name, text, ts }
+  }
+  
+  // TODO: Implementera addPlayer-metoden
+  // Den ska:
+  // 1. Kontrollera om lobbyn är full
+  // 2. Lägga till spelaren (name + ready=false)
+  // 3. Skicka en lobby_update till alla
+  // 4. Returnera { success: true/false, reason: ... }
+  
+  // TODO: Implementera removePlayer-metoden
+  // Den ska ta bort spelaren och skicka lobby_update
+  
+  // TODO: Implementera setReady-metoden
+  // Den ska uppdatera ready-status och skicka lobby_update
+  
+  // TODO: Implementera addChatMessage-metoden
+  // Den ska spara meddelandet och broadcasta chat_message
+  
+  // TODO: Implementera canStart-metoden
+  // Den ska returnera true om alla spelare är ready och minst 2 spelare finns
+  
+  // TODO: Implementera broadcast-metoden
+  // Den ska skicka meddelanden till alla spelare i lobbyn
+}
+```
+
+**Uppgift**: Implementera `Lobby`-klassen. Se till att lobbyn håller koll på ready-status och kan avgöra om spelet får starta.
+
+#### Steg 2: Hantera lobby på servern
+
+Nu behöver vi en Map för att lagra lobbyer och uppdatera connection-hanteraren:
+
+```javascript
+const lobbies = new Map(); // lobbyId -> Lobby
+
+wss.on('connection', (ws) => {
+  const playerId = Math.random().toString(36).substr(2, 9);
+  let currentLobby = null;
+  
+  ws.on('message', (message) => {
+    const data = JSON.parse(message);
+    
+    if (data.type === 'join_lobby') {
+      const lobbyId = data.lobbyId || 'default';
+      const name = data.name || 'Player';
+      
+      // TODO: Skapa lobby om den inte finns
+      // TODO: Försök lägga till spelaren i lobbyn
+      // TODO: Om lyckat, spara currentLobby och skicka lobby_state + chat_history
+      // TODO: Om misslyckat, skicka felmeddelande
+    }
+    
+    if (data.type === 'chat' && currentLobby) {
+      // TODO: Lägg till chatmeddelande i lobbyn
+    }
+    
+    if (data.type === 'ready' && currentLobby) {
+      // TODO: Uppdatera ready-status och broadcasta lobby_update
+    }
+    
+    if (data.type === 'start_game' && currentLobby) {
+      // TODO: Kontrollera currentLobby.canStart()
+      // TODO: Om ok, skicka start_game till alla i lobbyn
+    }
+  });
+  
+  ws.on('close', () => {
+    // TODO: Ta bort spelaren från lobbyn
+    // TODO: Ta bort lobbyn om den blir tom
+  });
+});
+```
+
+**Uppgift**: Implementera lobbyhanteringen. Testa att chatta, toggla ready och starta spelet när alla är redo.
+
+#### Steg 3: Uppdatera klienten
+
+Klienten behöver kunna ansluta till en lobby, skicka chat och toggla ready:
+
+```javascript
+// I konstruktorn, efter att socket skapats:
+this.socket.onopen = () => {
+  // TODO: Skicka join_lobby med lobbyId + namn
+};
+
+sendChat(text) {
+  // TODO: Skicka { type: 'chat', text }
+}
+
+toggleReady() {
+  // TODO: Skicka { type: 'ready', ready: !this.isReady }
+}
+
+startGame() {
+  // TODO: Skicka { type: 'start_game' }
+}
+```
+
+**Uppgift**: Bygg ett enkelt lobby-UI med chatlista, input, ready-knapp och en start-knapp som bara fungerar när alla är redo.
+
+
+### Överkurs: Utöka med Room Management
 
 I exemplet ovan är alla spelare i samma "rum". Låt oss lägga till möjligheten att organisera spelare i separata spelrum.
 
@@ -418,7 +533,7 @@ this.socket.onopen = () => {
 
 **Uppgift**: Lägg till möjlighet att välja rum-ID (t.ex. via en input-ruta) och ansluta till det rummet.
 
-### Utöka för olika speltyper
+### Överkurs: Utöka för olika speltyper
 
 Den grundläggande strukturen kan anpassas för olika speltyper. Här är några idéer att experimentera med:
 

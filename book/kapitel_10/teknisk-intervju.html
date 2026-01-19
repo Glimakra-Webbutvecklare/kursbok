@@ -251,9 +251,15 @@ canvas.addEventListener('mousedown', (e) =&gt; {
     isDrawing = true;
     
     // Få musposition relativt canvas
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+
+    // alternativ med offset property
+    const x = e.offsetX;
+    const y = e.offsetY;
+
+    // alternativ med getBoundingClientRect()
+    // const rect = canvas.getBoundingClientRect();
+    // const x = e.clientX - rect.left;
+    // const y = e.clientY - rect.top;
     
     // Starta ny linje
     ctx.beginPath();
@@ -663,22 +669,6 @@ console.log('WebSocket server körs på port 8080');
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 
