@@ -8825,20 +8825,869 @@ function displayUsersFallback(users) {
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="hosting-cms-och-wordpress"><a class="header" href="#hosting-cms-och-wordpress">Hosting, CMS och WordPress</a></h1>
 <p>Detta kapitel täcker hosting-lösningar, innehållshanteringssystem och WordPress.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="webbservrar-och-hosting"><a class="header" href="#webbservrar-och-hosting">Webbservrar och hosting</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="vad-är-hosting"><a class="header" href="#vad-är-hosting">Vad är hosting?</a></h1>
+<p>När du utvecklar en webbplats lokalt på din dator kan bara du se den. För att göra den tillgänglig för andra på internet behöver du <strong>hosting</strong> (värdskap) – en plats där din webbplats kan "bo" och vara tillgänglig dygnet runt. I den här lektionen går vi igenom de grundläggande begreppen du kommer att stöta på när du sätter upp och hostar webbapplikationer.</p>
+<h2 id="varför-behövs-hosting"><a class="header" href="#varför-behövs-hosting">Varför behövs hosting?</a></h2>
+<p>Tänk på lokal utveckling som att prova recept i ditt eget kök. Du kan experimentera, göra misstag och lära dig – men ingen annan kan äta maten. <strong>Hosting</strong> är som att öppna en restaurang: din webbplats måste vara tillgänglig för besökare när som helst, från vilken plats som helst i världen.</p>
+<pre class="mermaid">flowchart LR
+    subgraph Lokal[&quot;Lokal utveckling&quot;]
+        A[Din dator] --&gt; B[Endast du ser sidan]
+    end
+    
+    subgraph Hosting[&quot;Med hosting&quot;]
+        C[Server på internet] --&gt; D[Alla kan besöka sidan]
+    end
+</pre>
+<p>En server som är ansluten till internet 24/7, med rätt mjukvara installerad, gör att din webbplats kan nås av vem som helst som skriver in adressen i webbläsaren.</p>
+<h2 id="klient-och-server"><a class="header" href="#klient-och-server">Klient och server</a></h2>
+<p>För att förstå hur webben fungerar behöver vi två grundbegrepp:</p>
 <ul>
-<li>Olika typer av webbservrar</li>
-<li>Hosting-alternativ</li>
-<li>Server-konfiguration</li>
-<li>SSL/TLS och säkerhet</li>
+<li><strong>Klient (client):</strong> Användarens webbläsare – Chrome, Firefox, Safari eller liknande. Klienten skickar en <strong>förfrågan (request)</strong> till en server och visar sedan svaret för användaren.</li>
+<li><strong>Server:</strong> En dator (ofta i ett datacenter) som kör programvara som lyssnar efter förfrågningar och svarar med innehåll – HTML, bilder, data och så vidare.</li>
 </ul>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="hantera-en-virtuell-privat-server"><a class="header" href="#hantera-en-virtuell-privat-server">Hantera en virtuell privat server</a></h1>
+<pre class="mermaid">sequenceDiagram
+    participant U as Användare
+    participant K as Klient (Webbläsare)
+    participant S as Server
+
+    U-&gt;&gt;K: Skriver adress (t.ex. example.com)
+    K-&gt;&gt;S: HTTP Request (förfrågan)
+    S-&gt;&gt;K: HTTP Response (svar med HTML, bilder etc.)
+    K-&gt;&gt;U: Visar webbsidan
+</pre>
+<p>Detta är grunden för hur webben fungerar: klienten begär, servern svarar. Protokollet som används kallas <strong>HTTP</strong> (Hypertext Transfer Protocol).</p>
+<h2 id="vad-är-en-webbserver"><a class="header" href="#vad-är-en-webbserver">Vad är en webbserver?</a></h2>
+<p>En <strong>webbserver</strong> är ett program som körs på en dator och som:</p>
+<ol>
+<li>Lyssnar på nätverksportar (vanligtvis port 80 för HTTP och 443 för HTTPS).</li>
+<li>Tar emot HTTP-förfrågningar från webbläsare.</li>
+<li>Returnerar rätt innehåll – antingen en färdig fil eller resultatet av körning av skript (t.ex. PHP).</li>
+</ol>
+<p><strong>Analogi:</strong> Webbservern är som en receptionist på ett hotell. När en gäst (webbläsaren) kommer in med en förfrågan ("Jag vill ha rum 42") tar receptionisten emot den, hittar rätt information och lämnar tillbaka svaret.</p>
+<p>De vanligaste webbservrarna är <strong>Apache</strong> och <strong>Nginx</strong>. Båda kan servera statiska filer (HTML, CSS, JavaScript, bilder) och kan konfigureras för att köra PHP eller andra serverspråk.</p>
+<pre class="mermaid">flowchart TB
+    subgraph Server[&quot;Servern&quot;]
+        WS[&quot;Webbserver Apache eller Nginx&quot;]
+        PHP[&quot;PHP-tolk&quot;]
+        FS[(&quot;Filer&quot;)]
+        
+        WS --&gt;|Statisk fil| FS
+        WS --&gt;|php-fil| PHP
+        PHP --&gt; FS
+    end
+    
+    B[&quot;Webbläsare&quot;] --&gt;|Request| WS
+    WS --&gt;|Response| B
+</pre>
+<h2 id="ip-adress-och-domän"><a class="header" href="#ip-adress-och-domän">IP-adress och domän</a></h2>
+<p>Varje dator ansluten till internet har en unik <strong>IP-adress</strong> (Internet Protocol-adress) – en serie siffror som identifierar den, t.ex. <code>93.184.216.34</code>. Det är den adressen som nätverket använder för att hitta rätt server.</p>
+<p>Men människor är dåliga på att komma ihåg siffror. Därför använder vi <strong>domännamn</strong> (domain names) som <code>example.com</code> eller <code>glimakra.se</code>. Ett domännamn är en läsbar alias som pekar på en IP-adress.</p>
+<div class="table-wrapper"><table><thead><tr><th>Domän</th><th>IP-adress</th></tr></thead><tbody>
+<tr><td>example.com</td><td>93.184.216.34</td></tr>
+<tr><td>google.com</td><td>142.250.74.46</td></tr>
+</tbody></table>
+</div>
+<p>När du köper hosting får du oftast en IP-adress till din server. Om du vill använda ett eget domännamn (t.ex. <code>minbutik.se</code>) måste du koppla domänen till den IP-adressen – det görs via DNS.</p>
+<h2 id="dns--telefonkatalogen-för-internet"><a class="header" href="#dns--telefonkatalogen-för-internet">DNS – telefonkatalogen för internet</a></h2>
+<p><strong>DNS</strong> (Domain Name System) är det system som översätter domännamn till IP-adresser. När du skriver <code>example.com</code> i webbläsaren händer följande:</p>
+<ol>
+<li>Webbläsaren frågar en DNS-server: "Vilken IP-adress har example.com?"</li>
+<li>DNS-servern svarar med IP-adressen.</li>
+<li>Webbläsaren ansluter till den IP-adressen och skickar sin HTTP-förfrågan.</li>
+</ol>
+<pre class="mermaid">flowchart LR
+    A[Användare skriver example.com] --&gt; B[DNS slår upp IP-adress]
+    B --&gt; C[Webbläsare ansluter till IP]
+    C --&gt; D[Webbserver svarar med innehåll]
+</pre>
+<p><strong>Analogi:</strong> DNS fungerar som en telefonkatalog – du slår upp ett namn (domän) och får tillbaka ett nummer (IP-adress) som du kan ringa (ansluta till).</p>
+<h3 id="var-köper-man-domän-och-dns"><a class="header" href="#var-köper-man-domän-och-dns">Var köper man domän och DNS?</a></h3>
+<p>Domäner köps hos en <strong>domänregistrator</strong> (domain registrar). Populära leverantörer är:</p>
 <ul>
-<li>VPS setup</li>
-<li>SSH och åtkomst</li>
-<li>Server-administration</li>
-<li>Säkerhetsåtgärder</li>
+<li><a href="https://www.loopia.se/">Loopia</a> – svensk leverantör, bra för .se-domäner</li>
+<li><a href="https://www.binero.se/">Binero</a> – svensk, erbjuder både domäner och hosting</li>
+<li><a href="https://www.one.com/">One.com</a> – dansk leverantör med stark närvaro i Norden</li>
+<li><a href="https://www.namecheap.com/">Namecheap</a> – internationell, ofta billiga .com-domäner</li>
+<li><a href="https://www.cloudflare.com/">Cloudflare</a> – registrator med transparent prissättning</li>
 </ul>
+<p><strong>Typiska priser:</strong> En .se-domän kostar cirka 150–300 kr/år. En .com-domän ligger oftast på 100–150 kr/år. Många leverantörer har kampanjer för första året.</p>
+<h2 id="typer-av-hosting"><a class="header" href="#typer-av-hosting">Typer av hosting</a></h2>
+<p>Det finns flera sätt att hosta en webbplats. Valet beror på budget, tekniska krav och hur mycket kontroll du vill ha.</p>
+<pre class="mermaid">flowchart TB
+    subgraph Hosting[&quot;Hosting-alternativ&quot;]
+        SH[Delad hosting]
+        VPS[VPS]
+        DED[Dedikerad server]
+        CLOUD[Cloud hosting]
+    end
+    
+    SH --&gt;|Enklast, billigast| E1[Lite kontroll]
+    VPS --&gt;|Mellan| E2[Mer kontroll]
+    DED --&gt;|Dyrast| E3[Full kontroll]
+    CLOUD --&gt;|Skalbart| E4[Flexibelt]
+</pre>
+<div class="table-wrapper"><table><thead><tr><th>Typ</th><th>Beskrivning</th><th>Fördelar</th><th>Nackdelar</th></tr></thead><tbody>
+<tr><td><strong>Delad hosting (shared)</strong></td><td>Flera webbplatser delar samma server och resurser</td><td>Billigt, enkelt att komma igång, hostingleverantören sköter mycket</td><td>Begränsad kontroll, prestanda kan påverkas av andra kunders sajter</td></tr>
+<tr><td><strong>VPS</strong> (Virtual Private Server)</td><td>En virtuell egen server med dedikerade resurser</td><td>Mer kontroll, bättre prestanda, egen miljö</td><td>Kräver mer tekniska kunskaper, du ansvarar för uppdateringar och säkerhet</td></tr>
+<tr><td><strong>Dedikerad server</strong></td><td>En hel fysisk server är din</td><td>Full kontroll, hög prestanda</td><td>Dyrt, kräver serveradministrationskunskap</td></tr>
+<tr><td><strong>Cloud hosting</strong></td><td>Resurser i molnet (AWS, Azure, DigitalOcean m.fl.)</td><td>Skalbart, betala för vad du använder</td><td>Kan bli komplext, ofta mer avancerad konfiguration</td></tr>
+</tbody></table>
+</div>
+<p>För nybörjare är <strong>delad hosting</strong> ofta det enklaste valet. När du vill ha mer kontroll eller hosta applikationer med specifika krav passar <strong>VPS</strong> eller <strong>cloud</strong> bättre.</p>
+<h3 id="var-köper-man-hosting-och-vad-kostar-det"><a class="header" href="#var-köper-man-hosting-och-vad-kostar-det">Var köper man hosting och vad kostar det?</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Typ</th><th>Var man köper</th><th>Typiskt pris</th></tr></thead><tbody>
+<tr><td><strong>Delad hosting</strong></td><td><a href="https://www.loopia.se/">Loopia</a>, <a href="https://www.binero.se/">Binero</a>, <a href="https://www.one.com/">One.com</a>, <a href="https://www.surftown.se/">Surftown</a></td><td>30–100 kr/månad</td></tr>
+<tr><td><strong>VPS</strong></td><td><a href="https://www.digitalocean.com/">DigitalOcean</a>, <a href="https://www.linode.com/">Linode</a>, <a href="https://www.hetzner.com/">Hetzner</a>, <a href="https://www.vultr.com/">Vultr</a></td><td>50–200 kr/månad</td></tr>
+<tr><td><strong>Cloud</strong></td><td><a href="https://aws.amazon.com/">AWS</a>, <a href="https://cloud.google.com/">Google Cloud</a>, <a href="https://azure.microsoft.com/">Azure</a></td><td>Varierar kraftigt, ofta pay-as-you-go</td></tr>
+</tbody></table>
+</div>
+<p><strong>Svenska alternativ för nybörjare:</strong> Loopia, Binero och One.com har enkla paket där domän, hosting och ofta e-post ingår. Många erbjuder gratis provperiod eller pengarna-tillbaka-garanti.</p>
+<h2 id="ssltls-och-https"><a class="header" href="#ssltls-och-https">SSL/TLS och HTTPS</a></h2>
+<p>När data skickas mellan webbläsaren och servern kan den i teorin avlyssnas. <strong>SSL/TLS</strong> (Secure Sockets Layer / Transport Layer Security) krypterar denna trafik så att tredje part inte kan läsa den.</p>
+<ul>
+<li><strong>HTTP</strong> – trafiken är okrypterad (port 80).</li>
+<li><strong>HTTPS</strong> – trafiken är krypterad (port 443).</li>
+</ul>
+<p>För att använda HTTPS behöver servern ett <strong>SSL-certifikat</strong>. Certifikatet verifierar att servern är den den utger sig för att vara och möjliggör krypterad kommunikation.</p>
+<pre class="mermaid">flowchart LR
+    subgraph HTTP[&quot;HTTP (okrypterat)&quot;]
+        A1[Webbläsare] --&gt;|Klartext| B1[Server]
+    end
+    
+    subgraph HTTPS[&quot;HTTPS (krypterat)&quot;]
+        A2[Webbläsare] --&gt;|Krypterad data| B2[Server]
+    end
+</pre>
+<p><strong>Varför HTTPS är viktigt:</strong></p>
+<ul>
+<li><strong>Säkerhet:</strong> Skyddar lösenord, kreditkortsinformation och annan känslig data.</li>
+<li><strong>Förtroende:</strong> Webbläsare visar ofta en varningssymbol för sidor utan HTTPS.</li>
+<li><strong>SEO:</strong> Sökmotorer som Google föredrar HTTPS-sidor.</li>
+</ul>
+<p>Många hostingleverantörer erbjuder gratis SSL-certifikat (t.ex. via Let's Encrypt), så det finns sällan anledning att inte använda HTTPS.</p>
+<h2 id="statiskt-vs-dynamiskt-innehåll"><a class="header" href="#statiskt-vs-dynamiskt-innehåll">Statiskt vs dynamiskt innehåll</a></h2>
+<p>Webbplatser kan delas in i två huvudtyper baserat på hur innehållet serveras:</p>
+<ul>
+<li><strong>Statiskt innehåll:</strong> Färdiga filer – HTML, CSS, JavaScript, bilder – som webbservern skickar direkt till webbläsaren utan att ändra dem. Samma fil serveras till alla besökare.</li>
+<li><strong>Dynamiskt innehåll:</strong> Innehållet genereras vid varje förfrågan. En PHP-fil körs på servern, kanske hämtar data från en databas, och skapar unikt HTML för just den användaren.</li>
+</ul>
+<pre class="mermaid">flowchart TB
+    subgraph Statisk[&quot;Statisk sida&quot;]
+        R1[Request] --&gt; F1[HTML-fil]
+        F1 --&gt; S1[Samma svar till alla]
+    end
+    
+    subgraph Dynamisk[&quot;Dynamisk sida&quot;]
+        R2[Request] --&gt; PHP[PHP körs]
+        PHP --&gt; DB[(Databas)]
+        DB --&gt; PHP
+        PHP --&gt; S2[Unikt svar per användare]
+    end
+</pre>
+<p><strong>Exempel på statiska webbplatser</strong> (samma innehåll till alla, ofta byggda med HTML/CSS eller statiska generators som Jekyll/Hugo):</p>
+<ul>
+<li><a href="https://informationisbeautiful.net/">Information is Beautiful</a> – datavisualiseringar</li>
+<li><a href="https://www.smashingmagazine.com/">Smashing Magazine</a> – delar av sajten är statiska</li>
+<li><a href="https://css-tricks.com/">CSS-Tricks</a> – många artiklar serveras statiskt</li>
+<li>Personliga portfolion och enkla företagssidor</li>
+</ul>
+<p><strong>Exempel på dynamiska webbplatser</strong> (innehåll genereras vid varje besök, ofta med PHP, Node.js eller liknande):</p>
+<ul>
+<li><a href="https://wordpress.org/">WordPress.org</a> – CMS som driver miljontals sajter</li>
+<li><a href="https://www.facebook.com/">Facebook</a> – personligt flöde per användare</li>
+<li><a href="https://www.blocket.se/">Blocket</a> – annonser från databas</li>
+<li><a href="https://www.netflix.com/">Netflix</a> – rekommendationer och innehåll baserat på användare</li>
+</ul>
+<p>I kommande lektioner ska vi titta på vad som krävs för att hosta en <strong>PHP-applikation</strong> – alltså dynamiskt innehåll – och hur Docker kan förenkla processen.</p>
+<h2 id="sammanfattning-22"><a class="header" href="#sammanfattning-22">Sammanfattning</a></h2>
+<p>Här är de viktigaste begreppen från denna lektion:</p>
+<div class="table-wrapper"><table><thead><tr><th>Begrepp</th><th>Beskrivning</th></tr></thead><tbody>
+<tr><td><strong>Hosting</strong></td><td>En plats på internet där din webbplats är tillgänglig dygnet runt</td></tr>
+<tr><td><strong>Klient</strong></td><td>Webbläsaren som skickar förfrågningar</td></tr>
+<tr><td><strong>Server</strong></td><td>Datorn som svarar med innehåll</td></tr>
+<tr><td><strong>Webbserver</strong></td><td>Program (Apache, Nginx) som tar emot HTTP-förfrågningar och serverar innehåll</td></tr>
+<tr><td><strong>IP-adress</strong></td><td>Unik numerisk adress för en dator på internet</td></tr>
+<tr><td><strong>Domän</strong></td><td>Läsbart namn (t.ex. example.com) som pekar på en IP-adress</td></tr>
+<tr><td><strong>DNS</strong></td><td>System som översätter domännamn till IP-adresser</td></tr>
+<tr><td><strong>SSL/HTTPS</strong></td><td>Krypterad trafik mellan webbläsare och server</td></tr>
+<tr><td><strong>Statiskt innehåll</strong></td><td>Färdiga filer som serveras oförändrade</td></tr>
+<tr><td><strong>Dynamiskt innehåll</strong></td><td>Innehåll som genereras vid varje förfrågan (t.ex. med PHP)</td></tr>
+</tbody></table>
+</div>
+<p>I nästa lektion går vi från teori till praktik: vad behöver du konkret för att hosta en PHP-applikation?</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="att-hosta-en-php-applikation"><a class="header" href="#att-hosta-en-php-applikation">Att hosta en PHP-applikation</a></h1>
+<p>I förra lektionen gick vi igenom grundbegreppen kring hosting. Nu går vi från teori till praktik: vad behöver du konkret för att få en PHP-applikation att köra på en server? Vi använder <strong>Nginx</strong> som webbserver och <strong>MariaDB</strong> som databas – två populära och stabila val.</p>
+<h2 id="vad-en-php-applikation-behöver"><a class="header" href="#vad-en-php-applikation-behöver">Vad en PHP-applikation behöver</a></h2>
+<p>En typisk PHP-applikation kräver flera komponenter som måste fungera tillsammans. Detta kallas ofta för en <strong>LEMP-stack</strong> (Linux, Nginx, MariaDB/MySQL, PHP):</p>
+<pre class="mermaid">flowchart TB
+    subgraph Stack[&quot;LEMP-stack&quot;]
+        L[&quot;Linux (operativsystem)&quot;]
+        E[&quot;Nginx (webbserver)&quot;]
+        M[&quot;MariaDB (databas)&quot;]
+        P[&quot;PHP (tolk)&quot;]
+    end
+    
+    B[&quot;Webbläsare&quot;] --&gt; E
+    E --&gt; P
+    E --&gt; M
+    P --&gt; M
+    P --&gt; L
+</pre>
+<div class="table-wrapper"><table><thead><tr><th>Komponent</th><th>Roll</th></tr></thead><tbody>
+<tr><td><strong>Linux</strong></td><td>Operativsystemet på servern (t.ex. Ubuntu, Debian)</td></tr>
+<tr><td><strong>Nginx</strong></td><td>Webbservern som tar emot HTTP-förfrågningar och serverar filer</td></tr>
+<tr><td><strong>MariaDB</strong></td><td>Relationsdatabasen där applikationen lagrar data</td></tr>
+<tr><td><strong>PHP</strong></td><td>Tolken som kör PHP-koden och genererar dynamiskt innehåll</td></tr>
+</tbody></table>
+</div><pre class="mermaid">sequenceDiagram
+    participant B as Webbläsare
+    participant N as Nginx
+    participant P as PHP
+    participant M as MariaDB
+
+    B-&gt;&gt;N: HTTP Request
+    N-&gt;&gt;P: Skickar .php-fil
+    P-&gt;&gt;M: SQL-fråga
+    M--&gt;&gt;P: Resultat
+    P--&gt;&gt;N: HTML
+    N--&gt;&gt;B: HTTP Response
+</pre>
+<h2 id="förutsättningar"><a class="header" href="#förutsättningar">Förutsättningar</a></h2>
+<p>För att följa med behöver du:</p>
+<ul>
+<li>En <strong>VPS</strong> eller server med Ubuntu/Debian (t.ex. från DigitalOcean, Hetzner eller Linode)</li>
+<li><strong>SSH-åtkomst</strong> till servern (användarnamn och IP-adress eller domän)</li>
+<li>En enkel PHP-applikation att hosta (t.ex. från ett Git-repo)</li>
+</ul>
+<p>Vi antar att du har root- eller sudo-åtkomst till servern.</p>
+<div class="table-wrapper"><table><thead><tr><th>📝 Notera</th></tr></thead><tbody>
+<tr><td>Saknar du tillgång till en VPS? Kör detta kommando lokalt för att starta en Ubuntu-container där du kan följa stegen: <code>docker run -it --name lemp-ovning -p 8080:80 -p 3306:3306 ubuntu:22.04</code></td></tr>
+</tbody></table>
+</div>
+<h2 id="steg-1-anslut-till-servern-med-ssh"><a class="header" href="#steg-1-anslut-till-servern-med-ssh">Steg 1: Anslut till servern med SSH</a></h2>
+<p>Först ansluter du till servern via <strong>SSH</strong> (Secure Shell). Du kör kommandot från din lokala dator.</p>
+<pre><code class="language-bash">ssh root@192.168.1.100
+</code></pre>
+<p><em>Terminal – anslutning till server:</em></p>
+<pre><code>$ ssh root@192.168.1.100
+The authenticity of host '192.168.1.100' can't be established.
+ED25519 key fingerprint is SHA256:abc123...
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '192.168.1.100' to the list of known hosts.
+root@192.168.1.100's password: ********
+
+Welcome to Ubuntu 22.04 LTS
+root@server:~#
+</code></pre>
+<p>Nu är du inloggad på servern. Alla kommando som följer körs på servern om inget annat anges.</p>
+<div class="table-wrapper"><table><thead><tr><th>📝 Notera</th></tr></thead><tbody>
+<tr><td><strong>Med Docker:</strong> Hoppa över SSH. Kör istället <code>docker run -it --name lemp-ovning -p 8080:80 -p 3306:3306 ubuntu:22.04</code> på din lokala dator. Du hamnar direkt i en Ubuntu-terminal – följ sedan steg 2 och framåt där inne.</td></tr>
+</tbody></table>
+</div>
+<h2 id="steg-2-installera-nginx-php-och-mariadb"><a class="header" href="#steg-2-installera-nginx-php-och-mariadb">Steg 2: Installera Nginx, PHP och MariaDB</a></h2>
+<p>Uppdatera paketlistan och installera de nödvändiga paketen med <strong>apt</strong> (Ubuntu/Debians pakethanterare).</p>
+<pre><code class="language-bash">apt update &amp;&amp; apt install -y nginx php-fpm php-mysql php-mbstring mariadb-server git nano
+</code></pre>
+<p><em>Terminal – installation:</em></p>
+<pre><code>$ apt update &amp;&amp; apt install -y nginx php-fpm php-mysql php-mbstring mariadb-server git
+Hit:1 http://archive.ubuntu.com/ubuntu jammy InRelease
+Get:2 http://archive.ubuntu.com/ubuntu jammy-updates InRelease
+...
+Reading package lists... Done
+Building dependency tree... Done
+The following NEW packages will be installed:
+  nginx php-fpm php-mysql php-mbstring mariadb-server git ...
+...
+Setting up nginx (1.18.0) ...
+Setting up php-fpm (8.1.0) ...
+Setting up mariadb-server (10.6.4) ...
+...
+Done.
+</code></pre>
+<ul>
+<li><strong>nginx</strong> – webbservern</li>
+<li><strong>php-fpm</strong> – PHP FastCGI Process Manager (Nginx använder detta för att köra PHP)</li>
+<li><strong>php-mysql</strong> – PHP-extension för att prata med MariaDB/MySQL</li>
+<li><strong>php-mbstring</strong> – stöd för stränghantering (krävs av många applikationer)</li>
+<li><strong>mariadb-server</strong> – databasservern</li>
+<li><strong>git</strong> – versionshantering, används för att klona applikationskod (steg 6)</li>
+<li><strong>nano</strong> – enkel texteditor i terminalen</li>
+</ul>
+<h2 id="steg-3-starta-och-aktivera-tjänsterna"><a class="header" href="#steg-3-starta-och-aktivera-tjänsterna">Steg 3: Starta och aktivera tjänsterna</a></h2>
+<p>Använd <strong>systemctl</strong> för att starta tjänsterna och säkerställa att de startar automatiskt vid omstart.</p>
+<pre><code class="language-bash">systemctl start nginx php8.1-fpm mariadb
+systemctl enable nginx php8.1-fpm mariadb
+systemctl status nginx
+</code></pre>
+<p><em>Terminal – starta tjänster:</em></p>
+<pre><code>$ systemctl start nginx php8.1-fpm mariadb
+$ systemctl enable nginx php8.1-fpm mariadb
+Created symlink /etc/systemd/system/multi-user.target.wants/nginx.service
+Created symlink /etc/systemd/system/multi-user.target.wants/php8.1-fpm.service
+Created symlink /etc/systemd/system/multi-user.target.wants/mariadb.service
+
+$ systemctl status nginx
+● nginx.service - A high performance web server
+     Loaded: loaded (/lib/systemd/system/nginx.service; enabled)
+     Active: active (running)
+</code></pre>
+<p><em>Notera:</em> PHP-versionen kan variera (t.ex. <code>php8.2-fpm</code>). Kontrollera med <code>apt list php*-fpm</code> om du är osäker.</p>
+<div class="table-wrapper"><table><thead><tr><th>📝 Notera</th></tr></thead><tbody>
+<tr><td><strong>Med Docker:</strong> <code>systemctl</code> fungerar inte i containern. Använd <code>service</code> istället: <code>service nginx start</code>, <code>service php8.1-fpm start</code>, <code>service mariadb start</code></td></tr>
+</tbody></table>
+</div>
+<h2 id="steg-4-konfigurera-mariadb-och-skapa-databas"><a class="header" href="#steg-4-konfigurera-mariadb-och-skapa-databas">Steg 4: Konfigurera MariaDB och skapa databas</a></h2>
+<p>MariaDB har en grundläggande säkerhetskonfiguration. Kör först säkerhetsinställningarna, sedan skapa databas och användare.</p>
+<pre><code class="language-bash">mysql_secure_installation
+</code></pre>
+<p><em>Terminal – säkra MariaDB (förkortat):</em></p>
+<pre><code>$ mysql_secure_installation
+Enter current password for root: [tryck Enter om ingen finns]
+
+Switch to unix_socket authentication [Y/n] y
+Change the root password? [Y/n] y
+New password: ********
+Re-enter new password: ********
+
+Remove anonymous users? [Y/n] y
+Disallow root login remotely? [Y/n] y
+Remove test database? [Y/n] y
+Reload privilege tables? [Y/n] y
+Done.
+</code></pre>
+<p>Logga in i MariaDB och skapa databas samt användare för din applikation:</p>
+<pre><code class="language-bash">mysql -u root -p
+</code></pre>
+<p><em>Terminal – skapa databas i MySQL:</em></p>
+<pre><code>$ mysql -u root -p
+Enter password: ********
+
+MariaDB [(none)]&gt; CREATE DATABASE min_app_db;
+Query OK, 1 row affected (0.001 sec)
+
+MariaDB [(none)]&gt; CREATE USER 'app_user'@'localhost' IDENTIFIED BY 'säkert_lösenord_123';
+Query OK, 0 rows affected (0.002 sec)
+
+MariaDB [(none)]&gt; GRANT ALL PRIVILEGES ON min_app_db.* TO 'app_user'@'localhost';
+Query OK, 0 rows affected (0.001 sec)
+
+MariaDB [(none)]&gt; FLUSH PRIVILEGES;
+Query OK, 0 rows affected (0.001 sec)
+
+MariaDB [(none)]&gt; EXIT;
+Bye
+</code></pre>
+<h2 id="steg-5-filstruktur-och-document-root"><a class="header" href="#steg-5-filstruktur-och-document-root">Steg 5: Filstruktur och document root</a></h2>
+<p>Nginx letar efter webbfiler i en <strong>document root</strong>. Standardplatsen på Ubuntu är <code>/var/www/html</code>. Vi skapar en mapp för vår applikation:</p>
+<pre class="mermaid">flowchart LR
+    subgraph Server[&quot;Servern&quot;]
+        A[&quot;/var/www/min-app/&quot;] --&gt; B[&quot;index.php&quot;]
+        A --&gt; C[&quot;config.php&quot;]
+        A --&gt; D[&quot;public/&quot;]
+    end
+    
+    N[&quot;Nginx&quot;] --&gt; A
+</pre>
+<pre><code class="language-bash">mkdir -p /var/www/min-app
+</code></pre>
+<p>Rekommenderad struktur för en PHP-app:</p>
+<pre><code>/var/www/min-app/
+├── public/           # Document root – endast publika filer
+│   ├── index.php
+│   └── css/
+├── includes/         # Konfiguration, funktioner (skyddad)
+│   └── config.php
+└── uploads/          # Uppladdade filer (om appen har det)
+</code></pre>
+<p>Nginx konfigureras så att den pekar på <code>public/</code> som document root – då hamnar känsliga filer som <code>config.php</code> utanför det som webbläsaren kan nå direkt.</p>
+<p>Ett färdigt exempel med denna struktur finns i <a href="https://github.com/Glimakra-Webbutvecklare/demo-lemp-app">demo-lemp-app</a> – en enkel blogg-app som du kan klona och använda i steg 6.</p>
+<h2 id="steg-6-ladda-upp-applikationsfiler"><a class="header" href="#steg-6-ladda-upp-applikationsfiler">Steg 6: Ladda upp applikationsfiler</a></h2>
+<p>Du kan ladda upp filer på flera sätt. Här visar vi två: <strong>Git</strong> (om koden finns i ett repo) och <strong>SCP</strong> (Secure Copy) från din lokala dator.</p>
+<h3 id="alternativ-a-klona-med-git"><a class="header" href="#alternativ-a-klona-med-git">Alternativ A: Klona med Git</a></h3>
+<pre><code class="language-bash">cd /var/www
+git clone https://github.com/användare/min-php-app.git min-app
+</code></pre>
+<p><em>Terminal – klona med Git:</em></p>
+<pre><code>$ cd /var/www
+$ git clone https://github.com/anvandare/min-php-app.git min-app
+Cloning into 'min-app'...
+remote: Enumerating objects: 42, done.
+remote: Counting objects: 100% (42/42), done.
+remote: Compressing objects: 100% (42/42), done.
+Receiving objects: 100% (42/42), 12.34 KiB | 2.1 MiB/s, done.
+Resolving deltas: 100% (8/8), done.
+</code></pre>
+<h3 id="alternativ-b-kopiera-filer-med-scp-från-din-lokala-dator"><a class="header" href="#alternativ-b-kopiera-filer-med-scp-från-din-lokala-dator">Alternativ B: Kopiera filer med SCP (från din lokala dator)</a></h3>
+<p>Kör detta på <strong>din lokala dator</strong>, inte på servern:</p>
+<div class="table-wrapper"><table><thead><tr><th>📝 Notera</th></tr></thead><tbody>
+<tr><td><strong>Med Docker:</strong> Använd <code>docker cp</code> istället för SCP. Exempel: <code>docker cp ./min-php-app/. lemp-ovning:/var/www/min-app/</code> (kör från mappen med filerna, medan containern körs)</td></tr>
+</tbody></table>
+</div>
+<pre><code class="language-bash">scp -r ./min-php-app/* root@192.168.1.100:/var/www/min-app/
+</code></pre>
+<p><em>Terminal – SCP från lokal dator:</em></p>
+<pre><code>$ scp -r ./min-php-app/* root@192.168.1.100:/var/www/min-app/
+config.php        100%  234   1.2KB/s   00:00
+index.php         100%  567   2.8KB/s   00:00
+</code></pre>
+<h2 id="steg-7-konfigurera-databasanslutning"><a class="header" href="#steg-7-konfigurera-databasanslutning">Steg 7: Konfigurera databasanslutning</a></h2>
+<p>Skapa eller redigera <code>config.php</code> med rätt databasuppgifter. Använd <strong>nano</strong> (eller annan texteditor) på servern:</p>
+<pre><code class="language-bash">nano /var/www/min-app/includes/config.php
+</code></pre>
+<p><em>Terminal – redigera med nano:</em></p>
+<pre><code>$ nano /var/www/min-app/includes/config.php
+
+  GNU nano 6.2                    includes/config.php
+
+&lt;?php
+define('DB_HOST', 'localhost');
+define('DB_NAME', 'min_app_db');
+define('DB_USER', 'app_user');
+define('DB_PASS', 'säkert_lösenord_123');
+
+Sparar med Ctrl+O, avsluta med Ctrl+X.
+</code></pre>
+<p>Exempel på hur <code>config.php</code> kan användas i din applikation:</p>
+<pre><code class="language-php">&lt;?php
+require_once __DIR__ . '/../includes/config.php';
+
+$pdo = new PDO(
+    "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4",
+    DB_USER,
+    DB_PASS
+);
+</code></pre>
+<h2 id="steg-8-konfigurera-nginx"><a class="header" href="#steg-8-konfigurera-nginx">Steg 8: Konfigurera Nginx</a></h2>
+<p>Skapa en Nginx-konfiguration för din webbplats. Nginx läser konfigfiler från <code>/etc/nginx/sites-available/</code>.</p>
+<pre><code class="language-bash">nano /etc/nginx/sites-available/min-app
+</code></pre>
+<p>Lägg in följande (anpassa <code>server_name</code> till din domän eller IP):</p>
+<pre><code class="language-nginx">server {
+    listen 80;
+    server_name 192.168.1.100;   # Eller din domän, t.ex. minapp.se
+
+    root /var/www/min-app/public;
+    index index.php index.html;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/php8.1-fpm.sock;
+    }
+}
+</code></pre>
+<p>Aktivera webbplatsen och testa konfigurationen:</p>
+<pre><code class="language-bash">ln -s /etc/nginx/sites-available/min-app /etc/nginx/sites-enabled/
+nginx -t
+systemctl reload nginx
+</code></pre>
+<p><em>Terminal – aktivera Nginx-konfiguration:</em></p>
+<pre><code>$ ln -s /etc/nginx/sites-available/min-app /etc/nginx/sites-enabled/
+$ nginx -t
+nginx: the configuration file /etc/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx.conf test is successful
+
+$ systemctl reload nginx
+</code></pre>
+<div class="table-wrapper"><table><thead><tr><th>📝 Notera</th></tr></thead><tbody>
+<tr><td><strong>Med Docker:</strong> Använd <code>service nginx reload</code> istället för <code>systemctl reload nginx</code>. Använd <code>server_name localhost;</code> (eller <code>server_name _;</code>) i stället för IP-adressen, så att Nginx svarar när du besöker <code>http://localhost:8080</code>. Ta bort default-site för att undvika konflikter: <code>rm /etc/nginx/sites-enabled/default</code> innan du aktiverar min-app.</td></tr>
+</tbody></table>
+</div>
+<h2 id="steg-9-sätt-filrättigheter"><a class="header" href="#steg-9-sätt-filrättigheter">Steg 9: Sätt filrättigheter</a></h2>
+<p>Webbservern (Nginx) kör ofta som användaren <code>www-data</code>. Den måste kunna läsa filerna i document root.</p>
+<pre><code class="language-bash">chown -R www-data:www-data /var/www/min-app
+chmod -R 755 /var/www/min-app
+chmod -R 775 /var/www/min-app/uploads
+</code></pre>
+<p><em>Terminal – filrättigheter:</em></p>
+<pre><code>$ chown -R www-data:www-data /var/www/min-app
+$ chmod -R 755 /var/www/min-app
+$ chmod -R 775 /var/www/min-app/uploads
+</code></pre>
+<h2 id="steg-10-nu-kan-du-se-hemsidan"><a class="header" href="#steg-10-nu-kan-du-se-hemsidan">Steg 10: Nu kan du se hemsidan</a></h2>
+<p>Öppna webbläsaren och besök din webbplats:</p>
+<ul>
+<li><strong>Med VPS:</strong> <code>http://192.168.1.100</code> (eller din serverns IP/domän)</li>
+<li><strong>Med Docker:</strong> <code>http://localhost:8080</code> (port 8080 mappas till containerns port 80)</li>
+</ul>
+<p>Om allt är korrekt konfigurerat ska du nu se din PHP-applikation.</p>
+<h2 id="vanliga-problem-och-felsökning"><a class="header" href="#vanliga-problem-och-felsökning">Vanliga problem och felsökning</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>Problem</th><th>Möjlig orsak</th><th>Åtgärd</th></tr></thead><tbody>
+<tr><td><strong>500 Internal Server Error</strong></td><td>PHP-krasch, fel i konfiguration</td><td>Kolla <code>tail -f /var/log/nginx/error.log</code></td></tr>
+<tr><td><strong>502 Bad Gateway</strong></td><td>PHP-FPM körs inte</td><td><code>service php8.1-fpm status</code> (eller <code>systemctl status php8.1-fpm</code> på VPS)</td></tr>
+<tr><td><strong>Database connection failed</strong></td><td>Fel användare/lösenord eller databasnamn</td><td>Dubbelkolla <code>config.php</code> och MariaDB-användaren</td></tr>
+<tr><td><strong>Blank sida</strong></td><td>PHP-fel visas inte</td><td>Sätt <code>display_errors = On</code> i <code>php.ini</code> under felsökning (stäng av i produktion!)</td></tr>
+<tr><td><strong>Permission denied</strong></td><td>Fel filrättigheter</td><td><code>chown www-data:www-data</code> på mappar som webbservern behöver läsa/skriva</td></tr>
+<tr><td><strong>Inget svar / tom sida (Docker)</strong></td><td>Default-site eller PHP-FPM</td><td>Se nedan</td></tr>
+</tbody></table>
+</div>
+<p><strong>Med Docker – inget svar vid curl localhost:8088:</strong></p>
+<ol>
+<li>Ta bort default-site så att min-app hanterar alla förfrågningar:
+<pre><code class="language-bash">rm /etc/nginx/sites-enabled/default
+service nginx reload
+</code></pre>
+</li>
+<li>Kontrollera att PHP-FPM körs (krävs för .php-filer):
+<pre><code class="language-bash">service php8.1-fpm start
+service php8.1-fpm status
+</code></pre>
+</li>
+<li>Testa inifrån containern med <code>curl -v http://127.0.0.1/</code> – du ska få HTTP-svar. Om det fungerar inifrån men inte från host kan det vara nätverks-/brandväggsrelaterat.</li>
+</ol>
+<pre><code class="language-bash">tail -f /var/log/nginx/error.log
+</code></pre>
+<p><em>Terminal – felsöka Nginx-loggar:</em></p>
+<pre><code>$ tail -f /var/log/nginx/error.log
+2024/01/15 10:23:45 [error] 1234#1234: *5 FastCGI sent in stderr: "PHP message: PHP Fatal error: Uncaught PDOException: SQLSTATE[HY000] [2002] Connection refused in /var/www/min-app/index.php:12
+</code></pre>
+<h2 id="säkerhet--grundläggande"><a class="header" href="#säkerhet--grundläggande">Säkerhet – grundläggande</a></h2>
+<ul>
+<li><strong>Känsliga filer:</strong> Lägg <code>config.php</code> och liknande utanför document root, eller se till att Nginx inte serverar dem.</li>
+<li><strong>Databas:</strong> Använd alltid prepared statements (PDO) – aldrig direkt variabler i SQL-frågor.</li>
+<li><strong>HTTPS:</strong> I produktion, använd SSL-certifikat (t.ex. Let's Encrypt med Certbot).</li>
+<li><strong>Uppdateringar:</strong> Håll Nginx, PHP och MariaDB uppdaterade med <code>apt update &amp;&amp; apt upgrade</code>.</li>
+</ul>
+<h2 id="om-jag-vill-köra-något-annat-än-en-php-applikation"><a class="header" href="#om-jag-vill-köra-något-annat-än-en-php-applikation">Om jag vill köra något annat än en PHP-applikation?</a></h2>
+<p>Samma principer gäller – men vissa delar byts ut beroende på vilken typ av applikation du hostar.</p>
+<p><strong>Det som ofta är samma:</strong></p>
+<ul>
+<li><strong>Linux-server</strong> – eller Docker-container</li>
+<li><strong>Nginx</strong> – fungerar som webbserver eller reverse proxy för de flesta typer</li>
+<li><strong>SSH, Git, SCP</strong> – samma sätt att ansluta och ladda upp filer</li>
+<li><strong>Filstruktur</strong> – document root, skyddade mappar, filrättigheter</li>
+</ul>
+<p><strong>Det som ändras:</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Applikationstyp</th><th>Istället för PHP + PHP-FPM</th><th>Databas</th></tr></thead><tbody>
+<tr><td><strong>Statisk webbplats</strong> (HTML, CSS, JS)</td><td>Inget – Nginx serverar filer direkt</td><td>Ofta ingen</td></tr>
+<tr><td><strong>Node.js</strong> (Express, React SSR)</td><td>Node.js, Nginx proxar till t.ex. port 3000</td><td>Valfritt (MongoDB, PostgreSQL)</td></tr>
+<tr><td><strong>Python</strong> (Django, Flask)</td><td>Python, Gunicorn eller uWSGI</td><td>Ofta PostgreSQL</td></tr>
+<tr><td><strong>Byggd React/Vue-app</strong></td><td>Inget – Nginx serverar färdiga filer från <code>dist/</code> eller <code>build/</code></td><td>Endast om appen anropar ett API</td></tr>
+</tbody></table>
+</div>
+<p><strong>Exempel:</strong> För en statisk sida eller en byggd React-app behöver du bara Nginx – ingen PHP, ingen databas. Nginx pekar på mappen med dina färdiga filer. För Node.js installerar du Node istället för PHP, startar appen (t.ex. med <code>node server.js</code> eller PM2) och konfigurerar Nginx att proxya förfrågningar till den port där Node lyssnar.</p>
+<h2 id="sammanfattning-23"><a class="header" href="#sammanfattning-23">Sammanfattning</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>📝 Notera</th></tr></thead><tbody>
+<tr><td><strong>Med Docker:</strong> För att återanvända containern nästa gång, använd <code>docker start -i lemp-ovning</code> istället för att skapa en ny. Data sparas tills du kör <code>docker rm lemp-ovning</code>.</td></tr>
+</tbody></table>
+</div>
+<p>Här är en checklista för att hosta en PHP-applikation:</p>
+<pre class="mermaid">flowchart TD
+    A[&quot;Anslut med SSH&quot;] --&gt; B[&quot;Installera Nginx PHP-FPM MariaDB&quot;]
+    B --&gt; C[&quot;Starta tjänster med systemctl&quot;]
+    C --&gt; D[&quot;Skapa databas och användare&quot;]
+    D --&gt; E[&quot;Skapa filstruktur&quot;]
+    E --&gt; F[&quot;Ladda upp filer med Git eller SCP&quot;]
+    F --&gt; G[&quot;Konfigurera config.php&quot;]
+    G --&gt; H[&quot;Konfigurera Nginx&quot;]
+    H --&gt; I[&quot;Sätt filrättigheter&quot;]
+    I --&gt; J[&quot;Besök hemsidan&quot;]
+</pre>
+<div class="table-wrapper"><table><thead><tr><th>Kommando</th><th>Syfte</th></tr></thead><tbody>
+<tr><td><code>ssh user@server</code></td><td>Anslut till servern</td></tr>
+<tr><td><code>apt install nginx php-fpm mariadb-server git</code></td><td>Installera LEMP-stack</td></tr>
+<tr><td><code>systemctl start nginx</code></td><td>Starta webbservern</td></tr>
+<tr><td><code>mysql -u root -p</code></td><td>Öppna MariaDB-konsol</td></tr>
+<tr><td><code>scp -r filer user@server:/sökväg</code></td><td>Kopiera filer till servern</td></tr>
+<tr><td><code>git clone url</code></td><td>Hämta kod från Git</td></tr>
+<tr><td><code>nano fil</code></td><td>Redigera filer</td></tr>
+<tr><td><code>nginx -t</code></td><td>Testa Nginx-konfiguration</td></tr>
+</tbody></table>
+</div>
+<p>I nästa lektion introducerar vi <strong>Docker</strong> – ett sätt att paketera hela denna miljö i en container och slippa installera allt manuellt på servern.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="introduktion-till-docker"><a class="header" href="#introduktion-till-docker">Introduktion till Docker</a></h1>
+<p>I förra lektionen installerade vi Nginx, PHP och MariaDB direkt på en server. Det fungerar – men det kräver många manuella steg och kan ge problem: "Det fungerar på min server, men inte på din." <strong>Docker</strong> löser detta genom att paketera applikationen och dess miljö i <strong>containrar</strong> (containers) – isolerade, återanvändbara enheter som körs likadant överallt.</p>
+<h2 id="vad-är-docker"><a class="header" href="#vad-är-docker">Vad är Docker?</a></h2>
+<p><strong>Docker</strong> är en plattform för att bygga, leverera och köra applikationer i containrar. En container innehåller allt som behövs för att applikationen ska fungera: kod, runtime, systembibliotek och inställningar. Resultatet är att samma container körs identiskt på din dator, på en kollegas Mac, eller på en server i molnet.</p>
+<pre class="mermaid">flowchart LR
+    subgraph Utan[&quot;Utan Docker&quot;]
+        A1[&quot;Utvecklare A&quot;] --&gt; B1[&quot;Olika miljöer&quot;]
+        A2[&quot;Utvecklare B&quot;] --&gt; B1
+        A3[&quot;Server&quot;] --&gt; B1
+    end
+    
+    subgraph Med[&quot;Med Docker&quot;]
+        C1[&quot;Samma image&quot;] --&gt; D1[&quot;Samma beteende överallt&quot;]
+    end
+</pre>
+<p><strong>Analogi:</strong> Tänk på en container som en flyttlåda. Inuti finns allt som behövs – du behöver inte installera möbler på destinationen. Lådan kan flyttas till vilket hus som helst och innehållet fungerar likadant.</p>
+<h2 id="containrar-vs-virtuella-maskiner"><a class="header" href="#containrar-vs-virtuella-maskiner">Containrar vs virtuella maskiner</a></h2>
+<p>Du kanske känner till <strong>virtuella maskiner</strong> (VMs) – en hel "dator" som körs inuti en annan. Containrar är lättare och snabbare:</p>
+<pre class="mermaid">flowchart TB
+    subgraph VM[&quot;Virtuell maskin&quot;]
+        H1[&quot;Host OS&quot;]
+        V1[&quot;Hypervisor&quot;]
+        G1[&quot;Guest OS&quot;] --&gt; A1[&quot;App A&quot;]
+        G2[&quot;Guest OS&quot;] --&gt; A2[&quot;App B&quot;]
+        V1 --&gt; G1
+        V1 --&gt; G2
+        H1 --&gt; V1
+    end
+    
+    subgraph Container[&quot;Docker-containrar&quot;]
+        H2[&quot;Host OS&quot;]
+        D[&quot;Docker&quot;]
+        C1[&quot;Container A&quot;] --&gt; A3[&quot;App A&quot;]
+        C2[&quot;Container B&quot;] --&gt; A4[&quot;App B&quot;]
+        D --&gt; C1
+        D --&gt; C2
+        H2 --&gt; D
+    end
+</pre>
+<div class="table-wrapper"><table><thead><tr><th>Aspekt</th><th>Virtuell maskin</th><th>Docker-container</th></tr></thead><tbody>
+<tr><td><strong>Storlek</strong></td><td>Gigabyte (helt OS)</td><td>Megabyte (bara app + beroenden)</td></tr>
+<tr><td><strong>Starttid</strong></td><td>Minuter</td><td>Sekunder</td></tr>
+<tr><td><strong>Resursanvändning</strong></td><td>Hög</td><td>Låg</td></tr>
+<tr><td><strong>Isolering</strong></td><td>Full (helt eget OS)</td><td>Processisolering</td></tr>
+</tbody></table>
+</div>
+<p>Containrar delar värdens kernel (Linux-kärna) men har sin egen filsystemvy och nätverk. De är tillräckligt isolerade för de flesta behov.</p>
+<h2 id="grundbegrepp-image-och-container"><a class="header" href="#grundbegrepp-image-och-container">Grundbegrepp: Image och Container</a></h2>
+<ul>
+<li><strong>Image (avbild):</strong> En skrivskyddad mall – en "recept" för vad som ska finnas i containern. Bilder byggs från en <code>Dockerfile</code> eller hämtas från ett register som Docker Hub.</li>
+<li><strong>Container:</strong> En körande instans av en image. Du kan starta flera containrar från samma image.</li>
+</ul>
+<pre class="mermaid">flowchart LR
+    A[&quot;Dockerfile&quot;] --&gt;|docker build| B[&quot;Image&quot;]
+    B --&gt;|docker run| C[&quot;Container&quot;]
+    B --&gt;|docker run| D[&quot;Container&quot;]
+</pre>
+<p><strong>Analogi:</strong> En image är som en byggritning. En container är det färdiga huset – du kan bygga flera hus från samma ritning.</p>
+<h2 id="installera-docker"><a class="header" href="#installera-docker">Installera Docker</a></h2>
+<p>På Ubuntu/Debian installeras Docker med följande kommandon:</p>
+<pre><code class="language-bash">apt update
+apt install -y ca-certificates curl gnupg
+install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+chmod a+r /etc/apt/keyrings/docker.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(. /etc/os-release &amp;&amp; echo "$VERSION_CODENAME") stable" | tee /etc/apt/sources.list.d/docker.list &gt; /dev/null
+apt update
+apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+</code></pre>
+<p><em>Terminal – installation:</em></p>
+<pre><code>$ apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+Reading package lists... Done
+...
+Setting up docker-ce (24.0.5) ...
+Created symlink /etc/systemd/system/multi-user.target.wants/docker.service
+...
+$ docker --version
+Docker version 24.0.5, build 24.0.5-0ubuntu1
+</code></pre>
+<p>På <strong>Windows</strong> eller <strong>macOS</strong> används ofta <strong>Docker Desktop</strong>, som inkluderar både Docker Engine och ett grafiskt gränssnitt. Ladda ner från <a href="https://www.docker.com/products/docker-desktop/">docker.com/products/docker-desktop</a>.</p>
+<h2 id="grundläggande-docker-kommandon"><a class="header" href="#grundläggande-docker-kommandon">Grundläggande Docker-kommandon</a></h2>
+<h3 id="köra-en-container-från-en-image"><a class="header" href="#köra-en-container-från-en-image">Köra en container från en image</a></h3>
+<p>Det enklaste sättet att prova Docker är att köra en färdig image från Docker Hub:</p>
+<pre><code class="language-bash">docker run hello-world
+</code></pre>
+<p><em>Terminal – första containern:</em></p>
+<pre><code>$ docker run hello-world
+Unable to find image 'hello-world:latest' locally
+latest: Pulling from library/hello-world
+c1ec31eb5942: Pull complete
+Digest: sha256:4bd7813b1...
+Status: Downloaded newer image for hello-world:latest
+
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+...
+</code></pre>
+<h3 id="lista-körande-containrar"><a class="header" href="#lista-körande-containrar">Lista körande containrar</a></h3>
+<pre><code class="language-bash">docker ps
+</code></pre>
+<p><em>Terminal – lista containrar:</em></p>
+<pre><code>$ docker ps
+CONTAINER ID   IMAGE          COMMAND       CREATED         STATUS         PORTS     NAMES
+a1b2c3d4e5f6   nginx:latest   "nginx -g ..."   2 minutes ago   Up 2 minutes   0.0.0.0:8080-&gt;80/tcp   web
+</code></pre>
+<p>För att se <em>alla</em> containrar (även stoppade):</p>
+<pre><code class="language-bash">docker ps -a
+</code></pre>
+<h3 id="starta-en-webbserver-i-en-container"><a class="header" href="#starta-en-webbserver-i-en-container">Starta en webbserver i en container</a></h3>
+<p>Nginx kan köras direkt från en färdig image. Flaggan <code>-p</code> mappar port 8080 på värddatorn till port 80 i containern:</p>
+<pre><code class="language-bash">docker run -d -p 8080:80 --name web nginx:latest
+</code></pre>
+<p><em>Terminal – starta Nginx:</em></p>
+<pre><code>$ docker run -d -p 8080:80 --name web nginx:latest
+Unable to find image 'nginx:latest' locally
+latest: Pulling from library/nginx
+a2abf6c4d29d: Pull complete
+...
+a1b2c3d4e5f6
+</code></pre>
+<p>Öppna nu <code>http://localhost:8080</code> i webbläsaren – du ska se Nginx välkomstsida. Inga <code>apt install</code> behövdes.</p>
+<div class="table-wrapper"><table><thead><tr><th>Flagga</th><th>Betydelse</th></tr></thead><tbody>
+<tr><td><code>-d</code></td><td>Kör i bakgrunden (detached)</td></tr>
+<tr><td><code>-p 8080:80</code></td><td>Mappa värdens port 8080 till containerns port 80</td></tr>
+<tr><td><code>--name web</code></td><td>Ge containern namnet "web"</td></tr>
+</tbody></table>
+</div>
+<h3 id="stoppa-och-ta-bort-en-container"><a class="header" href="#stoppa-och-ta-bort-en-container">Stoppa och ta bort en container</a></h3>
+<pre><code class="language-bash">docker stop web
+docker rm web
+</code></pre>
+<p><em>Terminal – stoppa och ta bort:</em></p>
+<pre><code>$ docker stop web
+web
+$ docker rm web
+web
+</code></pre>
+<h2 id="bygga-en-egen-image-med-dockerfile"><a class="header" href="#bygga-en-egen-image-med-dockerfile">Bygga en egen image med Dockerfile</a></h2>
+<p>En <strong>Dockerfile</strong> beskriver hur en image ska byggas. Varje rad är ett steg. Här är ett enkelt exempel för en PHP-app med Nginx:</p>
+<pre><code class="language-dockerfile">FROM php:8.2-fpm
+
+RUN apt-get update &amp;&amp; apt-get install -y \
+    nginx \
+    &amp;&amp; docker-php-ext-install pdo pdo_mysql
+
+COPY default.conf /etc/nginx/sites-available/default
+</code></pre>
+<p><em>Förklaring:</em></p>
+<ul>
+<li><code>FROM</code> – basimage att bygga vidare på (här PHP 8.2 med PHP-FPM)</li>
+<li><code>RUN</code> – kör kommandon under bygget (installerar Nginx, PHP-extensions)</li>
+<li><code>COPY</code> – kopierar filer från byggkontexten till imagen</li>
+</ul>
+<p>Bygg imagen:</p>
+<pre><code class="language-bash">docker build -t min-php-app .
+</code></pre>
+<p><em>Terminal – bygg image:</em></p>
+<pre><code>$ docker build -t min-php-app .
+[+] Building 45.2s (8/8) FINISHED
+ =&gt; [1/4] FROM docker.io/library/php:8.2-fpm
+ =&gt; [2/4] RUN apt-get update &amp;&amp; apt-get install -y nginx
+ =&gt; [3/4] COPY default.conf /etc/nginx/sites-available/default
+ =&gt; [4/4] COPY app/ /var/www/html
+ =&gt; exporting to image
+ =&gt; =&gt; naming to docker.io/library/min-php-app:latest
+</code></pre>
+<p>Flaggan <code>-t min-php-app</code> ger imagen ett taggnamn. Punkten <code>.</code> anger att byggkontexten är aktuell mapp.</p>
+<h2 id="docker-compose--flera-containrar-tillsammans"><a class="header" href="#docker-compose--flera-containrar-tillsammans">Docker Compose – flera containrar tillsammans</a></h2>
+<p>En PHP-app behöver ofta både webbserver, PHP och databas. <strong>Docker Compose</strong> låter dig definiera flera tjänster i en fil och starta dem tillsammans.</p>
+<p>Skapa en fil <code>docker-compose.yml</code>:</p>
+<pre><code class="language-yaml">services:
+  web:
+    image: nginx:latest
+    ports:
+      - "8080:80"
+    volumes:
+      - ./app:/var/www/html
+    depends_on:
+      - php
+
+  php:
+    image: php:8.2-fpm
+    volumes:
+      - ./app:/var/www/html
+
+  db:
+    image: mariadb:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: hemligt
+      MYSQL_DATABASE: min_app
+    volumes:
+      - dbdata:/var/lib/mysql
+
+volumes:
+  dbdata:
+</code></pre>
+<pre class="mermaid">flowchart LR
+    subgraph Compose[&quot;Docker Compose&quot;]
+        W[&quot;web (Nginx)&quot;]
+        P[&quot;php (PHP-FPM)&quot;]
+        D[&quot;db (MariaDB)&quot;]
+    end
+    
+    W --&gt; P
+    P --&gt; D
+</pre>
+<p>Starta alla tjänster:</p>
+<pre><code class="language-bash">docker compose up -d
+</code></pre>
+<p><em>Terminal – starta med Compose:</em></p>
+<pre><code>$ docker compose up -d
+[+] Running 4/4
+ ✔ Network min-app_default    Created
+ ✔ Container min-app-db-1     Started
+ ✔ Container min-app-php-1    Started
+ ✔ Container min-app-web-1    Started
+</code></pre>
+<p>Stoppa och ta bort containrarna (volymen med databasen behålls):</p>
+<pre><code class="language-bash">docker compose down
+</code></pre>
+<h3 id="viktiga-begrepp-i-docker-composeyml"><a class="header" href="#viktiga-begrepp-i-docker-composeyml">Viktiga begrepp i docker-compose.yml</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Nyckel</th><th>Betydelse</th></tr></thead><tbody>
+<tr><td><code>services</code></td><td>Lista över tjänster (containrar)</td></tr>
+<tr><td><code>image</code></td><td>Vilken image som ska användas</td></tr>
+<tr><td><code>ports</code></td><td>Portmappning (värd:container)</td></tr>
+<tr><td><code>volumes</code></td><td>Persistens – mappar eller namngivna volymer</td></tr>
+<tr><td><code>environment</code></td><td>Miljövariabler (t.ex. databaslösenord)</td></tr>
+<tr><td><code>depends_on</code></td><td>Startordning – "web" väntar på "php"</td></tr>
+</tbody></table>
+</div>
+<h2 id="volymer--spara-data-mellan-körningar"><a class="header" href="#volymer--spara-data-mellan-körningar">Volymer – spara data mellan körningar</a></h2>
+<p>Containrar är tillfälliga. När du tar bort en container försvinner allt innehåll. För att spara data (t.ex. databasfiler) använder du <strong>volymer</strong>:</p>
+<pre class="mermaid">flowchart TB
+    subgraph Host[&quot;Värddator&quot;]
+        V[&quot;Volume dbdata&quot;]
+    end
+    
+    subgraph Container[&quot;Container&quot;]
+        M[&quot;MariaDB&quot;]
+    end
+    
+    M --&gt;|Läser/skriver| V
+</pre>
+<ul>
+<li><strong>Namngiven volym</strong> (<code>dbdata</code>): Docker hanterar lagringsplatsen. Data överlever <code>docker compose down</code>.</li>
+<li><strong>Bind mount</strong> (<code>./app:/var/www/html</code>): En mapp på värddatorn mappas in i containern. Bra för utveckling – ändringar i koden syns direkt.</li>
+</ul>
+<h2 id="sammanfattning-24"><a class="header" href="#sammanfattning-24">Sammanfattning</a></h2>
+<h3 id="jämförelse-hosting-utan-docker-vs-med-docker"><a class="header" href="#jämförelse-hosting-utan-docker-vs-med-docker">Jämförelse: Hosting utan Docker vs med Docker</a></h3>
+<p>I förra lektionen installerade vi Nginx, PHP-FPM och MariaDB direkt på servern med <code>apt install</code> och <code>systemctl</code>. Med Docker paketeras samma komponenter i isolerade containrar:</p>
+<pre class="mermaid">flowchart TB
+    subgraph Utan[&quot;Utan Docker - Lektion 2&quot;]
+        H1[&quot;Ubuntu Server&quot;]
+        N1[&quot;Nginx&quot;]
+        P1[&quot;PHP-FPM&quot;]
+        M1[&quot;MariaDB&quot;]
+        H1 --&gt; N1
+        H1 --&gt; P1
+        H1 --&gt; M1
+    end
+    
+    subgraph Med[&quot;Med Docker&quot;]
+        H2[&quot;Ubuntu Server&quot;]
+        D[&quot;Docker&quot;]
+        C1[&quot;Container Nginx&quot;]
+        C2[&quot;Container PHP-FPM&quot;]
+        C3[&quot;Container MariaDB&quot;]
+        H2 --&gt; D
+        D --&gt; C1
+        D --&gt; C2
+        D --&gt; C3
+    end
+</pre>
+<div class="table-wrapper"><table><thead><tr><th>Aspekt</th><th>Utan Docker</th><th>Med Docker</th></tr></thead><tbody>
+<tr><td><strong>Installation</strong></td><td><code>apt install</code> för varje paket</td><td><code>docker compose up</code> – ingen installation på värd</td></tr>
+<tr><td><strong>Konfiguration</strong></td><td>Manuella filer (nginx, php.ini)</td><td>Definieras i Dockerfile och docker-compose.yml</td></tr>
+<tr><td><strong>Isolering</strong></td><td>Alla tjänster delar samma system</td><td>Varje tjänst i egen container</td></tr>
+<tr><td><strong>Återanvändning</strong></td><td>Svårt att replikera exakt miljö</td><td>Samma image körs identiskt överallt</td></tr>
+<tr><td><strong>Start</strong></td><td><code>systemctl start nginx php-fpm mariadb</code></td><td><code>docker compose up -d</code></td></tr>
+</tbody></table>
+</div><div class="table-wrapper"><table><thead><tr><th>Kommando</th><th>Syfte</th></tr></thead><tbody>
+<tr><td><code>docker run -d -p 8080:80 nginx</code></td><td>Starta Nginx på port 8080</td></tr>
+<tr><td><code>docker ps</code></td><td>Lista körande containrar</td></tr>
+<tr><td><code>docker stop namn</code></td><td>Stoppa en container</td></tr>
+<tr><td><code>docker build -t namn .</code></td><td>Bygg image från Dockerfile</td></tr>
+<tr><td><code>docker compose up -d</code></td><td>Starta alla tjänster i bakgrunden</td></tr>
+<tr><td><code>docker compose down</code></td><td>Stoppa och ta bort containrar</td></tr>
+</tbody></table>
+</div>
+<p>Docker gör det möjligt att definiera hela miljön (Nginx, PHP, MariaDB) som kod. I nästa lektion använder vi detta för att hosta PHP-applikationen från lektion 2 – utan att installera något manuellt på servern.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="domänhantering-och-dns"><a class="header" href="#domänhantering-och-dns">Domänhantering och DNS</a></h1>
 <ul>
 <li>Domänregistrering</li>
@@ -12360,7 +13209,7 @@ session.cookie_samesite = "Lax"
 ; session.sid_entropy_length = 32 (eller högre)
 ; session.sid_bits_per_character = 5 (eller 6)
 </code></pre>
-<h2 id="sammanfattning-22"><a class="header" href="#sammanfattning-22">Sammanfattning</a></h2>
+<h2 id="sammanfattning-25"><a class="header" href="#sammanfattning-25">Sammanfattning</a></h2>
 <p>Cookies och sessioner är avgörande verktyg för att skapa dynamiska och användarvänliga webbapplikationer genom att överbrygga HTTP:s tillståndslösa natur. Cookies lagrar data på klienten och är bra för icke-känsliga preferenser, medan sessioner lagrar data på servern och är standardmetoden för att hantera inloggningsstatus och annan känslig temporär data. Att förstå hur man använder dem säkert, särskilt genom att skydda session-ID:t och konfigurera cookie-attribut korrekt, är fundamentalt för säker webbutveckling med PHP.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="webbsäkerhet-i-php-vanliga-hot-och-skydd"><a class="header" href="#webbsäkerhet-i-php-vanliga-hot-och-skydd">Webbsäkerhet i PHP: Vanliga Hot och Skydd</a></h1>
 <p>Att bygga en fungerande webbapplikation är en sak, men att göra den säker är en helt annan och minst lika viktig uppgift. En osäker applikation kan leda till att användardata läcker, att obehöriga får kontroll över systemet, eller att webbplatsen används för att sprida skadlig kod. Detta avsnitt täcker några av de mest kritiska säkerhetsriskerna och hur du skyddar din PHP-applikation mot dem.</p>
@@ -13951,7 +14800,7 @@ ob_end_flush();
 </ul>
 <p><strong>Intervjutips:</strong> Diskutera olika nivåer av optimering - från kod-nivå till infrastruktur (load balancers, database replicas etc.).</p>
 <hr />
-<h2 id="sammanfattning-23"><a class="header" href="#sammanfattning-23">Sammanfattning</a></h2>
+<h2 id="sammanfattning-26"><a class="header" href="#sammanfattning-26">Sammanfattning</a></h2>
 <p>Dessa frågor täcker de viktigaste aspekterna av fullstack-utveckling med PHP:</p>
 <ul>
 <li><strong>Grundläggande PHP:</strong> Syntax, variabler, funktioner</li>
@@ -15032,7 +15881,7 @@ const isLoading = true;
 function LoadingSpinner() { }  // Bättre än Spinner()
 function ErrorMessage() { }   // Bättre än Error()
 </code></pre>
-<h2 id="sammanfattning-24"><a class="header" href="#sammanfattning-24">Sammanfattning</a></h2>
+<h2 id="sammanfattning-27"><a class="header" href="#sammanfattning-27">Sammanfattning</a></h2>
 <p>Komponenter är byggstenen i React-applikationer:</p>
 <ul>
 <li><strong>Komponenter</strong> är JavaScript-funktioner som returnerar JSX</li>
@@ -15807,7 +16656,7 @@ const [state, setState] = useState({
   comments: { 1: { id: 1, text: 'Bra inlägg!', authorId: 2 } }
 });
 </code></pre>
-<h2 id="sammanfattning-25"><a class="header" href="#sammanfattning-25">Sammanfattning</a></h2>
+<h2 id="sammanfattning-28"><a class="header" href="#sammanfattning-28">Sammanfattning</a></h2>
 <p>Nu kan du skapa interaktiva React-komponenter:</p>
 <ul>
 <li><strong>Props</strong> skickar data från föräldra- till barnkomponenter</li>
@@ -16349,7 +17198,7 @@ function ProductDetail() {
   // ...
 }
 </code></pre>
-<h2 id="sammanfattning-26"><a class="header" href="#sammanfattning-26">Sammanfattning</a></h2>
+<h2 id="sammanfattning-29"><a class="header" href="#sammanfattning-29">Sammanfattning</a></h2>
 <p>React Router är kraftfullt verktyg för navigation i React-applikationer:</p>
 <ul>
 <li><strong>BrowserRouter</strong> ger rena URLs och är bästa valet för de flesta applikationer</li>
@@ -17471,7 +18320,7 @@ const API_KEY = import.meta.env.VITE_API_KEY;
 <li>Testa ändringar lokalt innan deployment</li>
 <li>Använd versionshantering (Git tags) för viktiga releases</li>
 </ul>
-<h2 id="sammanfattning-27"><a class="header" href="#sammanfattning-27">Sammanfattning</a></h2>
+<h2 id="sammanfattning-30"><a class="header" href="#sammanfattning-30">Sammanfattning</a></h2>
 <p>Deployment med Dokploy gör det enkelt att få din React-applikation live på internet:</p>
 <ol>
 <li><strong>Förbered</strong> din kod och pusha till GitHub</li>
@@ -18085,7 +18934,7 @@ class ErrorTracker {
 
 export default ErrorTracker;
 </code></pre>
-<h2 id="sammanfattning-28"><a class="header" href="#sammanfattning-28">Sammanfattning</a></h2>
+<h2 id="sammanfattning-31"><a class="header" href="#sammanfattning-31">Sammanfattning</a></h2>
 <p>Single Page Applications erbjuder många fördelar för moderna webbapplikationer:</p>
 <ul>
 <li><strong>Smidig användarupplevelse</strong> med snabb navigering</li>
@@ -19098,7 +19947,7 @@ function App() {
 <li>Ha fallback UI för kritiska komponenter</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-29"><a class="header" href="#sammanfattning-29">Sammanfattning</a></h2>
+<h2 id="sammanfattning-32"><a class="header" href="#sammanfattning-32">Sammanfattning</a></h2>
 <p>Dessa frågor täcker de viktigaste aspekterna av React-utveckling:</p>
 <ul>
 <li><strong>React Fundamentals:</strong> JSX, Virtual DOM, komponenter</li>
@@ -20667,7 +21516,7 @@ async function processMultipleFiles() {
   }
 }
 </code></pre>
-<h2 id="sammanfattning-30"><a class="header" href="#sammanfattning-30">Sammanfattning</a></h2>
+<h2 id="sammanfattning-33"><a class="header" href="#sammanfattning-33">Sammanfattning</a></h2>
 <p>I denna introduktion har vi gått igenom grunderna i Node.js och fokuserat på moderna utvecklingsmetoder:</p>
 <p><strong>Vad vi har lärt oss:</strong></p>
 <ul>
@@ -22924,7 +23773,7 @@ app.use(express.json({ limit: '10mb' })); // Begränsa request size
 <li><strong>Glömma validering:</strong> Validera alltid användarinput</li>
 <li><strong>Sakna rate limiting:</strong> Låt inte en användare överbelasta ditt API</li>
 </ol>
-<h2 id="sammanfattning-31"><a class="header" href="#sammanfattning-31">Sammanfattning</a></h2>
+<h2 id="sammanfattning-34"><a class="header" href="#sammanfattning-34">Sammanfattning</a></h2>
 <p>RESTful API:er ger dig en solid grund för att bygga skalbara och underhållbara backend-tjänster. Genom att följa REST-principerna skapar du API:er som är intuitiva för utvecklare att använda och enkla att underhålla över tid.</p>
 <h3 id="viktiga-takeaways-1"><a class="header" href="#viktiga-takeaways-1">Viktiga takeaways:</a></h3>
 <ul>
@@ -24593,7 +25442,7 @@ import { add } from './math';
   // Standard timeout är 5000ms, öka om nödvändigt
 }, 10000); // 10 sekunder
 </code></pre>
-<h2 id="sammanfattning-32"><a class="header" href="#sammanfattning-32">Sammanfattning</a></h2>
+<h2 id="sammanfattning-35"><a class="header" href="#sammanfattning-35">Sammanfattning</a></h2>
 <p>I denna lektion har du lärt dig:</p>
 <p>✅ <strong>Varför testa</strong>: Säkerhet vid ändringar, dokumentation, snabbare utveckling<br />
 ✅ <strong>Jest setup</strong>: Installera och konfigurera Jest med ES6-moduler<br />
@@ -28469,7 +29318,7 @@ class InventoryService {
 module.exports = InventoryService;
 </code></pre>
 <hr />
-<h2 id="sammanfattning-33"><a class="header" href="#sammanfattning-33">Sammanfattning</a></h2>
+<h2 id="sammanfattning-36"><a class="header" href="#sammanfattning-36">Sammanfattning</a></h2>
 <p>Dessa fyra övningar tar dig från grundläggande Express-applikationer till avancerade real-time system. Varje projekt bygger på kunskaperna från föregående och introducerar nya koncept:</p>
 <ol>
 <li><strong>Todo API</strong>: Grundläggande CRUD, MongoDB, felhantering</li>
@@ -31226,7 +32075,7 @@ class BulletManager {
   }
 }
 </code></pre>
-<h2 id="sammanfattning-34"><a class="header" href="#sammanfattning-34">Sammanfattning</a></h2>
+<h2 id="sammanfattning-37"><a class="header" href="#sammanfattning-37">Sammanfattning</a></h2>
 <p>OOP i spelutveckling handlar om att:</p>
 <p><strong>Strukturera kod effektivt</strong>:</p>
 <ul>
@@ -31702,7 +32551,7 @@ this.socket.onopen = () =&gt; {
 <li>Servern köar kommandona och kör dem i turordning</li>
 <li><strong>Uppgift</strong>: Skapa ett enkelt commands-system där spelare kan skicka kommandon som servern kör asynkront</li>
 </ul>
-<h2 id="sammanfattning-35"><a class="header" href="#sammanfattning-35">Sammanfattning</a></h2>
+<h2 id="sammanfattning-38"><a class="header" href="#sammanfattning-38">Sammanfattning</a></h2>
 <p>I detta kapitel har vi byggt en enkel multiplayer-server steg för steg:</p>
 <ol>
 <li><strong>Grundstruktur</strong>: Servern är auktoritativ - den validerar och uppdaterar allt spelstatus</li>
@@ -33407,7 +34256,7 @@ module.exports = {
 <li>Gör kortet klickbart genom att lägga till en länk runt hela kortet.</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-36"><a class="header" href="#sammanfattning-36">Sammanfattning</a></h2>
+<h2 id="sammanfattning-39"><a class="header" href="#sammanfattning-39">Sammanfattning</a></h2>
 <ul>
 <li><strong>Färger</strong>: Använd fördefinierade eller anpassade färger för att skapa en konsekvent design.</li>
 <li><strong>Typografi</strong>: Hantera textstorlekar, typsnitt och andra textrelaterade egenskaper med utility-klasser.</li>
@@ -33512,7 +34361,7 @@ module.exports = {
 <li>Lägg till en responsiv grid-layout som visar flera produktkort bredvid varandra på större skärmar.</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-37"><a class="header" href="#sammanfattning-37">Sammanfattning</a></h2>
+<h2 id="sammanfattning-40"><a class="header" href="#sammanfattning-40">Sammanfattning</a></h2>
 <ul>
 <li><strong>Breakpoints</strong>: Använd Tailwinds inbyggda breakpoints för att skapa responsiva layouter.</li>
 <li><strong>Responsivitet</strong>: Anpassa layout, typografi och andra stilar för olika skärmstorlekar.</li>
@@ -33651,7 +34500,7 @@ module.exports = {
 <li>Gör menyn sticky så att den alltid är synlig högst upp på sidan.</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-38"><a class="header" href="#sammanfattning-38">Sammanfattning</a></h2>
+<h2 id="sammanfattning-41"><a class="header" href="#sammanfattning-41">Sammanfattning</a></h2>
 <ul>
 <li><strong>Pseudo-klasser</strong>: Använd <code>hover:</code>, <code>focus:</code>, <code>active:</code>, och <code>disabled:</code> för att hantera olika tillstånd.</li>
 <li><strong>Gruppbaserade effekter</strong>: Använd <code>group</code> och <code>group-hover:</code> för att skapa interaktivitet mellan element.</li>
@@ -33833,7 +34682,7 @@ export default {
 <li>Lägg till en animation som gör att hover-effekten övergångar mjukt.</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-39"><a class="header" href="#sammanfattning-39">Sammanfattning</a></h2>
+<h2 id="sammanfattning-42"><a class="header" href="#sammanfattning-42">Sammanfattning</a></h2>
 <ul>
 <li><strong>Konfiguration</strong>: Använd <code>tailwind.config.js</code> för att anpassa Tailwind CSS.</li>
 <li><strong>Anpassningar</strong>: Lägg till egna färger, typsnitt, spacing och breakpoints.</li>
@@ -34029,7 +34878,7 @@ export default {
 <li>Lägg till en hover-effekt på sidomenyns länkar.</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-40"><a class="header" href="#sammanfattning-40">Sammanfattning</a></h2>
+<h2 id="sammanfattning-43"><a class="header" href="#sammanfattning-43">Sammanfattning</a></h2>
 <ul>
 <li><strong>Planering</strong>: Definiera syftet och prioritera innehållet.</li>
 <li><strong>Element</strong>: Inkludera sidhuvud, sidomeny, KPI-kort, tabeller och grafer.</li>
@@ -34196,7 +35045,7 @@ export default {
 }
 </code></pre>
 <hr />
-<h2 id="sammanfattning-41"><a class="header" href="#sammanfattning-41">Sammanfattning</a></h2>
+<h2 id="sammanfattning-44"><a class="header" href="#sammanfattning-44">Sammanfattning</a></h2>
 <ul>
 <li><strong>Best Practices</strong>: Använd återanvändbara komponenter, håll HTML-strukturen ren och dra nytta av Tailwinds konfigurationsfil.</li>
 <li><strong>Komponentbibliotek</strong>: Utforska bibliotek som Tailwind UI, Flowbite och DaisyUI för att snabba upp utvecklingen.</li>
@@ -34399,7 +35248,7 @@ function App() {
 export default App;
 </code></pre>
 <hr />
-<h2 id="sammanfattning-42"><a class="header" href="#sammanfattning-42">Sammanfattning</a></h2>
+<h2 id="sammanfattning-45"><a class="header" href="#sammanfattning-45">Sammanfattning</a></h2>
 <ul>
 <li><strong>Installation</strong>: Installera och konfigurera Tailwind CSS i ditt React-projekt med Vite.</li>
 <li><strong>Komponenter</strong>: Använd Tailwind CSS för att snabbt styla React-komponenter.</li>

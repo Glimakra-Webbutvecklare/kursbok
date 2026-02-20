@@ -1,0 +1,398 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Vad är hosting? - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="vad-är-hosting"><a class="header" href="#vad-är-hosting">Vad är hosting?</a></h1>
+<p>När du utvecklar en webbplats lokalt på din dator kan bara du se den. För att göra den tillgänglig för andra på internet behöver du <strong>hosting</strong> (värdskap) – en plats där din webbplats kan "bo" och vara tillgänglig dygnet runt. I den här lektionen går vi igenom de grundläggande begreppen du kommer att stöta på när du sätter upp och hostar webbapplikationer.</p>
+<h2 id="varför-behövs-hosting"><a class="header" href="#varför-behövs-hosting">Varför behövs hosting?</a></h2>
+<p>Tänk på lokal utveckling som att prova recept i ditt eget kök. Du kan experimentera, göra misstag och lära dig – men ingen annan kan äta maten. <strong>Hosting</strong> är som att öppna en restaurang: din webbplats måste vara tillgänglig för besökare när som helst, från vilken plats som helst i världen.</p>
+<pre class="mermaid">flowchart LR
+    subgraph Lokal[&quot;Lokal utveckling&quot;]
+        A[Din dator] --&gt; B[Endast du ser sidan]
+    end
+    
+    subgraph Hosting[&quot;Med hosting&quot;]
+        C[Server på internet] --&gt; D[Alla kan besöka sidan]
+    end
+</pre>
+<p>En server som är ansluten till internet 24/7, med rätt mjukvara installerad, gör att din webbplats kan nås av vem som helst som skriver in adressen i webbläsaren.</p>
+<h2 id="klient-och-server"><a class="header" href="#klient-och-server">Klient och server</a></h2>
+<p>För att förstå hur webben fungerar behöver vi två grundbegrepp:</p>
+<ul>
+<li><strong>Klient (client):</strong> Användarens webbläsare – Chrome, Firefox, Safari eller liknande. Klienten skickar en <strong>förfrågan (request)</strong> till en server och visar sedan svaret för användaren.</li>
+<li><strong>Server:</strong> En dator (ofta i ett datacenter) som kör programvara som lyssnar efter förfrågningar och svarar med innehåll – HTML, bilder, data och så vidare.</li>
+</ul>
+<pre class="mermaid">sequenceDiagram
+    participant U as Användare
+    participant K as Klient (Webbläsare)
+    participant S as Server
+
+    U-&gt;&gt;K: Skriver adress (t.ex. example.com)
+    K-&gt;&gt;S: HTTP Request (förfrågan)
+    S-&gt;&gt;K: HTTP Response (svar med HTML, bilder etc.)
+    K-&gt;&gt;U: Visar webbsidan
+</pre>
+<p>Detta är grunden för hur webben fungerar: klienten begär, servern svarar. Protokollet som används kallas <strong>HTTP</strong> (Hypertext Transfer Protocol).</p>
+<h2 id="vad-är-en-webbserver"><a class="header" href="#vad-är-en-webbserver">Vad är en webbserver?</a></h2>
+<p>En <strong>webbserver</strong> är ett program som körs på en dator och som:</p>
+<ol>
+<li>Lyssnar på nätverksportar (vanligtvis port 80 för HTTP och 443 för HTTPS).</li>
+<li>Tar emot HTTP-förfrågningar från webbläsare.</li>
+<li>Returnerar rätt innehåll – antingen en färdig fil eller resultatet av körning av skript (t.ex. PHP).</li>
+</ol>
+<p><strong>Analogi:</strong> Webbservern är som en receptionist på ett hotell. När en gäst (webbläsaren) kommer in med en förfrågan ("Jag vill ha rum 42") tar receptionisten emot den, hittar rätt information och lämnar tillbaka svaret.</p>
+<p>De vanligaste webbservrarna är <strong>Apache</strong> och <strong>Nginx</strong>. Båda kan servera statiska filer (HTML, CSS, JavaScript, bilder) och kan konfigureras för att köra PHP eller andra serverspråk.</p>
+<pre class="mermaid">flowchart TB
+    subgraph Server[&quot;Servern&quot;]
+        WS[&quot;Webbserver Apache eller Nginx&quot;]
+        PHP[&quot;PHP-tolk&quot;]
+        FS[(&quot;Filer&quot;)]
+        
+        WS --&gt;|Statisk fil| FS
+        WS --&gt;|php-fil| PHP
+        PHP --&gt; FS
+    end
+    
+    B[&quot;Webbläsare&quot;] --&gt;|Request| WS
+    WS --&gt;|Response| B
+</pre>
+<h2 id="ip-adress-och-domän"><a class="header" href="#ip-adress-och-domän">IP-adress och domän</a></h2>
+<p>Varje dator ansluten till internet har en unik <strong>IP-adress</strong> (Internet Protocol-adress) – en serie siffror som identifierar den, t.ex. <code>93.184.216.34</code>. Det är den adressen som nätverket använder för att hitta rätt server.</p>
+<p>Men människor är dåliga på att komma ihåg siffror. Därför använder vi <strong>domännamn</strong> (domain names) som <code>example.com</code> eller <code>glimakra.se</code>. Ett domännamn är en läsbar alias som pekar på en IP-adress.</p>
+<div class="table-wrapper"><table><thead><tr><th>Domän</th><th>IP-adress</th></tr></thead><tbody>
+<tr><td>example.com</td><td>93.184.216.34</td></tr>
+<tr><td>google.com</td><td>142.250.74.46</td></tr>
+</tbody></table>
+</div>
+<p>När du köper hosting får du oftast en IP-adress till din server. Om du vill använda ett eget domännamn (t.ex. <code>minbutik.se</code>) måste du koppla domänen till den IP-adressen – det görs via DNS.</p>
+<h2 id="dns--telefonkatalogen-för-internet"><a class="header" href="#dns--telefonkatalogen-för-internet">DNS – telefonkatalogen för internet</a></h2>
+<p><strong>DNS</strong> (Domain Name System) är det system som översätter domännamn till IP-adresser. När du skriver <code>example.com</code> i webbläsaren händer följande:</p>
+<ol>
+<li>Webbläsaren frågar en DNS-server: "Vilken IP-adress har example.com?"</li>
+<li>DNS-servern svarar med IP-adressen.</li>
+<li>Webbläsaren ansluter till den IP-adressen och skickar sin HTTP-förfrågan.</li>
+</ol>
+<pre class="mermaid">flowchart LR
+    A[Användare skriver example.com] --&gt; B[DNS slår upp IP-adress]
+    B --&gt; C[Webbläsare ansluter till IP]
+    C --&gt; D[Webbserver svarar med innehåll]
+</pre>
+<p><strong>Analogi:</strong> DNS fungerar som en telefonkatalog – du slår upp ett namn (domän) och får tillbaka ett nummer (IP-adress) som du kan ringa (ansluta till).</p>
+<h3 id="var-köper-man-domän-och-dns"><a class="header" href="#var-köper-man-domän-och-dns">Var köper man domän och DNS?</a></h3>
+<p>Domäner köps hos en <strong>domänregistrator</strong> (domain registrar). Populära leverantörer är:</p>
+<ul>
+<li><a href="https://www.loopia.se/">Loopia</a> – svensk leverantör, bra för .se-domäner</li>
+<li><a href="https://www.binero.se/">Binero</a> – svensk, erbjuder både domäner och hosting</li>
+<li><a href="https://www.one.com/">One.com</a> – dansk leverantör med stark närvaro i Norden</li>
+<li><a href="https://www.namecheap.com/">Namecheap</a> – internationell, ofta billiga .com-domäner</li>
+<li><a href="https://www.cloudflare.com/">Cloudflare</a> – registrator med transparent prissättning</li>
+</ul>
+<p><strong>Typiska priser:</strong> En .se-domän kostar cirka 150–300 kr/år. En .com-domän ligger oftast på 100–150 kr/år. Många leverantörer har kampanjer för första året.</p>
+<h2 id="typer-av-hosting"><a class="header" href="#typer-av-hosting">Typer av hosting</a></h2>
+<p>Det finns flera sätt att hosta en webbplats. Valet beror på budget, tekniska krav och hur mycket kontroll du vill ha.</p>
+<pre class="mermaid">flowchart TB
+    subgraph Hosting[&quot;Hosting-alternativ&quot;]
+        SH[Delad hosting]
+        VPS[VPS]
+        DED[Dedikerad server]
+        CLOUD[Cloud hosting]
+    end
+    
+    SH --&gt;|Enklast, billigast| E1[Lite kontroll]
+    VPS --&gt;|Mellan| E2[Mer kontroll]
+    DED --&gt;|Dyrast| E3[Full kontroll]
+    CLOUD --&gt;|Skalbart| E4[Flexibelt]
+</pre>
+<div class="table-wrapper"><table><thead><tr><th>Typ</th><th>Beskrivning</th><th>Fördelar</th><th>Nackdelar</th></tr></thead><tbody>
+<tr><td><strong>Delad hosting (shared)</strong></td><td>Flera webbplatser delar samma server och resurser</td><td>Billigt, enkelt att komma igång, hostingleverantören sköter mycket</td><td>Begränsad kontroll, prestanda kan påverkas av andra kunders sajter</td></tr>
+<tr><td><strong>VPS</strong> (Virtual Private Server)</td><td>En virtuell egen server med dedikerade resurser</td><td>Mer kontroll, bättre prestanda, egen miljö</td><td>Kräver mer tekniska kunskaper, du ansvarar för uppdateringar och säkerhet</td></tr>
+<tr><td><strong>Dedikerad server</strong></td><td>En hel fysisk server är din</td><td>Full kontroll, hög prestanda</td><td>Dyrt, kräver serveradministrationskunskap</td></tr>
+<tr><td><strong>Cloud hosting</strong></td><td>Resurser i molnet (AWS, Azure, DigitalOcean m.fl.)</td><td>Skalbart, betala för vad du använder</td><td>Kan bli komplext, ofta mer avancerad konfiguration</td></tr>
+</tbody></table>
+</div>
+<p>För nybörjare är <strong>delad hosting</strong> ofta det enklaste valet. När du vill ha mer kontroll eller hosta applikationer med specifika krav passar <strong>VPS</strong> eller <strong>cloud</strong> bättre.</p>
+<h3 id="var-köper-man-hosting-och-vad-kostar-det"><a class="header" href="#var-köper-man-hosting-och-vad-kostar-det">Var köper man hosting och vad kostar det?</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Typ</th><th>Var man köper</th><th>Typiskt pris</th></tr></thead><tbody>
+<tr><td><strong>Delad hosting</strong></td><td><a href="https://www.loopia.se/">Loopia</a>, <a href="https://www.binero.se/">Binero</a>, <a href="https://www.one.com/">One.com</a>, <a href="https://www.surftown.se/">Surftown</a></td><td>30–100 kr/månad</td></tr>
+<tr><td><strong>VPS</strong></td><td><a href="https://www.digitalocean.com/">DigitalOcean</a>, <a href="https://www.linode.com/">Linode</a>, <a href="https://www.hetzner.com/">Hetzner</a>, <a href="https://www.vultr.com/">Vultr</a></td><td>50–200 kr/månad</td></tr>
+<tr><td><strong>Cloud</strong></td><td><a href="https://aws.amazon.com/">AWS</a>, <a href="https://cloud.google.com/">Google Cloud</a>, <a href="https://azure.microsoft.com/">Azure</a></td><td>Varierar kraftigt, ofta pay-as-you-go</td></tr>
+</tbody></table>
+</div>
+<p><strong>Svenska alternativ för nybörjare:</strong> Loopia, Binero och One.com har enkla paket där domän, hosting och ofta e-post ingår. Många erbjuder gratis provperiod eller pengarna-tillbaka-garanti.</p>
+<h2 id="ssltls-och-https"><a class="header" href="#ssltls-och-https">SSL/TLS och HTTPS</a></h2>
+<p>När data skickas mellan webbläsaren och servern kan den i teorin avlyssnas. <strong>SSL/TLS</strong> (Secure Sockets Layer / Transport Layer Security) krypterar denna trafik så att tredje part inte kan läsa den.</p>
+<ul>
+<li><strong>HTTP</strong> – trafiken är okrypterad (port 80).</li>
+<li><strong>HTTPS</strong> – trafiken är krypterad (port 443).</li>
+</ul>
+<p>För att använda HTTPS behöver servern ett <strong>SSL-certifikat</strong>. Certifikatet verifierar att servern är den den utger sig för att vara och möjliggör krypterad kommunikation.</p>
+<pre class="mermaid">flowchart LR
+    subgraph HTTP[&quot;HTTP (okrypterat)&quot;]
+        A1[Webbläsare] --&gt;|Klartext| B1[Server]
+    end
+    
+    subgraph HTTPS[&quot;HTTPS (krypterat)&quot;]
+        A2[Webbläsare] --&gt;|Krypterad data| B2[Server]
+    end
+</pre>
+<p><strong>Varför HTTPS är viktigt:</strong></p>
+<ul>
+<li><strong>Säkerhet:</strong> Skyddar lösenord, kreditkortsinformation och annan känslig data.</li>
+<li><strong>Förtroende:</strong> Webbläsare visar ofta en varningssymbol för sidor utan HTTPS.</li>
+<li><strong>SEO:</strong> Sökmotorer som Google föredrar HTTPS-sidor.</li>
+</ul>
+<p>Många hostingleverantörer erbjuder gratis SSL-certifikat (t.ex. via Let's Encrypt), så det finns sällan anledning att inte använda HTTPS.</p>
+<h2 id="statiskt-vs-dynamiskt-innehåll"><a class="header" href="#statiskt-vs-dynamiskt-innehåll">Statiskt vs dynamiskt innehåll</a></h2>
+<p>Webbplatser kan delas in i två huvudtyper baserat på hur innehållet serveras:</p>
+<ul>
+<li><strong>Statiskt innehåll:</strong> Färdiga filer – HTML, CSS, JavaScript, bilder – som webbservern skickar direkt till webbläsaren utan att ändra dem. Samma fil serveras till alla besökare.</li>
+<li><strong>Dynamiskt innehåll:</strong> Innehållet genereras vid varje förfrågan. En PHP-fil körs på servern, kanske hämtar data från en databas, och skapar unikt HTML för just den användaren.</li>
+</ul>
+<pre class="mermaid">flowchart TB
+    subgraph Statisk[&quot;Statisk sida&quot;]
+        R1[Request] --&gt; F1[HTML-fil]
+        F1 --&gt; S1[Samma svar till alla]
+    end
+    
+    subgraph Dynamisk[&quot;Dynamisk sida&quot;]
+        R2[Request] --&gt; PHP[PHP körs]
+        PHP --&gt; DB[(Databas)]
+        DB --&gt; PHP
+        PHP --&gt; S2[Unikt svar per användare]
+    end
+</pre>
+<p><strong>Exempel på statiska webbplatser</strong> (samma innehåll till alla, ofta byggda med HTML/CSS eller statiska generators som Jekyll/Hugo):</p>
+<ul>
+<li><a href="https://informationisbeautiful.net/">Information is Beautiful</a> – datavisualiseringar</li>
+<li><a href="https://www.smashingmagazine.com/">Smashing Magazine</a> – delar av sajten är statiska</li>
+<li><a href="https://css-tricks.com/">CSS-Tricks</a> – många artiklar serveras statiskt</li>
+<li>Personliga portfolion och enkla företagssidor</li>
+</ul>
+<p><strong>Exempel på dynamiska webbplatser</strong> (innehåll genereras vid varje besök, ofta med PHP, Node.js eller liknande):</p>
+<ul>
+<li><a href="https://wordpress.org/">WordPress.org</a> – CMS som driver miljontals sajter</li>
+<li><a href="https://www.facebook.com/">Facebook</a> – personligt flöde per användare</li>
+<li><a href="https://www.blocket.se/">Blocket</a> – annonser från databas</li>
+<li><a href="https://www.netflix.com/">Netflix</a> – rekommendationer och innehåll baserat på användare</li>
+</ul>
+<p>I kommande lektioner ska vi titta på vad som krävs för att hosta en <strong>PHP-applikation</strong> – alltså dynamiskt innehåll – och hur Docker kan förenkla processen.</p>
+<h2 id="sammanfattning"><a class="header" href="#sammanfattning">Sammanfattning</a></h2>
+<p>Här är de viktigaste begreppen från denna lektion:</p>
+<div class="table-wrapper"><table><thead><tr><th>Begrepp</th><th>Beskrivning</th></tr></thead><tbody>
+<tr><td><strong>Hosting</strong></td><td>En plats på internet där din webbplats är tillgänglig dygnet runt</td></tr>
+<tr><td><strong>Klient</strong></td><td>Webbläsaren som skickar förfrågningar</td></tr>
+<tr><td><strong>Server</strong></td><td>Datorn som svarar med innehåll</td></tr>
+<tr><td><strong>Webbserver</strong></td><td>Program (Apache, Nginx) som tar emot HTTP-förfrågningar och serverar innehåll</td></tr>
+<tr><td><strong>IP-adress</strong></td><td>Unik numerisk adress för en dator på internet</td></tr>
+<tr><td><strong>Domän</strong></td><td>Läsbart namn (t.ex. example.com) som pekar på en IP-adress</td></tr>
+<tr><td><strong>DNS</strong></td><td>System som översätter domännamn till IP-adresser</td></tr>
+<tr><td><strong>SSL/HTTPS</strong></td><td>Krypterad trafik mellan webbläsare och server</td></tr>
+<tr><td><strong>Statiskt innehåll</strong></td><td>Färdiga filer som serveras oförändrade</td></tr>
+<tr><td><strong>Dynamiskt innehåll</strong></td><td>Innehåll som genereras vid varje förfrågan (t.ex. med PHP)</td></tr>
+</tbody></table>
+</div>
+<p>I nästa lektion går vi från teori till praktik: vad behöver du konkret för att hosta en PHP-applikation?</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_6/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_6/hosta-applikation.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_6/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_6/hosta-applikation.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

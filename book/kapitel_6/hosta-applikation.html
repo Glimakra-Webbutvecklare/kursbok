@@ -1,0 +1,591 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Att hosta en applikation - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="att-hosta-en-php-applikation"><a class="header" href="#att-hosta-en-php-applikation">Att hosta en PHP-applikation</a></h1>
+<p>I förra lektionen gick vi igenom grundbegreppen kring hosting. Nu går vi från teori till praktik: vad behöver du konkret för att få en PHP-applikation att köra på en server? Vi använder <strong>Nginx</strong> som webbserver och <strong>MariaDB</strong> som databas – två populära och stabila val.</p>
+<h2 id="vad-en-php-applikation-behöver"><a class="header" href="#vad-en-php-applikation-behöver">Vad en PHP-applikation behöver</a></h2>
+<p>En typisk PHP-applikation kräver flera komponenter som måste fungera tillsammans. Detta kallas ofta för en <strong>LEMP-stack</strong> (Linux, Nginx, MariaDB/MySQL, PHP):</p>
+<pre class="mermaid">flowchart TB
+    subgraph Stack[&quot;LEMP-stack&quot;]
+        L[&quot;Linux (operativsystem)&quot;]
+        E[&quot;Nginx (webbserver)&quot;]
+        M[&quot;MariaDB (databas)&quot;]
+        P[&quot;PHP (tolk)&quot;]
+    end
+    
+    B[&quot;Webbläsare&quot;] --&gt; E
+    E --&gt; P
+    E --&gt; M
+    P --&gt; M
+    P --&gt; L
+</pre>
+<div class="table-wrapper"><table><thead><tr><th>Komponent</th><th>Roll</th></tr></thead><tbody>
+<tr><td><strong>Linux</strong></td><td>Operativsystemet på servern (t.ex. Ubuntu, Debian)</td></tr>
+<tr><td><strong>Nginx</strong></td><td>Webbservern som tar emot HTTP-förfrågningar och serverar filer</td></tr>
+<tr><td><strong>MariaDB</strong></td><td>Relationsdatabasen där applikationen lagrar data</td></tr>
+<tr><td><strong>PHP</strong></td><td>Tolken som kör PHP-koden och genererar dynamiskt innehåll</td></tr>
+</tbody></table>
+</div><pre class="mermaid">sequenceDiagram
+    participant B as Webbläsare
+    participant N as Nginx
+    participant P as PHP
+    participant M as MariaDB
+
+    B-&gt;&gt;N: HTTP Request
+    N-&gt;&gt;P: Skickar .php-fil
+    P-&gt;&gt;M: SQL-fråga
+    M--&gt;&gt;P: Resultat
+    P--&gt;&gt;N: HTML
+    N--&gt;&gt;B: HTTP Response
+</pre>
+<h2 id="förutsättningar"><a class="header" href="#förutsättningar">Förutsättningar</a></h2>
+<p>För att följa med behöver du:</p>
+<ul>
+<li>En <strong>VPS</strong> eller server med Ubuntu/Debian (t.ex. från DigitalOcean, Hetzner eller Linode)</li>
+<li><strong>SSH-åtkomst</strong> till servern (användarnamn och IP-adress eller domän)</li>
+<li>En enkel PHP-applikation att hosta (t.ex. från ett Git-repo)</li>
+</ul>
+<p>Vi antar att du har root- eller sudo-åtkomst till servern.</p>
+<div class="table-wrapper"><table><thead><tr><th>📝 Notera</th></tr></thead><tbody>
+<tr><td>Saknar du tillgång till en VPS? Kör detta kommando lokalt för att starta en Ubuntu-container där du kan följa stegen: <code>docker run -it --name lemp-ovning -p 8080:80 -p 3306:3306 ubuntu:22.04</code></td></tr>
+</tbody></table>
+</div>
+<h2 id="steg-1-anslut-till-servern-med-ssh"><a class="header" href="#steg-1-anslut-till-servern-med-ssh">Steg 1: Anslut till servern med SSH</a></h2>
+<p>Först ansluter du till servern via <strong>SSH</strong> (Secure Shell). Du kör kommandot från din lokala dator.</p>
+<pre><code class="language-bash">ssh root@192.168.1.100
+</code></pre>
+<p><em>Terminal – anslutning till server:</em></p>
+<pre><code>$ ssh root@192.168.1.100
+The authenticity of host '192.168.1.100' can't be established.
+ED25519 key fingerprint is SHA256:abc123...
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '192.168.1.100' to the list of known hosts.
+root@192.168.1.100's password: ********
+
+Welcome to Ubuntu 22.04 LTS
+root@server:~#
+</code></pre>
+<p>Nu är du inloggad på servern. Alla kommando som följer körs på servern om inget annat anges.</p>
+<div class="table-wrapper"><table><thead><tr><th>📝 Notera</th></tr></thead><tbody>
+<tr><td><strong>Med Docker:</strong> Hoppa över SSH. Kör istället <code>docker run -it --name lemp-ovning -p 8080:80 -p 3306:3306 ubuntu:22.04</code> på din lokala dator. Du hamnar direkt i en Ubuntu-terminal – följ sedan steg 2 och framåt där inne.</td></tr>
+</tbody></table>
+</div>
+<h2 id="steg-2-installera-nginx-php-och-mariadb"><a class="header" href="#steg-2-installera-nginx-php-och-mariadb">Steg 2: Installera Nginx, PHP och MariaDB</a></h2>
+<p>Uppdatera paketlistan och installera de nödvändiga paketen med <strong>apt</strong> (Ubuntu/Debians pakethanterare).</p>
+<pre><code class="language-bash">apt update &amp;&amp; apt install -y nginx php-fpm php-mysql php-mbstring mariadb-server git nano
+</code></pre>
+<p><em>Terminal – installation:</em></p>
+<pre><code>$ apt update &amp;&amp; apt install -y nginx php-fpm php-mysql php-mbstring mariadb-server git
+Hit:1 http://archive.ubuntu.com/ubuntu jammy InRelease
+Get:2 http://archive.ubuntu.com/ubuntu jammy-updates InRelease
+...
+Reading package lists... Done
+Building dependency tree... Done
+The following NEW packages will be installed:
+  nginx php-fpm php-mysql php-mbstring mariadb-server git ...
+...
+Setting up nginx (1.18.0) ...
+Setting up php-fpm (8.1.0) ...
+Setting up mariadb-server (10.6.4) ...
+...
+Done.
+</code></pre>
+<ul>
+<li><strong>nginx</strong> – webbservern</li>
+<li><strong>php-fpm</strong> – PHP FastCGI Process Manager (Nginx använder detta för att köra PHP)</li>
+<li><strong>php-mysql</strong> – PHP-extension för att prata med MariaDB/MySQL</li>
+<li><strong>php-mbstring</strong> – stöd för stränghantering (krävs av många applikationer)</li>
+<li><strong>mariadb-server</strong> – databasservern</li>
+<li><strong>git</strong> – versionshantering, används för att klona applikationskod (steg 6)</li>
+<li><strong>nano</strong> – enkel texteditor i terminalen</li>
+</ul>
+<h2 id="steg-3-starta-och-aktivera-tjänsterna"><a class="header" href="#steg-3-starta-och-aktivera-tjänsterna">Steg 3: Starta och aktivera tjänsterna</a></h2>
+<p>Använd <strong>systemctl</strong> för att starta tjänsterna och säkerställa att de startar automatiskt vid omstart.</p>
+<pre><code class="language-bash">systemctl start nginx php8.1-fpm mariadb
+systemctl enable nginx php8.1-fpm mariadb
+systemctl status nginx
+</code></pre>
+<p><em>Terminal – starta tjänster:</em></p>
+<pre><code>$ systemctl start nginx php8.1-fpm mariadb
+$ systemctl enable nginx php8.1-fpm mariadb
+Created symlink /etc/systemd/system/multi-user.target.wants/nginx.service
+Created symlink /etc/systemd/system/multi-user.target.wants/php8.1-fpm.service
+Created symlink /etc/systemd/system/multi-user.target.wants/mariadb.service
+
+$ systemctl status nginx
+● nginx.service - A high performance web server
+     Loaded: loaded (/lib/systemd/system/nginx.service; enabled)
+     Active: active (running)
+</code></pre>
+<p><em>Notera:</em> PHP-versionen kan variera (t.ex. <code>php8.2-fpm</code>). Kontrollera med <code>apt list php*-fpm</code> om du är osäker.</p>
+<div class="table-wrapper"><table><thead><tr><th>📝 Notera</th></tr></thead><tbody>
+<tr><td><strong>Med Docker:</strong> <code>systemctl</code> fungerar inte i containern. Använd <code>service</code> istället: <code>service nginx start</code>, <code>service php8.1-fpm start</code>, <code>service mariadb start</code></td></tr>
+</tbody></table>
+</div>
+<h2 id="steg-4-konfigurera-mariadb-och-skapa-databas"><a class="header" href="#steg-4-konfigurera-mariadb-och-skapa-databas">Steg 4: Konfigurera MariaDB och skapa databas</a></h2>
+<p>MariaDB har en grundläggande säkerhetskonfiguration. Kör först säkerhetsinställningarna, sedan skapa databas och användare.</p>
+<pre><code class="language-bash">mysql_secure_installation
+</code></pre>
+<p><em>Terminal – säkra MariaDB (förkortat):</em></p>
+<pre><code>$ mysql_secure_installation
+Enter current password for root: [tryck Enter om ingen finns]
+
+Switch to unix_socket authentication [Y/n] y
+Change the root password? [Y/n] y
+New password: ********
+Re-enter new password: ********
+
+Remove anonymous users? [Y/n] y
+Disallow root login remotely? [Y/n] y
+Remove test database? [Y/n] y
+Reload privilege tables? [Y/n] y
+Done.
+</code></pre>
+<p>Logga in i MariaDB och skapa databas samt användare för din applikation:</p>
+<pre><code class="language-bash">mysql -u root -p
+</code></pre>
+<p><em>Terminal – skapa databas i MySQL:</em></p>
+<pre><code>$ mysql -u root -p
+Enter password: ********
+
+MariaDB [(none)]&gt; CREATE DATABASE min_app_db;
+Query OK, 1 row affected (0.001 sec)
+
+MariaDB [(none)]&gt; CREATE USER 'app_user'@'localhost' IDENTIFIED BY 'säkert_lösenord_123';
+Query OK, 0 rows affected (0.002 sec)
+
+MariaDB [(none)]&gt; GRANT ALL PRIVILEGES ON min_app_db.* TO 'app_user'@'localhost';
+Query OK, 0 rows affected (0.001 sec)
+
+MariaDB [(none)]&gt; FLUSH PRIVILEGES;
+Query OK, 0 rows affected (0.001 sec)
+
+MariaDB [(none)]&gt; EXIT;
+Bye
+</code></pre>
+<h2 id="steg-5-filstruktur-och-document-root"><a class="header" href="#steg-5-filstruktur-och-document-root">Steg 5: Filstruktur och document root</a></h2>
+<p>Nginx letar efter webbfiler i en <strong>document root</strong>. Standardplatsen på Ubuntu är <code>/var/www/html</code>. Vi skapar en mapp för vår applikation:</p>
+<pre class="mermaid">flowchart LR
+    subgraph Server[&quot;Servern&quot;]
+        A[&quot;/var/www/min-app/&quot;] --&gt; B[&quot;index.php&quot;]
+        A --&gt; C[&quot;config.php&quot;]
+        A --&gt; D[&quot;public/&quot;]
+    end
+    
+    N[&quot;Nginx&quot;] --&gt; A
+</pre>
+<pre><code class="language-bash">mkdir -p /var/www/min-app
+</code></pre>
+<p>Rekommenderad struktur för en PHP-app:</p>
+<pre><code>/var/www/min-app/
+├── public/           # Document root – endast publika filer
+│   ├── index.php
+│   └── css/
+├── includes/         # Konfiguration, funktioner (skyddad)
+│   └── config.php
+└── uploads/          # Uppladdade filer (om appen har det)
+</code></pre>
+<p>Nginx konfigureras så att den pekar på <code>public/</code> som document root – då hamnar känsliga filer som <code>config.php</code> utanför det som webbläsaren kan nå direkt.</p>
+<p>Ett färdigt exempel med denna struktur finns i <a href="https://github.com/Glimakra-Webbutvecklare/demo-lemp-app">demo-lemp-app</a> – en enkel blogg-app som du kan klona och använda i steg 6.</p>
+<h2 id="steg-6-ladda-upp-applikationsfiler"><a class="header" href="#steg-6-ladda-upp-applikationsfiler">Steg 6: Ladda upp applikationsfiler</a></h2>
+<p>Du kan ladda upp filer på flera sätt. Här visar vi två: <strong>Git</strong> (om koden finns i ett repo) och <strong>SCP</strong> (Secure Copy) från din lokala dator.</p>
+<h3 id="alternativ-a-klona-med-git"><a class="header" href="#alternativ-a-klona-med-git">Alternativ A: Klona med Git</a></h3>
+<pre><code class="language-bash">cd /var/www
+git clone https://github.com/användare/min-php-app.git min-app
+</code></pre>
+<p><em>Terminal – klona med Git:</em></p>
+<pre><code>$ cd /var/www
+$ git clone https://github.com/anvandare/min-php-app.git min-app
+Cloning into 'min-app'...
+remote: Enumerating objects: 42, done.
+remote: Counting objects: 100% (42/42), done.
+remote: Compressing objects: 100% (42/42), done.
+Receiving objects: 100% (42/42), 12.34 KiB | 2.1 MiB/s, done.
+Resolving deltas: 100% (8/8), done.
+</code></pre>
+<h3 id="alternativ-b-kopiera-filer-med-scp-från-din-lokala-dator"><a class="header" href="#alternativ-b-kopiera-filer-med-scp-från-din-lokala-dator">Alternativ B: Kopiera filer med SCP (från din lokala dator)</a></h3>
+<p>Kör detta på <strong>din lokala dator</strong>, inte på servern:</p>
+<div class="table-wrapper"><table><thead><tr><th>📝 Notera</th></tr></thead><tbody>
+<tr><td><strong>Med Docker:</strong> Använd <code>docker cp</code> istället för SCP. Exempel: <code>docker cp ./min-php-app/. lemp-ovning:/var/www/min-app/</code> (kör från mappen med filerna, medan containern körs)</td></tr>
+</tbody></table>
+</div>
+<pre><code class="language-bash">scp -r ./min-php-app/* root@192.168.1.100:/var/www/min-app/
+</code></pre>
+<p><em>Terminal – SCP från lokal dator:</em></p>
+<pre><code>$ scp -r ./min-php-app/* root@192.168.1.100:/var/www/min-app/
+config.php        100%  234   1.2KB/s   00:00
+index.php         100%  567   2.8KB/s   00:00
+</code></pre>
+<h2 id="steg-7-konfigurera-databasanslutning"><a class="header" href="#steg-7-konfigurera-databasanslutning">Steg 7: Konfigurera databasanslutning</a></h2>
+<p>Skapa eller redigera <code>config.php</code> med rätt databasuppgifter. Använd <strong>nano</strong> (eller annan texteditor) på servern:</p>
+<pre><code class="language-bash">nano /var/www/min-app/includes/config.php
+</code></pre>
+<p><em>Terminal – redigera med nano:</em></p>
+<pre><code>$ nano /var/www/min-app/includes/config.php
+
+  GNU nano 6.2                    includes/config.php
+
+&lt;?php
+define('DB_HOST', 'localhost');
+define('DB_NAME', 'min_app_db');
+define('DB_USER', 'app_user');
+define('DB_PASS', 'säkert_lösenord_123');
+
+Sparar med Ctrl+O, avsluta med Ctrl+X.
+</code></pre>
+<p>Exempel på hur <code>config.php</code> kan användas i din applikation:</p>
+<pre><code class="language-php">&lt;?php
+require_once __DIR__ . '/../includes/config.php';
+
+$pdo = new PDO(
+    "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4",
+    DB_USER,
+    DB_PASS
+);
+</code></pre>
+<h2 id="steg-8-konfigurera-nginx"><a class="header" href="#steg-8-konfigurera-nginx">Steg 8: Konfigurera Nginx</a></h2>
+<p>Skapa en Nginx-konfiguration för din webbplats. Nginx läser konfigfiler från <code>/etc/nginx/sites-available/</code>.</p>
+<pre><code class="language-bash">nano /etc/nginx/sites-available/min-app
+</code></pre>
+<p>Lägg in följande (anpassa <code>server_name</code> till din domän eller IP):</p>
+<pre><code class="language-nginx">server {
+    listen 80;
+    server_name 192.168.1.100;   # Eller din domän, t.ex. minapp.se
+
+    root /var/www/min-app/public;
+    index index.php index.html;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/php8.1-fpm.sock;
+    }
+}
+</code></pre>
+<p>Aktivera webbplatsen och testa konfigurationen:</p>
+<pre><code class="language-bash">ln -s /etc/nginx/sites-available/min-app /etc/nginx/sites-enabled/
+nginx -t
+systemctl reload nginx
+</code></pre>
+<p><em>Terminal – aktivera Nginx-konfiguration:</em></p>
+<pre><code>$ ln -s /etc/nginx/sites-available/min-app /etc/nginx/sites-enabled/
+$ nginx -t
+nginx: the configuration file /etc/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx.conf test is successful
+
+$ systemctl reload nginx
+</code></pre>
+<div class="table-wrapper"><table><thead><tr><th>📝 Notera</th></tr></thead><tbody>
+<tr><td><strong>Med Docker:</strong> Använd <code>service nginx reload</code> istället för <code>systemctl reload nginx</code>. Använd <code>server_name localhost;</code> (eller <code>server_name _;</code>) i stället för IP-adressen, så att Nginx svarar när du besöker <code>http://localhost:8080</code>. Ta bort default-site för att undvika konflikter: <code>rm /etc/nginx/sites-enabled/default</code> innan du aktiverar min-app.</td></tr>
+</tbody></table>
+</div>
+<h2 id="steg-9-sätt-filrättigheter"><a class="header" href="#steg-9-sätt-filrättigheter">Steg 9: Sätt filrättigheter</a></h2>
+<p>Webbservern (Nginx) kör ofta som användaren <code>www-data</code>. Den måste kunna läsa filerna i document root.</p>
+<pre><code class="language-bash">chown -R www-data:www-data /var/www/min-app
+chmod -R 755 /var/www/min-app
+chmod -R 775 /var/www/min-app/uploads
+</code></pre>
+<p><em>Terminal – filrättigheter:</em></p>
+<pre><code>$ chown -R www-data:www-data /var/www/min-app
+$ chmod -R 755 /var/www/min-app
+$ chmod -R 775 /var/www/min-app/uploads
+</code></pre>
+<h2 id="steg-10-nu-kan-du-se-hemsidan"><a class="header" href="#steg-10-nu-kan-du-se-hemsidan">Steg 10: Nu kan du se hemsidan</a></h2>
+<p>Öppna webbläsaren och besök din webbplats:</p>
+<ul>
+<li><strong>Med VPS:</strong> <code>http://192.168.1.100</code> (eller din serverns IP/domän)</li>
+<li><strong>Med Docker:</strong> <code>http://localhost:8080</code> (port 8080 mappas till containerns port 80)</li>
+</ul>
+<p>Om allt är korrekt konfigurerat ska du nu se din PHP-applikation.</p>
+<h2 id="vanliga-problem-och-felsökning"><a class="header" href="#vanliga-problem-och-felsökning">Vanliga problem och felsökning</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>Problem</th><th>Möjlig orsak</th><th>Åtgärd</th></tr></thead><tbody>
+<tr><td><strong>500 Internal Server Error</strong></td><td>PHP-krasch, fel i konfiguration</td><td>Kolla <code>tail -f /var/log/nginx/error.log</code></td></tr>
+<tr><td><strong>502 Bad Gateway</strong></td><td>PHP-FPM körs inte</td><td><code>service php8.1-fpm status</code> (eller <code>systemctl status php8.1-fpm</code> på VPS)</td></tr>
+<tr><td><strong>Database connection failed</strong></td><td>Fel användare/lösenord eller databasnamn</td><td>Dubbelkolla <code>config.php</code> och MariaDB-användaren</td></tr>
+<tr><td><strong>Blank sida</strong></td><td>PHP-fel visas inte</td><td>Sätt <code>display_errors = On</code> i <code>php.ini</code> under felsökning (stäng av i produktion!)</td></tr>
+<tr><td><strong>Permission denied</strong></td><td>Fel filrättigheter</td><td><code>chown www-data:www-data</code> på mappar som webbservern behöver läsa/skriva</td></tr>
+<tr><td><strong>Inget svar / tom sida (Docker)</strong></td><td>Default-site eller PHP-FPM</td><td>Se nedan</td></tr>
+</tbody></table>
+</div>
+<p><strong>Med Docker – inget svar vid curl localhost:8088:</strong></p>
+<ol>
+<li>Ta bort default-site så att min-app hanterar alla förfrågningar:
+<pre><code class="language-bash">rm /etc/nginx/sites-enabled/default
+service nginx reload
+</code></pre>
+</li>
+<li>Kontrollera att PHP-FPM körs (krävs för .php-filer):
+<pre><code class="language-bash">service php8.1-fpm start
+service php8.1-fpm status
+</code></pre>
+</li>
+<li>Testa inifrån containern med <code>curl -v http://127.0.0.1/</code> – du ska få HTTP-svar. Om det fungerar inifrån men inte från host kan det vara nätverks-/brandväggsrelaterat.</li>
+</ol>
+<pre><code class="language-bash">tail -f /var/log/nginx/error.log
+</code></pre>
+<p><em>Terminal – felsöka Nginx-loggar:</em></p>
+<pre><code>$ tail -f /var/log/nginx/error.log
+2024/01/15 10:23:45 [error] 1234#1234: *5 FastCGI sent in stderr: "PHP message: PHP Fatal error: Uncaught PDOException: SQLSTATE[HY000] [2002] Connection refused in /var/www/min-app/index.php:12
+</code></pre>
+<h2 id="säkerhet--grundläggande"><a class="header" href="#säkerhet--grundläggande">Säkerhet – grundläggande</a></h2>
+<ul>
+<li><strong>Känsliga filer:</strong> Lägg <code>config.php</code> och liknande utanför document root, eller se till att Nginx inte serverar dem.</li>
+<li><strong>Databas:</strong> Använd alltid prepared statements (PDO) – aldrig direkt variabler i SQL-frågor.</li>
+<li><strong>HTTPS:</strong> I produktion, använd SSL-certifikat (t.ex. Let's Encrypt med Certbot).</li>
+<li><strong>Uppdateringar:</strong> Håll Nginx, PHP och MariaDB uppdaterade med <code>apt update &amp;&amp; apt upgrade</code>.</li>
+</ul>
+<h2 id="om-jag-vill-köra-något-annat-än-en-php-applikation"><a class="header" href="#om-jag-vill-köra-något-annat-än-en-php-applikation">Om jag vill köra något annat än en PHP-applikation?</a></h2>
+<p>Samma principer gäller – men vissa delar byts ut beroende på vilken typ av applikation du hostar.</p>
+<p><strong>Det som ofta är samma:</strong></p>
+<ul>
+<li><strong>Linux-server</strong> – eller Docker-container</li>
+<li><strong>Nginx</strong> – fungerar som webbserver eller reverse proxy för de flesta typer</li>
+<li><strong>SSH, Git, SCP</strong> – samma sätt att ansluta och ladda upp filer</li>
+<li><strong>Filstruktur</strong> – document root, skyddade mappar, filrättigheter</li>
+</ul>
+<p><strong>Det som ändras:</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Applikationstyp</th><th>Istället för PHP + PHP-FPM</th><th>Databas</th></tr></thead><tbody>
+<tr><td><strong>Statisk webbplats</strong> (HTML, CSS, JS)</td><td>Inget – Nginx serverar filer direkt</td><td>Ofta ingen</td></tr>
+<tr><td><strong>Node.js</strong> (Express, React SSR)</td><td>Node.js, Nginx proxar till t.ex. port 3000</td><td>Valfritt (MongoDB, PostgreSQL)</td></tr>
+<tr><td><strong>Python</strong> (Django, Flask)</td><td>Python, Gunicorn eller uWSGI</td><td>Ofta PostgreSQL</td></tr>
+<tr><td><strong>Byggd React/Vue-app</strong></td><td>Inget – Nginx serverar färdiga filer från <code>dist/</code> eller <code>build/</code></td><td>Endast om appen anropar ett API</td></tr>
+</tbody></table>
+</div>
+<p><strong>Exempel:</strong> För en statisk sida eller en byggd React-app behöver du bara Nginx – ingen PHP, ingen databas. Nginx pekar på mappen med dina färdiga filer. För Node.js installerar du Node istället för PHP, startar appen (t.ex. med <code>node server.js</code> eller PM2) och konfigurerar Nginx att proxya förfrågningar till den port där Node lyssnar.</p>
+<h2 id="sammanfattning"><a class="header" href="#sammanfattning">Sammanfattning</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>📝 Notera</th></tr></thead><tbody>
+<tr><td><strong>Med Docker:</strong> För att återanvända containern nästa gång, använd <code>docker start -i lemp-ovning</code> istället för att skapa en ny. Data sparas tills du kör <code>docker rm lemp-ovning</code>.</td></tr>
+</tbody></table>
+</div>
+<p>Här är en checklista för att hosta en PHP-applikation:</p>
+<pre class="mermaid">flowchart TD
+    A[&quot;Anslut med SSH&quot;] --&gt; B[&quot;Installera Nginx PHP-FPM MariaDB&quot;]
+    B --&gt; C[&quot;Starta tjänster med systemctl&quot;]
+    C --&gt; D[&quot;Skapa databas och användare&quot;]
+    D --&gt; E[&quot;Skapa filstruktur&quot;]
+    E --&gt; F[&quot;Ladda upp filer med Git eller SCP&quot;]
+    F --&gt; G[&quot;Konfigurera config.php&quot;]
+    G --&gt; H[&quot;Konfigurera Nginx&quot;]
+    H --&gt; I[&quot;Sätt filrättigheter&quot;]
+    I --&gt; J[&quot;Besök hemsidan&quot;]
+</pre>
+<div class="table-wrapper"><table><thead><tr><th>Kommando</th><th>Syfte</th></tr></thead><tbody>
+<tr><td><code>ssh user@server</code></td><td>Anslut till servern</td></tr>
+<tr><td><code>apt install nginx php-fpm mariadb-server git</code></td><td>Installera LEMP-stack</td></tr>
+<tr><td><code>systemctl start nginx</code></td><td>Starta webbservern</td></tr>
+<tr><td><code>mysql -u root -p</code></td><td>Öppna MariaDB-konsol</td></tr>
+<tr><td><code>scp -r filer user@server:/sökväg</code></td><td>Kopiera filer till servern</td></tr>
+<tr><td><code>git clone url</code></td><td>Hämta kod från Git</td></tr>
+<tr><td><code>nano fil</code></td><td>Redigera filer</td></tr>
+<tr><td><code>nginx -t</code></td><td>Testa Nginx-konfiguration</td></tr>
+</tbody></table>
+</div>
+<p>I nästa lektion introducerar vi <strong>Docker</strong> – ett sätt att paketera hela denna miljö i en container och slippa installera allt manuellt på servern.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_6/vad-ar-hosting.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_6/docker-intro.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_6/vad-ar-hosting.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_6/docker-intro.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>
