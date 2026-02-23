@@ -47,6 +47,8 @@
   - [Domänhantering och DNS](./kapitel_6/domaner.md)
   - [Introduktion till CMS](./kapitel_6/cms-intro.md)
   - [WordPress](./kapitel_6/wordpress.md)
+    - [Installation med Local by flywheel](./kapitel_6/wordpress-local.md)
+    - [Skapa eget tema med Underscores](./kapitel_6/wordpress-theme.md)
   - [Static Site Generators](./kapitel_6/jekyll.md)
   - [Praktiska övningar](./kapitel_6/ovningar.md)
   - [Teknisk Intervju](./kapitel_6/teknisk-intervju.md)

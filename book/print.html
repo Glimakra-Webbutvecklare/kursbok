@@ -9703,12 +9703,269 @@ volumes:
 <li>CMS-arkitektur</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="wordpress"><a class="header" href="#wordpress">WordPress</a></h1>
+<p>WordPress är ett innehållshanteringssystem (CMS) som används för att bygga och administrera webbplatser utan att skriva all kod från grunden. Det är världens mest använda CMS och fungerar för allt från bloggar till företagswebbar och enklare e-handel.</p>
+<h2 id="vad-är-wordpress"><a class="header" href="#vad-är-wordpress">Vad är WordPress?</a></h2>
+<p>WordPress består av:</p>
 <ul>
-<li>Installation och konfiguration</li>
-<li>Teman och plugins</li>
-<li>Innehållshantering</li>
-<li>Säkerhet och underhåll</li>
+<li><strong>Kärnan (core)</strong>: själva systemet</li>
+<li><strong>Teman</strong>: styr design och layout</li>
+<li><strong>Tillägg (plugins)</strong>: lägger till funktioner</li>
+<li><strong>Adminpanel</strong>: gränssnittet där du hanterar innehåll och inställningar</li>
 </ul>
+<p>Det finns två vanliga varianter:</p>
+<ul>
+<li><strong>WordPress.org</strong>: du hostar själv (mest flexibilitet)</li>
+<li><strong>WordPress.com</strong>: hostad tjänst med olika abonnemang</li>
+</ul>
+<p>I den här kursen utgår vi främst från <strong>WordPress.org</strong>.</p>
+<h2 id="fördelar-pros"><a class="header" href="#fördelar-pros">Fördelar (Pros)</a></h2>
+<ul>
+<li>Snabbt att komma igång, även för nybörjare</li>
+<li>Stort ekosystem av teman och plugins</li>
+<li>Bra stöd för SEO och innehållsproduktion</li>
+<li>Enkelt att ge redaktörer tillgång till innehåll</li>
+<li>Stort community med mycket dokumentation och guider</li>
+</ul>
+<h2 id="nackdelar-cons"><a class="header" href="#nackdelar-cons">Nackdelar (Cons)</a></h2>
+<ul>
+<li>För många plugins kan göra sajten långsam</li>
+<li>Säkerhetsrisker om uppdateringar ignoreras</li>
+<li>Anpassningar kan bli svårunderhållna utan struktur</li>
+<li>Plugin-/temakonflikter kan uppstå vid uppdateringar</li>
+<li>Mer underhåll än statiska webbplatser</li>
+</ul>
+<h2 id="när-passar-wordpress"><a class="header" href="#när-passar-wordpress">När passar WordPress?</a></h2>
+<p>WordPress passar bra när du vill:</p>
+<ul>
+<li>Publicera innehåll löpande (blogg, nyheter, landningssidor)</li>
+<li>Låta icke-utvecklare uppdatera innehåll</li>
+<li>Få en webbplats live snabbt med standardfunktioner</li>
+</ul>
+<p>Det passar mindre bra när du behöver:</p>
+<ul>
+<li>Avancerad realtidslogik eller skräddarsydd applikationsfunktionalitet</li>
+<li>Maximal prestanda med minimal drift och attackyta</li>
+</ul>
+<h2 id="viktiga-begrepp-att-känna-till"><a class="header" href="#viktiga-begrepp-att-känna-till">Viktiga begrepp att känna till</a></h2>
+<ul>
+<li><strong>Inlägg</strong>: tidsbaserat innehåll (t.ex. blogg)</li>
+<li><strong>Sidor</strong>: statiskt innehåll (t.ex. Om oss, Kontakt)</li>
+<li><strong>Kategorier/Taggar</strong>: struktur för innehåll</li>
+<li><strong>Gutenberg</strong>: blockredigeraren i WordPress</li>
+<li><strong>Användarroller</strong>: admin, redaktör, författare med olika behörighet</li>
+<li><strong>Permalänkar</strong>: URL-struktur för sidor/inlägg</li>
+</ul>
+<h2 id="viktigt-i-praktiken"><a class="header" href="#viktigt-i-praktiken">Viktigt i praktiken</a></h2>
+<p>För ett hållbart WordPress-projekt bör du alltid:</p>
+<ol>
+<li>Hålla WordPress, teman och plugins uppdaterade.</li>
+<li>Minimera antal plugins och välja välunderhållna alternativ.</li>
+<li>Ta regelbundna backuper av filer och databas.</li>
+<li>Använda starka lösenord och minst en admin-användare med säkra inloggningsrutiner.</li>
+<li>Testa uppdateringar i lokal miljö innan produktion.</li>
+</ol>
+<h2 id="nästa-steg-1"><a class="header" href="#nästa-steg-1">Nästa steg</a></h2>
+<p>Fortsätt med installationsguiden för lokal utveckling:</p>
+<ul>
+<li><a href="kapitel_6/./wordpress-local.html">Installation med Local by Flywheel</a></li>
+</ul>
+<p>Efter installation kan du börja med att skapa sidor, välja tema och bygga upp en enkel webbplatsstruktur.</p>
+<h2 id="reflektionsfrågor"><a class="header" href="#reflektionsfrågor">Reflektionsfrågor</a></h2>
+<ol>
+<li>Vilka typer av projekt tycker du att WordPress passar bäst för, och varför?</li>
+<li>Vilka risker finns med att installera många plugins, och hur kan du minska de riskerna?</li>
+<li>Om du skulle bygga en webbplats för en mindre organisation, vilka grundinställningar skulle du prioritera först?</li>
+</ol>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="wordpress-1"><a class="header" href="#wordpress-1">WordPress</a></h1>
+<p>I den här guiden installerar du en lokal WordPress-sida med <strong>Local</strong> (tidigare Local by Flywheel). En lokal installation är perfekt för utveckling, test och lärande innan du publicerar sajten online.</p>
+<h2 id="1-installera-local"><a class="header" href="#1-installera-local">1. Installera Local</a></h2>
+<ol>
+<li>Gå till <a href="https://localwp.com/">Local</a>.</li>
+<li>Klicka på <strong>Download</strong>.</li>
+<li>Välj operativsystem och fyll i formuläret.</li>
+<li>Ladda ner installationsfilen och kör installationen.</li>
+<li>Starta Local när installationen är klar.</li>
+</ol>
+<h2 id="2-skapa-en-ny-wordpress-sajt"><a class="header" href="#2-skapa-en-ny-wordpress-sajt">2. Skapa en ny WordPress-sajt</a></h2>
+<ol>
+<li>Klicka på <strong>+ Create a new site</strong>.</li>
+<li>Ange ett namn på sajten, till exempel <code>min-wp-sajt</code>.</li>
+<li>Klicka på <strong>Continue</strong>.</li>
+</ol>
+<h3 id="välj-miljö"><a class="header" href="#välj-miljö">Välj miljö</a></h3>
+<p>Du kan välja:</p>
+<ul>
+<li><strong>Preferred</strong> (snabbast för nybörjare)</li>
+<li><strong>Custom</strong> (om du vill styra PHP-version, webbserver och databas)</li>
+</ul>
+<p>Välj <strong>Preferred</strong> och klicka på <strong>Continue</strong>.</p>
+<h3 id="skapa-wordpress-användare"><a class="header" href="#skapa-wordpress-användare">Skapa WordPress-användare</a></h3>
+<ol>
+<li>Ange:
+<ul>
+<li><strong>Username</strong> (admin-användare)</li>
+<li><strong>Password</strong></li>
+<li><strong>Email</strong></li>
+</ul>
+</li>
+<li>Klicka på <strong>Add Site</strong>.</li>
+</ol>
+<p>Local skapar nu en komplett WordPress-installation med databas automatiskt.</p>
+<h2 id="3-starta-och-öppna-sajten"><a class="header" href="#3-starta-och-öppna-sajten">3. Starta och öppna sajten</a></h2>
+<p>När sajten är skapad:</p>
+<ol>
+<li>Välj sajten i vänstermenyn.</li>
+<li>Klicka på <strong>Start site</strong> om den inte redan är startad.</li>
+<li>Klicka på:
+<ul>
+<li><strong>Open site</strong> för att se framsidan</li>
+<li><strong>WP Admin</strong> för att logga in i adminpanelen</li>
+</ul>
+</li>
+</ol>
+<h2 id="4-logga-in-i-wordpress-admin"><a class="header" href="#4-logga-in-i-wordpress-admin">4. Logga in i WordPress-admin</a></h2>
+<ol>
+<li>Öppna <strong>WP Admin</strong>.</li>
+<li>Logga in med uppgifterna du angav vid skapandet.</li>
+<li>Verifiera att du ser WordPress-panelen (Dashboard).</li>
+</ol>
+<h2 id="5-grundläggande-första-inställningar"><a class="header" href="#5-grundläggande-första-inställningar">5. Grundläggande första inställningar</a></h2>
+<p>Efter första inloggningen är det bra att direkt göra följande:</p>
+<ol>
+<li><strong>Inställningar &gt; Allmänt</strong>
+<ul>
+<li>Kontrollera titel och tidszon.</li>
+</ul>
+</li>
+<li><strong>Inställningar &gt; Permalänkar</strong>
+<ul>
+<li>Välj <strong>Inläggsnamn</strong> för snygga URL:er.</li>
+</ul>
+</li>
+<li><strong>Utseende &gt; Teman</strong>
+<ul>
+<li>Aktivera ett tema du vill arbeta med.</li>
+</ul>
+</li>
+<li><strong>Tillägg &gt; Lägg till nytt</strong>
+<ul>
+<li>Installera bara tillägg du faktiskt behöver.</li>
+</ul>
+</li>
+</ol>
+<h2 id="vanliga-problem-och-lösningar-1"><a class="header" href="#vanliga-problem-och-lösningar-1">Vanliga problem och lösningar</a></h2>
+<h3 id="porten-är-upptagen"><a class="header" href="#porten-är-upptagen">Porten är upptagen</a></h3>
+<p>Om sajten inte startar kan Local visa att en port redan används.</p>
+<ul>
+<li>Stäng andra program som använder lokal webbserver (t.ex. XAMPP/MAMP).</li>
+<li>Starta om sajten i Local.</li>
+</ul>
+<h3 id="admin-sidan-öppnas-inte"><a class="header" href="#admin-sidan-öppnas-inte">Admin-sidan öppnas inte</a></h3>
+<ul>
+<li>Kontrollera att sajten är <strong>Started</strong> i Local.</li>
+<li>Testa att klicka på <strong>WP Admin</strong> igen.</li>
+<li>Starta om Local om problemet kvarstår.</li>
+</ul>
+<h3 id="glömt-lösenord"><a class="header" href="#glömt-lösenord">Glömt lösenord</a></h3>
+<ul>
+<li>Använd länken <strong>Glömt lösenord?</strong> på inloggningssidan.</li>
+<li>Du kan också uppdatera användaruppgifter via Local om mejl inte fungerar lokalt.</li>
+</ul>
+<h2 id="sammanfattning-25"><a class="header" href="#sammanfattning-25">Sammanfattning</a></h2>
+<p>Du har nu:</p>
+<ul>
+<li>Installerat Local</li>
+<li>Skapat en lokal WordPress-sajt</li>
+<li>Loggat in i adminpanelen</li>
+<li>Gjort grundläggande konfiguration</li>
+</ul>
+<p>Nästa steg är att skapa sidor/inlägg, testa teman och bygga vidare på din webbplats i en trygg lokal utvecklingsmiljö.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="skapa-eget-wordpress-tema-med-_s-underscores"><a class="header" href="#skapa-eget-wordpress-tema-med-_s-underscores">Skapa eget WordPress-tema med _s (Underscores)</a></h1>
+<p>Att bygga ett eget tema från grunden ger dig full kontroll över layout, komponenter och prestanda. Ett bra sätt att börja är med <strong>Underscores</strong> (<code>_s</code>) som är ett minimalt starter theme för WordPress.</p>
+<h2 id="vad-är-underscores-_s"><a class="header" href="#vad-är-underscores-_s">Vad är Underscores (_s)?</a></h2>
+<p>Underscores är ett grundtema som innehåller:</p>
+<ul>
+<li>Rätt grundfiler för ett WordPress-tema</li>
+<li>En enkel och ren kodbas utan onödiga funktioner</li>
+<li>Bra startpunkt för att bygga helt egen design</li>
+</ul>
+<p>Det är inte ett färdigt design-tema, utan ett utvecklarvänligt skelett.</p>
+<h2 id="förkunskaper"><a class="header" href="#förkunskaper">Förkunskaper</a></h2>
+<p>Innan du börjar bör du ha:</p>
+<ul>
+<li>En lokal WordPress-installation (t.ex. med Local)</li>
+<li>Grundkunskap i HTML, CSS och lite PHP</li>
+<li>En kodeditor (t.ex. VS Code)</li>
+</ul>
+<h2 id="1-generera-ett-_s-tema"><a class="header" href="#1-generera-ett-_s-tema">1. Generera ett _s-tema</a></h2>
+<ol>
+<li>Gå till <a href="https://underscores.me/">Underscores</a>.</li>
+<li>Skriv in ett temanamn, t.ex. <code>my-school-theme</code>.</li>
+<li>Klicka på <strong>Generate</strong> för att ladda ner <code>.zip</code>.</li>
+<li>Packa upp mappen.</li>
+</ol>
+<h2 id="2-lägg-in-temat-i-wordpress"><a class="header" href="#2-lägg-in-temat-i-wordpress">2. Lägg in temat i WordPress</a></h2>
+<ol>
+<li>Öppna din WordPress-installation.</li>
+<li>Gå till <code>wp-content/themes/</code>.</li>
+<li>Kopiera in den uppackade temamappen.</li>
+<li>Gå till <strong>Utseende &gt; Teman</strong> i admin.</li>
+<li>Aktivera ditt nya tema.</li>
+</ol>
+<h2 id="3-förstå-viktiga-filer"><a class="header" href="#3-förstå-viktiga-filer">3. Förstå viktiga filer</a></h2>
+<p>De vanligaste filerna att börja med:</p>
+<ul>
+<li><code>style.css</code> – temats metadata och grundstil</li>
+<li><code>functions.php</code> – laddar in scripts/styles och aktiverar tema-funktioner</li>
+<li><code>header.php</code> – sidhuvud</li>
+<li><code>footer.php</code> – sidfot</li>
+<li><code>index.php</code> – fallback-template</li>
+<li><code>single.php</code> – enskilt inlägg</li>
+<li><code>page.php</code> – enskild sida</li>
+<li><code>archive.php</code> – listning av inlägg</li>
+</ul>
+<h2 id="4-börja-bygga-din-egen-design"><a class="header" href="#4-börja-bygga-din-egen-design">4. Börja bygga din egen design</a></h2>
+<p>Ett bra arbetsflöde:</p>
+<ol>
+<li>Skapa en enkel designskiss (hero, navigation, innehåll, footer).</li>
+<li>Bygg layout i <code>header.php</code>, <code>footer.php</code> och templates.</li>
+<li>Lägg all styling i separata CSS-filer och enqueua via <code>functions.php</code>.</li>
+<li>Testa olika innehållstyper: inlägg, sidor, kategori-arkiv och 404.</li>
+</ol>
+<h2 id="5-exempel-ladda-in-egen-css-i-functionsphp"><a class="header" href="#5-exempel-ladda-in-egen-css-i-functionsphp">5. Exempel: ladda in egen CSS i <code>functions.php</code></a></h2>
+<pre><code class="language-php">function my_school_theme_scripts() {
+	wp_enqueue_style(
+		'my-school-theme-style',
+		get_stylesheet_uri(),
+		array(),
+		wp_get_theme()-&gt;get( 'Version' )
+	);
+}
+add_action( 'wp_enqueue_scripts', 'my_school_theme_scripts' );
+</code></pre>
+<h2 id="bra-praxis-när-du-bygger-tema"><a class="header" href="#bra-praxis-när-du-bygger-tema">Bra praxis när du bygger tema</a></h2>
+<ul>
+<li>Använd child theme om du utgår från ett externt tema</li>
+<li>Håll logik i rätt lager (undvik tung affärslogik i templates)</li>
+<li>Sanitera och escapa data i PHP-output</li>
+<li>Optimera bilder och minimera tunga frontend-resurser</li>
+<li>Testa responsivt och tillgängligt från start</li>
+</ul>
+<h2 id="vanliga-misstag"><a class="header" href="#vanliga-misstag">Vanliga misstag</a></h2>
+<ul>
+<li>Ändra filer direkt i tredjepartsteman utan child theme</li>
+<li>Lägga för mycket kod i en enda templatefil</li>
+<li>Hårdkoda URL:er och texter istället för WordPress-funktioner</li>
+<li>Glömma att testa templates för tomma listor och 404-sidor</li>
+</ul>
+<h2 id="sammanfattning-26"><a class="header" href="#sammanfattning-26">Sammanfattning</a></h2>
+<p>Med <code>_s</code> får du en stabil och enkel grund för att skapa ett helt eget WordPress-tema. Fokus bör vara att bygga små delar i taget, hålla strukturen tydlig och testa ofta i lokal miljö.</p>
+<h2 id="reflektionsfrågor-1"><a class="header" href="#reflektionsfrågor-1">Reflektionsfrågor</a></h2>
+<ol>
+<li>Varför är ett starter theme ofta bättre än att börja från en tom mapp?</li>
+<li>Vilka delar av ett tema vill du göra återanvändbara tidigt i projektet?</li>
+<li>Hur skulle du organisera CSS och templates för att förenkla underhåll?</li>
+</ol>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="static-site-generators-med-jekyll"><a class="header" href="#static-site-generators-med-jekyll">Static Site Generators med Jekyll</a></h1>
 <ul>
 <li>Jekyll grunderna</li>
@@ -13209,7 +13466,7 @@ session.cookie_samesite = "Lax"
 ; session.sid_entropy_length = 32 (eller högre)
 ; session.sid_bits_per_character = 5 (eller 6)
 </code></pre>
-<h2 id="sammanfattning-25"><a class="header" href="#sammanfattning-25">Sammanfattning</a></h2>
+<h2 id="sammanfattning-27"><a class="header" href="#sammanfattning-27">Sammanfattning</a></h2>
 <p>Cookies och sessioner är avgörande verktyg för att skapa dynamiska och användarvänliga webbapplikationer genom att överbrygga HTTP:s tillståndslösa natur. Cookies lagrar data på klienten och är bra för icke-känsliga preferenser, medan sessioner lagrar data på servern och är standardmetoden för att hantera inloggningsstatus och annan känslig temporär data. Att förstå hur man använder dem säkert, särskilt genom att skydda session-ID:t och konfigurera cookie-attribut korrekt, är fundamentalt för säker webbutveckling med PHP.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="webbsäkerhet-i-php-vanliga-hot-och-skydd"><a class="header" href="#webbsäkerhet-i-php-vanliga-hot-och-skydd">Webbsäkerhet i PHP: Vanliga Hot och Skydd</a></h1>
 <p>Att bygga en fungerande webbapplikation är en sak, men att göra den säker är en helt annan och minst lika viktig uppgift. En osäker applikation kan leda till att användardata läcker, att obehöriga får kontroll över systemet, eller att webbplatsen används för att sprida skadlig kod. Detta avsnitt täcker några av de mest kritiska säkerhetsriskerna och hur du skyddar din PHP-applikation mot dem.</p>
@@ -14800,7 +15057,7 @@ ob_end_flush();
 </ul>
 <p><strong>Intervjutips:</strong> Diskutera olika nivåer av optimering - från kod-nivå till infrastruktur (load balancers, database replicas etc.).</p>
 <hr />
-<h2 id="sammanfattning-26"><a class="header" href="#sammanfattning-26">Sammanfattning</a></h2>
+<h2 id="sammanfattning-28"><a class="header" href="#sammanfattning-28">Sammanfattning</a></h2>
 <p>Dessa frågor täcker de viktigaste aspekterna av fullstack-utveckling med PHP:</p>
 <ul>
 <li><strong>Grundläggande PHP:</strong> Syntax, variabler, funktioner</li>
@@ -15881,7 +16138,7 @@ const isLoading = true;
 function LoadingSpinner() { }  // Bättre än Spinner()
 function ErrorMessage() { }   // Bättre än Error()
 </code></pre>
-<h2 id="sammanfattning-27"><a class="header" href="#sammanfattning-27">Sammanfattning</a></h2>
+<h2 id="sammanfattning-29"><a class="header" href="#sammanfattning-29">Sammanfattning</a></h2>
 <p>Komponenter är byggstenen i React-applikationer:</p>
 <ul>
 <li><strong>Komponenter</strong> är JavaScript-funktioner som returnerar JSX</li>
@@ -16656,7 +16913,7 @@ const [state, setState] = useState({
   comments: { 1: { id: 1, text: 'Bra inlägg!', authorId: 2 } }
 });
 </code></pre>
-<h2 id="sammanfattning-28"><a class="header" href="#sammanfattning-28">Sammanfattning</a></h2>
+<h2 id="sammanfattning-30"><a class="header" href="#sammanfattning-30">Sammanfattning</a></h2>
 <p>Nu kan du skapa interaktiva React-komponenter:</p>
 <ul>
 <li><strong>Props</strong> skickar data från föräldra- till barnkomponenter</li>
@@ -17198,7 +17455,7 @@ function ProductDetail() {
   // ...
 }
 </code></pre>
-<h2 id="sammanfattning-29"><a class="header" href="#sammanfattning-29">Sammanfattning</a></h2>
+<h2 id="sammanfattning-31"><a class="header" href="#sammanfattning-31">Sammanfattning</a></h2>
 <p>React Router är kraftfullt verktyg för navigation i React-applikationer:</p>
 <ul>
 <li><strong>BrowserRouter</strong> ger rena URLs och är bästa valet för de flesta applikationer</li>
@@ -18275,7 +18532,7 @@ VITE_APP_NAME=Min App
 <li><strong>Monitoring</strong>-fliken: Prestanda och resursanvändning</li>
 <li><strong>Deployments</strong>-fliken: Historik över deployments</li>
 </ol>
-<h2 id="vanliga-problem-och-lösningar-1"><a class="header" href="#vanliga-problem-och-lösningar-1">Vanliga problem och lösningar</a></h2>
+<h2 id="vanliga-problem-och-lösningar-2"><a class="header" href="#vanliga-problem-och-lösningar-2">Vanliga problem och lösningar</a></h2>
 <h3 id="problem-build-failed"><a class="header" href="#problem-build-failed">Problem: "Build failed"</a></h3>
 <p><strong>Orsak</strong>: Fel i koden eller missing dependencies</p>
 <p><strong>Lösning</strong>:</p>
@@ -18320,7 +18577,7 @@ const API_KEY = import.meta.env.VITE_API_KEY;
 <li>Testa ändringar lokalt innan deployment</li>
 <li>Använd versionshantering (Git tags) för viktiga releases</li>
 </ul>
-<h2 id="sammanfattning-30"><a class="header" href="#sammanfattning-30">Sammanfattning</a></h2>
+<h2 id="sammanfattning-32"><a class="header" href="#sammanfattning-32">Sammanfattning</a></h2>
 <p>Deployment med Dokploy gör det enkelt att få din React-applikation live på internet:</p>
 <ol>
 <li><strong>Förbered</strong> din kod och pusha till GitHub</li>
@@ -18331,7 +18588,7 @@ const API_KEY = import.meta.env.VITE_API_KEY;
 <li><strong>Uppdatera</strong> genom att pusha ändringar</li>
 </ol>
 <p>Med Dokploy kan du fokusera på att utveckla fantastiska applikationer medan plattformen hanterar infrastrukturen åt dig!</p>
-<h2 id="nästa-steg-1"><a class="header" href="#nästa-steg-1">Nästa steg</a></h2>
+<h2 id="nästa-steg-2"><a class="header" href="#nästa-steg-2">Nästa steg</a></h2>
 <p>Nu när du kan deploya React-applikationer, utforska:</p>
 <ul>
 <li><strong>Databaser</strong>: Lägg till PostgreSQL eller MongoDB</li>
@@ -18934,7 +19191,7 @@ class ErrorTracker {
 
 export default ErrorTracker;
 </code></pre>
-<h2 id="sammanfattning-31"><a class="header" href="#sammanfattning-31">Sammanfattning</a></h2>
+<h2 id="sammanfattning-33"><a class="header" href="#sammanfattning-33">Sammanfattning</a></h2>
 <p>Single Page Applications erbjuder många fördelar för moderna webbapplikationer:</p>
 <ul>
 <li><strong>Smidig användarupplevelse</strong> med snabb navigering</li>
@@ -19947,7 +20204,7 @@ function App() {
 <li>Ha fallback UI för kritiska komponenter</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-32"><a class="header" href="#sammanfattning-32">Sammanfattning</a></h2>
+<h2 id="sammanfattning-34"><a class="header" href="#sammanfattning-34">Sammanfattning</a></h2>
 <p>Dessa frågor täcker de viktigaste aspekterna av React-utveckling:</p>
 <ul>
 <li><strong>React Fundamentals:</strong> JSX, Virtual DOM, komponenter</li>
@@ -21516,7 +21773,7 @@ async function processMultipleFiles() {
   }
 }
 </code></pre>
-<h2 id="sammanfattning-33"><a class="header" href="#sammanfattning-33">Sammanfattning</a></h2>
+<h2 id="sammanfattning-35"><a class="header" href="#sammanfattning-35">Sammanfattning</a></h2>
 <p>I denna introduktion har vi gått igenom grunderna i Node.js och fokuserat på moderna utvecklingsmetoder:</p>
 <p><strong>Vad vi har lärt oss:</strong></p>
 <ul>
@@ -22008,7 +22265,7 @@ document.getElementById('userForm').addEventListener('submit', async (e) =&gt; {
 <li><strong>Säkerhetsfeatures</strong> och best practices</li>
 <li><strong>Plugin-ekosystem</strong> för utökad funktionalitet</li>
 </ul>
-<h2 id="nästa-steg-2"><a class="header" href="#nästa-steg-2">Nästa steg</a></h2>
+<h2 id="nästa-steg-3"><a class="header" href="#nästa-steg-3">Nästa steg</a></h2>
 <p>Nu förstår du hur HTTP-servrar fungerar under huven! Detta ger dig en solid grund för att:</p>
 <ol>
 <li><strong>Uppskatta Express.js</strong> - Du vet nu vad det abstraherar bort</li>
@@ -23765,7 +24022,7 @@ app.use(express.json({ limit: '10mb' })); // Begränsa request size
 <li>Dessa är grundläggande säkerhetsåtgärder som bör vara standard</li>
 </ul>
 </details>
-<h3 id="vanliga-misstag"><a class="header" href="#vanliga-misstag">Vanliga misstag</a></h3>
+<h3 id="vanliga-misstag-1"><a class="header" href="#vanliga-misstag-1">Vanliga misstag</a></h3>
 <ol>
 <li><strong>Glömma felhantering:</strong> Alltid använd try/catch i async routes</li>
 <li><strong>Felaktig 404-hantering:</strong> Kontrollera om resultatet är null innan du använder det</li>
@@ -23773,7 +24030,7 @@ app.use(express.json({ limit: '10mb' })); // Begränsa request size
 <li><strong>Glömma validering:</strong> Validera alltid användarinput</li>
 <li><strong>Sakna rate limiting:</strong> Låt inte en användare överbelasta ditt API</li>
 </ol>
-<h2 id="sammanfattning-34"><a class="header" href="#sammanfattning-34">Sammanfattning</a></h2>
+<h2 id="sammanfattning-36"><a class="header" href="#sammanfattning-36">Sammanfattning</a></h2>
 <p>RESTful API:er ger dig en solid grund för att bygga skalbara och underhållbara backend-tjänster. Genom att följa REST-principerna skapar du API:er som är intuitiva för utvecklare att använda och enkla att underhålla över tid.</p>
 <h3 id="viktiga-takeaways-1"><a class="header" href="#viktiga-takeaways-1">Viktiga takeaways:</a></h3>
 <ul>
@@ -23783,7 +24040,7 @@ app.use(express.json({ limit: '10mb' })); // Begränsa request size
 <li><strong>Validering och felhantering</strong> är kritiskt för robusthet</li>
 <li><strong>Best practices</strong> (rate limiting, CORS, säkerhet) gör API:et produktionsklart</li>
 </ul>
-<h3 id="nästa-steg-3"><a class="header" href="#nästa-steg-3">Nästa steg:</a></h3>
+<h3 id="nästa-steg-4"><a class="header" href="#nästa-steg-4">Nästa steg:</a></h3>
 <ul>
 <li>Lär dig om <strong>autentisering och säkerhet</strong> för att skydda dina API:er</li>
 <li>Implementera <strong>testning</strong> för dina API-endpoints</li>
@@ -25422,7 +25679,7 @@ export function sendEmail() {
   console.log('Skickar email...');
 }
 </code></pre>
-<h2 id="vanliga-problem-och-lösningar-2"><a class="header" href="#vanliga-problem-och-lösningar-2">Vanliga problem och lösningar</a></h2>
+<h2 id="vanliga-problem-och-lösningar-3"><a class="header" href="#vanliga-problem-och-lösningar-3">Vanliga problem och lösningar</a></h2>
 <h3 id="problem-cannot-find-module"><a class="header" href="#problem-cannot-find-module">Problem: "Cannot find module"</a></h3>
 <p><strong>Orsak</strong>: ES6-moduler kräver att filer har <code>.js</code>-ändelse i imports.</p>
 <p><strong>Lösning</strong>:</p>
@@ -25442,7 +25699,7 @@ import { add } from './math';
   // Standard timeout är 5000ms, öka om nödvändigt
 }, 10000); // 10 sekunder
 </code></pre>
-<h2 id="sammanfattning-35"><a class="header" href="#sammanfattning-35">Sammanfattning</a></h2>
+<h2 id="sammanfattning-37"><a class="header" href="#sammanfattning-37">Sammanfattning</a></h2>
 <p>I denna lektion har du lärt dig:</p>
 <p>✅ <strong>Varför testa</strong>: Säkerhet vid ändringar, dokumentation, snabbare utveckling<br />
 ✅ <strong>Jest setup</strong>: Installera och konfigurera Jest med ES6-moduler<br />
@@ -25451,7 +25708,7 @@ import { add } from './math';
 ✅ <strong>Setup/Teardown</strong>: Använda <code>beforeEach</code>, <code>afterEach</code>, <code>beforeAll</code>, <code>afterAll</code><br />
 ✅ <strong>API-testning</strong>: Testa Express-routes med Supertest<br />
 ✅ <strong>Best practices</strong>: Hur du skriver bra test</p>
-<h3 id="nästa-steg-4"><a class="header" href="#nästa-steg-4">Nästa steg</a></h3>
+<h3 id="nästa-steg-5"><a class="header" href="#nästa-steg-5">Nästa steg</a></h3>
 <ul>
 <li>Öva på att skriva test för dina egna funktioner</li>
 <li>Lär dig om mocks (låtsaskod) för att isolera test</li>
@@ -29318,7 +29575,7 @@ class InventoryService {
 module.exports = InventoryService;
 </code></pre>
 <hr />
-<h2 id="sammanfattning-36"><a class="header" href="#sammanfattning-36">Sammanfattning</a></h2>
+<h2 id="sammanfattning-38"><a class="header" href="#sammanfattning-38">Sammanfattning</a></h2>
 <p>Dessa fyra övningar tar dig från grundläggande Express-applikationer till avancerade real-time system. Varje projekt bygger på kunskaperna från föregående och introducerar nya koncept:</p>
 <ol>
 <li><strong>Todo API</strong>: Grundläggande CRUD, MongoDB, felhantering</li>
@@ -29326,7 +29583,7 @@ module.exports = InventoryService;
 <li><strong>E-handel API</strong>: Komplex datamodellering, transaktioner, inventoriehantering</li>
 </ol>
 <p>Efter att ha genomfört dessa projekt har du en solid grund i modern backend-utveckling med Node.js!</p>
-<h2 id="nästa-steg-5"><a class="header" href="#nästa-steg-5">Nästa steg</a></h2>
+<h2 id="nästa-steg-6"><a class="header" href="#nästa-steg-6">Nästa steg</a></h2>
 <ul>
 <li><strong>Deploiera till produktion</strong> med Docker och cloud services</li>
 <li><strong>Implementera CI/CD</strong> för automatisk testning och deployment</li>
@@ -32075,7 +32332,7 @@ class BulletManager {
   }
 }
 </code></pre>
-<h2 id="sammanfattning-37"><a class="header" href="#sammanfattning-37">Sammanfattning</a></h2>
+<h2 id="sammanfattning-39"><a class="header" href="#sammanfattning-39">Sammanfattning</a></h2>
 <p>OOP i spelutveckling handlar om att:</p>
 <p><strong>Strukturera kod effektivt</strong>:</p>
 <ul>
@@ -32551,7 +32808,7 @@ this.socket.onopen = () =&gt; {
 <li>Servern köar kommandona och kör dem i turordning</li>
 <li><strong>Uppgift</strong>: Skapa ett enkelt commands-system där spelare kan skicka kommandon som servern kör asynkront</li>
 </ul>
-<h2 id="sammanfattning-38"><a class="header" href="#sammanfattning-38">Sammanfattning</a></h2>
+<h2 id="sammanfattning-40"><a class="header" href="#sammanfattning-40">Sammanfattning</a></h2>
 <p>I detta kapitel har vi byggt en enkel multiplayer-server steg för steg:</p>
 <ol>
 <li><strong>Grundstruktur</strong>: Servern är auktoritativ - den validerar och uppdaterar allt spelstatus</li>
@@ -34256,7 +34513,7 @@ module.exports = {
 <li>Gör kortet klickbart genom att lägga till en länk runt hela kortet.</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-39"><a class="header" href="#sammanfattning-39">Sammanfattning</a></h2>
+<h2 id="sammanfattning-41"><a class="header" href="#sammanfattning-41">Sammanfattning</a></h2>
 <ul>
 <li><strong>Färger</strong>: Använd fördefinierade eller anpassade färger för att skapa en konsekvent design.</li>
 <li><strong>Typografi</strong>: Hantera textstorlekar, typsnitt och andra textrelaterade egenskaper med utility-klasser.</li>
@@ -34361,7 +34618,7 @@ module.exports = {
 <li>Lägg till en responsiv grid-layout som visar flera produktkort bredvid varandra på större skärmar.</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-40"><a class="header" href="#sammanfattning-40">Sammanfattning</a></h2>
+<h2 id="sammanfattning-42"><a class="header" href="#sammanfattning-42">Sammanfattning</a></h2>
 <ul>
 <li><strong>Breakpoints</strong>: Använd Tailwinds inbyggda breakpoints för att skapa responsiva layouter.</li>
 <li><strong>Responsivitet</strong>: Anpassa layout, typografi och andra stilar för olika skärmstorlekar.</li>
@@ -34500,7 +34757,7 @@ module.exports = {
 <li>Gör menyn sticky så att den alltid är synlig högst upp på sidan.</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-41"><a class="header" href="#sammanfattning-41">Sammanfattning</a></h2>
+<h2 id="sammanfattning-43"><a class="header" href="#sammanfattning-43">Sammanfattning</a></h2>
 <ul>
 <li><strong>Pseudo-klasser</strong>: Använd <code>hover:</code>, <code>focus:</code>, <code>active:</code>, och <code>disabled:</code> för att hantera olika tillstånd.</li>
 <li><strong>Gruppbaserade effekter</strong>: Använd <code>group</code> och <code>group-hover:</code> för att skapa interaktivitet mellan element.</li>
@@ -34682,7 +34939,7 @@ export default {
 <li>Lägg till en animation som gör att hover-effekten övergångar mjukt.</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-42"><a class="header" href="#sammanfattning-42">Sammanfattning</a></h2>
+<h2 id="sammanfattning-44"><a class="header" href="#sammanfattning-44">Sammanfattning</a></h2>
 <ul>
 <li><strong>Konfiguration</strong>: Använd <code>tailwind.config.js</code> för att anpassa Tailwind CSS.</li>
 <li><strong>Anpassningar</strong>: Lägg till egna färger, typsnitt, spacing och breakpoints.</li>
@@ -34878,7 +35135,7 @@ export default {
 <li>Lägg till en hover-effekt på sidomenyns länkar.</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-43"><a class="header" href="#sammanfattning-43">Sammanfattning</a></h2>
+<h2 id="sammanfattning-45"><a class="header" href="#sammanfattning-45">Sammanfattning</a></h2>
 <ul>
 <li><strong>Planering</strong>: Definiera syftet och prioritera innehållet.</li>
 <li><strong>Element</strong>: Inkludera sidhuvud, sidomeny, KPI-kort, tabeller och grafer.</li>
@@ -35045,7 +35302,7 @@ export default {
 }
 </code></pre>
 <hr />
-<h2 id="sammanfattning-44"><a class="header" href="#sammanfattning-44">Sammanfattning</a></h2>
+<h2 id="sammanfattning-46"><a class="header" href="#sammanfattning-46">Sammanfattning</a></h2>
 <ul>
 <li><strong>Best Practices</strong>: Använd återanvändbara komponenter, håll HTML-strukturen ren och dra nytta av Tailwinds konfigurationsfil.</li>
 <li><strong>Komponentbibliotek</strong>: Utforska bibliotek som Tailwind UI, Flowbite och DaisyUI för att snabba upp utvecklingen.</li>
@@ -35248,7 +35505,7 @@ function App() {
 export default App;
 </code></pre>
 <hr />
-<h2 id="sammanfattning-45"><a class="header" href="#sammanfattning-45">Sammanfattning</a></h2>
+<h2 id="sammanfattning-47"><a class="header" href="#sammanfattning-47">Sammanfattning</a></h2>
 <ul>
 <li><strong>Installation</strong>: Installera och konfigurera Tailwind CSS i ditt React-projekt med Vite.</li>
 <li><strong>Komponenter</strong>: Använd Tailwind CSS för att snabbt styla React-komponenter.</li>
