@@ -1,27 +1,47 @@
-# Use a newer Rust image that supports the required versions
+# =========================================
+# Builder stage (mdbook + mermaid support)
+# =========================================
 FROM rust:1.89 AS builder
 
-# Install specific versions that work (matching your local setup)
-RUN cargo install mdbook --version 0.4.48
-RUN cargo install mdbook-mermaid --version 0.15.0
+# Install system dependencies + node (required for mermaid CLI)
+RUN apt-get update && apt-get install -y \
+    curl \
+    ca-certificates \
+    nodejs \
+    npm \
+    && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
+# Install mdBook (stable & plugin-compatible version)
+RUN curl -L https://github.com/rust-lang/mdBook/releases/download/v0.4.40/mdbook-v0.4.40-x86_64-unknown-linux-gnu.tar.gz \
+    | tar -xz -C /usr/local/bin
+
+# Install mdbook-mermaid (compatible with mdBook 0.4.x)
+RUN cargo install mdbook-mermaid --version 0.15.0 --locked
+
+# Install Mermaid CLI (required by mdbook-mermaid)
+RUN npm install -g @mermaid-js/mermaid-cli
+
 WORKDIR /app
-
-# Copy the mdbook project
 COPY . .
 
-# Build the book
+# =========================================
+# Development stage (live reload)
+# =========================================
+FROM builder AS dev
+
+EXPOSE 3000
+CMD ["mdbook", "serve", "--hostname", "0.0.0.0"]
+
+# =========================================
+# Production stage (nginx static hosting)
+# =========================================
+FROM builder AS build
+
 RUN mdbook build
 
-# Use nginx to serve the static files
-FROM nginx:alpine
+FROM nginx:alpine AS runtime
 
-# Copy the built book to nginx html directory
-COPY --from=builder /app/book /usr/share/nginx/html
+COPY --from=build /app/book /usr/share/nginx/html
 
-# Expose port 80
 EXPOSE 80
-
-# Start nginx
 CMD ["nginx", "-g", "daemon off;"]

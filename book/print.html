@@ -8,7 +8,7 @@
 
 
         <!-- Custom HTML head -->
-
+        
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
@@ -100,7 +100,7 @@
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                <div id="menu-bar-hover-placeholder"></div>
+                                <div id="menu-bar-hover-placeholder"></div>
                 <div id="menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
                         <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
@@ -10025,11 +10025,242 @@ if (
 <li>Hur skulle du organisera CSS och templates för att förenkla underhåll?</li>
 </ol>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="static-site-generators-med-jekyll"><a class="header" href="#static-site-generators-med-jekyll">Static Site Generators med Jekyll</a></h1>
+<h2 id="1-introduktion----vad-är-en-static-site-generator"><a class="header" href="#1-introduktion----vad-är-en-static-site-generator">1. Introduktion -- Vad är en Static Site Generator?</a></h2>
+<p>En Static Site Generator (SSG) är ett verktyg som genererar färdiga
+HTML-filer från mallar och innehåll (ofta Markdown). Tänk på en SSG som en <strong>HTML-kompilator</strong>.</p>
+<p>Istället för att generera HTML dynamiskt vid varje sidvisning (som ex ett CMS), bygger SSG:n alla sidor på förhand. Det betyder att webbplatsen redan är färdig innan den publiceras. Därmed upplevs webbplatsen snabb eftersom servern skickar statiska filer.</p>
+<p><strong>Jekyll</strong> är ett exempel på SSG - Static Site Generator. Jekyll baseras på programspråket Ruby - populärt för webbutveckling genom ramverket Ruby on Rails.</p>
+<p>Andra exempel på SSG är <strong>Hugo</strong> (Go), <strong>Gatsby</strong> (React/Node.js) och <strong>Next.js</strong> (JavaScript).</p>
+<hr />
+<h2 id="hur-fungerar-det"><a class="header" href="#hur-fungerar-det">Hur fungerar det?</a></h2>
+<pre class="mermaid">%%{init: {'theme': 'default'}}%%
+flowchart LR
+    A[Markdown Files] --&gt; B[Jekyll Build]
+    C[Layouts &amp; Templates] --&gt; B
+    B --&gt; D[Static HTML Files]
+    D --&gt; E[Web Server]
+</pre>
+<hr />
+<h2 id="2-jekyll----grunder"><a class="header" href="#2-jekyll----grunder">2. Jekyll -- Grunder</a></h2>
+<p>Så här ser strukturen ut för ett projekt i Jekyll:</p>
+<pre><code>my-site/
+├── _posts/
+├── _layouts/
+├── _includes/
+├── _config.yml
+├── index.md
+</code></pre>
+<hr />
+<h2 id="3-markdown-och-front-matter"><a class="header" href="#3-markdown-och-front-matter">3. Markdown och Front Matter</a></h2>
+<p>Markdown är ett lightweight markeringsspråk designat för att skriva innehål på ett enkelt och läsbart sätt. I Jekyll beskrivs en sida med markdown, och som därefter konverteras till HTML.</p>
+<p><strong>Jämförelse med andra markeringsspråk:</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Språk</th><th>Komplexitet</th><th>Användning</th></tr></thead><tbody>
+<tr><td><strong>Markdown</strong></td><td>Låg</td><td>Innehål, dokumentation, bloggar</td></tr>
+<tr><td><strong>HTML</strong></td><td>Hög</td><td>Webbsidor, fullständig semantik</td></tr>
+<tr><td><strong>XML</strong></td><td>Hög</td><td>Data-utbyte, konfiguration</td></tr>
+</tbody></table>
+</div>
+<p><strong>Markdown vs HTML vs XML</strong></p>
+<p>Markdown är mycket enklare än HTML eftersom det använder intuitiv formatering (<code>**fet**</code> istället för <code>&lt;strong&gt;</code>). Det är också mer läsbart i råformat.</p>
+<p>HTML är mer kraftfullt men kräver mer kod. XML fokuserar på datastruktur och är lika strikt som HTML när det gäller syntaxregler. XML låter dig också definiera egna taggar för olika datatyper.</p>
+<h3 id="markdown-exempel"><a class="header" href="#markdown-exempel">Markdown-exempel</a></h3>
+<pre><code class="language-markdown"># My Title
+
+This is a paragraph.
+
+- Item 1
+- Item 2
+</code></pre>
+<h3 id="front-matter"><a class="header" href="#front-matter">Front Matter</a></h3>
+<p><strong>Front Matter</strong> är metadata som placeras i början av en fil, vanligtvis omgiven av tre bindestreck
+<code>---</code>
+på både början och slut. Front Matter används för att definiera variabler och konfigurationer som påverkar hur en fil bearbetas och renderas.</p>
+<p>Ett exempel på ett inledande kodblock med <strong>Front Matter</strong>:</p>
+<pre><code class="language-yaml">---
+title: My First Post
+layout: post
+author: Alice
+---
+</code></pre>
+<hr />
+<h2 id="4-layout-i-jekyll"><a class="header" href="#4-layout-i-jekyll">4. Layout i Jekyll</a></h2>
+<p><strong>Layout</strong> i Jekyll är mallar som definierar den gemensamma strukturen för dina sidor. Istället för att upprepa HTML-kod på varje sida, använder du en layout-fil som innehåller den gemensamma koden (header, footer, navigation osv).</p>
+<p><strong>Varför användes layout?</strong></p>
 <ul>
-<li>Jekyll grunderna</li>
-<li>Markdown och front matter</li>
-<li>Themes och layouts</li>
-<li>GitHub Pages deployment</li>
+<li><strong>DRY-principen</strong> (Don't Repeat Yourself) - skriva koden en gång</li>
+<li><strong>Konsistens</strong> - alla sidor får samma utseende och känsla</li>
+<li><strong>Enkel underhåll</strong> - ändra layouten på ett ställe, uppdateras överallt</li>
+<li><strong>Flexibilitet</strong> - olika sider kan använda olika layouter</li>
+</ul>
+<p><strong>Hur fungerar det?</strong></p>
+<p>Du skapar en layout-fil i mappen <code>_layouts/</code> (t.ex. <code>post.html</code>). I denna definierar du HTML-strukturen med variabeln <code>{{ content }}</code> som platshållare för sidans innehål. När Jekyll bygger, ersätter den <code>{{ content }}</code> med innehållet från din Markdown-fil.</p>
+<p><strong>Front Matter-konfiguration:</strong></p>
+<p>I din Markdown-fil anger du vilken layout som ska användas:</p>
+<pre><code class="language-yaml">---
+title: Min Bloggpost
+layout: post
+---
+</code></pre>
+<pre class="mermaid">%%{init: {'theme': 'default'}}%%
+flowchart TD
+    A[Content File] --&gt; B[Layout]
+    B --&gt; C[Default Layout]
+    C --&gt; D[Final HTML]
+</pre>
+<p>Layout-exempel:</p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;title&gt;{{ page.title }}&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  {{ content }}
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<hr />
+<h2 id="5-teman-i-jekyll"><a class="header" href="#5-teman-i-jekyll">5. Teman i Jekyll</a></h2>
+<p><strong>Teman</strong> i Jekyll är fördefinierade designpaket som innehåller CSS, layouts och komponenter. De ger webbplatsen ett professionellt utseende utan att behöva skriva egen kod.</p>
+<p><strong>Hur installerar man ett tema?</strong></p>
+<p>Du anger temat i <code>_config.yml</code>:</p>
+<pre><code class="language-yaml">theme: jekyll-theme-minimal
+</code></pre>
+<p>Sedan installeras temat automatiskt när Jekyll bygger.</p>
+<p><strong>Populära teman:</strong></p>
+<ul>
+<li><code>jekyll-theme-minimal</code> - enkelt och rent</li>
+<li><code>jekyll-theme-cayman</code> - modernt och responsivt</li>
+<li><code>jekyll-theme-slate</code> - mörkt tema</li>
+</ul>
+<h3 id="skapa-egen-css-istället-för-tema"><a class="header" href="#skapa-egen-css-istället-för-tema">Skapa egen CSS istället för tema</a></h3>
+<p>Du behöver inte använda ett tema. Istället kan du skapa egen CSS från grunden:</p>
+<ol>
+<li>Skapa en layout-fil i <code>_layouts/default.html</code></li>
+<li>Lägg din egen CSS i <code>assets/css/style.css</code></li>
+<li>Länka CSS-filen i layouten: <code>&lt;link rel="stylesheet" href="/assets/css/style.css"&gt;</code></li>
+</ol>
+<p>Denna metod ger fullständig kontroll över designen och är ofta bättre för större projekt.</p>
+<h2 id="6-docker-för-utveckling"><a class="header" href="#6-docker-för-utveckling">6. Docker för Utveckling</a></h2>
+<p><strong>Varför Docker för Jekyll-utveckling?</strong></p>
+<p>Docker skapar en isolerad utvecklingsmiljö som matchar produktionsmiljön. Det löser problemet "det fungerar på min dator" genom att alla utvecklare får samma Ruby-version, gems och systemkonfiguration. Docker gör det också enkelt att byta mellan projekt utan att installationskonflikter uppstår.</p>
+<p><strong>Fördelar:</strong></p>
+<ul>
+<li><strong>Konsistens</strong> - samma miljö för alla utvecklare</li>
+<li><strong>Isolation</strong> - inga konflikter med systemets Ruby-installation</li>
+<li><strong>Lätt onboarding</strong> - ny utvecklare kör bara <code>docker-compose up</code></li>
+<li><strong>Reproducerbart</strong> - samma setup i utveckling och produktion</li>
+</ul>
+<h3 id="exempelfiler"><a class="header" href="#exempelfiler">Exempelfiler</a></h3>
+<p><code>docker-compose.yml</code></p>
+<pre><code class="language-yaml">version: '3.8'
+
+services:
+    jekyll:
+        image: ruby:3.2
+        container_name: jekyll-dev
+        working_dir: /site
+        volumes:
+            - .:/site
+        ports:
+            - "4000:4000"
+        command: |
+            bash -c "gem install jekyll bundler &amp;&amp;
+                             bundle install &amp;&amp;
+                             jekyll serve --host 0.0.0.0 --livereload"
+        environment:
+            - JEKYLL_ENV=development
+</code></pre>
+<p>Med <code>docker-compose up</code> startar Jekyll automatiskt och är tillgänglig på <code>http://localhost:4000</code>. Ändringar i Markdown uppdateras live tack vare <code>--livereload</code>.</p>
+<p><code>Dockerfile</code></p>
+<pre><code class="language-dockerfile">FROM ruby:3.2
+WORKDIR /site
+RUN gem install jekyll bundler
+EXPOSE 4000
+CMD ["jekyll", "serve", "--host", "0.0.0.0"]
+</code></pre>
+<p><strong>Gemfile-exempel för Jekyll</strong></p>
+<p>En Gemfile specificerar Ruby-gems som ditt Jekyll-projekt behöver:</p>
+<pre><code class="language-ruby">source "https://rubygems.org"
+
+gem "jekyll", "~&gt; 4.3"
+gem "jekyll-feed"
+gem "jekyll-seo-tag"
+</code></pre>
+<p>Efter att ha skapat Gemfilen kör du:</p>
+<pre><code class="language-bash">bundle install
+bundle exec jekyll serve
+</code></pre>
+<p><code>bundle install</code> laddar ner alla gems. <code>bundle exec</code> säkerställer att rätt versioner används.</p>
+<p><strong>Minimal Gemfile:</strong></p>
+<pre><code class="language-ruby">source "https://rubygems.org"
+gem "jekyll"
+</code></pre>
+<p>Det räcker för grundläggande Jekyll-funktionalitet.</p>
+<hr />
+<h2 id="7-deployment-med-github-pages"><a class="header" href="#7-deployment-med-github-pages">7. Deployment med GitHub Pages</a></h2>
+<h3 id="steg-för-steg-guide-publicera-jekyll-från-docker-till-github-pages"><a class="header" href="#steg-för-steg-guide-publicera-jekyll-från-docker-till-github-pages">Steg-för-steg guide: Publicera Jekyll från Docker till GitHub Pages</a></h3>
+<p><strong>Förutsättningar:</strong></p>
+<ul>
+<li>Git installerat och konfigurerat</li>
+<li>Docker och Docker Compose installerat</li>
+<li>GitHub-konto med Repository</li>
+</ul>
+<p><strong>Steg 1: Förbered ditt Repository</strong></p>
+<p>Skapa en <code>.gitignore</code> för Jekyll:</p>
+<pre><code>_site/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
+Gemfile.lock
+</code></pre>
+<p><strong>Steg 2: Konfigurera <code>_config.yml</code> för GitHub Pages</strong></p>
+<pre><code class="language-yaml">baseurl: "/repository-name"  # Om inte användarwebbplats
+url: "https://username.github.io"
+</code></pre>
+<p><strong>Steg 3: Bygg lokalt i Docker</strong></p>
+<pre><code class="language-bash">docker-compose up
+</code></pre>
+<p>Verifiera att webbplatsen ser korrekt ut på <code>http://localhost:4000</code>.</p>
+<p><strong>Steg 4: Committa och Pusha till GitHub</strong></p>
+<pre><code class="language-bash">git add .
+git commit -m "Initial Jekyll setup"
+git push origin main
+</code></pre>
+<p><strong>Steg 5: Aktivera GitHub Pages</strong></p>
+<ol>
+<li>Gå till Repository → Settings → Pages</li>
+<li>Under "Source", välj Branch: <code>main</code></li>
+<li>Välj mapp: <code>/ (root)</code> eller <code>/docs</code> beroende på konfiguration</li>
+<li>GitHub bygger automatiskt med Jekyll</li>
+</ol>
+<p><strong>Steg 6: Verifiera Deployment</strong></p>
+<p>Efter några minuter är webbplatsen tillgänglig på:</p>
+<ul>
+<li>Användarwebbplats: <code>https://username.github.io</code></li>
+<li>Projektwebbplats: <code>https://username.github.io/repository-name</code></li>
+</ul>
+<p><strong>Tips:</strong></p>
+<ul>
+<li>Använd <code>gem "github-pages"</code> i Gemfile för kompatibilitet</li>
+<li>GitHub Pages använder inte <code>--livereload</code></li>
+<li>Cachebil uppdaterare på <code>https://username.github.io/repository-name/admin/clear-cache</code> (om custom domain)</li>
+</ul>
+<p>Deployment-flöde:</p>
+<pre class="mermaid">%%{init: {'theme': 'default'}}%%
+flowchart LR
+    A[Git Push] --&gt; B[GitHub]
+    B --&gt; C[Build Jekyll]
+    C --&gt; D[Deploy Static Files]
+    D --&gt; E[Public Website]
+</pre>
+<hr />
+<h2 id="sammanfattning-27"><a class="header" href="#sammanfattning-27">Sammanfattning</a></h2>
+<ul>
+<li>Static Site Generators är snabba och säkra</li>
+<li>Jekyll är enkel och kraftfull</li>
+<li>Markdown gör innehåll enkelt</li>
+<li>Docker ger stabil utvecklingsmiljö</li>
+<li>GitHub Pages ger enkel hosting</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="praktiska-övningar-och-projekt-1"><a class="header" href="#praktiska-övningar-och-projekt-1">Praktiska övningar och projekt</a></h1>
 <ul>
@@ -13524,7 +13755,7 @@ session.cookie_samesite = "Lax"
 ; session.sid_entropy_length = 32 (eller högre)
 ; session.sid_bits_per_character = 5 (eller 6)
 </code></pre>
-<h2 id="sammanfattning-27"><a class="header" href="#sammanfattning-27">Sammanfattning</a></h2>
+<h2 id="sammanfattning-28"><a class="header" href="#sammanfattning-28">Sammanfattning</a></h2>
 <p>Cookies och sessioner är avgörande verktyg för att skapa dynamiska och användarvänliga webbapplikationer genom att överbrygga HTTP:s tillståndslösa natur. Cookies lagrar data på klienten och är bra för icke-känsliga preferenser, medan sessioner lagrar data på servern och är standardmetoden för att hantera inloggningsstatus och annan känslig temporär data. Att förstå hur man använder dem säkert, särskilt genom att skydda session-ID:t och konfigurera cookie-attribut korrekt, är fundamentalt för säker webbutveckling med PHP.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="webbsäkerhet-i-php-vanliga-hot-och-skydd"><a class="header" href="#webbsäkerhet-i-php-vanliga-hot-och-skydd">Webbsäkerhet i PHP: Vanliga Hot och Skydd</a></h1>
 <p>Att bygga en fungerande webbapplikation är en sak, men att göra den säker är en helt annan och minst lika viktig uppgift. En osäker applikation kan leda till att användardata läcker, att obehöriga får kontroll över systemet, eller att webbplatsen används för att sprida skadlig kod. Detta avsnitt täcker några av de mest kritiska säkerhetsriskerna och hur du skyddar din PHP-applikation mot dem.</p>
@@ -15115,7 +15346,7 @@ ob_end_flush();
 </ul>
 <p><strong>Intervjutips:</strong> Diskutera olika nivåer av optimering - från kod-nivå till infrastruktur (load balancers, database replicas etc.).</p>
 <hr />
-<h2 id="sammanfattning-28"><a class="header" href="#sammanfattning-28">Sammanfattning</a></h2>
+<h2 id="sammanfattning-29"><a class="header" href="#sammanfattning-29">Sammanfattning</a></h2>
 <p>Dessa frågor täcker de viktigaste aspekterna av fullstack-utveckling med PHP:</p>
 <ul>
 <li><strong>Grundläggande PHP:</strong> Syntax, variabler, funktioner</li>
@@ -16196,7 +16427,7 @@ const isLoading = true;
 function LoadingSpinner() { }  // Bättre än Spinner()
 function ErrorMessage() { }   // Bättre än Error()
 </code></pre>
-<h2 id="sammanfattning-29"><a class="header" href="#sammanfattning-29">Sammanfattning</a></h2>
+<h2 id="sammanfattning-30"><a class="header" href="#sammanfattning-30">Sammanfattning</a></h2>
 <p>Komponenter är byggstenen i React-applikationer:</p>
 <ul>
 <li><strong>Komponenter</strong> är JavaScript-funktioner som returnerar JSX</li>
@@ -16971,7 +17202,7 @@ const [state, setState] = useState({
   comments: { 1: { id: 1, text: 'Bra inlägg!', authorId: 2 } }
 });
 </code></pre>
-<h2 id="sammanfattning-30"><a class="header" href="#sammanfattning-30">Sammanfattning</a></h2>
+<h2 id="sammanfattning-31"><a class="header" href="#sammanfattning-31">Sammanfattning</a></h2>
 <p>Nu kan du skapa interaktiva React-komponenter:</p>
 <ul>
 <li><strong>Props</strong> skickar data från föräldra- till barnkomponenter</li>
@@ -17513,7 +17744,7 @@ function ProductDetail() {
   // ...
 }
 </code></pre>
-<h2 id="sammanfattning-31"><a class="header" href="#sammanfattning-31">Sammanfattning</a></h2>
+<h2 id="sammanfattning-32"><a class="header" href="#sammanfattning-32">Sammanfattning</a></h2>
 <p>React Router är kraftfullt verktyg för navigation i React-applikationer:</p>
 <ul>
 <li><strong>BrowserRouter</strong> ger rena URLs och är bästa valet för de flesta applikationer</li>
@@ -18635,7 +18866,7 @@ const API_KEY = import.meta.env.VITE_API_KEY;
 <li>Testa ändringar lokalt innan deployment</li>
 <li>Använd versionshantering (Git tags) för viktiga releases</li>
 </ul>
-<h2 id="sammanfattning-32"><a class="header" href="#sammanfattning-32">Sammanfattning</a></h2>
+<h2 id="sammanfattning-33"><a class="header" href="#sammanfattning-33">Sammanfattning</a></h2>
 <p>Deployment med Dokploy gör det enkelt att få din React-applikation live på internet:</p>
 <ol>
 <li><strong>Förbered</strong> din kod och pusha till GitHub</li>
@@ -19249,7 +19480,7 @@ class ErrorTracker {
 
 export default ErrorTracker;
 </code></pre>
-<h2 id="sammanfattning-33"><a class="header" href="#sammanfattning-33">Sammanfattning</a></h2>
+<h2 id="sammanfattning-34"><a class="header" href="#sammanfattning-34">Sammanfattning</a></h2>
 <p>Single Page Applications erbjuder många fördelar för moderna webbapplikationer:</p>
 <ul>
 <li><strong>Smidig användarupplevelse</strong> med snabb navigering</li>
@@ -20262,7 +20493,7 @@ function App() {
 <li>Ha fallback UI för kritiska komponenter</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-34"><a class="header" href="#sammanfattning-34">Sammanfattning</a></h2>
+<h2 id="sammanfattning-35"><a class="header" href="#sammanfattning-35">Sammanfattning</a></h2>
 <p>Dessa frågor täcker de viktigaste aspekterna av React-utveckling:</p>
 <ul>
 <li><strong>React Fundamentals:</strong> JSX, Virtual DOM, komponenter</li>
@@ -21831,7 +22062,7 @@ async function processMultipleFiles() {
   }
 }
 </code></pre>
-<h2 id="sammanfattning-35"><a class="header" href="#sammanfattning-35">Sammanfattning</a></h2>
+<h2 id="sammanfattning-36"><a class="header" href="#sammanfattning-36">Sammanfattning</a></h2>
 <p>I denna introduktion har vi gått igenom grunderna i Node.js och fokuserat på moderna utvecklingsmetoder:</p>
 <p><strong>Vad vi har lärt oss:</strong></p>
 <ul>
@@ -24088,7 +24319,7 @@ app.use(express.json({ limit: '10mb' })); // Begränsa request size
 <li><strong>Glömma validering:</strong> Validera alltid användarinput</li>
 <li><strong>Sakna rate limiting:</strong> Låt inte en användare överbelasta ditt API</li>
 </ol>
-<h2 id="sammanfattning-36"><a class="header" href="#sammanfattning-36">Sammanfattning</a></h2>
+<h2 id="sammanfattning-37"><a class="header" href="#sammanfattning-37">Sammanfattning</a></h2>
 <p>RESTful API:er ger dig en solid grund för att bygga skalbara och underhållbara backend-tjänster. Genom att följa REST-principerna skapar du API:er som är intuitiva för utvecklare att använda och enkla att underhålla över tid.</p>
 <h3 id="viktiga-takeaways-1"><a class="header" href="#viktiga-takeaways-1">Viktiga takeaways:</a></h3>
 <ul>
@@ -25757,7 +25988,7 @@ import { add } from './math';
   // Standard timeout är 5000ms, öka om nödvändigt
 }, 10000); // 10 sekunder
 </code></pre>
-<h2 id="sammanfattning-37"><a class="header" href="#sammanfattning-37">Sammanfattning</a></h2>
+<h2 id="sammanfattning-38"><a class="header" href="#sammanfattning-38">Sammanfattning</a></h2>
 <p>I denna lektion har du lärt dig:</p>
 <p>✅ <strong>Varför testa</strong>: Säkerhet vid ändringar, dokumentation, snabbare utveckling<br />
 ✅ <strong>Jest setup</strong>: Installera och konfigurera Jest med ES6-moduler<br />
@@ -29633,7 +29864,7 @@ class InventoryService {
 module.exports = InventoryService;
 </code></pre>
 <hr />
-<h2 id="sammanfattning-38"><a class="header" href="#sammanfattning-38">Sammanfattning</a></h2>
+<h2 id="sammanfattning-39"><a class="header" href="#sammanfattning-39">Sammanfattning</a></h2>
 <p>Dessa fyra övningar tar dig från grundläggande Express-applikationer till avancerade real-time system. Varje projekt bygger på kunskaperna från föregående och introducerar nya koncept:</p>
 <ol>
 <li><strong>Todo API</strong>: Grundläggande CRUD, MongoDB, felhantering</li>
@@ -32390,7 +32621,7 @@ class BulletManager {
   }
 }
 </code></pre>
-<h2 id="sammanfattning-39"><a class="header" href="#sammanfattning-39">Sammanfattning</a></h2>
+<h2 id="sammanfattning-40"><a class="header" href="#sammanfattning-40">Sammanfattning</a></h2>
 <p>OOP i spelutveckling handlar om att:</p>
 <p><strong>Strukturera kod effektivt</strong>:</p>
 <ul>
@@ -32866,7 +33097,7 @@ this.socket.onopen = () =&gt; {
 <li>Servern köar kommandona och kör dem i turordning</li>
 <li><strong>Uppgift</strong>: Skapa ett enkelt commands-system där spelare kan skicka kommandon som servern kör asynkront</li>
 </ul>
-<h2 id="sammanfattning-40"><a class="header" href="#sammanfattning-40">Sammanfattning</a></h2>
+<h2 id="sammanfattning-41"><a class="header" href="#sammanfattning-41">Sammanfattning</a></h2>
 <p>I detta kapitel har vi byggt en enkel multiplayer-server steg för steg:</p>
 <ol>
 <li><strong>Grundstruktur</strong>: Servern är auktoritativ - den validerar och uppdaterar allt spelstatus</li>
@@ -34571,7 +34802,7 @@ module.exports = {
 <li>Gör kortet klickbart genom att lägga till en länk runt hela kortet.</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-41"><a class="header" href="#sammanfattning-41">Sammanfattning</a></h2>
+<h2 id="sammanfattning-42"><a class="header" href="#sammanfattning-42">Sammanfattning</a></h2>
 <ul>
 <li><strong>Färger</strong>: Använd fördefinierade eller anpassade färger för att skapa en konsekvent design.</li>
 <li><strong>Typografi</strong>: Hantera textstorlekar, typsnitt och andra textrelaterade egenskaper med utility-klasser.</li>
@@ -34676,7 +34907,7 @@ module.exports = {
 <li>Lägg till en responsiv grid-layout som visar flera produktkort bredvid varandra på större skärmar.</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-42"><a class="header" href="#sammanfattning-42">Sammanfattning</a></h2>
+<h2 id="sammanfattning-43"><a class="header" href="#sammanfattning-43">Sammanfattning</a></h2>
 <ul>
 <li><strong>Breakpoints</strong>: Använd Tailwinds inbyggda breakpoints för att skapa responsiva layouter.</li>
 <li><strong>Responsivitet</strong>: Anpassa layout, typografi och andra stilar för olika skärmstorlekar.</li>
@@ -34815,7 +35046,7 @@ module.exports = {
 <li>Gör menyn sticky så att den alltid är synlig högst upp på sidan.</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-43"><a class="header" href="#sammanfattning-43">Sammanfattning</a></h2>
+<h2 id="sammanfattning-44"><a class="header" href="#sammanfattning-44">Sammanfattning</a></h2>
 <ul>
 <li><strong>Pseudo-klasser</strong>: Använd <code>hover:</code>, <code>focus:</code>, <code>active:</code>, och <code>disabled:</code> för att hantera olika tillstånd.</li>
 <li><strong>Gruppbaserade effekter</strong>: Använd <code>group</code> och <code>group-hover:</code> för att skapa interaktivitet mellan element.</li>
@@ -34997,7 +35228,7 @@ export default {
 <li>Lägg till en animation som gör att hover-effekten övergångar mjukt.</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-44"><a class="header" href="#sammanfattning-44">Sammanfattning</a></h2>
+<h2 id="sammanfattning-45"><a class="header" href="#sammanfattning-45">Sammanfattning</a></h2>
 <ul>
 <li><strong>Konfiguration</strong>: Använd <code>tailwind.config.js</code> för att anpassa Tailwind CSS.</li>
 <li><strong>Anpassningar</strong>: Lägg till egna färger, typsnitt, spacing och breakpoints.</li>
@@ -35193,7 +35424,7 @@ export default {
 <li>Lägg till en hover-effekt på sidomenyns länkar.</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-45"><a class="header" href="#sammanfattning-45">Sammanfattning</a></h2>
+<h2 id="sammanfattning-46"><a class="header" href="#sammanfattning-46">Sammanfattning</a></h2>
 <ul>
 <li><strong>Planering</strong>: Definiera syftet och prioritera innehållet.</li>
 <li><strong>Element</strong>: Inkludera sidhuvud, sidomeny, KPI-kort, tabeller och grafer.</li>
@@ -35360,7 +35591,7 @@ export default {
 }
 </code></pre>
 <hr />
-<h2 id="sammanfattning-46"><a class="header" href="#sammanfattning-46">Sammanfattning</a></h2>
+<h2 id="sammanfattning-47"><a class="header" href="#sammanfattning-47">Sammanfattning</a></h2>
 <ul>
 <li><strong>Best Practices</strong>: Använd återanvändbara komponenter, håll HTML-strukturen ren och dra nytta av Tailwinds konfigurationsfil.</li>
 <li><strong>Komponentbibliotek</strong>: Utforska bibliotek som Tailwind UI, Flowbite och DaisyUI för att snabba upp utvecklingen.</li>
@@ -35563,7 +35794,7 @@ function App() {
 export default App;
 </code></pre>
 <hr />
-<h2 id="sammanfattning-47"><a class="header" href="#sammanfattning-47">Sammanfattning</a></h2>
+<h2 id="sammanfattning-48"><a class="header" href="#sammanfattning-48">Sammanfattning</a></h2>
 <ul>
 <li><strong>Installation</strong>: Installera och konfigurera Tailwind CSS i ditt React-projekt med Vite.</li>
 <li><strong>Komponenter</strong>: Använd Tailwind CSS för att snabbt styla React-komponenter.</li>
@@ -35787,6 +36018,22 @@ Den här sammanfattningen fungerar bra som referens i ett GitHub-projekt, underv
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

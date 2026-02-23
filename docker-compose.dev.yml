@@ -1,0 +1,10 @@
+services:
+  mdbook:
+    build:
+      context: .
+      target: dev
+    container_name: mdbook-dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./:/app

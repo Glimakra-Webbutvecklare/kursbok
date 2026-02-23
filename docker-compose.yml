@@ -1,15 +1,10 @@
 services:
   mdbook:
-    container_name: mdbook
-    image: peaceiris/mdbook:v0.4.40-rust
-    stdin_open: true
-    tty: true
+    build:
+      context: .
+      target: dev
+    container_name: mdbook-dev
     ports:
-      - 3000:3000
-      - 3001:3001
+      - "3000:3000"
     volumes:
-      - ./:/book
-    command:
-      - serve
-      - --hostname
-      - '0.0.0.0'
+      - ./:/app

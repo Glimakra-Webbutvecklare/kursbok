@@ -43,9 +43,18 @@ Contributions from other teachers are welcome! Here's how you can add or modify 
 
     **Using Docker:**
 
-    *   Make sure Docker Desktop is installed, up and running. Run cmd:
+    *   Make sure Docker Desktop is installed, up and running. 
+    
+        Development mode run cmd and visit http://localhost:3000:
+
         ```bash 
-        docker-compose up
+        docker compose -f docker-compose.dev.yml up --build
+        ```
+
+        Production mode run cmd and visit http://localhost:8080:
+        
+        ```bash 
+        docker compose -f docker-compose.prod.yml up --build
         ```
 
 
