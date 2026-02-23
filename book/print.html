@@ -9704,13 +9704,20 @@ volumes:
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="wordpress"><a class="header" href="#wordpress">WordPress</a></h1>
 <p>WordPress är ett innehållshanteringssystem (CMS) som används för att bygga och administrera webbplatser utan att skriva all kod från grunden. Det är världens mest använda CMS och fungerar för allt från bloggar till företagswebbar och enklare e-handel.</p>
+<h2 id="förkunskaper"><a class="header" href="#förkunskaper">Förkunskaper</a></h2>
+<p>Innan du går vidare är det bra om du känner till:</p>
+<ul>
+<li>Grundläggande HTML och CSS</li>
+<li>Hur en webbplats publiceras och hostas</li>
+<li>Grundläggande begrepp i CMS (content management system, innehållshanteringssystem)</li>
+</ul>
 <h2 id="vad-är-wordpress"><a class="header" href="#vad-är-wordpress">Vad är WordPress?</a></h2>
 <p>WordPress består av:</p>
 <ul>
 <li><strong>Kärnan (core)</strong>: själva systemet</li>
-<li><strong>Teman</strong>: styr design och layout</li>
+<li><strong>Teman (themes)</strong>: styr design och layout</li>
 <li><strong>Tillägg (plugins)</strong>: lägger till funktioner</li>
-<li><strong>Adminpanel</strong>: gränssnittet där du hanterar innehåll och inställningar</li>
+<li><strong>Adminpanel (dashboard)</strong>: gränssnittet där du hanterar innehåll och inställningar</li>
 </ul>
 <p>Det finns två vanliga varianter:</p>
 <ul>
@@ -9718,7 +9725,7 @@ volumes:
 <li><strong>WordPress.com</strong>: hostad tjänst med olika abonnemang</li>
 </ul>
 <p>I den här kursen utgår vi främst från <strong>WordPress.org</strong>.</p>
-<h2 id="fördelar-pros"><a class="header" href="#fördelar-pros">Fördelar (Pros)</a></h2>
+<h2 id="fördelar"><a class="header" href="#fördelar">Fördelar</a></h2>
 <ul>
 <li>Snabbt att komma igång, även för nybörjare</li>
 <li>Stort ekosystem av teman och plugins</li>
@@ -9726,7 +9733,7 @@ volumes:
 <li>Enkelt att ge redaktörer tillgång till innehåll</li>
 <li>Stort community med mycket dokumentation och guider</li>
 </ul>
-<h2 id="nackdelar-cons"><a class="header" href="#nackdelar-cons">Nackdelar (Cons)</a></h2>
+<h2 id="nackdelar"><a class="header" href="#nackdelar">Nackdelar</a></h2>
 <ul>
 <li>För många plugins kan göra sajten långsam</li>
 <li>Säkerhetsrisker om uppdateringar ignoreras</li>
@@ -9755,6 +9762,24 @@ volumes:
 <li><strong>Användarroller</strong>: admin, redaktör, författare med olika behörighet</li>
 <li><strong>Permalänkar</strong>: URL-struktur för sidor/inlägg</li>
 </ul>
+<h2 id="kodexempel-registrera-en-menyplats"><a class="header" href="#kodexempel-registrera-en-menyplats">Kodexempel: registrera en menyplats</a></h2>
+<p>Det här exemplet visar hur du registrerar en menyplats i ett tema via <code>functions.php</code>.</p>
+<pre><code class="language-php">function school_theme_setup() {
+	register_nav_menus(
+		array(
+			'primary' =&gt; __( 'Primary Menu', 'school-theme' ),
+		)
+	);
+}
+add_action( 'after_setup_theme', 'school_theme_setup' );
+</code></pre>
+<p>När menyplatsen är registrerad kan du koppla en meny via <strong>Utseende &gt; Menyer</strong>.</p>
+<h2 id="Översikt-hur-wordpress-levererar-innehåll"><a class="header" href="#Översikt-hur-wordpress-levererar-innehåll">Översikt: hur WordPress levererar innehåll</a></h2>
+<pre class="mermaid">flowchart LR
+	A[Adminpanel] --&gt; B[Databas]
+	B --&gt; C[Tema]
+	C --&gt; D[Besökare]
+</pre>
 <h2 id="viktigt-i-praktiken"><a class="header" href="#viktigt-i-praktiken">Viktigt i praktiken</a></h2>
 <p>För ett hållbart WordPress-projekt bör du alltid:</p>
 <ol>
@@ -9764,10 +9789,11 @@ volumes:
 <li>Använda starka lösenord och minst en admin-användare med säkra inloggningsrutiner.</li>
 <li>Testa uppdateringar i lokal miljö innan produktion.</li>
 </ol>
-<h2 id="nästa-steg-1"><a class="header" href="#nästa-steg-1">Nästa steg</a></h2>
-<p>Fortsätt med installationsguiden för lokal utveckling:</p>
+<h2 id="nästa-lektioner"><a class="header" href="#nästa-lektioner">Nästa lektioner</a></h2>
+<p>Fortsätt gärna i den här ordningen:</p>
 <ul>
 <li><a href="kapitel_6/./wordpress-local.html">Installation med Local by Flywheel</a></li>
+<li><a href="kapitel_6/./wordpress-theme.html">Skapa eget tema med Underscores</a></li>
 </ul>
 <p>Efter installation kan du börja med att skapa sidor, välja tema och bygga upp en enkel webbplatsstruktur.</p>
 <h2 id="reflektionsfrågor"><a class="header" href="#reflektionsfrågor">Reflektionsfrågor</a></h2>
@@ -9776,7 +9802,7 @@ volumes:
 <li>Vilka risker finns med att installera många plugins, och hur kan du minska de riskerna?</li>
 <li>Om du skulle bygga en webbplats för en mindre organisation, vilka grundinställningar skulle du prioritera först?</li>
 </ol>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="wordpress-1"><a class="header" href="#wordpress-1">WordPress</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="installera-wordpress-lokalt-med-local-by-flywheel"><a class="header" href="#installera-wordpress-lokalt-med-local-by-flywheel">Installera WordPress lokalt med Local by Flywheel</a></h1>
 <p>I den här guiden installerar du en lokal WordPress-sida med <strong>Local</strong> (tidigare Local by Flywheel). En lokal installation är perfekt för utveckling, test och lärande innan du publicerar sajten online.</p>
 <h2 id="1-installera-local"><a class="header" href="#1-installera-local">1. Installera Local</a></h2>
 <ol>
@@ -9880,8 +9906,13 @@ volumes:
 <li>Gjort grundläggande konfiguration</li>
 </ul>
 <p>Nästa steg är att skapa sidor/inlägg, testa teman och bygga vidare på din webbplats i en trygg lokal utvecklingsmiljö.</p>
+<h2 id="nästa-lektion"><a class="header" href="#nästa-lektion">Nästa lektion</a></h2>
+<p>När installationen fungerar kan du gå vidare med:</p>
+<ul>
+<li><a href="kapitel_6/./wordpress-theme.html">Skapa eget tema med Underscores</a></li>
+</ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="skapa-eget-wordpress-tema-med-_s-underscores"><a class="header" href="#skapa-eget-wordpress-tema-med-_s-underscores">Skapa eget WordPress-tema med _s (Underscores)</a></h1>
-<p>Att bygga ett eget tema från grunden ger dig full kontroll över layout, komponenter och prestanda. Ett bra sätt att börja är med <strong>Underscores</strong> (<code>_s</code>) som är ett minimalt starter theme för WordPress.</p>
+<p>Att bygga ett eget tema från grunden ger dig full kontroll över layout, komponenter och prestanda. Ett bra sätt att börja är med <strong>Underscores</strong> (<code>_s</code>) som är ett minimalt starttema (starter theme) för WordPress.</p>
 <h2 id="vad-är-underscores-_s"><a class="header" href="#vad-är-underscores-_s">Vad är Underscores (_s)?</a></h2>
 <p>Underscores är ett grundtema som innehåller:</p>
 <ul>
@@ -9890,7 +9921,7 @@ volumes:
 <li>Bra startpunkt för att bygga helt egen design</li>
 </ul>
 <p>Det är inte ett färdigt design-tema, utan ett utvecklarvänligt skelett.</p>
-<h2 id="förkunskaper"><a class="header" href="#förkunskaper">Förkunskaper</a></h2>
+<h2 id="förkunskaper-1"><a class="header" href="#förkunskaper-1">Förkunskaper</a></h2>
 <p>Innan du börjar bör du ha:</p>
 <ul>
 <li>En lokal WordPress-installation (t.ex. med Local)</li>
@@ -9951,6 +9982,27 @@ add_action( 'wp_enqueue_scripts', 'my_school_theme_scripts' );
 <li>Optimera bilder och minimera tunga frontend-resurser</li>
 <li>Testa responsivt och tillgängligt från start</li>
 </ul>
+<h2 id="säkerhet-i-teman"><a class="header" href="#säkerhet-i-teman">Säkerhet i teman</a></h2>
+<p>När du bygger eget tema behöver du hantera indata och output säkert.</p>
+<h3 id="exempel-sanitize-rensa-indata-och-escape-säker-output"><a class="header" href="#exempel-sanitize-rensa-indata-och-escape-säker-output">Exempel: sanitize (rensa indata) och escape (säker output)</a></h3>
+<pre><code class="language-php">$title_raw = $_POST['custom_title'] ?? '';
+$title = sanitize_text_field( $title_raw );
+
+echo '&lt;h2&gt;' . esc_html( $title ) . '&lt;/h2&gt;';
+</code></pre>
+<h3 id="exempel-nonce-för-formulär"><a class="header" href="#exempel-nonce-för-formulär">Exempel: nonce för formulär</a></h3>
+<p>I formulär kan du lägga till nonce (engångstoken) för att minska risken för CSRF (cross-site request forgery).</p>
+<pre><code class="language-php">// I formuläret
+wp_nonce_field( 'save_theme_options', 'theme_options_nonce' );
+
+// Vid hantering av formulär
+if (
+	! isset( $_POST['theme_options_nonce'] ) ||
+	! wp_verify_nonce( $_POST['theme_options_nonce'], 'save_theme_options' )
+) {
+	return;
+}
+</code></pre>
 <h2 id="vanliga-misstag"><a class="header" href="#vanliga-misstag">Vanliga misstag</a></h2>
 <ul>
 <li>Ändra filer direkt i tredjepartsteman utan child theme</li>
@@ -9960,6 +10012,12 @@ add_action( 'wp_enqueue_scripts', 'my_school_theme_scripts' );
 </ul>
 <h2 id="sammanfattning-26"><a class="header" href="#sammanfattning-26">Sammanfattning</a></h2>
 <p>Med <code>_s</code> får du en stabil och enkel grund för att skapa ett helt eget WordPress-tema. Fokus bör vara att bygga små delar i taget, hålla strukturen tydlig och testa ofta i lokal miljö.</p>
+<h2 id="nästa-lektioner-1"><a class="header" href="#nästa-lektioner-1">Nästa lektioner</a></h2>
+<p>Om du vill repetera eller bygga progression:</p>
+<ul>
+<li><a href="kapitel_6/./wordpress.html">WordPress-introduktion</a></li>
+<li><a href="kapitel_6/./wordpress-local.html">Installation med Local by Flywheel</a></li>
+</ul>
 <h2 id="reflektionsfrågor-1"><a class="header" href="#reflektionsfrågor-1">Reflektionsfrågor</a></h2>
 <ol>
 <li>Varför är ett starter theme ofta bättre än att börja från en tom mapp?</li>
@@ -18588,7 +18646,7 @@ const API_KEY = import.meta.env.VITE_API_KEY;
 <li><strong>Uppdatera</strong> genom att pusha ändringar</li>
 </ol>
 <p>Med Dokploy kan du fokusera på att utveckla fantastiska applikationer medan plattformen hanterar infrastrukturen åt dig!</p>
-<h2 id="nästa-steg-2"><a class="header" href="#nästa-steg-2">Nästa steg</a></h2>
+<h2 id="nästa-steg-1"><a class="header" href="#nästa-steg-1">Nästa steg</a></h2>
 <p>Nu när du kan deploya React-applikationer, utforska:</p>
 <ul>
 <li><strong>Databaser</strong>: Lägg till PostgreSQL eller MongoDB</li>
@@ -22265,7 +22323,7 @@ document.getElementById('userForm').addEventListener('submit', async (e) =&gt; {
 <li><strong>Säkerhetsfeatures</strong> och best practices</li>
 <li><strong>Plugin-ekosystem</strong> för utökad funktionalitet</li>
 </ul>
-<h2 id="nästa-steg-3"><a class="header" href="#nästa-steg-3">Nästa steg</a></h2>
+<h2 id="nästa-steg-2"><a class="header" href="#nästa-steg-2">Nästa steg</a></h2>
 <p>Nu förstår du hur HTTP-servrar fungerar under huven! Detta ger dig en solid grund för att:</p>
 <ol>
 <li><strong>Uppskatta Express.js</strong> - Du vet nu vad det abstraherar bort</li>
@@ -24040,7 +24098,7 @@ app.use(express.json({ limit: '10mb' })); // Begränsa request size
 <li><strong>Validering och felhantering</strong> är kritiskt för robusthet</li>
 <li><strong>Best practices</strong> (rate limiting, CORS, säkerhet) gör API:et produktionsklart</li>
 </ul>
-<h3 id="nästa-steg-4"><a class="header" href="#nästa-steg-4">Nästa steg:</a></h3>
+<h3 id="nästa-steg-3"><a class="header" href="#nästa-steg-3">Nästa steg:</a></h3>
 <ul>
 <li>Lär dig om <strong>autentisering och säkerhet</strong> för att skydda dina API:er</li>
 <li>Implementera <strong>testning</strong> för dina API-endpoints</li>
@@ -25708,7 +25766,7 @@ import { add } from './math';
 ✅ <strong>Setup/Teardown</strong>: Använda <code>beforeEach</code>, <code>afterEach</code>, <code>beforeAll</code>, <code>afterAll</code><br />
 ✅ <strong>API-testning</strong>: Testa Express-routes med Supertest<br />
 ✅ <strong>Best practices</strong>: Hur du skriver bra test</p>
-<h3 id="nästa-steg-5"><a class="header" href="#nästa-steg-5">Nästa steg</a></h3>
+<h3 id="nästa-steg-4"><a class="header" href="#nästa-steg-4">Nästa steg</a></h3>
 <ul>
 <li>Öva på att skriva test för dina egna funktioner</li>
 <li>Lär dig om mocks (låtsaskod) för att isolera test</li>
@@ -29583,7 +29641,7 @@ module.exports = InventoryService;
 <li><strong>E-handel API</strong>: Komplex datamodellering, transaktioner, inventoriehantering</li>
 </ol>
 <p>Efter att ha genomfört dessa projekt har du en solid grund i modern backend-utveckling med Node.js!</p>
-<h2 id="nästa-steg-6"><a class="header" href="#nästa-steg-6">Nästa steg</a></h2>
+<h2 id="nästa-steg-5"><a class="header" href="#nästa-steg-5">Nästa steg</a></h2>
 <ul>
 <li><strong>Deploiera till produktion</strong> med Docker och cloud services</li>
 <li><strong>Implementera CI/CD</strong> för automatisk testning och deployment</li>

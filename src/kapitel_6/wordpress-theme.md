@@ -1,6 +1,6 @@
 # Skapa eget WordPress-tema med _s (Underscores)
 
-Att bygga ett eget tema från grunden ger dig full kontroll över layout, komponenter och prestanda. Ett bra sätt att börja är med **Underscores** (`_s`) som är ett minimalt starter theme för WordPress.
+Att bygga ett eget tema från grunden ger dig full kontroll över layout, komponenter och prestanda. Ett bra sätt att börja är med **Underscores** (`_s`) som är ett minimalt starttema (starter theme) för WordPress.
 
 ## Vad är Underscores (_s)?
 
@@ -79,6 +79,36 @@ add_action( 'wp_enqueue_scripts', 'my_school_theme_scripts' );
 - Optimera bilder och minimera tunga frontend-resurser
 - Testa responsivt och tillgängligt från start
 
+## Säkerhet i teman
+
+När du bygger eget tema behöver du hantera indata och output säkert.
+
+### Exempel: sanitize (rensa indata) och escape (säker output)
+
+```php
+$title_raw = $_POST['custom_title'] ?? '';
+$title = sanitize_text_field( $title_raw );
+
+echo '<h2>' . esc_html( $title ) . '</h2>';
+```
+
+### Exempel: nonce för formulär
+
+I formulär kan du lägga till nonce (engångstoken) för att minska risken för CSRF (cross-site request forgery).
+
+```php
+// I formuläret
+wp_nonce_field( 'save_theme_options', 'theme_options_nonce' );
+
+// Vid hantering av formulär
+if (
+	! isset( $_POST['theme_options_nonce'] ) ||
+	! wp_verify_nonce( $_POST['theme_options_nonce'], 'save_theme_options' )
+) {
+	return;
+}
+```
+
 ## Vanliga misstag
 
 - Ändra filer direkt i tredjepartsteman utan child theme
@@ -89,6 +119,13 @@ add_action( 'wp_enqueue_scripts', 'my_school_theme_scripts' );
 ## Sammanfattning
 
 Med `_s` får du en stabil och enkel grund för att skapa ett helt eget WordPress-tema. Fokus bör vara att bygga små delar i taget, hålla strukturen tydlig och testa ofta i lokal miljö.
+
+## Nästa lektioner
+
+Om du vill repetera eller bygga progression:
+
+- [WordPress-introduktion](./wordpress.md)
+- [Installation med Local by Flywheel](./wordpress-local.md)
 
 ## Reflektionsfrågor
 

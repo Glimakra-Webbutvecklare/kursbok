@@ -153,7 +153,7 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="skapa-eget-wordpress-tema-med-_s-underscores"><a class="header" href="#skapa-eget-wordpress-tema-med-_s-underscores">Skapa eget WordPress-tema med _s (Underscores)</a></h1>
-<p>Att bygga ett eget tema från grunden ger dig full kontroll över layout, komponenter och prestanda. Ett bra sätt att börja är med <strong>Underscores</strong> (<code>_s</code>) som är ett minimalt starter theme för WordPress.</p>
+<p>Att bygga ett eget tema från grunden ger dig full kontroll över layout, komponenter och prestanda. Ett bra sätt att börja är med <strong>Underscores</strong> (<code>_s</code>) som är ett minimalt starttema (starter theme) för WordPress.</p>
 <h2 id="vad-är-underscores-_s"><a class="header" href="#vad-är-underscores-_s">Vad är Underscores (_s)?</a></h2>
 <p>Underscores är ett grundtema som innehåller:</p>
 <ul>
@@ -223,6 +223,27 @@ add_action( 'wp_enqueue_scripts', 'my_school_theme_scripts' );
 <li>Optimera bilder och minimera tunga frontend-resurser</li>
 <li>Testa responsivt och tillgängligt från start</li>
 </ul>
+<h2 id="säkerhet-i-teman"><a class="header" href="#säkerhet-i-teman">Säkerhet i teman</a></h2>
+<p>När du bygger eget tema behöver du hantera indata och output säkert.</p>
+<h3 id="exempel-sanitize-rensa-indata-och-escape-säker-output"><a class="header" href="#exempel-sanitize-rensa-indata-och-escape-säker-output">Exempel: sanitize (rensa indata) och escape (säker output)</a></h3>
+<pre><code class="language-php">$title_raw = $_POST['custom_title'] ?? '';
+$title = sanitize_text_field( $title_raw );
+
+echo '&lt;h2&gt;' . esc_html( $title ) . '&lt;/h2&gt;';
+</code></pre>
+<h3 id="exempel-nonce-för-formulär"><a class="header" href="#exempel-nonce-för-formulär">Exempel: nonce för formulär</a></h3>
+<p>I formulär kan du lägga till nonce (engångstoken) för att minska risken för CSRF (cross-site request forgery).</p>
+<pre><code class="language-php">// I formuläret
+wp_nonce_field( 'save_theme_options', 'theme_options_nonce' );
+
+// Vid hantering av formulär
+if (
+	! isset( $_POST['theme_options_nonce'] ) ||
+	! wp_verify_nonce( $_POST['theme_options_nonce'], 'save_theme_options' )
+) {
+	return;
+}
+</code></pre>
 <h2 id="vanliga-misstag"><a class="header" href="#vanliga-misstag">Vanliga misstag</a></h2>
 <ul>
 <li>Ändra filer direkt i tredjepartsteman utan child theme</li>
@@ -232,6 +253,12 @@ add_action( 'wp_enqueue_scripts', 'my_school_theme_scripts' );
 </ul>
 <h2 id="sammanfattning"><a class="header" href="#sammanfattning">Sammanfattning</a></h2>
 <p>Med <code>_s</code> får du en stabil och enkel grund för att skapa ett helt eget WordPress-tema. Fokus bör vara att bygga små delar i taget, hålla strukturen tydlig och testa ofta i lokal miljö.</p>
+<h2 id="nästa-lektioner"><a class="header" href="#nästa-lektioner">Nästa lektioner</a></h2>
+<p>Om du vill repetera eller bygga progression:</p>
+<ul>
+<li><a href="./wordpress.html">WordPress-introduktion</a></li>
+<li><a href="./wordpress-local.html">Installation med Local by Flywheel</a></li>
+</ul>
 <h2 id="reflektionsfrågor"><a class="header" href="#reflektionsfrågor">Reflektionsfrågor</a></h2>
 <ol>
 <li>Varför är ett starter theme ofta bättre än att börja från en tom mapp?</li>

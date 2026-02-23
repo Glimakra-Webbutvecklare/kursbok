@@ -2,14 +2,22 @@
 
 WordPress är ett innehållshanteringssystem (CMS) som används för att bygga och administrera webbplatser utan att skriva all kod från grunden. Det är världens mest använda CMS och fungerar för allt från bloggar till företagswebbar och enklare e-handel.
 
+## Förkunskaper
+
+Innan du går vidare är det bra om du känner till:
+
+- Grundläggande HTML och CSS
+- Hur en webbplats publiceras och hostas
+- Grundläggande begrepp i CMS (content management system, innehållshanteringssystem)
+
 ## Vad är WordPress?
 
 WordPress består av:
 
 - **Kärnan (core)**: själva systemet
-- **Teman**: styr design och layout
+- **Teman (themes)**: styr design och layout
 - **Tillägg (plugins)**: lägger till funktioner
-- **Adminpanel**: gränssnittet där du hanterar innehåll och inställningar
+- **Adminpanel (dashboard)**: gränssnittet där du hanterar innehåll och inställningar
 
 Det finns två vanliga varianter:
 
@@ -18,7 +26,7 @@ Det finns två vanliga varianter:
 
 I den här kursen utgår vi främst från **WordPress.org**.
 
-## Fördelar (Pros)
+## Fördelar
 
 - Snabbt att komma igång, även för nybörjare
 - Stort ekosystem av teman och plugins
@@ -26,7 +34,7 @@ I den här kursen utgår vi främst från **WordPress.org**.
 - Enkelt att ge redaktörer tillgång till innehåll
 - Stort community med mycket dokumentation och guider
 
-## Nackdelar (Cons)
+## Nackdelar
 
 - För många plugins kan göra sajten långsam
 - Säkerhetsrisker om uppdateringar ignoreras
@@ -56,6 +64,32 @@ Det passar mindre bra när du behöver:
 - **Användarroller**: admin, redaktör, författare med olika behörighet
 - **Permalänkar**: URL-struktur för sidor/inlägg
 
+## Kodexempel: registrera en menyplats
+
+Det här exemplet visar hur du registrerar en menyplats i ett tema via `functions.php`.
+
+```php
+function school_theme_setup() {
+	register_nav_menus(
+		array(
+			'primary' => __( 'Primary Menu', 'school-theme' ),
+		)
+	);
+}
+add_action( 'after_setup_theme', 'school_theme_setup' );
+```
+
+När menyplatsen är registrerad kan du koppla en meny via **Utseende > Menyer**.
+
+## Översikt: hur WordPress levererar innehåll
+
+```mermaid
+flowchart LR
+	A[Adminpanel] --> B[Databas]
+	B --> C[Tema]
+	C --> D[Besökare]
+```
+
 ## Viktigt i praktiken
 
 För ett hållbart WordPress-projekt bör du alltid:
@@ -66,11 +100,12 @@ För ett hållbart WordPress-projekt bör du alltid:
 4. Använda starka lösenord och minst en admin-användare med säkra inloggningsrutiner.
 5. Testa uppdateringar i lokal miljö innan produktion.
 
-## Nästa steg
+## Nästa lektioner
 
-Fortsätt med installationsguiden för lokal utveckling:
+Fortsätt gärna i den här ordningen:
 
 - [Installation med Local by Flywheel](./wordpress-local.md)
+- [Skapa eget tema med Underscores](./wordpress-theme.md)
 
 Efter installation kan du börja med att skapa sidor, välja tema och bygga upp en enkel webbplatsstruktur.
 

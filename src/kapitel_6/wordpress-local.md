@@ -1,4 +1,4 @@
-# WordPress
+# Installera WordPress lokalt med Local by Flywheel
 
 I den här guiden installerar du en lokal WordPress-sida med **Local** (tidigare Local by Flywheel). En lokal installation är perfekt för utveckling, test och lärande innan du publicerar sajten online.
 
@@ -94,5 +94,11 @@ Du har nu:
 - Gjort grundläggande konfiguration
 
 Nästa steg är att skapa sidor/inlägg, testa teman och bygga vidare på din webbplats i en trygg lokal utvecklingsmiljö.
+
+## Nästa lektion
+
+När installationen fungerar kan du gå vidare med:
+
+- [Skapa eget tema med Underscores](./wordpress-theme.md)
 
 
