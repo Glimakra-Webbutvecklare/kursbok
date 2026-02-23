@@ -1,0 +1,8 @@
+services:
+  mdbook:
+    build:
+      context: .
+      target: runtime
+    container_name: mdbook-prod
+    ports:
+      - "8080:80"
