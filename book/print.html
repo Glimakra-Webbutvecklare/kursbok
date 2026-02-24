@@ -10030,6 +10030,7 @@ if (
 HTML-filer från mallar och innehåll (ofta Markdown). Tänk på en SSG som en <strong>HTML-kompilator</strong>.</p>
 <p>Istället för att generera HTML dynamiskt vid varje sidvisning (som ex ett CMS), bygger SSG:n alla sidor på förhand. Det betyder att webbplatsen redan är färdig innan den publiceras. Därmed upplevs webbplatsen snabb eftersom servern skickar statiska filer.</p>
 <p><strong>Jekyll</strong> är ett exempel på SSG - Static Site Generator. Jekyll baseras på programspråket Ruby - populärt för webbutveckling genom ramverket Ruby on Rails.</p>
+<p><a href="https://jekyllrb.com/" target="_blank">https://jekyllrb.com/</a></p>
 <p>Andra exempel på SSG är <strong>Hugo</strong> (Go), <strong>Gatsby</strong> (React/Node.js) och <strong>Next.js</strong> (JavaScript).</p>
 <hr />
 <h2 id="hur-fungerar-det"><a class="header" href="#hur-fungerar-det">Hur fungerar det?</a></h2>
@@ -10079,7 +10080,7 @@ på både början och slut. Front Matter används för att definiera variabler o
 <pre><code class="language-yaml">---
 title: My First Post
 layout: post
-author: Alice
+author: Flisa
 ---
 </code></pre>
 <hr />
@@ -10094,6 +10095,21 @@ author: Alice
 </ul>
 <p><strong>Hur fungerar det?</strong></p>
 <p>Du skapar en layout-fil i mappen <code>_layouts/</code> (t.ex. <code>post.html</code>). I denna definierar du HTML-strukturen med variabeln <code>{{ content }}</code> som platshållare för sidans innehål. När Jekyll bygger, ersätter den <code>{{ content }}</code> med innehållet från din Markdown-fil.</p>
+<p><strong>Exempel med variabler i layout:</strong></p>
+<p>Variabler från Front Matter kan användas i layouten. Om du definierar <code>author</code> i Front Matter, kan du referera till den i layouten med <code>{{ page.author }}</code>:</p>
+<pre><code class="language-html">&lt;footer&gt;
+    &lt;p&gt;&amp;copy; 2024 {{ page.author }}&lt;/p&gt;
+&lt;/footer&gt;
+</code></pre>
+<p>När Jekyll bygger sidan, ersätts <code>{{ page.author }}</code> med värdet från Front Matter. Om Front Matter innehåller <code>author: Flisa</code>, skrivs footern som:</p>
+<p>Du kan använda Jekylls inbyggda variabel <code>site.time</code> för att få aktuellt år dynamiskt:</p>
+<pre><code class="language-html">&lt;footer&gt;
+    &lt;p&gt;&amp;copy; {{ site.time | date: "%Y" }} {{ page.author }}&lt;/p&gt;
+&lt;/footer&gt;
+</code></pre>
+<p>Variabeln <code>site.time</code> är byggdatum, och filtret <code>date: "%Y"</code> extraherar året. Detta uppdateras automatiskt varje gång Jekyll bygger sidan.</p>
+<p>Alternativt kan du haråkoda året i <code>_config.yml</code> och uppdatera det manuellt vid behov.</p>
+<p>Du kan också använda andra variabler som <code>{{ page.date }}</code>, <code>{{ page.title }}</code> och egna variabler som <code>{{ page.category }}</code> - så länge de är definierade i Front Matter.</p>
 <p><strong>Front Matter-konfiguration:</strong></p>
 <p>I din Markdown-fil anger du vilken layout som ska användas:</p>
 <pre><code class="language-yaml">---
@@ -10108,13 +10124,22 @@ flowchart TD
     C --&gt; D[Final HTML]
 </pre>
 <p>Layout-exempel:</p>
+<p><code>_layouts/post.html</code></p>
 <pre><code class="language-html">&lt;!DOCTYPE html&gt;
 &lt;html&gt;
 &lt;head&gt;
   &lt;title&gt;{{ page.title }}&lt;/title&gt;
 &lt;/head&gt;
 &lt;body&gt;
-  {{ content }}
+
+    &lt;main&gt;
+        {{ content }}
+    &lt;/main&gt;
+
+    &lt;footer&gt;
+        &lt;p&gt;&amp;copy; {{ site.time | date: "%Y" }} {{ page.author }}&lt;/p&gt;
+    &lt;/footer&gt;
+
 &lt;/body&gt;
 &lt;/html&gt;
 </code></pre>
@@ -10123,7 +10148,7 @@ flowchart TD
 <p><strong>Teman</strong> i Jekyll är fördefinierade designpaket som innehåller CSS, layouts och komponenter. De ger webbplatsen ett professionellt utseende utan att behöva skriva egen kod.</p>
 <p><strong>Hur installerar man ett tema?</strong></p>
 <p>Du anger temat i <code>_config.yml</code>:</p>
-<pre><code class="language-yaml">theme: jekyll-theme-minimal
+<pre><code class="language-yaml">theme: jekyll-theme-cayman
 </code></pre>
 <p>Sedan installeras temat automatiskt när Jekyll bygger.</p>
 <p><strong>Populära teman:</strong></p>
@@ -10139,7 +10164,7 @@ flowchart TD
 <li>Lägg din egen CSS i <code>assets/css/style.css</code></li>
 <li>Länka CSS-filen i layouten: <code>&lt;link rel="stylesheet" href="/assets/css/style.css"&gt;</code></li>
 </ol>
-<p>Denna metod ger fullständig kontroll över designen och är ofta bättre för större projekt.</p>
+<p>Denna metod ger fullständig kontroll över designen och du bestämmer själv all CSS.</p>
 <h2 id="6-docker-för-utveckling"><a class="header" href="#6-docker-för-utveckling">6. Docker för Utveckling</a></h2>
 <p><strong>Varför Docker för Jekyll-utveckling?</strong></p>
 <p>Docker skapar en isolerad utvecklingsmiljö som matchar produktionsmiljön. Det löser problemet "det fungerar på min dator" genom att alla utvecklare får samma Ruby-version, gems och systemkonfiguration. Docker gör det också enkelt att byta mellan projekt utan att installationskonflikter uppstår.</p>
@@ -10151,51 +10176,83 @@ flowchart TD
 <li><strong>Reproducerbart</strong> - samma setup i utveckling och produktion</li>
 </ul>
 <h3 id="exempelfiler"><a class="header" href="#exempelfiler">Exempelfiler</a></h3>
-<p><code>docker-compose.yml</code></p>
-<pre><code class="language-yaml">version: '3.8'
-
-services:
-    jekyll:
-        image: ruby:3.2
-        container_name: jekyll-dev
-        working_dir: /site
-        volumes:
-            - .:/site
-        ports:
-            - "4000:4000"
-        command: |
-            bash -c "gem install jekyll bundler &amp;&amp;
-                             bundle install &amp;&amp;
-                             jekyll serve --host 0.0.0.0 --livereload"
-        environment:
-            - JEKYLL_ENV=development
-</code></pre>
-<p>Med <code>docker-compose up</code> startar Jekyll automatiskt och är tillgänglig på <code>http://localhost:4000</code>. Ändringar i Markdown uppdateras live tack vare <code>--livereload</code>.</p>
+<h4 id="dockerfile"><a class="header" href="#dockerfile">Dockerfile</a></h4>
+<p>En <strong>Dockerfile</strong> är en textfil som innehåller instruktioner för hur Docker ska bygga en containeravbild. Det är ett recept som definierar:</p>
+<ul>
+<li>Vilken bas-avbild som ska användas (<code>FROM</code>)</li>
+<li>Vilka paket som ska installeras (<code>RUN</code>)</li>
+<li>Vilka filer som ska kopieras in (<code>COPY</code>)</li>
+<li>Vilka portar som ska exponeras (<code>EXPOSE</code>)</li>
+<li>Vilket kommando som ska köras när containern startar (<code>CMD</code> eller <code>ENTRYPOINT</code>)</li>
+</ul>
+<p>I exemplet nedan använder Dockerfile Ruby 3.2 som bas, sätter arbetskatalogen till <code>/site</code>, installerar bundler, och exponerar port 4000 för Jekyll-utvecklingsservern.</p>
 <p><code>Dockerfile</code></p>
 <pre><code class="language-dockerfile">FROM ruby:3.2
+
 WORKDIR /site
-RUN gem install jekyll bundler
+
+RUN gem install bundler
+
 EXPOSE 4000
-CMD ["jekyll", "serve", "--host", "0.0.0.0"]
 </code></pre>
-<p><strong>Gemfile-exempel för Jekyll</strong></p>
-<p>En Gemfile specificerar Ruby-gems som ditt Jekyll-projekt behöver:</p>
+<h4 id="gemfile-exempel-för-jekyll"><a class="header" href="#gemfile-exempel-för-jekyll">Gemfile-exempel för Jekyll</a></h4>
+<p>En Gemfile specificerar Ruby-gems som ditt Jekyll-projekt behöver. Skapa en fil med namnet <code>Gemfile</code>. Här ett exempel på olika gems:</p>
+<p><code>Gemfile</code></p>
 <pre><code class="language-ruby">source "https://rubygems.org"
 
-gem "jekyll", "~&gt; 4.3"
-gem "jekyll-feed"
+gem "jekyll", "~&gt; 4.4"
+gem "webrick"
+gem "jekyll-remote-theme"
 gem "jekyll-seo-tag"
 </code></pre>
-<p>Efter att ha skapat Gemfilen kör du:</p>
-<pre><code class="language-bash">bundle install
-bundle exec jekyll serve
+<h4 id="docker-composeyml"><a class="header" href="#docker-composeyml">docker-compose.yml</a></h4>
+<p>En fil med namnet <strong>docker-compose.yml</strong> är en konfigurationsfil som definierar och anger funktionalitet för Docker-containrar. Den beskriver:</p>
+<ul>
+<li><strong>Vilka tjänster som ska köras</strong> (t.ex. Jekyll-servern)</li>
+<li><strong>Hur containern ska byggas</strong> (byggkontext, avbild)</li>
+<li><strong>Portar och volymmonteringar</strong> (mappar mellan värd och container)</li>
+<li><strong>Miljövariabler och kommandon</strong> (vad som körs när containern startar)</li>
+</ul>
+<p>Med <code>docker-compose up</code> behöver du bara ett kommando för att starta hela utvecklingsmiljön — istället för att manuellt bygga och köra <code>docker run</code> med många flaggor.</p>
+<p><code>docker-compose.yml</code></p>
+<pre><code class="language-yaml">version: "3.9"
+
+services:
+  jekyll-theme:
+    build: .
+    container_name: jekyll-theme
+    ports:
+      - "4000:4000"
+    volumes:
+      - .:/site
+      - bundle_cache:/usr/local/bundle
+    command: bash -c "bundle install &amp;&amp; bundle exec jekyll serve --host 0.0.0.0 --incremental --force_polling"
+
+volumes:
+  bundle_cache:
 </code></pre>
-<p><code>bundle install</code> laddar ner alla gems. <code>bundle exec</code> säkerställer att rätt versioner används.</p>
-<p><strong>Minimal Gemfile:</strong></p>
-<pre><code class="language-ruby">source "https://rubygems.org"
-gem "jekyll"
+<p>Med <code>docker-compose up</code> startar Jekyll automatiskt och är tillgänglig på <code>http://localhost:4000</code>. När en sida förändras lokalt kommer Jekyll att bygga om sidan och visa innehållet i en webbläsare.</p>
+<p>Om sidan inte uppdateras med kommandot <code>docker-compose up</code> kan man säkerställa att bygga om sidan med följande kommandon:</p>
+<pre><code class="language-bash">docker compose down -v
+docker compose build --no-cache
+docker compose up
 </code></pre>
-<p>Det räcker för grundläggande Jekyll-funktionalitet.</p>
+<h3 id="versionshantera-jekyll-i-github"><a class="header" href="#versionshantera-jekyll-i-github">Versionshantera Jekyll i GitHub</a></h3>
+<p>När man versionshanterar ett Jekyll projekt i GitHub kan man utelämna vissa mappar och filer via <code>.gitignore</code>. Skapa en fil med namnet <code>.gitignore</code> och ange filens innehåll:</p>
+<p><code>.gitignore</code></p>
+<pre><code class="language-gitignore"># Dependencies
+Gemfile.lock
+
+# Build output
+_site/
+.jekyll-cache/
+.jekyll-metadata
+
+# Local development
+.bundle/
+vendor/
+
+</code></pre>
 <hr />
 <h2 id="7-deployment-med-github-pages"><a class="header" href="#7-deployment-med-github-pages">7. Deployment med GitHub Pages</a></h2>
 <h3 id="steg-för-steg-guide-publicera-jekyll-från-docker-till-github-pages"><a class="header" href="#steg-för-steg-guide-publicera-jekyll-från-docker-till-github-pages">Steg-för-steg guide: Publicera Jekyll från Docker till GitHub Pages</a></h3>
