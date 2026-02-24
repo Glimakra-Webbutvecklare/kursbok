@@ -1,0 +1,324 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Hur wordpress är uppbyggt - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="hur-wordpress-är-uppbyggt"><a class="header" href="#hur-wordpress-är-uppbyggt">Hur wordpress är uppbyggt</a></h1>
+<p>För att arbeta effektivt i WordPress behöver du förstå hur systemet är uppdelat. När du vet vad som hör till kärnan (core), temat (theme), tilläggen (plugins) och databasen blir det enklare att felsöka, uppdatera och bygga vidare på en webbplats.</p>
+<h2 id="förkunskaper"><a class="header" href="#förkunskaper">Förkunskaper</a></h2>
+<p>Innan du börjar bör du ha läst:</p>
+<ul>
+<li><a href="./wordpress.html">WordPress</a></li>
+</ul>
+<h2 id="Översikt-av-arkitekturen"><a class="header" href="#Översikt-av-arkitekturen">Översikt av arkitekturen</a></h2>
+<p>WordPress kan ses som fyra huvuddelar som samverkar:</p>
+<ol>
+<li>Kärnan (core)</li>
+<li>Temat (theme)</li>
+<li>Tillägg (plugins)</li>
+<li>Databasen (database)</li>
+</ol>
+<pre class="mermaid">flowchart TD
+	A[Besökare] --&gt; B[WordPress Core]
+	B --&gt; C[Tema]
+	B --&gt; D[Plugins]
+	B --&gt; E[Databas]
+	C --&gt; F[HTML CSS JavaScript]
+	D --&gt; F
+	E --&gt; B
+</pre>
+<h2 id="1-kärnan-core"><a class="header" href="#1-kärnan-core">1. Kärnan (core)</a></h2>
+<p>Kärnan är själva WordPress-systemet. Den innehåller grundfunktioner för:</p>
+<ul>
+<li>Inloggning och användare</li>
+<li>Publicering av inlägg och sidor</li>
+<li>Mediebibliotek</li>
+<li>Adminpanel (dashboard)</li>
+<li>API:er (gränssnitt) för teman och plugins</li>
+</ul>
+<p>Du ska normalt <strong>inte</strong> ändra filer i kärnan direkt. Vid uppdateringar skrivs sådana ändringar över.</p>
+<h2 id="2-temat-theme"><a class="header" href="#2-temat-theme">2. Temat (theme)</a></h2>
+<p>Temat styr hur innehållet visas för besökaren:</p>
+<ul>
+<li>Layout</li>
+<li>Färger och typografi</li>
+<li>Sidmallar (templates)</li>
+<li>Menyer och widget-ytor</li>
+</ul>
+<p>Temat hämtar innehåll från WordPress och presenterar det i HTML, CSS och JavaScript.</p>
+<h3 id="vanliga-temafiler"><a class="header" href="#vanliga-temafiler">Vanliga temafiler</a></h3>
+<ul>
+<li><code>style.css</code> – metadata och grundstilar</li>
+<li><code>functions.php</code> – temats funktioner och hooks</li>
+<li><code>index.php</code> – grundmall</li>
+<li><code>single.php</code> – mall för enskilda inlägg</li>
+<li><code>page.php</code> – mall för sidor</li>
+</ul>
+<h2 id="3-tillägg-plugins"><a class="header" href="#3-tillägg-plugins">3. Tillägg (plugins)</a></h2>
+<p>Plugins lägger till funktionalitet utan att du behöver bygga allt själv, till exempel:</p>
+<ul>
+<li>Kontaktformulär</li>
+<li>SEO-stöd</li>
+<li>Säkerhetsfunktioner</li>
+<li>Caching (mellanlagring)</li>
+</ul>
+<p>Tekniskt kopplar plugins in sig via hooks (krokar):</p>
+<ul>
+<li>actions (händelser)</li>
+<li>filters (filter)</li>
+</ul>
+<p>Det gör att funktioner kan utökas utan att ändra kärnans kod.</p>
+<h2 id="4-databasen-database"><a class="header" href="#4-databasen-database">4. Databasen (database)</a></h2>
+<p>WordPress sparar innehåll och inställningar i en databas, oftast MySQL eller MariaDB.</p>
+<p>Exempel på data som lagras:</p>
+<ul>
+<li>Inlägg och sidor</li>
+<li>Användare</li>
+<li>Kommentarer</li>
+<li>Inställningar</li>
+<li>Metadata</li>
+</ul>
+<p>När en besökare öppnar en sida hämtar WordPress data från databasen och skickar den till temat för rendering (visning).</p>
+<h2 id="filstruktur-i-ett-wordpress-projekt"><a class="header" href="#filstruktur-i-ett-wordpress-projekt">Filstruktur i ett WordPress-projekt</a></h2>
+<p>I en standardinstallation ser du ofta mappar som:</p>
+<ul>
+<li><code>wp-admin/</code> – admingränssnitt</li>
+<li><code>wp-includes/</code> – interna WordPress-bibliotek</li>
+<li><code>wp-content/</code> – teman, plugins och uppladdade filer</li>
+</ul>
+<p>Som utvecklare arbetar du oftast i:</p>
+<ul>
+<li><code>wp-content/themes/</code></li>
+<li><code>wp-content/plugins/</code></li>
+</ul>
+<h2 id="säkerhet-och-underhåll"><a class="header" href="#säkerhet-och-underhåll">Säkerhet och underhåll</a></h2>
+<p>För en stabil installation bör du:</p>
+<ol>
+<li>Uppdatera kärna, tema och plugins regelbundet.</li>
+<li>Undvika att redigera kärnans filer.</li>
+<li>Ta backuper av både filer och databas.</li>
+<li>Begränsa antalet plugins till sådana som verkligen behövs.</li>
+<li>Ta bort inaktiva teman och plugins som inte används.</li>
+</ol>
+<h2 id="praktiskt-exempel-var-ska-kod-ligga"><a class="header" href="#praktiskt-exempel-var-ska-kod-ligga">Praktiskt exempel: var ska kod ligga?</a></h2>
+<p>En vanlig fråga är: ska kod ligga i temat eller plugin?</p>
+<ul>
+<li>Lägg kod i <strong>tema</strong> om den gäller design/presentation.</li>
+<li>Lägg kod i <strong>plugin</strong> om den gäller funktionalitet som ska finnas kvar även om temat byts.</li>
+</ul>
+<p>Exempel:</p>
+<ul>
+<li>Egen sidlayout → tema</li>
+<li>Eget post type (innehållstyp) för "Kurser" → plugin</li>
+</ul>
+<h2 id="sammanfattning"><a class="header" href="#sammanfattning">Sammanfattning</a></h2>
+<p>WordPress är uppbyggt i lager där kärnan hanterar grunden, databasen lagrar innehåll, temat visar innehållet och plugins utökar funktionerna. När du håller isär de delarna blir projektet enklare att utveckla, underhålla och säkra.</p>
+<h2 id="reflektionsfrågor"><a class="header" href="#reflektionsfrågor">Reflektionsfrågor</a></h2>
+<ol>
+<li>Varför är det riskabelt att ändra WordPress kärnfiler direkt?</li>
+<li>Ge ett exempel på funktionalitet som bör ligga i ett plugin istället för i temat.</li>
+<li>Vilka mappar i WordPress behöver du kunna navigera i som utvecklare?</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_6/wordpress.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_6/wordpress-local.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_6/wordpress.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_6/wordpress-local.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

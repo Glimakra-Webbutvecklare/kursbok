@@ -9769,15 +9769,166 @@ volumes:
 <li>SSL-certifikat</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="introduktion-till-cms"><a class="header" href="#introduktion-till-cms">Introduktion till CMS</a></h1>
+<p>När en webbplats växer blir det snabbt svårt att hantera allt innehåll direkt i kodfiler. Ett CMS (content management system, innehållshanteringssystem) löser det genom att separera innehåll från presentation och ge redaktörer ett gränssnitt för att arbeta utan att ändra källkod.</p>
+<h2 id="förkunskaper"><a class="header" href="#förkunskaper">Förkunskaper</a></h2>
+<p>Innan du börjar bör du ha grundläggande förståelse för:</p>
 <ul>
-<li>Vad är ett CMS?</li>
-<li>Olika CMS-alternativ</li>
-<li>Headless CMS</li>
-<li>CMS-arkitektur</li>
+<li>HTML och CSS</li>
+<li>Hur en webbplats publiceras och hostas</li>
+<li>Skillnaden mellan frontend och backend</li>
 </ul>
+<h2 id="vad-är-ett-cms"><a class="header" href="#vad-är-ett-cms">Vad är ett CMS?</a></h2>
+<p>Ett CMS är ett system för att skapa, redigera, organisera och publicera innehåll.</p>
+<p>Vanliga funktioner i ett CMS:</p>
+<ul>
+<li>Inloggning och användarroller</li>
+<li>Editor för sidor och inlägg</li>
+<li>Mediabibliotek för bilder och filer</li>
+<li>Publiceringsflöde (utkast, granskning, publicerat)</li>
+<li>Hantering av menyer och navigering</li>
+</ul>
+<h3 id="varför-används-cms"><a class="header" href="#varför-används-cms">Varför används CMS?</a></h3>
+<p>Ett CMS passar bra när flera personer behöver arbeta med innehåll och när webbplatsen uppdateras ofta.</p>
+<p>Exempel:</p>
+<ul>
+<li>Företagssidor</li>
+<li>Bloggar och nyhetssidor</li>
+<li>Skol- och organisationswebbplatser</li>
+</ul>
+<h2 id="olika-cms-alternativ"><a class="header" href="#olika-cms-alternativ">Olika CMS-alternativ</a></h2>
+<p>Det finns många CMS, men de kan grovt delas in i två grupper.</p>
+<h3 id="traditionella-cms"><a class="header" href="#traditionella-cms">Traditionella CMS</a></h3>
+<p>Exempel: WordPress, Joomla, Drupal.</p>
+<ul>
+<li>Innehåll, adminpanel och rendering ligger i samma system.</li>
+<li>Snabbt att komma igång med teman och tillägg.</li>
+<li>Bra när du vill bygga en komplett webbplats med liten initial kodinsats.</li>
+</ul>
+<h3 id="headless-cms"><a class="header" href="#headless-cms">Headless CMS</a></h3>
+<p>Exempel: Strapi, Contentful, Sanity.</p>
+<ul>
+<li>CMS:et hanterar innehåll och API.</li>
+<li>Frontend byggs separat, till exempel i React eller Next.js.</li>
+<li>Ger större flexibilitet i frontend men kräver mer utvecklingsarbete.</li>
+</ul>
+<h3 id="moderna-webbplatsbyggare"><a class="header" href="#moderna-webbplatsbyggare">Moderna webbplatsbyggare</a></h3>
+<p>Exempel: Wix, Webflow, Squarespace.</p>
+<p>De här plattformarna är ofta <strong>hostade helhetslösningar</strong> där CMS, designverktyg och hosting ingår i samma tjänst.</p>
+<ul>
+<li>Snabb uppstart med färdiga mallar och visuella verktyg.</li>
+<li>Mindre tekniskt ansvar för drift, uppdateringar och servermiljö.</li>
+<li>Bra för mindre team som vill få ut en sajt snabbt.</li>
+</ul>
+<p>Begränsningar att känna till:</p>
+<ul>
+<li>Mindre frihet i backend och avancerad anpassning.</li>
+<li>Risk för leverantörslåsning (vendor lock-in, beroende av en plattform).</li>
+<li>Svårare migrering om du senare vill byta plattform.</li>
+</ul>
+<h2 id="wix-webflow-och-squarespace-i-praktiken"><a class="header" href="#wix-webflow-och-squarespace-i-praktiken">Wix, Webflow och Squarespace i praktiken</a></h2>
+<h3 id="wix"><a class="header" href="#wix">Wix</a></h3>
+<ul>
+<li>Passar för små företag, portföljer och enklare webbplatser.</li>
+<li>Väldigt snabb start med drag and drop.</li>
+<li>Bra när tekniknivån i teamet är låg och time to market (tid till lansering) är viktig.</li>
+</ul>
+<h3 id="webflow"><a class="header" href="#webflow">Webflow</a></h3>
+<ul>
+<li>Passar team som vill ha mer kontroll över design och responsiv layout.</li>
+<li>Starkare design- och interactions-stöd (interaktioner) än många andra builders.</li>
+<li>Ofta ett bra mellansteg mellan no-code (utan kod) och klassisk frontend-utveckling.</li>
+</ul>
+<h3 id="squarespace"><a class="header" href="#squarespace">Squarespace</a></h3>
+<ul>
+<li>Passar innehållsdrivna sajter med fokus på ren design, t.ex. portfolio, blogg och enklare företagssidor.</li>
+<li>Enkel redigering och bra standardmallar.</li>
+<li>Mindre teknisk flexibilitet än WordPress och headless-lösningar.</li>
+</ul>
+<h3 id="när-ska-man-välja-dessa-plattformar"><a class="header" href="#när-ska-man-välja-dessa-plattformar">När ska man välja dessa plattformar?</a></h3>
+<p>Välj Wix, Webflow eller Squarespace när du behöver:</p>
+<ul>
+<li>Snabb leverans</li>
+<li>Låg teknisk komplexitet</li>
+<li>Begränsat underhållsansvar</li>
+</ul>
+<p>Välj oftare WordPress eller headless när du behöver:</p>
+<ul>
+<li>Mer avancerad funktionalitet</li>
+<li>Full kontroll över kod och infrastruktur</li>
+<li>Hög anpassningsbarhet över tid</li>
+</ul>
+<h2 id="headless-cms-1"><a class="header" href="#headless-cms-1">Headless CMS</a></h2>
+<p>I ett headless-upplägg levererar CMS:et data via API (application programming interface, programmeringsgränssnitt), ofta som JSON.</p>
+<pre class="mermaid">flowchart LR
+	A[Redaktör i CMS] --&gt; B[CMS databas]
+	B --&gt; C[API]
+	C --&gt; D[Frontend app]
+	D --&gt; E[Besökare]
+</pre>
+<h3 id="enkel-jämförelse-traditionellt-vs-headless"><a class="header" href="#enkel-jämförelse-traditionellt-vs-headless">Enkel jämförelse: traditionellt vs headless</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Egenskap</th><th>Traditionellt CMS</th><th>Headless CMS</th></tr></thead><tbody>
+<tr><td>Rendering av HTML</td><td>I CMS:et</td><td>I separat frontend</td></tr>
+<tr><td>Uppstart</td><td>Snabb</td><td>Mer teknisk setup</td></tr>
+<tr><td>Frontend-frihet</td><td>Lägre</td><td>Hög</td></tr>
+<tr><td>Passar bäst för</td><td>Klassiska webbplatser</td><td>Appar och flera kanaler</td></tr>
+</tbody></table>
+</div>
+<h2 id="cms-arkitektur"><a class="header" href="#cms-arkitektur">CMS-arkitektur</a></h2>
+<p>En vanlig CMS-arkitektur innehåller fyra delar:</p>
+<ol>
+<li><strong>Adminpanel</strong> – där innehåll skapas.</li>
+<li><strong>Databas</strong> – där innehåll och inställningar lagras.</li>
+<li><strong>Affärslogik</strong> – regler för publicering, roller och datahantering.</li>
+<li><strong>Presentation</strong> – hur innehållet visas för besökaren.</li>
+</ol>
+<pre class="mermaid">flowchart TD
+	A[Adminpanel] --&gt; B[Databas]
+	B --&gt; C[Affärslogik]
+	C --&gt; D[Presentation]
+	D --&gt; E[Besökare]
+</pre>
+<h2 id="praktiskt-exempel-hämta-innehåll-från-ett-headless-api"><a class="header" href="#praktiskt-exempel-hämta-innehåll-från-ett-headless-api">Praktiskt exempel: hämta innehåll från ett headless API</a></h2>
+<p>Exemplet visar hur en frontend kan hämta innehåll från ett CMS-API.</p>
+<pre><code class="language-javascript">async function loadArticles() {
+  const response = await fetch('https://example-cms.com/api/articles');
+  const data = await response.json();
+
+  data.forEach((article) =&gt; {
+    console.log(article.title);
+  });
+}
+
+loadArticles();
+</code></pre>
+<p>Poängen är att frontend och CMS är separerade, men kan kopplas ihop via API.</p>
+<h2 id="säkerhet-i-cms"><a class="header" href="#säkerhet-i-cms">Säkerhet i CMS</a></h2>
+<p>Oavsett CMS-val behöver du tänka på säkerhet:</p>
+<ul>
+<li>Uppdatera CMS, teman och tillägg regelbundet.</li>
+<li>Använd starka lösenord och tvåfaktorsautentisering.</li>
+<li>Ge minsta möjliga behörighet till varje användare.</li>
+<li>Ta regelbundna backuper av databas och filer.</li>
+<li>Skydda formulär och inmatning mot XSS och CSRF.</li>
+</ul>
+<h2 id="vanliga-misstag"><a class="header" href="#vanliga-misstag">Vanliga misstag</a></h2>
+<ol>
+<li>Välja CMS utan att först definiera projektets behov.</li>
+<li>Installera för många tillägg med överlappande funktioner.</li>
+<li>Sakna tydlig innehållsstruktur från början.</li>
+<li>Glömma plan för underhåll och uppdateringar.</li>
+</ol>
+<h2 id="sammanfattning-25"><a class="header" href="#sammanfattning-25">Sammanfattning</a></h2>
+<p>CMS gör innehållsarbete snabbare och mer skalbart i team. Traditionella CMS är ofta enklare att starta med, medan headless CMS ger större frihet i frontend. Plattformar som Wix, Webflow och Squarespace ger snabb leverans med mindre driftansvar, men med lägre teknisk frihet. Rätt val beror på projektets krav, teamets kompetens och hur innehållet ska publiceras.</p>
+<h2 id="reflektionsfrågor"><a class="header" href="#reflektionsfrågor">Reflektionsfrågor</a></h2>
+<ol>
+<li>I vilket typ av projekt skulle du välja traditionellt CMS framför headless?</li>
+<li>Vilka roller behöver du i ett CMS-team för en skolwebbplats?</li>
+<li>Vilka säkerhetsrutiner skulle du införa från dag ett?</li>
+<li>När skulle du välja Webflow eller Squarespace i stället för WordPress?</li>
+</ol>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="wordpress"><a class="header" href="#wordpress">WordPress</a></h1>
 <p>WordPress är ett innehållshanteringssystem (CMS) som används för att bygga och administrera webbplatser utan att skriva all kod från grunden. Det är världens mest använda CMS och fungerar för allt från bloggar till företagswebbar och enklare e-handel.</p>
-<h2 id="förkunskaper"><a class="header" href="#förkunskaper">Förkunskaper</a></h2>
+<h2 id="förkunskaper-1"><a class="header" href="#förkunskaper-1">Förkunskaper</a></h2>
 <p>Innan du går vidare är det bra om du känner till:</p>
 <ul>
 <li>Grundläggande HTML och CSS</li>
@@ -9865,15 +10016,137 @@ add_action( 'after_setup_theme', 'school_theme_setup' );
 <h2 id="nästa-lektioner"><a class="header" href="#nästa-lektioner">Nästa lektioner</a></h2>
 <p>Fortsätt gärna i den här ordningen:</p>
 <ul>
+<li><a href="kapitel_6/./wordpress-uppbyggt.html">Hur wordpress är uppbyggt</a></li>
 <li><a href="kapitel_6/./wordpress-local.html">Installation med Local by Flywheel</a></li>
+<li><a href="kapitel_6/./wordpress-admin.html">WordPress adminpanel</a></li>
+<li><a href="kapitel_6/./wordpress-teman.html">WordPress teman</a></li>
 <li><a href="kapitel_6/./wordpress-theme.html">Skapa eget tema med Underscores</a></li>
+<li><a href="kapitel_6/./wordpress-plugins.html">WordPress plugins</a></li>
+<li><a href="kapitel_6/./wordpress-page-builders.html">WordPress page builders</a></li>
+<li><a href="kapitel_6/./wordpress-posts-vs-pages.html">Skillnaden mellan Posts och Pages</a></li>
 </ul>
 <p>Efter installation kan du börja med att skapa sidor, välja tema och bygga upp en enkel webbplatsstruktur.</p>
-<h2 id="reflektionsfrågor"><a class="header" href="#reflektionsfrågor">Reflektionsfrågor</a></h2>
+<h2 id="reflektionsfrågor-1"><a class="header" href="#reflektionsfrågor-1">Reflektionsfrågor</a></h2>
 <ol>
 <li>Vilka typer av projekt tycker du att WordPress passar bäst för, och varför?</li>
 <li>Vilka risker finns med att installera många plugins, och hur kan du minska de riskerna?</li>
 <li>Om du skulle bygga en webbplats för en mindre organisation, vilka grundinställningar skulle du prioritera först?</li>
+</ol>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="hur-wordpress-är-uppbyggt"><a class="header" href="#hur-wordpress-är-uppbyggt">Hur wordpress är uppbyggt</a></h1>
+<p>För att arbeta effektivt i WordPress behöver du förstå hur systemet är uppdelat. När du vet vad som hör till kärnan (core), temat (theme), tilläggen (plugins) och databasen blir det enklare att felsöka, uppdatera och bygga vidare på en webbplats.</p>
+<h2 id="förkunskaper-2"><a class="header" href="#förkunskaper-2">Förkunskaper</a></h2>
+<p>Innan du börjar bör du ha läst:</p>
+<ul>
+<li><a href="kapitel_6/./wordpress.html">WordPress</a></li>
+</ul>
+<h2 id="Översikt-av-arkitekturen"><a class="header" href="#Översikt-av-arkitekturen">Översikt av arkitekturen</a></h2>
+<p>WordPress kan ses som fyra huvuddelar som samverkar:</p>
+<ol>
+<li>Kärnan (core)</li>
+<li>Temat (theme)</li>
+<li>Tillägg (plugins)</li>
+<li>Databasen (database)</li>
+</ol>
+<pre class="mermaid">flowchart TD
+	A[Besökare] --&gt; B[WordPress Core]
+	B --&gt; C[Tema]
+	B --&gt; D[Plugins]
+	B --&gt; E[Databas]
+	C --&gt; F[HTML CSS JavaScript]
+	D --&gt; F
+	E --&gt; B
+</pre>
+<h2 id="1-kärnan-core"><a class="header" href="#1-kärnan-core">1. Kärnan (core)</a></h2>
+<p>Kärnan är själva WordPress-systemet. Den innehåller grundfunktioner för:</p>
+<ul>
+<li>Inloggning och användare</li>
+<li>Publicering av inlägg och sidor</li>
+<li>Mediebibliotek</li>
+<li>Adminpanel (dashboard)</li>
+<li>API:er (gränssnitt) för teman och plugins</li>
+</ul>
+<p>Du ska normalt <strong>inte</strong> ändra filer i kärnan direkt. Vid uppdateringar skrivs sådana ändringar över.</p>
+<h2 id="2-temat-theme"><a class="header" href="#2-temat-theme">2. Temat (theme)</a></h2>
+<p>Temat styr hur innehållet visas för besökaren:</p>
+<ul>
+<li>Layout</li>
+<li>Färger och typografi</li>
+<li>Sidmallar (templates)</li>
+<li>Menyer och widget-ytor</li>
+</ul>
+<p>Temat hämtar innehåll från WordPress och presenterar det i HTML, CSS och JavaScript.</p>
+<h3 id="vanliga-temafiler"><a class="header" href="#vanliga-temafiler">Vanliga temafiler</a></h3>
+<ul>
+<li><code>style.css</code> – metadata och grundstilar</li>
+<li><code>functions.php</code> – temats funktioner och hooks</li>
+<li><code>index.php</code> – grundmall</li>
+<li><code>single.php</code> – mall för enskilda inlägg</li>
+<li><code>page.php</code> – mall för sidor</li>
+</ul>
+<h2 id="3-tillägg-plugins"><a class="header" href="#3-tillägg-plugins">3. Tillägg (plugins)</a></h2>
+<p>Plugins lägger till funktionalitet utan att du behöver bygga allt själv, till exempel:</p>
+<ul>
+<li>Kontaktformulär</li>
+<li>SEO-stöd</li>
+<li>Säkerhetsfunktioner</li>
+<li>Caching (mellanlagring)</li>
+</ul>
+<p>Tekniskt kopplar plugins in sig via hooks (krokar):</p>
+<ul>
+<li>actions (händelser)</li>
+<li>filters (filter)</li>
+</ul>
+<p>Det gör att funktioner kan utökas utan att ändra kärnans kod.</p>
+<h2 id="4-databasen-database"><a class="header" href="#4-databasen-database">4. Databasen (database)</a></h2>
+<p>WordPress sparar innehåll och inställningar i en databas, oftast MySQL eller MariaDB.</p>
+<p>Exempel på data som lagras:</p>
+<ul>
+<li>Inlägg och sidor</li>
+<li>Användare</li>
+<li>Kommentarer</li>
+<li>Inställningar</li>
+<li>Metadata</li>
+</ul>
+<p>När en besökare öppnar en sida hämtar WordPress data från databasen och skickar den till temat för rendering (visning).</p>
+<h2 id="filstruktur-i-ett-wordpress-projekt"><a class="header" href="#filstruktur-i-ett-wordpress-projekt">Filstruktur i ett WordPress-projekt</a></h2>
+<p>I en standardinstallation ser du ofta mappar som:</p>
+<ul>
+<li><code>wp-admin/</code> – admingränssnitt</li>
+<li><code>wp-includes/</code> – interna WordPress-bibliotek</li>
+<li><code>wp-content/</code> – teman, plugins och uppladdade filer</li>
+</ul>
+<p>Som utvecklare arbetar du oftast i:</p>
+<ul>
+<li><code>wp-content/themes/</code></li>
+<li><code>wp-content/plugins/</code></li>
+</ul>
+<h2 id="säkerhet-och-underhåll"><a class="header" href="#säkerhet-och-underhåll">Säkerhet och underhåll</a></h2>
+<p>För en stabil installation bör du:</p>
+<ol>
+<li>Uppdatera kärna, tema och plugins regelbundet.</li>
+<li>Undvika att redigera kärnans filer.</li>
+<li>Ta backuper av både filer och databas.</li>
+<li>Begränsa antalet plugins till sådana som verkligen behövs.</li>
+<li>Ta bort inaktiva teman och plugins som inte används.</li>
+</ol>
+<h2 id="praktiskt-exempel-var-ska-kod-ligga"><a class="header" href="#praktiskt-exempel-var-ska-kod-ligga">Praktiskt exempel: var ska kod ligga?</a></h2>
+<p>En vanlig fråga är: ska kod ligga i temat eller plugin?</p>
+<ul>
+<li>Lägg kod i <strong>tema</strong> om den gäller design/presentation.</li>
+<li>Lägg kod i <strong>plugin</strong> om den gäller funktionalitet som ska finnas kvar även om temat byts.</li>
+</ul>
+<p>Exempel:</p>
+<ul>
+<li>Egen sidlayout → tema</li>
+<li>Eget post type (innehållstyp) för "Kurser" → plugin</li>
+</ul>
+<h2 id="sammanfattning-26"><a class="header" href="#sammanfattning-26">Sammanfattning</a></h2>
+<p>WordPress är uppbyggt i lager där kärnan hanterar grunden, databasen lagrar innehåll, temat visar innehållet och plugins utökar funktionerna. När du håller isär de delarna blir projektet enklare att utveckla, underhålla och säkra.</p>
+<h2 id="reflektionsfrågor-2"><a class="header" href="#reflektionsfrågor-2">Reflektionsfrågor</a></h2>
+<ol>
+<li>Varför är det riskabelt att ändra WordPress kärnfiler direkt?</li>
+<li>Ge ett exempel på funktionalitet som bör ligga i ett plugin istället för i temat.</li>
+<li>Vilka mappar i WordPress behöver du kunna navigera i som utvecklare?</li>
 </ol>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="installera-wordpress-lokalt-med-local-by-flywheel"><a class="header" href="#installera-wordpress-lokalt-med-local-by-flywheel">Installera WordPress lokalt med Local by Flywheel</a></h1>
 <p>I den här guiden installerar du en lokal WordPress-sida med <strong>Local</strong> (tidigare Local by Flywheel). En lokal installation är perfekt för utveckling, test och lärande innan du publicerar sajten online.</p>
@@ -9970,7 +10243,7 @@ add_action( 'after_setup_theme', 'school_theme_setup' );
 <li>Använd länken <strong>Glömt lösenord?</strong> på inloggningssidan.</li>
 <li>Du kan också uppdatera användaruppgifter via Local om mejl inte fungerar lokalt.</li>
 </ul>
-<h2 id="sammanfattning-25"><a class="header" href="#sammanfattning-25">Sammanfattning</a></h2>
+<h2 id="sammanfattning-27"><a class="header" href="#sammanfattning-27">Sammanfattning</a></h2>
 <p>Du har nu:</p>
 <ul>
 <li>Installerat Local</li>
@@ -9984,6 +10257,195 @@ add_action( 'after_setup_theme', 'school_theme_setup' );
 <ul>
 <li><a href="kapitel_6/./wordpress-theme.html">Skapa eget tema med Underscores</a></li>
 </ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="wordpress-adminpanel"><a class="header" href="#wordpress-adminpanel">WordPress adminpanel</a></h1>
+<p>Adminpanelen i WordPress är platsen där du skapar, redigerar och publicerar innehåll. När du förstår hur admin-delen fungerar blir det enklare att arbeta strukturerat, undvika misstag och samarbeta med andra i ett projekt.</p>
+<h2 id="förkunskaper-3"><a class="header" href="#förkunskaper-3">Förkunskaper</a></h2>
+<p>Innan du börjar bör du ha läst:</p>
+<ul>
+<li><a href="kapitel_6/./wordpress.html">WordPress</a></li>
+<li><a href="kapitel_6/./wordpress-uppbyggt.html">Hur wordpress är uppbyggt</a></li>
+<li><a href="kapitel_6/./wordpress-local.html">Installation med Local by Flywheel</a></li>
+</ul>
+<h2 id="vad-är-adminpanelen"><a class="header" href="#vad-är-adminpanelen">Vad är adminpanelen?</a></h2>
+<p>Adminpanelen (dashboard, kontrollpanel) är det interna gränssnittet för webbplatsen. Du når den vanligtvis via:</p>
+<ul>
+<li><code>/wp-admin</code></li>
+</ul>
+<p>Här hanterar du bland annat:</p>
+<ul>
+<li>Inlägg och sidor</li>
+<li>Media (bilder, filer)</li>
+<li>Kommentarer</li>
+<li>Menyer och widgets</li>
+<li>Tillägg (plugins)</li>
+<li>Tema-inställningar</li>
+<li>Användare och roller</li>
+</ul>
+<h2 id="Översikt-av-huvudmenyn"><a class="header" href="#Översikt-av-huvudmenyn">Översikt av huvudmenyn</a></h2>
+<p>I vänstermenyn finns de viktigaste delarna:</p>
+<ul>
+<li><strong>Inlägg</strong> – blogg och nyhetsinnehåll</li>
+<li><strong>Sidor</strong> – statiska sidor</li>
+<li><strong>Media</strong> – uppladdade filer</li>
+<li><strong>Kommentarer</strong> – moderering</li>
+<li><strong>Utseende</strong> – tema, menyer, widgetar</li>
+<li><strong>Tillägg</strong> – installera/aktivera plugins</li>
+<li><strong>Användare</strong> – konton och behörigheter</li>
+<li><strong>Inställningar</strong> – grundinställningar för sajten</li>
+</ul>
+<h2 id="typiskt-arbetsflöde-i-adminpanelen"><a class="header" href="#typiskt-arbetsflöde-i-adminpanelen">Typiskt arbetsflöde i adminpanelen</a></h2>
+<p>Ett vanligt arbetsflöde ser ut så här:</p>
+<ol>
+<li>Skapa innehåll i Inlägg eller Sidor.</li>
+<li>Lägg till bilder i Media.</li>
+<li>Kontrollera förhandsvisning.</li>
+<li>Publicera eller schemalägg publicering.</li>
+<li>Uppdatera navigering via menyer.</li>
+</ol>
+<pre class="mermaid">flowchart LR
+	A[Skapa innehåll] --&gt; B[Lägg till media]
+	B --&gt; C[Förhandsgranska]
+	C --&gt; D[Publicera]
+	D --&gt; E[Uppdatera meny]
+</pre>
+<h2 id="viktiga-inställningar-att-kontrollera-tidigt"><a class="header" href="#viktiga-inställningar-att-kontrollera-tidigt">Viktiga inställningar att kontrollera tidigt</a></h2>
+<p>När en ny WordPress-sajt sätts upp bör du börja med:</p>
+<ol>
+<li><strong>Allmänt:</strong> sajtens namn, tidszon och språk.</li>
+<li><strong>Permalänkar:</strong> välj en tydlig URL-struktur.</li>
+<li><strong>Läsning:</strong> vad som visas på startsidan.</li>
+<li><strong>Diskussion:</strong> kommentarsregler och moderering.</li>
+<li><strong>Användare:</strong> rätt roller för rätt personer.</li>
+</ol>
+<h2 id="roller-och-behörighet"><a class="header" href="#roller-och-behörighet">Roller och behörighet</a></h2>
+<p>Några vanliga roller i WordPress:</p>
+<ul>
+<li><strong>Administrator</strong> – full åtkomst</li>
+<li><strong>Editor</strong> – hanterar allt innehåll</li>
+<li><strong>Author</strong> – hanterar egna inlägg</li>
+<li><strong>Contributor</strong> – kan skriva men inte publicera</li>
+<li><strong>Subscriber</strong> – grundläggande konto</li>
+</ul>
+<p>Ge alltid minsta möjliga behörighet för uppgiften. Det minskar risker i drift.</p>
+<h2 id="vanliga-misstag-i-admin-delen"><a class="header" href="#vanliga-misstag-i-admin-delen">Vanliga misstag i admin-delen</a></h2>
+<ol>
+<li>Flera personer arbetar med admin-konto i stället för egna konton.</li>
+<li>Innehåll publiceras utan förhandsgranskning.</li>
+<li>Menyer uppdateras inte efter nya sidor.</li>
+<li>Onödigt många plugins installeras utan tydligt syfte.</li>
+</ol>
+<h2 id="säkerhet-i-adminpanelen"><a class="header" href="#säkerhet-i-adminpanelen">Säkerhet i adminpanelen</a></h2>
+<p>För säkrare administration bör du:</p>
+<ul>
+<li>Använda starka lösenord och gärna 2FA (tvåfaktorsautentisering).</li>
+<li>Undvika att använda admin som användarnamn.</li>
+<li>Begränsa antalet administratörer.</li>
+<li>Uppdatera WordPress, teman och plugins regelbundet.</li>
+<li>Ta backup innan större ändringar.</li>
+</ul>
+<h2 id="sammanfattning-28"><a class="header" href="#sammanfattning-28">Sammanfattning</a></h2>
+<p>Adminpanelen är navet för allt redaktionellt arbete i WordPress. Med tydligt arbetsflöde, rätt behörigheter och goda säkerhetsrutiner blir arbetet både snabbare och säkrare.</p>
+<h2 id="reflektionsfrågor-3"><a class="header" href="#reflektionsfrågor-3">Reflektionsfrågor</a></h2>
+<ol>
+<li>Vilka menyval i adminpanelen kommer du använda mest i ett skolprojekt?</li>
+<li>Vilken roll skulle du ge en person som bara ska skriva utkast?</li>
+<li>Vilka tre säkerhetsåtgärder är viktigast i admin-delen?</li>
+</ol>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="wordpress-teman"><a class="header" href="#wordpress-teman">WordPress teman</a></h1>
+<p>Temat (theme) i WordPress styr hur webbplatsens innehåll visas för besökaren. När du förstår hur teman fungerar blir det enklare att välja rätt tema, anpassa designen och undvika vanliga misstag i utveckling och underhåll.</p>
+<h2 id="förkunskaper-4"><a class="header" href="#förkunskaper-4">Förkunskaper</a></h2>
+<p>Innan du börjar bör du ha läst:</p>
+<ul>
+<li><a href="kapitel_6/./wordpress.html">WordPress</a></li>
+<li><a href="kapitel_6/./wordpress-uppbyggt.html">Hur wordpress är uppbyggt</a></li>
+<li><a href="kapitel_6/./wordpress-local.html">Installation med Local by Flywheel</a></li>
+</ul>
+<h2 id="vad-är-ett-tema"><a class="header" href="#vad-är-ett-tema">Vad är ett tema?</a></h2>
+<p>Ett tema är ett paket med filer som bestämmer:</p>
+<ul>
+<li>Layout (hur sidan är uppbyggd)</li>
+<li>Typografi och färger</li>
+<li>Hur inlägg och sidor presenteras</li>
+<li>Vilka widget-områden och menyer som finns</li>
+</ul>
+<p>Temat påverkar i första hand <strong>presentationen</strong>, inte själva innehållet i databasen.</p>
+<h2 id="hur-tema-innehåll-och-plugin-hänger-ihop"><a class="header" href="#hur-tema-innehåll-och-plugin-hänger-ihop">Hur tema, innehåll och plugin hänger ihop</a></h2>
+<pre class="mermaid">flowchart LR
+	A[Innehåll i databas] --&gt; B[WordPress core]
+	B --&gt; C[Tema visar innehållet]
+	B --&gt; D[Plugins lägger till funktioner]
+	C --&gt; E[Besökaren ser webbplatsen]
+	D --&gt; E
+</pre>
+<h2 id="vanliga-typer-av-teman"><a class="header" href="#vanliga-typer-av-teman">Vanliga typer av teman</a></h2>
+<h3 id="färdiga-teman"><a class="header" href="#färdiga-teman">Färdiga teman</a></h3>
+<p>Bra när du vill komma igång snabbt och använda en färdig design.</p>
+<h3 id="child-theme-barntema"><a class="header" href="#child-theme-barntema">Child theme (barntema)</a></h3>
+<p>Ett child theme är ett undertema till ett befintligt tema. Du kan då göra ändringar utan att förlora dem vid uppdatering av parent theme (föräldratema).</p>
+<h3 id="eget-tema"><a class="header" href="#eget-tema">Eget tema</a></h3>
+<p>Passar när du behöver full kontroll över design, struktur och prestanda.</p>
+<h2 id="välja-tema-en-enkel-checklista"><a class="header" href="#välja-tema-en-enkel-checklista">Välja tema: en enkel checklista</a></h2>
+<p>När du väljer tema, kontrollera att det:</p>
+<ol>
+<li>Är aktivt underhållet och uppdateras regelbundet.</li>
+<li>Är responsivt (fungerar i mobil, surfplatta och desktop).</li>
+<li>Har bra tillgänglighet (accessibility, tillgänglighet).</li>
+<li>Har tydlig dokumentation.</li>
+<li>Inte kräver onödigt många externa tillägg.</li>
+</ol>
+<h2 id="anpassa-tema-i-praktiken"><a class="header" href="#anpassa-tema-i-praktiken">Anpassa tema i praktiken</a></h2>
+<p>Du kan anpassa ett tema på flera nivåer:</p>
+<ul>
+<li><strong>Customizer (anpassaren):</strong> färger, logotyp, vissa layoutval.</li>
+<li><strong>Block editor (blockredigerare):</strong> innehållsblock per sida/inlägg.</li>
+<li><strong>Egen CSS:</strong> små visuella ändringar.</li>
+<li><strong>Template-filer:</strong> större strukturändringar i temat.</li>
+</ul>
+<p>Börja alltid med små ändringar och testa i lokal miljö innan publicering.</p>
+<h2 id="kodexempel-registrera-meny-i-tema"><a class="header" href="#kodexempel-registrera-meny-i-tema">Kodexempel: registrera meny i tema</a></h2>
+<p>Det här exemplet visar ett vanligt steg i ett tema: att registrera en menyplats i <code>functions.php</code>.</p>
+<pre><code class="language-php">function school_theme_setup() {
+	register_nav_menus(
+		array(
+			'primary' =&gt; __( 'Primary Menu', 'school-theme' ),
+		)
+	);
+}
+add_action( 'after_setup_theme', 'school_theme_setup' );
+</code></pre>
+<p>När detta är gjort kan du koppla meny i adminpanelen via <strong>Utseende &gt; Menyer</strong>.</p>
+<h2 id="säkerhet-i-teman"><a class="header" href="#säkerhet-i-teman">Säkerhet i teman</a></h2>
+<p>När du anpassar tema med PHP är det viktigt att skriva ut data säkert.</p>
+<h3 id="exempel-säker-output"><a class="header" href="#exempel-säker-output">Exempel: säker output</a></h3>
+<pre><code class="language-php">$page_title = get_the_title();
+echo '&lt;h1&gt;' . esc_html( $page_title ) . '&lt;/h1&gt;';
+</code></pre>
+<p>Använd även:</p>
+<ul>
+<li><code>esc_url()</code> för URL:er</li>
+<li><code>esc_attr()</code> för attribut i HTML</li>
+<li><code>sanitize_text_field()</code> när du tar emot textinmatning</li>
+</ul>
+<p>Det minskar risken för XSS (cross-site scripting).</p>
+<h2 id="vanliga-misstag-1"><a class="header" href="#vanliga-misstag-1">Vanliga misstag</a></h2>
+<ol>
+<li>Ändra direkt i ett externt tema utan child theme.</li>
+<li>Välja ett tema med för mycket inbyggd funktionalitet som borde ligga i plugin.</li>
+<li>Göra stora ändringar direkt i produktion istället för lokalt.</li>
+<li>Glömma att testa tema med olika innehållslängder och skärmstorlekar.</li>
+</ol>
+<h2 id="sammanfattning-29"><a class="header" href="#sammanfattning-29">Sammanfattning</a></h2>
+<p>WordPress-teman styr presentationen av innehållet. Med rätt tema och rätt arbetsflöde (lokal testning, tydlig struktur och säker output) blir webbplatsen lättare att underhålla och vidareutveckla.</p>
+<h2 id="nästa-lektion-1"><a class="header" href="#nästa-lektion-1">Nästa lektion</a></h2>
+<ul>
+<li><a href="kapitel_6/./wordpress-theme.html">Skapa eget WordPress-tema med _s (Underscores)</a></li>
+</ul>
+<h2 id="reflektionsfrågor-4"><a class="header" href="#reflektionsfrågor-4">Reflektionsfrågor</a></h2>
+<ol>
+<li>När är ett färdigt tema ett bättre val än att bygga eget tema?</li>
+<li>Varför är child theme viktigt när du anpassar ett externt tema?</li>
+<li>Vilka tre kriterier är viktigast för dig när du väljer tema till ett skarpt projekt?</li>
+</ol>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="skapa-eget-wordpress-tema-med-_s-underscores"><a class="header" href="#skapa-eget-wordpress-tema-med-_s-underscores">Skapa eget WordPress-tema med _s (Underscores)</a></h1>
 <p>Att bygga ett eget tema från grunden ger dig full kontroll över layout, komponenter och prestanda. Ett bra sätt att börja är med <strong>Underscores</strong> (<code>_s</code>) som är ett minimalt starttema (starter theme) för WordPress.</p>
 <h2 id="vad-är-underscores-_s"><a class="header" href="#vad-är-underscores-_s">Vad är Underscores (_s)?</a></h2>
@@ -9994,7 +10456,7 @@ add_action( 'after_setup_theme', 'school_theme_setup' );
 <li>Bra startpunkt för att bygga helt egen design</li>
 </ul>
 <p>Det är inte ett färdigt design-tema, utan ett utvecklarvänligt skelett.</p>
-<h2 id="förkunskaper-1"><a class="header" href="#förkunskaper-1">Förkunskaper</a></h2>
+<h2 id="förkunskaper-5"><a class="header" href="#förkunskaper-5">Förkunskaper</a></h2>
 <p>Innan du börjar bör du ha:</p>
 <ul>
 <li>En lokal WordPress-installation (t.ex. med Local)</li>
@@ -10055,7 +10517,7 @@ add_action( 'wp_enqueue_scripts', 'my_school_theme_scripts' );
 <li>Optimera bilder och minimera tunga frontend-resurser</li>
 <li>Testa responsivt och tillgängligt från start</li>
 </ul>
-<h2 id="säkerhet-i-teman"><a class="header" href="#säkerhet-i-teman">Säkerhet i teman</a></h2>
+<h2 id="säkerhet-i-teman-1"><a class="header" href="#säkerhet-i-teman-1">Säkerhet i teman</a></h2>
 <p>När du bygger eget tema behöver du hantera indata och output säkert.</p>
 <h3 id="exempel-sanitize-rensa-indata-och-escape-säker-output"><a class="header" href="#exempel-sanitize-rensa-indata-och-escape-säker-output">Exempel: sanitize (rensa indata) och escape (säker output)</a></h3>
 <pre><code class="language-php">$title_raw = $_POST['custom_title'] ?? '';
@@ -10076,14 +10538,14 @@ if (
 	return;
 }
 </code></pre>
-<h2 id="vanliga-misstag"><a class="header" href="#vanliga-misstag">Vanliga misstag</a></h2>
+<h2 id="vanliga-misstag-2"><a class="header" href="#vanliga-misstag-2">Vanliga misstag</a></h2>
 <ul>
 <li>Ändra filer direkt i tredjepartsteman utan child theme</li>
 <li>Lägga för mycket kod i en enda templatefil</li>
 <li>Hårdkoda URL:er och texter istället för WordPress-funktioner</li>
 <li>Glömma att testa templates för tomma listor och 404-sidor</li>
 </ul>
-<h2 id="sammanfattning-26"><a class="header" href="#sammanfattning-26">Sammanfattning</a></h2>
+<h2 id="sammanfattning-30"><a class="header" href="#sammanfattning-30">Sammanfattning</a></h2>
 <p>Med <code>_s</code> får du en stabil och enkel grund för att skapa ett helt eget WordPress-tema. Fokus bör vara att bygga små delar i taget, hålla strukturen tydlig och testa ofta i lokal miljö.</p>
 <h2 id="nästa-lektioner-1"><a class="header" href="#nästa-lektioner-1">Nästa lektioner</a></h2>
 <p>Om du vill repetera eller bygga progression:</p>
@@ -10091,11 +10553,306 @@ if (
 <li><a href="kapitel_6/./wordpress.html">WordPress-introduktion</a></li>
 <li><a href="kapitel_6/./wordpress-local.html">Installation med Local by Flywheel</a></li>
 </ul>
-<h2 id="reflektionsfrågor-1"><a class="header" href="#reflektionsfrågor-1">Reflektionsfrågor</a></h2>
+<h2 id="reflektionsfrågor-5"><a class="header" href="#reflektionsfrågor-5">Reflektionsfrågor</a></h2>
 <ol>
 <li>Varför är ett starter theme ofta bättre än att börja från en tom mapp?</li>
 <li>Vilka delar av ett tema vill du göra återanvändbara tidigt i projektet?</li>
 <li>Hur skulle du organisera CSS och templates för att förenkla underhåll?</li>
+</ol>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="wordpress-plugins"><a class="header" href="#wordpress-plugins">WordPress plugins</a></h1>
+<p>Plugins (tillägg) i WordPress är moduler som lägger till funktionalitet utan att du behöver bygga allt från grunden. När du förstår hur plugins fungerar kan du bygga webbplatser snabbare, men också mer säkert och hållbart.</p>
+<h2 id="förkunskaper-6"><a class="header" href="#förkunskaper-6">Förkunskaper</a></h2>
+<p>Innan du börjar bör du ha läst:</p>
+<ul>
+<li><a href="kapitel_6/./wordpress.html">WordPress</a></li>
+<li><a href="kapitel_6/./wordpress-uppbyggt.html">Hur wordpress är uppbyggt</a></li>
+<li><a href="kapitel_6/./wordpress-admin.html">WordPress adminpanel</a></li>
+</ul>
+<h2 id="vad-är-ett-plugin"><a class="header" href="#vad-är-ett-plugin">Vad är ett plugin?</a></h2>
+<p>Ett plugin är kod som kopplas in i WordPress och kan:</p>
+<ul>
+<li>lägga till nya funktioner</li>
+<li>ändra beteende i adminpanelen</li>
+<li>påverka hur innehåll visas</li>
+<li>integrera externa tjänster</li>
+</ul>
+<p>Exempel: formulär, SEO-stöd, backup, säkerhet, bildoptimering.</p>
+<h2 id="hur-plugins-fungerar-tekniskt"><a class="header" href="#hur-plugins-fungerar-tekniskt">Hur plugins fungerar tekniskt</a></h2>
+<p>WordPress erbjuder hooks (krokar) som plugins använder för att ansluta sig till flödet:</p>
+<ul>
+<li><strong>Action (händelse):</strong> kör kod vid ett visst tillfälle</li>
+<li><strong>Filter (filter):</strong> ändrar data innan den visas eller sparas</li>
+</ul>
+<pre class="mermaid">flowchart LR
+	A[WordPress Core] --&gt; B[Hook action/filter]
+	B --&gt; C[Plugin-kod körs]
+	C --&gt; D[Funktion läggs till eller data ändras]
+</pre>
+<h2 id="exempel-enkel-plugin-struktur"><a class="header" href="#exempel-enkel-plugin-struktur">Exempel: enkel plugin-struktur</a></h2>
+<p>Ett minimalt plugin kan bestå av en PHP-fil i mappen <code>wp-content/plugins</code>.</p>
+<pre><code class="language-php">&lt;?php
+/**
+ * Plugin Name: School Site Notice
+ */
+
+function school_site_notice() {
+	echo '&lt;p style="text-align:center;"&gt;Välkommen till kursens testsajt&lt;/p&gt;';
+}
+add_action( 'wp_footer', 'school_site_notice' );
+</code></pre>
+<p>Det här visar principen: pluginet registrerar en funktion och kopplar den till en action.</p>
+<h2 id="nödvändiga-plugin-kategorier-för-de-flesta-projekt"><a class="header" href="#nödvändiga-plugin-kategorier-för-de-flesta-projekt">Nödvändiga plugin-kategorier för de flesta projekt</a></h2>
+<p>I de flesta WordPress-projekt behövs minst dessa kategorier:</p>
+<ol>
+<li>Säkerhet</li>
+<li>Backup</li>
+<li>Cache/prestanda</li>
+<li>SEO</li>
+<li>Formulär</li>
+</ol>
+<h2 id="förslag-på-plugins-att-börja-med"><a class="header" href="#förslag-på-plugins-att-börja-med">Förslag på plugins att börja med</a></h2>
+<p>Nedan är en praktisk baslista för kursprojekt och mindre produktionssajter.</p>
+<h3 id="1-säkerhet"><a class="header" href="#1-säkerhet">1) Säkerhet</a></h3>
+<ul>
+<li><strong>Wordfence Security</strong> eller <strong>Sucuri Security</strong></li>
+<li>Hjälper med brandvägg, skanning och inloggningsskydd</li>
+</ul>
+<h3 id="2-backup"><a class="header" href="#2-backup">2) Backup</a></h3>
+<ul>
+<li><strong>UpdraftPlus</strong></li>
+<li>Skapar backup av filer och databas, och stödjer återställning</li>
+</ul>
+<h3 id="3-cache-och-prestanda"><a class="header" href="#3-cache-och-prestanda">3) Cache och prestanda</a></h3>
+<ul>
+<li><strong>WP Super Cache</strong> eller <strong>LiteSpeed Cache</strong> (om servern stödjer det)</li>
+<li>Minskar laddningstid genom cachning (mellanlagring)</li>
+</ul>
+<h3 id="4-seo"><a class="header" href="#4-seo">4) SEO</a></h3>
+<ul>
+<li><strong>Yoast SEO</strong> eller <strong>Rank Math</strong></li>
+<li>Hjälper med metadata, sitemap och grundläggande SEO-flöde</li>
+</ul>
+<h3 id="5-formulär"><a class="header" href="#5-formulär">5) Formulär</a></h3>
+<ul>
+<li><strong>WPForms Lite</strong> eller <strong>Contact Form 7</strong></li>
+<li>För kontaktformulär och enklare inmatning från användare</li>
+</ul>
+<h3 id="6-bildoptimering-valfritt-men-starkt-rekommenderat"><a class="header" href="#6-bildoptimering-valfritt-men-starkt-rekommenderat">6) Bildoptimering (valfritt men starkt rekommenderat)</a></h3>
+<ul>
+<li><strong>Smush</strong> eller <strong>ShortPixel</strong></li>
+<li>Komprimerar bilder och förbättrar prestanda</li>
+</ul>
+<h2 id="hur-du-väljer-plugin-på-ett-säkert-sätt"><a class="header" href="#hur-du-väljer-plugin-på-ett-säkert-sätt">Hur du väljer plugin på ett säkert sätt</a></h2>
+<p>Innan installation, kontrollera alltid:</p>
+<ul>
+<li>Antal aktiva installationer</li>
+<li>Senaste uppdatering</li>
+<li>Kompatibilitet med aktuell WordPress-version</li>
+<li>Omdömen och supportaktivitet</li>
+</ul>
+<p>Undvik plugins som inte uppdaterats på länge.</p>
+<h2 id="vanliga-misstag-3"><a class="header" href="#vanliga-misstag-3">Vanliga misstag</a></h2>
+<ol>
+<li>Installera många plugins med överlappande funktioner.</li>
+<li>Aktivera plugin utan att förstå påverkan på prestanda.</li>
+<li>Lämna inaktiva plugins installerade i onödan.</li>
+<li>Uppdatera plugin direkt i produktion utan backup.</li>
+</ol>
+<h2 id="säkerhet-i-praktiken"><a class="header" href="#säkerhet-i-praktiken">Säkerhet i praktiken</a></h2>
+<p>För ett tryggare plugin-arbete:</p>
+<ul>
+<li>Uppdatera regelbundet.</li>
+<li>Ta backup innan större uppdatering.</li>
+<li>Använd staging (testmiljö) före produktion.</li>
+<li>Avinstallera plugins du inte använder.</li>
+<li>Begränsa vem som får installera nya plugins.</li>
+</ul>
+<h2 id="sammanfattning-31"><a class="header" href="#sammanfattning-31">Sammanfattning</a></h2>
+<p>Plugins gör WordPress kraftfullt och flexibelt. Med en liten, genomtänkt plugin-bas och bra underhållsrutiner får du en snabbare, säkrare och mer stabil webbplats.</p>
+<h2 id="reflektionsfrågor-6"><a class="header" href="#reflektionsfrågor-6">Reflektionsfrågor</a></h2>
+<ol>
+<li>Vilka plugin-kategorier är viktigast för en skolwebbplats och varför?</li>
+<li>Hur undviker du att plugin-miljön blir svår att underhålla?</li>
+<li>Vilka risker finns med att uppdatera plugins utan testmiljö?</li>
+</ol>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="wordpress-page-builders"><a class="header" href="#wordpress-page-builders">WordPress page builders</a></h1>
+<p>Page builders är verktyg som gör att du kan bygga sidlayout visuellt i WordPress utan att skriva all kod själv. De används ofta för landningssidor, kampanjsidor och projekt där redaktörer snabbt behöver skapa egna layouter.</p>
+<h2 id="förkunskaper-7"><a class="header" href="#förkunskaper-7">Förkunskaper</a></h2>
+<p>Innan du börjar bör du ha läst:</p>
+<ul>
+<li><a href="kapitel_6/./wordpress.html">WordPress</a></li>
+<li><a href="kapitel_6/./wordpress-admin.html">WordPress adminpanel</a></li>
+<li><a href="kapitel_6/./wordpress-teman.html">WordPress teman</a></li>
+</ul>
+<h2 id="vad-är-en-page-builder"><a class="header" href="#vad-är-en-page-builder">Vad är en page builder?</a></h2>
+<p>En page builder är ett tillägg (plugin) eller en redigeringsmiljö där du bygger sida med block, sektioner och komponenter genom drag and drop.</p>
+<p>Vanliga exempel:</p>
+<ul>
+<li>Elementor</li>
+<li>Beaver Builder</li>
+<li>Divi Builder</li>
+<li>Bricks (tema-baserad builder)</li>
+</ul>
+<h2 id="hur-skiljer-det-sig-från-gutenberg"><a class="header" href="#hur-skiljer-det-sig-från-gutenberg">Hur skiljer det sig från Gutenberg?</a></h2>
+<p>WordPress har redan blockredigeraren Gutenberg. En page builder erbjuder ofta:</p>
+<ul>
+<li>Fler designkontroller direkt i redigeraren</li>
+<li>Färdiga mallar (templates)</li>
+<li>Visuell layoutstyrning på detaljnivå</li>
+</ul>
+<p>Gutenberg är ofta enklare och lättare för prestanda, medan page builders kan ge snabbare designproduktion i vissa projekt.</p>
+<h2 id="när-passar-page-builders"><a class="header" href="#när-passar-page-builders">När passar page builders?</a></h2>
+<p>Page builders passar bra när du vill:</p>
+<ul>
+<li>Bygga många unika landningssidor snabbt</li>
+<li>Låta redaktörer arbeta visuellt utan kod</li>
+<li>Använda färdiga komponenter och mallar</li>
+</ul>
+<p>De passar sämre när du behöver:</p>
+<ul>
+<li>Maximal prestanda med minimal frontend-kod</li>
+<li>Mycket strikt designsystem med få avvikelser</li>
+<li>Full kontroll över markup och kodstruktur</li>
+</ul>
+<h2 id="jämförelseöversikt"><a class="header" href="#jämförelseöversikt">Jämförelseöversikt</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>Verktyg</th><th>Styrka</th><th>Att tänka på</th></tr></thead><tbody>
+<tr><td>Gutenberg</td><td>Inbyggt, lättviktigt</td><td>Färre avancerade designfunktioner</td></tr>
+<tr><td>Elementor</td><td>Stor flexibilitet</td><td>Kan bli tungt med många widgets</td></tr>
+<tr><td>Beaver Builder</td><td>Stabilt arbetsflöde</td><td>Färre visuella effekter än vissa alternativ</td></tr>
+<tr><td>Divi Builder</td><td>Många designmöjligheter</td><td>Kan ge leverantörslåsning (vendor lock-in)</td></tr>
+</tbody></table>
+</div>
+<h2 id="arbetsflöde-med-page-builder"><a class="header" href="#arbetsflöde-med-page-builder">Arbetsflöde med page builder</a></h2>
+<pre class="mermaid">flowchart LR
+	A[Välj builder] --&gt; B[Skapa sidmall]
+	B --&gt; C[Bygg sektioner]
+	C --&gt; D[Testa mobil och desktop]
+	D --&gt; E[Optimera och publicera]
+</pre>
+<h2 id="prestanda-och-underhåll"><a class="header" href="#prestanda-och-underhåll">Prestanda och underhåll</a></h2>
+<p>När du använder page builders behöver du särskilt tänka på:</p>
+<ol>
+<li>Antal tillägg och externa scripts.</li>
+<li>Bildoptimering och lazy loading.</li>
+<li>Återanvändning av mallar i stället för duplicering.</li>
+<li>Dokumentation av vilka komponenter teamet ska använda.</li>
+</ol>
+<h2 id="säkerhet-och-drift"><a class="header" href="#säkerhet-och-drift">Säkerhet och drift</a></h2>
+<ul>
+<li>Installera bara builders från betrodda leverantörer.</li>
+<li>Uppdatera builder-plugin regelbundet.</li>
+<li>Ta backup innan större uppdateringar.</li>
+<li>Testa i staging (testmiljö) före produktion.</li>
+</ul>
+<p>Det minskar risken för driftstopp och kompatibilitetsproblem.</p>
+<h2 id="vanliga-misstag-4"><a class="header" href="#vanliga-misstag-4">Vanliga misstag</a></h2>
+<ol>
+<li>För många olika sidmallar utan gemensam struktur.</li>
+<li>Tung design med stora bilder och animationer överallt.</li>
+<li>Blandning av flera page builders i samma projekt.</li>
+<li>Ingen plan för hur innehåll ska flyttas om builder byts.</li>
+</ol>
+<h2 id="sammanfattning-32"><a class="header" href="#sammanfattning-32">Sammanfattning</a></h2>
+<p>Page builders kan vara ett effektivt verktyg för snabb visuell produktion i WordPress. Med tydliga riktlinjer för prestanda, struktur och uppdateringar kan de fungera bra i både små och medelstora projekt.</p>
+<h2 id="reflektionsfrågor-7"><a class="header" href="#reflektionsfrågor-7">Reflektionsfrågor</a></h2>
+<ol>
+<li>När skulle du välja Gutenberg framför en extern page builder?</li>
+<li>Vilka risker ser du med att bygga hela sajten i en enda builder?</li>
+<li>Hur kan du säkra att teamet bygger sidor konsekvent och snabbt?</li>
+</ol>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="skillnaden-mellan-posts-och-pages-i-wordpress"><a class="header" href="#skillnaden-mellan-posts-och-pages-i-wordpress">Skillnaden mellan Posts och Pages i WordPress</a></h1>
+<p>När du bygger en webbplats i WordPress är en av de första frågorna: ska innehållet vara ett <strong>Post (inlägg)</strong> eller en <strong>Page (sida)</strong>?</p>
+<p>Det här valet påverkar hur innehållet visas, hur lätt det blir att navigera på sajten och hur redaktörer arbetar i adminpanelen.</p>
+<h2 id="förkunskaper-8"><a class="header" href="#förkunskaper-8">Förkunskaper</a></h2>
+<p>Innan du börjar bör du ha läst:</p>
+<ul>
+<li><a href="kapitel_6/./wordpress.html">WordPress</a></li>
+<li><a href="kapitel_6/./wordpress-local.html">Installation med Local by Flywheel</a></li>
+</ul>
+<h2 id="vad-är-ett-post-inlägg"><a class="header" href="#vad-är-ett-post-inlägg">Vad är ett Post (inlägg)?</a></h2>
+<p>Ett <strong>Post (inlägg)</strong> är tidsbaserat innehåll. Inlägg används oftast för:</p>
+<ul>
+<li>Blogg</li>
+<li>Nyheter</li>
+<li>Uppdateringar</li>
+<li>Artiklar som publiceras löpande</li>
+</ul>
+<p>Ett inlägg har normalt:</p>
+<ul>
+<li>Publiceringsdatum</li>
+<li>Författare</li>
+<li>Kategorier (categories)</li>
+<li>Taggar (tags)</li>
+<li>Plats i ett flöde (senaste först)</li>
+</ul>
+<h2 id="vad-är-en-page-sida"><a class="header" href="#vad-är-en-page-sida">Vad är en Page (sida)?</a></h2>
+<p>En <strong>Page (sida)</strong> är statiskt innehåll som inte är kopplat till datumflöde. Sidor används oftast för:</p>
+<ul>
+<li>Om oss</li>
+<li>Kontakt</li>
+<li>Tjänster</li>
+<li>Integritetspolicy</li>
+</ul>
+<p>En sida har normalt:</p>
+<ul>
+<li>Ingen synlig tidsstämpel</li>
+<li>Ingen kategori/tagg som standard</li>
+<li>Fast plats i navigering (meny)</li>
+<li>Hierarki (överordnad/underordnad sida)</li>
+</ul>
+<h2 id="jämförelse-posts-vs-pages"><a class="header" href="#jämförelse-posts-vs-pages">Jämförelse: Posts vs Pages</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>Egenskap</th><th>Post (inlägg)</th><th>Page (sida)</th></tr></thead><tbody>
+<tr><td>Typ av innehåll</td><td>Löpande och tidsbaserat</td><td>Statiskt och långsiktigt</td></tr>
+<tr><td>Datum i fokus</td><td>Ja</td><td>Nej (oftast)</td></tr>
+<tr><td>Kategorier/taggar</td><td>Ja</td><td>Nej (som standard)</td></tr>
+<tr><td>Visas i bloggflöde</td><td>Ja</td><td>Nej</td></tr>
+<tr><td>Vanlig användning</td><td>Nyheter, artiklar, blogg</td><td>Om oss, Kontakt, policy</td></tr>
+</tbody></table>
+</div>
+<h2 id="exempel-från-en-skolsajt"><a class="header" href="#exempel-från-en-skolsajt">Exempel från en skolsajt</a></h2>
+<p>Tänk dig en skolas webbplats:</p>
+<ul>
+<li><strong>Post (inlägg):</strong> "Öppet hus 15 mars", "Nytt schema publicerat"</li>
+<li><strong>Page (sida):</strong> "Om utbildningen", "Kontakt", "Ansökan"</li>
+</ul>
+<p>En enkel tumregel är:</p>
+<ul>
+<li>Om innehållet ska komma i ett <strong>flöde över tid</strong> → använd <strong>Post (inlägg)</strong></li>
+<li>Om innehållet ska vara <strong>stabilt i menystrukturen</strong> → använd <strong>Page (sida)</strong></li>
+</ul>
+<h2 id="url-struktur-och-navigering"><a class="header" href="#url-struktur-och-navigering">URL-struktur och navigering</a></h2>
+<p>WordPress bygger ofta olika URL-mönster:</p>
+<ul>
+<li>Inlägg kan hamna under till exempel <code>/blogg/valkommen-till-kursen/</code></li>
+<li>Sidor kan ha mer direkta URL:er som <code>/kontakt/</code></li>
+</ul>
+<p>Det gör det enklare för användaren att förstå om innehållet är en del av nyhetsflödet eller en permanent informationssida.</p>
+<h2 id="säkerhet-och-roller-i-redaktörsarbete"><a class="header" href="#säkerhet-och-roller-i-redaktörsarbete">Säkerhet och roller i redaktörsarbete</a></h2>
+<p>Valet mellan inlägg och sidor är också en arbetsflödesfråga:</p>
+<ul>
+<li>Ge rätt användarroll (role, behörighet) till rätt person.</li>
+<li>Begränsa vilka som får publicera (publish) direkt.</li>
+<li>Granska innehåll innan publicering, särskilt inlägg med länkar och inbäddningar.</li>
+</ul>
+<p>Det minskar risken för felpublicering och osäkert innehåll.</p>
+<h2 id="vanliga-misstag-5"><a class="header" href="#vanliga-misstag-5">Vanliga misstag</a></h2>
+<ol>
+<li>Lägga all information som inlägg, även statiska sidor.</li>
+<li>Använda sidor för nyhetsinnehåll som borde gå i flöde.</li>
+<li>Sakna tydlig kategori-struktur för inlägg.</li>
+<li>Otydlig meny där viktiga sidor är svåra att hitta.</li>
+</ol>
+<h2 id="sammanfattning-33"><a class="header" href="#sammanfattning-33">Sammanfattning</a></h2>
+<ul>
+<li><strong>Post (inlägg)</strong> passar för löpande, datumstyrt innehåll.</li>
+<li><strong>Page (sida)</strong> passar för stabilt innehåll i webbplatsens grundstruktur.</li>
+<li>Rätt val från början gör sajten enklare att underhålla, navigera och skala.</li>
+</ul>
+<h2 id="reflektionsfrågor-8"><a class="header" href="#reflektionsfrågor-8">Reflektionsfrågor</a></h2>
+<ol>
+<li>Vilket innehåll på din tänkta webbplats ska vara inlägg respektive sidor?</li>
+<li>Hur skulle du strukturera kategorier för inlägg så att det blir lätt att hitta rätt?</li>
+<li>Vilka sidor behöver alltid vara tillgängliga i huvudmenyn?</li>
 </ol>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="static-site-generators-med-jekyll"><a class="header" href="#static-site-generators-med-jekyll">Static Site Generators med Jekyll</a></h1>
 <h2 id="1-introduktion----vad-är-en-static-site-generator"><a class="header" href="#1-introduktion----vad-är-en-static-site-generator">1. Introduktion -- Vad är en Static Site Generator?</a></h2>
@@ -10384,7 +11141,7 @@ flowchart LR
     D --&gt; E[Public Website]
 </pre>
 <hr />
-<h2 id="sammanfattning-27"><a class="header" href="#sammanfattning-27">Sammanfattning</a></h2>
+<h2 id="sammanfattning-34"><a class="header" href="#sammanfattning-34">Sammanfattning</a></h2>
 <ul>
 <li>Static Site Generators är snabba och säkra</li>
 <li>Jekyll är enkel och kraftfull</li>
@@ -13999,7 +14756,7 @@ session.cookie_samesite = "Lax"
 ; session.sid_entropy_length = 32 (eller högre)
 ; session.sid_bits_per_character = 5 (eller 6)
 </code></pre>
-<h2 id="sammanfattning-28"><a class="header" href="#sammanfattning-28">Sammanfattning</a></h2>
+<h2 id="sammanfattning-35"><a class="header" href="#sammanfattning-35">Sammanfattning</a></h2>
 <p>Cookies och sessioner är avgörande verktyg för att skapa dynamiska och användarvänliga webbapplikationer genom att överbrygga HTTP:s tillståndslösa natur. Cookies lagrar data på klienten och är bra för icke-känsliga preferenser, medan sessioner lagrar data på servern och är standardmetoden för att hantera inloggningsstatus och annan känslig temporär data. Att förstå hur man använder dem säkert, särskilt genom att skydda session-ID:t och konfigurera cookie-attribut korrekt, är fundamentalt för säker webbutveckling med PHP.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="webbsäkerhet-i-php-vanliga-hot-och-skydd"><a class="header" href="#webbsäkerhet-i-php-vanliga-hot-och-skydd">Webbsäkerhet i PHP: Vanliga Hot och Skydd</a></h1>
 <p>Att bygga en fungerande webbapplikation är en sak, men att göra den säker är en helt annan och minst lika viktig uppgift. En osäker applikation kan leda till att användardata läcker, att obehöriga får kontroll över systemet, eller att webbplatsen används för att sprida skadlig kod. Detta avsnitt täcker några av de mest kritiska säkerhetsriskerna och hur du skyddar din PHP-applikation mot dem.</p>
@@ -15590,7 +16347,7 @@ ob_end_flush();
 </ul>
 <p><strong>Intervjutips:</strong> Diskutera olika nivåer av optimering - från kod-nivå till infrastruktur (load balancers, database replicas etc.).</p>
 <hr />
-<h2 id="sammanfattning-29"><a class="header" href="#sammanfattning-29">Sammanfattning</a></h2>
+<h2 id="sammanfattning-36"><a class="header" href="#sammanfattning-36">Sammanfattning</a></h2>
 <p>Dessa frågor täcker de viktigaste aspekterna av fullstack-utveckling med PHP:</p>
 <ul>
 <li><strong>Grundläggande PHP:</strong> Syntax, variabler, funktioner</li>
@@ -16671,7 +17428,7 @@ const isLoading = true;
 function LoadingSpinner() { }  // Bättre än Spinner()
 function ErrorMessage() { }   // Bättre än Error()
 </code></pre>
-<h2 id="sammanfattning-30"><a class="header" href="#sammanfattning-30">Sammanfattning</a></h2>
+<h2 id="sammanfattning-37"><a class="header" href="#sammanfattning-37">Sammanfattning</a></h2>
 <p>Komponenter är byggstenen i React-applikationer:</p>
 <ul>
 <li><strong>Komponenter</strong> är JavaScript-funktioner som returnerar JSX</li>
@@ -17446,7 +18203,7 @@ const [state, setState] = useState({
   comments: { 1: { id: 1, text: 'Bra inlägg!', authorId: 2 } }
 });
 </code></pre>
-<h2 id="sammanfattning-31"><a class="header" href="#sammanfattning-31">Sammanfattning</a></h2>
+<h2 id="sammanfattning-38"><a class="header" href="#sammanfattning-38">Sammanfattning</a></h2>
 <p>Nu kan du skapa interaktiva React-komponenter:</p>
 <ul>
 <li><strong>Props</strong> skickar data från föräldra- till barnkomponenter</li>
@@ -17988,7 +18745,7 @@ function ProductDetail() {
   // ...
 }
 </code></pre>
-<h2 id="sammanfattning-32"><a class="header" href="#sammanfattning-32">Sammanfattning</a></h2>
+<h2 id="sammanfattning-39"><a class="header" href="#sammanfattning-39">Sammanfattning</a></h2>
 <p>React Router är kraftfullt verktyg för navigation i React-applikationer:</p>
 <ul>
 <li><strong>BrowserRouter</strong> ger rena URLs och är bästa valet för de flesta applikationer</li>
@@ -19110,7 +19867,7 @@ const API_KEY = import.meta.env.VITE_API_KEY;
 <li>Testa ändringar lokalt innan deployment</li>
 <li>Använd versionshantering (Git tags) för viktiga releases</li>
 </ul>
-<h2 id="sammanfattning-33"><a class="header" href="#sammanfattning-33">Sammanfattning</a></h2>
+<h2 id="sammanfattning-40"><a class="header" href="#sammanfattning-40">Sammanfattning</a></h2>
 <p>Deployment med Dokploy gör det enkelt att få din React-applikation live på internet:</p>
 <ol>
 <li><strong>Förbered</strong> din kod och pusha till GitHub</li>
@@ -19724,7 +20481,7 @@ class ErrorTracker {
 
 export default ErrorTracker;
 </code></pre>
-<h2 id="sammanfattning-34"><a class="header" href="#sammanfattning-34">Sammanfattning</a></h2>
+<h2 id="sammanfattning-41"><a class="header" href="#sammanfattning-41">Sammanfattning</a></h2>
 <p>Single Page Applications erbjuder många fördelar för moderna webbapplikationer:</p>
 <ul>
 <li><strong>Smidig användarupplevelse</strong> med snabb navigering</li>
@@ -20737,7 +21494,7 @@ function App() {
 <li>Ha fallback UI för kritiska komponenter</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-35"><a class="header" href="#sammanfattning-35">Sammanfattning</a></h2>
+<h2 id="sammanfattning-42"><a class="header" href="#sammanfattning-42">Sammanfattning</a></h2>
 <p>Dessa frågor täcker de viktigaste aspekterna av React-utveckling:</p>
 <ul>
 <li><strong>React Fundamentals:</strong> JSX, Virtual DOM, komponenter</li>
@@ -22306,7 +23063,7 @@ async function processMultipleFiles() {
   }
 }
 </code></pre>
-<h2 id="sammanfattning-36"><a class="header" href="#sammanfattning-36">Sammanfattning</a></h2>
+<h2 id="sammanfattning-43"><a class="header" href="#sammanfattning-43">Sammanfattning</a></h2>
 <p>I denna introduktion har vi gått igenom grunderna i Node.js och fokuserat på moderna utvecklingsmetoder:</p>
 <p><strong>Vad vi har lärt oss:</strong></p>
 <ul>
@@ -24555,7 +25312,7 @@ app.use(express.json({ limit: '10mb' })); // Begränsa request size
 <li>Dessa är grundläggande säkerhetsåtgärder som bör vara standard</li>
 </ul>
 </details>
-<h3 id="vanliga-misstag-1"><a class="header" href="#vanliga-misstag-1">Vanliga misstag</a></h3>
+<h3 id="vanliga-misstag-6"><a class="header" href="#vanliga-misstag-6">Vanliga misstag</a></h3>
 <ol>
 <li><strong>Glömma felhantering:</strong> Alltid använd try/catch i async routes</li>
 <li><strong>Felaktig 404-hantering:</strong> Kontrollera om resultatet är null innan du använder det</li>
@@ -24563,7 +25320,7 @@ app.use(express.json({ limit: '10mb' })); // Begränsa request size
 <li><strong>Glömma validering:</strong> Validera alltid användarinput</li>
 <li><strong>Sakna rate limiting:</strong> Låt inte en användare överbelasta ditt API</li>
 </ol>
-<h2 id="sammanfattning-37"><a class="header" href="#sammanfattning-37">Sammanfattning</a></h2>
+<h2 id="sammanfattning-44"><a class="header" href="#sammanfattning-44">Sammanfattning</a></h2>
 <p>RESTful API:er ger dig en solid grund för att bygga skalbara och underhållbara backend-tjänster. Genom att följa REST-principerna skapar du API:er som är intuitiva för utvecklare att använda och enkla att underhålla över tid.</p>
 <h3 id="viktiga-takeaways-1"><a class="header" href="#viktiga-takeaways-1">Viktiga takeaways:</a></h3>
 <ul>
@@ -26232,7 +26989,7 @@ import { add } from './math';
   // Standard timeout är 5000ms, öka om nödvändigt
 }, 10000); // 10 sekunder
 </code></pre>
-<h2 id="sammanfattning-38"><a class="header" href="#sammanfattning-38">Sammanfattning</a></h2>
+<h2 id="sammanfattning-45"><a class="header" href="#sammanfattning-45">Sammanfattning</a></h2>
 <p>I denna lektion har du lärt dig:</p>
 <p>✅ <strong>Varför testa</strong>: Säkerhet vid ändringar, dokumentation, snabbare utveckling<br />
 ✅ <strong>Jest setup</strong>: Installera och konfigurera Jest med ES6-moduler<br />
@@ -30108,7 +30865,7 @@ class InventoryService {
 module.exports = InventoryService;
 </code></pre>
 <hr />
-<h2 id="sammanfattning-39"><a class="header" href="#sammanfattning-39">Sammanfattning</a></h2>
+<h2 id="sammanfattning-46"><a class="header" href="#sammanfattning-46">Sammanfattning</a></h2>
 <p>Dessa fyra övningar tar dig från grundläggande Express-applikationer till avancerade real-time system. Varje projekt bygger på kunskaperna från föregående och introducerar nya koncept:</p>
 <ol>
 <li><strong>Todo API</strong>: Grundläggande CRUD, MongoDB, felhantering</li>
@@ -32865,7 +33622,7 @@ class BulletManager {
   }
 }
 </code></pre>
-<h2 id="sammanfattning-40"><a class="header" href="#sammanfattning-40">Sammanfattning</a></h2>
+<h2 id="sammanfattning-47"><a class="header" href="#sammanfattning-47">Sammanfattning</a></h2>
 <p>OOP i spelutveckling handlar om att:</p>
 <p><strong>Strukturera kod effektivt</strong>:</p>
 <ul>
@@ -33341,7 +34098,7 @@ this.socket.onopen = () =&gt; {
 <li>Servern köar kommandona och kör dem i turordning</li>
 <li><strong>Uppgift</strong>: Skapa ett enkelt commands-system där spelare kan skicka kommandon som servern kör asynkront</li>
 </ul>
-<h2 id="sammanfattning-41"><a class="header" href="#sammanfattning-41">Sammanfattning</a></h2>
+<h2 id="sammanfattning-48"><a class="header" href="#sammanfattning-48">Sammanfattning</a></h2>
 <p>I detta kapitel har vi byggt en enkel multiplayer-server steg för steg:</p>
 <ol>
 <li><strong>Grundstruktur</strong>: Servern är auktoritativ - den validerar och uppdaterar allt spelstatus</li>
@@ -35046,7 +35803,7 @@ module.exports = {
 <li>Gör kortet klickbart genom att lägga till en länk runt hela kortet.</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-42"><a class="header" href="#sammanfattning-42">Sammanfattning</a></h2>
+<h2 id="sammanfattning-49"><a class="header" href="#sammanfattning-49">Sammanfattning</a></h2>
 <ul>
 <li><strong>Färger</strong>: Använd fördefinierade eller anpassade färger för att skapa en konsekvent design.</li>
 <li><strong>Typografi</strong>: Hantera textstorlekar, typsnitt och andra textrelaterade egenskaper med utility-klasser.</li>
@@ -35151,7 +35908,7 @@ module.exports = {
 <li>Lägg till en responsiv grid-layout som visar flera produktkort bredvid varandra på större skärmar.</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-43"><a class="header" href="#sammanfattning-43">Sammanfattning</a></h2>
+<h2 id="sammanfattning-50"><a class="header" href="#sammanfattning-50">Sammanfattning</a></h2>
 <ul>
 <li><strong>Breakpoints</strong>: Använd Tailwinds inbyggda breakpoints för att skapa responsiva layouter.</li>
 <li><strong>Responsivitet</strong>: Anpassa layout, typografi och andra stilar för olika skärmstorlekar.</li>
@@ -35290,7 +36047,7 @@ module.exports = {
 <li>Gör menyn sticky så att den alltid är synlig högst upp på sidan.</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-44"><a class="header" href="#sammanfattning-44">Sammanfattning</a></h2>
+<h2 id="sammanfattning-51"><a class="header" href="#sammanfattning-51">Sammanfattning</a></h2>
 <ul>
 <li><strong>Pseudo-klasser</strong>: Använd <code>hover:</code>, <code>focus:</code>, <code>active:</code>, och <code>disabled:</code> för att hantera olika tillstånd.</li>
 <li><strong>Gruppbaserade effekter</strong>: Använd <code>group</code> och <code>group-hover:</code> för att skapa interaktivitet mellan element.</li>
@@ -35472,7 +36229,7 @@ export default {
 <li>Lägg till en animation som gör att hover-effekten övergångar mjukt.</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-45"><a class="header" href="#sammanfattning-45">Sammanfattning</a></h2>
+<h2 id="sammanfattning-52"><a class="header" href="#sammanfattning-52">Sammanfattning</a></h2>
 <ul>
 <li><strong>Konfiguration</strong>: Använd <code>tailwind.config.js</code> för att anpassa Tailwind CSS.</li>
 <li><strong>Anpassningar</strong>: Lägg till egna färger, typsnitt, spacing och breakpoints.</li>
@@ -35668,7 +36425,7 @@ export default {
 <li>Lägg till en hover-effekt på sidomenyns länkar.</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-46"><a class="header" href="#sammanfattning-46">Sammanfattning</a></h2>
+<h2 id="sammanfattning-53"><a class="header" href="#sammanfattning-53">Sammanfattning</a></h2>
 <ul>
 <li><strong>Planering</strong>: Definiera syftet och prioritera innehållet.</li>
 <li><strong>Element</strong>: Inkludera sidhuvud, sidomeny, KPI-kort, tabeller och grafer.</li>
@@ -35835,7 +36592,7 @@ export default {
 }
 </code></pre>
 <hr />
-<h2 id="sammanfattning-47"><a class="header" href="#sammanfattning-47">Sammanfattning</a></h2>
+<h2 id="sammanfattning-54"><a class="header" href="#sammanfattning-54">Sammanfattning</a></h2>
 <ul>
 <li><strong>Best Practices</strong>: Använd återanvändbara komponenter, håll HTML-strukturen ren och dra nytta av Tailwinds konfigurationsfil.</li>
 <li><strong>Komponentbibliotek</strong>: Utforska bibliotek som Tailwind UI, Flowbite och DaisyUI för att snabba upp utvecklingen.</li>
@@ -36038,7 +36795,7 @@ function App() {
 export default App;
 </code></pre>
 <hr />
-<h2 id="sammanfattning-48"><a class="header" href="#sammanfattning-48">Sammanfattning</a></h2>
+<h2 id="sammanfattning-55"><a class="header" href="#sammanfattning-55">Sammanfattning</a></h2>
 <ul>
 <li><strong>Installation</strong>: Installera och konfigurera Tailwind CSS i ditt React-projekt med Vite.</li>
 <li><strong>Komponenter</strong>: Använd Tailwind CSS för att snabbt styla React-komponenter.</li>

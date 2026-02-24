@@ -104,8 +104,14 @@ För ett hållbart WordPress-projekt bör du alltid:
 
 Fortsätt gärna i den här ordningen:
 
+- [Hur wordpress är uppbyggt](./wordpress-uppbyggt.md)
 - [Installation med Local by Flywheel](./wordpress-local.md)
+- [WordPress adminpanel](./wordpress-admin.md)
+- [WordPress teman](./wordpress-teman.md)
 - [Skapa eget tema med Underscores](./wordpress-theme.md)
+- [WordPress plugins](./wordpress-plugins.md)
+- [WordPress page builders](./wordpress-page-builders.md)
+- [Skillnaden mellan Posts och Pages](./wordpress-posts-vs-pages.md)
 
 Efter installation kan du börja med att skapa sidor, välja tema och bygga upp en enkel webbplatsstruktur.
 
