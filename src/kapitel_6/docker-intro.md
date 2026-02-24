@@ -173,6 +173,43 @@ a1b2c3d4e5f6
 | `-p 8080:80` | Mappa värdens port 8080 till containerns port 80 |
 | `--name web` | Ge containern namnet "web" |
 
+### Hosta din egen HTML-sida med en volym
+
+För att servera egna filer istället för Nginx standardvälkomstsida använder du en **volym** (volume) – en mapp på din dator som mappas in i containern.
+
+Stoppa och ta bort den tidigare containern om den fortfarande körs:
+
+```bash
+docker stop web
+docker rm web
+```
+
+Skapa en mapp med en enkel `index.html`:
+
+```bash
+mkdir -p my-html
+echo '<h1>Hej från min container!</h1>' > my-html/index.html
+```
+
+Starta Nginx med volymen mappad till Nginx document root. I den officiella Nginx-imagen är det `/usr/share/nginx/html` (vid apt-installation på Ubuntu används ofta `/var/www/html` i stället):
+
+```bash
+docker run -d -p 8080:80 --name web -v $(pwd)/my-html:/usr/share/nginx/html:ro nginx:latest
+```
+
+*Terminal – starta med volym:*
+
+```
+$ docker run -d -p 8080:80 --name web -v $(pwd)/my-html:/usr/share/nginx/html:ro nginx:latest
+a1b2c3d4e5f6
+```
+
+Besök `http://localhost:8080` – du ska nu se din egen HTML. Ändra `my-html/index.html` och ladda om sidan; ändringarna syns direkt utan att starta om containern.
+
+| Flagga | Betydelse |
+|--------|-----------|
+| `-v $(pwd)/my-html:/usr/share/nginx/html:ro` | Mappa mappen `my-html` till Nginx document root. `:ro` gör volymen skrivskyddad för containern. |
+
 ### Stoppa och ta bort en container
 
 ```bash
@@ -193,6 +230,40 @@ web
 
 En **Dockerfile** beskriver hur en image ska byggas. Varje rad är ett steg. Här är ett enkelt exempel för en PHP-app med Nginx:
 
+Skapa först `default.conf`:
+
+```nginx
+server {
+    listen 80;
+    server_name localhost;
+    root /var/www/html;
+    index index.php index.html;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        fastcgi_pass 127.0.0.1:9000;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+}
+```
+
+*Vad gör `default.conf`?*
+
+| Rad | Betydelse |
+|-----|-----------|
+| `listen 80` | Nginx lyssnar på port 80 (HTTP) |
+| `root /var/www/html` | Document root – var webbfilerna ligger |
+| `server_name localhost` | Vilka domännamn som ska hanteras |
+| `try_files $uri $uri/ /index.php?$query_string` | Försök först hitta filen som statisk; om den inte finns, skicka till `index.php` (bra för URL-rewriting) |
+| `location ~ \.php$` | Alla förfrågningar till `.php`-filer |
+| `fastcgi_pass 127.0.0.1:9000` | Skicka PHP-förfrågningar till PHP-FPM som lyssnar på port 9000 |
+| `fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name` | Säg till PHP-FPM vilken fil som ska köras |
+| `include fastcgi_params` | Standardparametrar för FastCGI (t.ex. HTTP-headers) |
+
 ```dockerfile
 FROM php:8.2-fpm
 
@@ -201,6 +272,7 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install pdo pdo_mysql
 
 COPY default.conf /etc/nginx/sites-available/default
+COPY app/ /var/www/html
 ```
 
 *Förklaring:*
@@ -233,7 +305,28 @@ Flaggan `-t min-php-app` ger imagen ett taggnamn. Punkten `.` anger att byggkont
 
 En PHP-app behöver ofta både webbserver, PHP och databas. **Docker Compose** låter dig definiera flera tjänster i en fil och starta dem tillsammans.
 
-Skapa en fil `docker-compose.yml`:
+Skapa först `default.conf` (samma struktur som i Dockerfile-exemplet, men `fastcgi_pass` pekar på tjänsten `php` eftersom de körs i separata containrar):
+
+```nginx
+server {
+    listen 80;
+    server_name localhost;
+    root /var/www/html;
+    index index.php index.html;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        fastcgi_pass php:9000;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+}
+```
+
+Skapa sedan `docker-compose.yml`:
 
 ```yaml
 services:
@@ -243,6 +336,7 @@ services:
       - "8080:80"
     volumes:
       - ./app:/var/www/html
+      - ./default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - php
 
@@ -262,6 +356,8 @@ services:
 volumes:
   dbdata:
 ```
+
+*Observera:* `fastcgi_pass php:9000` använder tjänstnamnet `php` – Docker Compose skapar ett nätverk där tjänster når varandra via sitt namn. Både Nginx och PHP använder `root /var/www/html` så att `SCRIPT_FILENAME` pekar på samma filer i båda containrarna.
 
 ```mermaid
 flowchart LR

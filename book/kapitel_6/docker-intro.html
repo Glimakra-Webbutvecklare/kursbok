@@ -7,7 +7,7 @@
 
 
         <!-- Custom HTML head -->
-        
+
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
@@ -99,7 +99,7 @@
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar-hover-placeholder"></div>
                 <div id="menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
                         <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
@@ -279,6 +279,28 @@ a1b2c3d4e5f6
 <tr><td><code>--name web</code></td><td>Ge containern namnet "web"</td></tr>
 </tbody></table>
 </div>
+<h3 id="hosta-din-egen-html-sida-med-en-volym"><a class="header" href="#hosta-din-egen-html-sida-med-en-volym">Hosta din egen HTML-sida med en volym</a></h3>
+<p>För att servera egna filer istället för Nginx standardvälkomstsida använder du en <strong>volym</strong> (volume) – en mapp på din dator som mappas in i containern.</p>
+<p>Stoppa och ta bort den tidigare containern om den fortfarande körs:</p>
+<pre><code class="language-bash">docker stop web
+docker rm web
+</code></pre>
+<p>Skapa en mapp med en enkel <code>index.html</code>:</p>
+<pre><code class="language-bash">mkdir -p my-html
+echo '&lt;h1&gt;Hej från min container!&lt;/h1&gt;' &gt; my-html/index.html
+</code></pre>
+<p>Starta Nginx med volymen mappad till Nginx document root. I den officiella Nginx-imagen är det <code>/usr/share/nginx/html</code> (vid apt-installation på Ubuntu används ofta <code>/var/www/html</code> i stället):</p>
+<pre><code class="language-bash">docker run -d -p 8080:80 --name web -v $(pwd)/my-html:/usr/share/nginx/html:ro nginx:latest
+</code></pre>
+<p><em>Terminal – starta med volym:</em></p>
+<pre><code>$ docker run -d -p 8080:80 --name web -v $(pwd)/my-html:/usr/share/nginx/html:ro nginx:latest
+a1b2c3d4e5f6
+</code></pre>
+<p>Besök <code>http://localhost:8080</code> – du ska nu se din egen HTML. Ändra <code>my-html/index.html</code> och ladda om sidan; ändringarna syns direkt utan att starta om containern.</p>
+<div class="table-wrapper"><table><thead><tr><th>Flagga</th><th>Betydelse</th></tr></thead><tbody>
+<tr><td><code>-v $(pwd)/my-html:/usr/share/nginx/html:ro</code></td><td>Mappa mappen <code>my-html</code> till Nginx document root. <code>:ro</code> gör volymen skrivskyddad för containern.</td></tr>
+</tbody></table>
+</div>
 <h3 id="stoppa-och-ta-bort-en-container"><a class="header" href="#stoppa-och-ta-bort-en-container">Stoppa och ta bort en container</a></h3>
 <pre><code class="language-bash">docker stop web
 docker rm web
@@ -291,6 +313,36 @@ web
 </code></pre>
 <h2 id="bygga-en-egen-image-med-dockerfile"><a class="header" href="#bygga-en-egen-image-med-dockerfile">Bygga en egen image med Dockerfile</a></h2>
 <p>En <strong>Dockerfile</strong> beskriver hur en image ska byggas. Varje rad är ett steg. Här är ett enkelt exempel för en PHP-app med Nginx:</p>
+<p>Skapa först <code>default.conf</code>:</p>
+<pre><code class="language-nginx">server {
+    listen 80;
+    server_name localhost;
+    root /var/www/html;
+    index index.php index.html;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        fastcgi_pass 127.0.0.1:9000;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+}
+</code></pre>
+<p><em>Vad gör <code>default.conf</code>?</em></p>
+<div class="table-wrapper"><table><thead><tr><th>Rad</th><th>Betydelse</th></tr></thead><tbody>
+<tr><td><code>listen 80</code></td><td>Nginx lyssnar på port 80 (HTTP)</td></tr>
+<tr><td><code>root /var/www/html</code></td><td>Document root – var webbfilerna ligger</td></tr>
+<tr><td><code>server_name localhost</code></td><td>Vilka domännamn som ska hanteras</td></tr>
+<tr><td><code>try_files $uri $uri/ /index.php?$query_string</code></td><td>Försök först hitta filen som statisk; om den inte finns, skicka till <code>index.php</code> (bra för URL-rewriting)</td></tr>
+<tr><td><code>location ~ \.php$</code></td><td>Alla förfrågningar till <code>.php</code>-filer</td></tr>
+<tr><td><code>fastcgi_pass 127.0.0.1:9000</code></td><td>Skicka PHP-förfrågningar till PHP-FPM som lyssnar på port 9000</td></tr>
+<tr><td><code>fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name</code></td><td>Säg till PHP-FPM vilken fil som ska köras</td></tr>
+<tr><td><code>include fastcgi_params</code></td><td>Standardparametrar för FastCGI (t.ex. HTTP-headers)</td></tr>
+</tbody></table>
+</div>
 <pre><code class="language-dockerfile">FROM php:8.2-fpm
 
 RUN apt-get update &amp;&amp; apt-get install -y \
@@ -298,6 +350,7 @@ RUN apt-get update &amp;&amp; apt-get install -y \
     &amp;&amp; docker-php-ext-install pdo pdo_mysql
 
 COPY default.conf /etc/nginx/sites-available/default
+COPY app/ /var/www/html
 </code></pre>
 <p><em>Förklaring:</em></p>
 <ul>
@@ -321,7 +374,25 @@ COPY default.conf /etc/nginx/sites-available/default
 <p>Flaggan <code>-t min-php-app</code> ger imagen ett taggnamn. Punkten <code>.</code> anger att byggkontexten är aktuell mapp.</p>
 <h2 id="docker-compose--flera-containrar-tillsammans"><a class="header" href="#docker-compose--flera-containrar-tillsammans">Docker Compose – flera containrar tillsammans</a></h2>
 <p>En PHP-app behöver ofta både webbserver, PHP och databas. <strong>Docker Compose</strong> låter dig definiera flera tjänster i en fil och starta dem tillsammans.</p>
-<p>Skapa en fil <code>docker-compose.yml</code>:</p>
+<p>Skapa först <code>default.conf</code> (samma struktur som i Dockerfile-exemplet, men <code>fastcgi_pass</code> pekar på tjänsten <code>php</code> eftersom de körs i separata containrar):</p>
+<pre><code class="language-nginx">server {
+    listen 80;
+    server_name localhost;
+    root /var/www/html;
+    index index.php index.html;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        fastcgi_pass php:9000;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+}
+</code></pre>
+<p>Skapa sedan <code>docker-compose.yml</code>:</p>
 <pre><code class="language-yaml">services:
   web:
     image: nginx:latest
@@ -329,6 +400,7 @@ COPY default.conf /etc/nginx/sites-available/default
       - "8080:80"
     volumes:
       - ./app:/var/www/html
+      - ./default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - php
 
@@ -348,6 +420,7 @@ COPY default.conf /etc/nginx/sites-available/default
 volumes:
   dbdata:
 </code></pre>
+<p><em>Observera:</em> <code>fastcgi_pass php:9000</code> använder tjänstnamnet <code>php</code> – Docker Compose skapar ett nätverk där tjänster når varandra via sitt namn. Både Nginx och PHP använder <code>root /var/www/html</code> så att <code>SCRIPT_FILENAME</code> pekar på samma filer i båda containrarna.</p>
 <pre class="mermaid">flowchart LR
     subgraph Compose[&quot;Docker Compose&quot;]
         W[&quot;web (Nginx)&quot;]
@@ -472,22 +545,6 @@ volumes:
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 
