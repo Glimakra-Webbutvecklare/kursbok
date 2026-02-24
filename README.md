@@ -48,13 +48,21 @@ Contributions from other teachers are welcome! Here's how you can add or modify 
         Development mode run cmd and visit http://localhost:3000:
 
         ```bash 
-        docker compose -f docker-compose.dev.yml up --build
+        docker-compose up --build
         ```
 
         Production mode run cmd and visit http://localhost:8080:
         
         ```bash 
         docker compose -f docker-compose.prod.yml up --build
+        ```
+
+        If required - skip cache and run:
+
+        ```bash
+        docker compose down -v
+        docker compose build --no-cache
+        docker compose up        
         ```
 
 
