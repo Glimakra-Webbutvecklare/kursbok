@@ -34,6 +34,7 @@ flowchart LR
 
 ## 2. Jekyll -- Grunder
 
+En statisk sidgenerator kräven en specifik mappstruktur där vissa filnamn och mappnamn är bestämda.
 Så här ser strukturen ut för ett projekt i Jekyll:
 
     my-site/
@@ -47,7 +48,17 @@ Så här ser strukturen ut för ett projekt i Jekyll:
 
 ## 3. Markdown och Front Matter
 
-Markdown är ett lightweight markeringsspråk designat för att skriva innehål på ett enkelt och läsbart sätt. I Jekyll beskrivs en sida med markdown, och som därefter konverteras till HTML.
+I Jekyll beskrivs en sida med *markdown*, och som därefter konverteras till HTML.
+Markdown är ett markeringsspråk designat för att skriva innehål på ett enkelt och läsbart sätt. 
+
+
+
+**Markdown vs HTML vs XML**
+
+Markdown är enklare än HTML eftersom det använder intuitiv formatering. För att skriva fet stil omsluts texetn med dubbla * tecken  (`**text i fet stil**`) istället för html elementet `<strong>text i fet stil</strong>`). 
+
+HTML är mer kraftfullt men kräver mer kod. XML fokuserar på datastruktur och är lika strikt som HTML när det gäller syntaxregler. XML låter dig också definiera egna taggar för olika datatyper.
+
 
 **Jämförelse med andra markeringsspråk:**
 
@@ -58,32 +69,31 @@ Markdown är ett lightweight markeringsspråk designat för att skriva innehål 
 | **XML** | Hög | Data-utbyte, konfiguration |
 
 
-**Markdown vs HTML vs XML**
-
-Markdown är mycket enklare än HTML eftersom det använder intuitiv formatering (`**fet**` istället för `<strong>`). Det är också mer läsbart i råformat. 
-
-HTML är mer kraftfullt men kräver mer kod. XML fokuserar på datastruktur och är lika strikt som HTML när det gäller syntaxregler. XML låter dig också definiera egna taggar för olika datatyper.
-
 
 ### Markdown-exempel
 
-``` markdown
+```markdown
+
 # My Title
 
-This is a paragraph.
+Den är texten blir ett stycke.
 
+Här är en lista
 - Item 1
 - Item 2
+
 ```
 
 ### Front Matter
 
-**Front Matter** är metadata som placeras i början av en fil, vanligtvis omgiven av tre bindestreck 
-`---` 
-på både början och slut. Front Matter används för att definiera variabler och konfigurationer som påverkar hur en fil bearbetas och renderas.
+**Front Matter** är ett kodblock av metadata som placeras i början av en fil. Metadata skrivs efter tre inledande bindestreck. Efter att metadata angetts avslutas kodblocket med tre avslutande bindestreck.
+
+Front Matter används för att definiera variabler och konfigurationer som påverkar hur en fil bearbetas och renderas.
 
 
-Ett exempel på ett inledande kodblock med **Front Matter**: 
+Ett exempel på kodblock med **Front Matter**: 
+
+*index.md*
 
 ``` yaml
 ---
@@ -117,7 +127,9 @@ Variabler från Front Matter kan användas i layouten. Om du definierar `author`
 
 ``` html
 <footer>
+
     <p>&copy; 2024 {{ page.author }}</p>
+
 </footer>
 ```
 
@@ -127,7 +139,9 @@ Du kan använda Jekylls inbyggda variabel `site.time` för att få aktuellt år 
 
 ``` html
 <footer>
+
     <p>&copy; {{ site.time | date: "%Y" }} {{ page.author }}</p>
+
 </footer>
 ```
 
@@ -141,7 +155,7 @@ Du kan också använda andra variabler som `{{ page.date }}`, `{{ page.title }}`
 
 **Front Matter-konfiguration:**
 
-I din Markdown-fil anger du vilken layout som ska användas:
+I din Markdown-fil anger du vilken layout som ska användas. Se raden som inleds *layout* i kodblocket.
 
 ``` yaml
 ---
@@ -161,7 +175,7 @@ flowchart TD
 
 Layout-exempel:
 
-`_layouts/post.html`
+*_layouts/post.html*
 
 ``` html
 <!DOCTYPE html>
@@ -172,11 +186,15 @@ Layout-exempel:
 <body>
 
     <main>
+
         {{ content }}
+
     </main>
 
     <footer>
+
         <p>&copy; {{ site.time | date: "%Y" }} {{ page.author }}</p>
+    
     </footer>
 
 </body>
@@ -210,13 +228,16 @@ Sedan installeras temat automatiskt när Jekyll bygger.
 
 ### Skapa egen CSS istället för tema
 
-Du behöver inte använda ett tema. Istället kan du skapa egen CSS från grunden:
+Istället för att använda och justerat ett tema kan du skapa egen CSS från grunden. 
 
 1. Skapa en layout-fil i `_layouts/default.html`
 2. Lägg din egen CSS i `assets/css/style.css`
 3. Länka CSS-filen i layouten: `<link rel="stylesheet" href="/assets/css/style.css">`
 
-Denna metod ger fullständig kontroll över designen och du bestämmer själv all CSS.
+Det ger dig fullständig kontroll över designen och du bestämmer själv all CSS.
+
+
+------------------------------------------------------------------------
 
 
 ## 6. Docker för Utveckling
@@ -224,13 +245,6 @@ Denna metod ger fullständig kontroll över designen och du bestämmer själv al
 **Varför Docker för Jekyll-utveckling?**
 
 Docker skapar en isolerad utvecklingsmiljö som matchar produktionsmiljön. Det löser problemet "det fungerar på min dator" genom att alla utvecklare får samma Ruby-version, gems och systemkonfiguration. Docker gör det också enkelt att byta mellan projekt utan att installationskonflikter uppstår.
-
-**Fördelar:**
-
-- **Konsistens** - samma miljö för alla utvecklare
-- **Isolation** - inga konflikter med systemets Ruby-installation
-- **Lätt onboarding** - ny utvecklare kör bara `docker-compose up`
-- **Reproducerbart** - samma setup i utveckling och produktion
 
 
 
@@ -240,7 +254,7 @@ Docker skapar en isolerad utvecklingsmiljö som matchar produktionsmiljön. Det 
 #### Dockerfile
 
 
-En **Dockerfile** är en textfil som innehåller instruktioner för hur Docker ska bygga en containeravbild. Det är ett recept som definierar:
+En **Dockerfile** är en textfil som innehåller instruktioner för hur Docker ska bygga en containeravbild. Det anger:
 
 - Vilken bas-avbild som ska användas (`FROM`)
 - Vilka paket som ska installeras (`RUN`)
@@ -251,7 +265,7 @@ En **Dockerfile** är en textfil som innehåller instruktioner för hur Docker s
 I exemplet nedan använder Dockerfile Ruby 3.2 som bas, sätter arbetskatalogen till `/site`, installerar bundler, och exponerar port 4000 för Jekyll-utvecklingsservern.
 
 
-`Dockerfile`
+*Dockerfile*
 
 ``` dockerfile
 FROM ruby:3.2
@@ -266,17 +280,89 @@ EXPOSE 4000
 
 #### Gemfile-exempel för Jekyll
 
+
+En *gem* är en samling Ruby-kod packad för enkel installation och användning i dina projekt. Det är Rubys pakethanteringssystem, ungefär som npm-paket för JavaScript eller pip-paket för Python.
+
+
+I Jekyll-sammanhang är gems plugins och verktyg som utökar Jekylls funktionalitet. Till exempel:
+- `jekyll-seo-tag` - lägger till SEO-metadata
+- `jekyll-remote-theme` - möjliggör fjärrteman
+- `webrick` - webserver för lokal utveckling
+
+Installationen av olika gems sker genom att lista dem i `Gemfile` och kör `bundle install`. Bundler hämtar sedan gemsen från rubygems.org och installerar dem tillsammans med alla beroenden.
+
 En Gemfile specificerar Ruby-gems som ditt Jekyll-projekt behöver. Skapa en fil med namnet `Gemfile`. Här ett exempel på olika gems:
 
-`Gemfile`
+*Gemfile* **uppdaterad**
 
 ``` ruby
 source "https://rubygems.org"
 
-gem "jekyll", "~> 4.4"
+gem "github-pages", group: :jekyll_plugins
 gem "webrick"
-gem "jekyll-remote-theme"
-gem "jekyll-seo-tag"
+```
+
+
+
+#### Konfigurationsfilen _config.yml
+
+**_config.yml** är Jekylls konfigurationsfil där du definierar globala inställningar för hela webbplatsen. Den ligger i projektets rotmapp och skrivs i YAML-format.
+
+
+**Vad kan konfigureras:**
+
+- `title` - webbplatsens namn
+- `description` - meta-beskrivning för SEO
+- `url` - webbplatsens huvudadress
+- `baseurl` - undermapp om sidan ligger på underdomän
+- `theme` - vilket tema som används
+- `plugins` - vilka Jekyll-plugins som ska aktiveras
+- `exclude` - mappar/filer som ska ignoreras vid byggning
+
+Varje gång du ändrar `_config.yml` måste du bygga om sidan för att ändringarna ska börja gälla.
+
+
+*_config.yml*
+
+```yml
+title: Min Docker Jekyll Site
+description: Testsite i Docker
+baseurl: ""
+url: ""
+remote_theme: pages-themes/cayman@v0.2.0
+plugins:
+- jekyll-remote-theme 
+```
+
+
+#### Filen index.md i Jekyll
+
+
+Filen `index.md` är en **startfil** (eller huvudsida) som används i Jekyll för att generera webbplatsens landningssida eller startsida.
+
+### Huvudsakliga funktioner:
+
+- **Landningssida**: Når användare direkt på webbplatsens root-URL (t.ex. example.com/)
+- **Innehållskonvertering**: Jekyll konverterar Markdown-innehållet till HTML
+- **Front Matter**: Stöder YAML front matter för metadata (layout, titel, kategorier, etc.)
+- **Standardlayout**: Används tillsammans med en definierad layout för att skapa sidans struktur
+- **Navigeringspunkt**: Ofta utgångspunkten för webbplatsens navigationsstruktur
+
+
+
+*index.md* **uppdaterad**
+
+```md
+---
+layout: default
+title: Flisa Hedenhös
+author: Anders Sjunnesson
+---
+
+# Välkommen till min webbplats - {{ page.title }}
+
+**{{ page.author }}**
+
 ```
 
 
@@ -294,7 +380,7 @@ En fil med namnet **docker-compose.yml** är en konfigurationsfil som definierar
 Med `docker-compose up` behöver du bara ett kommando för att starta hela utvecklingsmiljön — istället för att manuellt bygga och köra `docker run` med många flaggor.
 
 
-`docker-compose.yml`
+*docker-compose.yml*
 
 ``` yaml
 version: "3.9"
@@ -302,7 +388,6 @@ version: "3.9"
 services:
   jekyll-theme:
     build: .
-    container_name: jekyll-theme
     ports:
       - "4000:4000"
     volumes:
@@ -326,14 +411,12 @@ docker compose up
 ```
 
 
-
-
 ### Versionshantera Jekyll i GitHub
 
-När man versionshanterar ett Jekyll projekt i GitHub kan man utelämna vissa mappar och filer via `.gitignore`. Skapa en fil med namnet `.gitignore` och ange filens innehåll:
+När man versionshanterar ett projekt med Jekyll i GitHub kan man utelämna vissa mappar och filer via *gitignore*. Skapa en fil med namnet `.gitignore` och ange filens innehåll:
 
 
-`.gitignore`
+*.gitignore*
 
 ```gitignore
 # Dependencies
@@ -349,9 +432,18 @@ _site/
 vendor/
 
 ```
+
+
 ------------------------------------------------------------------------
 
+
 ## 7. Deployment med GitHub Pages
+
+**Fördelar med Jekyll och GitHub Pages**
+
+Jekyll integreras förvalt med GitHub Pages — ingen serverkonfiguration krävs. Du skriver bara Markdown, pushar till GitHub, och sidan publiceras automatiskt. Det är gratis, säkert och snabbt eftersom statiska filer serveras direkt. 
+
+Passar därmed utmärkt för dokumentation, bloggar och en portfolio sida.
 
 
 ### Steg-för-steg guide: Publicera Jekyll från Docker till GitHub Pages
@@ -373,11 +465,16 @@ _site/
 Gemfile.lock
 ```
 
-**Steg 2: Konfigurera `_config.yml` för GitHub Pages**
+**Steg 2: SKapa och konfigurera `_config.yml` för GitHub Pages**
 
 ``` yaml
-baseurl: "/repository-name"  # Om inte användarwebbplats
+
+# Startsida för användare
 url: "https://username.github.io"
+
+# Ett repository
+baseurl: "/repository-name"  
+
 ```
 
 **Steg 3: Bygg lokalt i Docker**
@@ -386,7 +483,7 @@ url: "https://username.github.io"
 docker-compose up
 ```
 
-Verifiera att webbplatsen ser korrekt ut på `http://localhost:4000`.
+Verifiera att webbplatsen ser korrekt ut på `http://localhost:4000`. Om du får ett felmeddelande age tillfälligt *baseurl: ""* 
 
 **Steg 4: Committa och Pusha till GitHub**
 
@@ -411,8 +508,6 @@ Efter några minuter är webbplatsen tillgänglig på:
 
 **Tips:**
 - Använd `gem "github-pages"` i Gemfile för kompatibilitet
-- GitHub Pages använder inte `--livereload`
-- Cachebil uppdaterare på `https://username.github.io/repository-name/admin/clear-cache` (om custom domain)
 
 
 Deployment-flöde:
@@ -430,8 +525,9 @@ flowchart LR
 
 ## Sammanfattning
 
+
 -   Static Site Generators är snabba och säkra
--   Jekyll är enkel och kraftfull
+-   Jekyll är enkelt och kraftfullt
 -   Markdown gör innehåll enkelt
 -   Docker ger stabil utvecklingsmiljö
 -   GitHub Pages ger enkel hosting
