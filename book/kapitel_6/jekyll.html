@@ -211,8 +211,8 @@ Här är en lista
 <p>Ett exempel på kodblock med <strong>Front Matter</strong>:</p>
 <p><em>index.md</em></p>
 <pre><code class="language-yaml">---
+layout: default
 title: My First Post
-layout: post
 author: Flisa
 ---
 </code></pre>
@@ -250,8 +250,9 @@ author: Flisa
 <p><strong>Front Matter-konfiguration:</strong></p>
 <p>I din Markdown-fil anger du vilken layout som ska användas. Se raden som inleds <em>layout</em> i kodblocket.</p>
 <pre><code class="language-yaml">---
-title: Min Bloggpost
-layout: post
+layout: default
+title: Flisa Hedenhös
+author: Anders Sjunnesson
 ---
 </code></pre>
 <pre class="mermaid">%%{init: {'theme': 'default'}}%%
@@ -339,7 +340,7 @@ EXPOSE 4000
 <li><code>webrick</code> - webserver för lokal utveckling</li>
 </ul>
 <p>Installationen av olika gems sker genom att lista dem i <code>Gemfile</code> och kör <code>bundle install</code>. Bundler hämtar sedan gemsen från rubygems.org och installerar dem tillsammans med alla beroenden.</p>
-<p>En Gemfile specificerar Ruby-gems som ditt Jekyll-projekt behöver. Skapa en fil med namnet <code>Gemfile</code>. Här ett exempel på olika gems:</p>
+<p>En Gemfile specificerar Ruby-gems som ditt Jekyll-projekt behöver. Skapa en fil med namnet <code>Gemfile</code>. Här ett exempel på olika gems (gem <em>github-pages</em> inkluderar andra gems).</p>
 <p><em>Gemfile</em> <strong>uppdaterad</strong></p>
 <pre><code class="language-ruby">source "https://rubygems.org"
 
@@ -379,7 +380,7 @@ plugins:
 <li><strong>Navigeringspunkt</strong>: Ofta utgångspunkten för webbplatsens navigationsstruktur</li>
 </ul>
 <p><em>index.md</em> <strong>uppdaterad</strong></p>
-<pre><code class="language-md">---
+<pre><code class="language-yaml">---
 layout: default
 title: Flisa Hedenhös
 author: Anders Sjunnesson
@@ -424,18 +425,11 @@ docker compose up
 <h3 id="versionshantera-jekyll-i-github"><a class="header" href="#versionshantera-jekyll-i-github">Versionshantera Jekyll i GitHub</a></h3>
 <p>När man versionshanterar ett projekt med Jekyll i GitHub kan man utelämna vissa mappar och filer via <em>gitignore</em>. Skapa en fil med namnet <code>.gitignore</code> och ange filens innehåll:</p>
 <p><em>.gitignore</em></p>
-<pre><code class="language-gitignore"># Dependencies
-Gemfile.lock
-
-# Build output
-_site/
+<pre><code class="language-gitignore">_site/
+.sass-cache/
 .jekyll-cache/
 .jekyll-metadata
-
-# Local development
-.bundle/
-vendor/
-
+Gemfile.lock
 </code></pre>
 <hr />
 <h2 id="7-deployment-med-github-pages"><a class="header" href="#7-deployment-med-github-pages">7. Deployment med GitHub Pages</a></h2>
@@ -447,9 +441,19 @@ vendor/
 <ul>
 <li>Git installerat och konfigurerat</li>
 <li>Docker och Docker Compose installerat</li>
-<li>GitHub-konto med Repository</li>
+<li>GitHub-konto</li>
 </ul>
-<p><strong>Steg 1: Förbered ditt Repository</strong></p>
+<h4 id="steg-1-bestäm-vad-typ-av-sida"><a class="header" href="#steg-1-bestäm-vad-typ-av-sida">Steg 1: Bestäm vad typ av sida</a></h4>
+<p>I exemplen nedan ska du ersätta <em>username</em> med ditt användarnamn i GitHub</p>
+<h5 id="alternativ-a---en-webbplats-för-ditt-konto"><a class="header" href="#alternativ-a---en-webbplats-för-ditt-konto">Alternativ A - en webbplats för ditt konto</a></h5>
+<p>Ex <em>https://username.github.io</em></p>
+<p>Skapa ett repo i GitHub med namnet <em>username.github.io</em></p>
+<p>Klona repot.</p>
+<h5 id="alternativ-b---en-webbplats-för-ett-repo"><a class="header" href="#alternativ-b---en-webbplats-för-ett-repo">Alternativ B - en webbplats för ett repo</a></h5>
+<p>Ex <em>https://username.github.io/repository-1</em></p>
+<p>Skapa ett repo i GitHub med önskat namn, ex <em>repository-1</em></p>
+<p>Klona repot.</p>
+<h4 id="steg-2-förbered-ditt-repository"><a class="header" href="#steg-2-förbered-ditt-repository">Steg 2: Förbered ditt Repository</a></h4>
 <p>Skapa en <code>.gitignore</code> för Jekyll:</p>
 <pre><code>_site/
 .sass-cache/
@@ -457,41 +461,55 @@ vendor/
 .jekyll-metadata
 Gemfile.lock
 </code></pre>
-<p><strong>Steg 2: SKapa och konfigurera <code>_config.yml</code> för GitHub Pages</strong></p>
-<pre><code class="language-yaml">
-# Startsida för användare
+<h4 id="steg-3-konfigurera-development-variant-av-filen-_configyml"><a class="header" href="#steg-3-konfigurera-development-variant-av-filen-_configyml">Steg 3: Konfigurera development variant av filen <code>_config.yml</code></a></h4>
+<p>Se till att du har en fil med namnet <em>_config.yml</em>.</p>
+<p><strong>OBS!</strong> Är det <em>en webbplats för ett repo</em> ska du ändra <em>baseurl</em> nedan från ett tom värde "" till namnet på ditt repo med inledande snedstreck, ex "/repository-1".</p>
+<pre><code class="language-yaml">title: Min Docker Jekyll Site
+description: Testsite i Docker
+baseurl: ""
 url: "https://username.github.io"
-
-# Ett repository
-baseurl: "/repository-name"  
-
+remote_theme: pages-themes/cayman@v0.2.0
+plugins:
+- jekyll-remote-theme 
 </code></pre>
-<p><strong>Steg 3: Bygg lokalt i Docker</strong></p>
-<pre><code class="language-bash">docker-compose up
+<p>Skapa en fil med namnet <em>_config.dev.yml</em>, och ange:</p>
+<pre><code class="language-yaml">baseurl: ""
+url: ""
 </code></pre>
-<p>Verifiera att webbplatsen ser korrekt ut på <code>http://localhost:4000</code>. Om du får ett felmeddelande age tillfälligt <em>baseurl: ""</em></p>
-<p><strong>Steg 4: Committa och Pusha till GitHub</strong></p>
+<p>Redigera därefter filen docker-compose.yml. Den här filen körs inte på GitHub, endast lokalt. Det kommando som lokalt installerar Jekyll ersätter värden för <em>url</em> eller <em>baseurl</em> med följande instruktion (notera att båda filerna anges i slutet <code> --config _config.yml,_config.dev.yml</code>).</p>
+<p>Var noggrann med att rader i filen har rätt indentering - indrag.</p>
+<pre><code class="language-yml">    # command: bash -c "bundle install &amp;&amp; bundle exec jekyll serve --host 0.0.0.0 --incremental --force_polling"
+    command: bash -c "bundle install &amp;&amp; bundle exec jekyll serve --host 0.0.0.0 --incremental --force_polling --config _config.yml,_config.dev.yml"
+</code></pre>
+<h4 id="steg-4-utveckla-lokalt-i-docker"><a class="header" href="#steg-4-utveckla-lokalt-i-docker">Steg 4: Utveckla lokalt i Docker</a></h4>
+<pre><code class="language-bash">docker compose down -v
+docker compose build --no-cache
+docker compose up
+</code></pre>
+<p>Verifiera att webbplatsen ser korrekt ut, se: <code>http://localhost:4000</code></p>
+<h4 id="steg-5-committa-och-pusha-till-github"><a class="header" href="#steg-5-committa-och-pusha-till-github">Steg 5: Committa och Pusha till GitHub</a></h4>
 <pre><code class="language-bash">git add .
-git commit -m "Initial Jekyll setup"
-git push origin main
+git commit -m "update ..."
+git push
 </code></pre>
-<p><strong>Steg 5: Aktivera GitHub Pages</strong></p>
+<h4 id="steg-6-aktivera-github-pages"><a class="header" href="#steg-6-aktivera-github-pages">Steg 6: Aktivera GitHub Pages</a></h4>
 <ol>
 <li>Gå till Repository → Settings → Pages</li>
 <li>Under "Source", välj Branch: <code>main</code></li>
 <li>Välj mapp: <code>/ (root)</code> eller <code>/docs</code> beroende på konfiguration</li>
 <li>GitHub bygger automatiskt med Jekyll</li>
 </ol>
-<p><strong>Steg 6: Verifiera Deployment</strong></p>
+<h4 id="steg-7-verifiera-deployment"><a class="header" href="#steg-7-verifiera-deployment">Steg 7: Verifiera Deployment</a></h4>
 <p>Efter några minuter är webbplatsen tillgänglig på:</p>
 <ul>
 <li>Användarwebbplats: <code>https://username.github.io</code></li>
-<li>Projektwebbplats: <code>https://username.github.io/repository-name</code></li>
+<li>Projektwebbplats: <code>https://username.github.io/repository-1</code></li>
 </ul>
-<p><strong>Tips:</strong></p>
-<ul>
-<li>Använd <code>gem "github-pages"</code> i Gemfile för kompatibilitet</li>
-</ul>
+<p><strong>Tips</strong></p>
+<p>Om du har flera Docker projekt igång parallellt kan du <em>utelämna namngivning av en container</em>:</p>
+<p><em>docker-compose.yml</em></p>
+<pre><code class="language-yml">    # container_name: jekyll-theme
+</code></pre>
 <p>Deployment-flöde:</p>
 <pre class="mermaid">%%{init: {'theme': 'default'}}%%
 flowchart LR

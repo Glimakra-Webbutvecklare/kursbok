@@ -97,8 +97,8 @@ Ett exempel på kodblock med **Front Matter**:
 
 ``` yaml
 ---
+layout: default
 title: My First Post
-layout: post
 author: Flisa
 ---
 ```
@@ -159,8 +159,9 @@ I din Markdown-fil anger du vilken layout som ska användas. Se raden som inleds
 
 ``` yaml
 ---
-title: Min Bloggpost
-layout: post
+layout: default
+title: Flisa Hedenhös
+author: Anders Sjunnesson
 ---
 ```
 
@@ -291,7 +292,7 @@ I Jekyll-sammanhang är gems plugins och verktyg som utökar Jekylls funktionali
 
 Installationen av olika gems sker genom att lista dem i `Gemfile` och kör `bundle install`. Bundler hämtar sedan gemsen från rubygems.org och installerar dem tillsammans med alla beroenden.
 
-En Gemfile specificerar Ruby-gems som ditt Jekyll-projekt behöver. Skapa en fil med namnet `Gemfile`. Här ett exempel på olika gems:
+En Gemfile specificerar Ruby-gems som ditt Jekyll-projekt behöver. Skapa en fil med namnet `Gemfile`. Här ett exempel på olika gems (gem *github-pages* inkluderar andra gems).
 
 *Gemfile* **uppdaterad**
 
@@ -352,7 +353,7 @@ Filen `index.md` är en **startfil** (eller huvudsida) som används i Jekyll fö
 
 *index.md* **uppdaterad**
 
-```md
+```yaml
 ---
 layout: default
 title: Flisa Hedenhös
@@ -419,18 +420,11 @@ När man versionshanterar ett projekt med Jekyll i GitHub kan man utelämna viss
 *.gitignore*
 
 ```gitignore
-# Dependencies
-Gemfile.lock
-
-# Build output
 _site/
+.sass-cache/
 .jekyll-cache/
 .jekyll-metadata
-
-# Local development
-.bundle/
-vendor/
-
+Gemfile.lock
 ```
 
 
@@ -451,9 +445,32 @@ Passar därmed utmärkt för dokumentation, bloggar och en portfolio sida.
 **Förutsättningar:**
 - Git installerat och konfigurerat
 - Docker och Docker Compose installerat
-- GitHub-konto med Repository
+- GitHub-konto 
 
-**Steg 1: Förbered ditt Repository**
+#### Steg 1: Bestäm vad typ av sida
+
+I exemplen nedan ska du ersätta *username* med ditt användarnamn i GitHub
+
+##### Alternativ A - en webbplats för ditt konto 
+
+Ex *https://username.github.io*
+
+Skapa ett repo i GitHub med namnet *username.github.io*
+
+Klona repot. 
+
+
+##### Alternativ B - en webbplats för ett repo 
+
+Ex *https://username.github.io/repository-1*
+
+Skapa ett repo i GitHub med önskat namn, ex *repository-1*
+
+Klona repot. 
+
+
+
+#### Steg 2: Förbered ditt Repository
 
 Skapa en `.gitignore` för Jekyll:
 
@@ -465,49 +482,88 @@ _site/
 Gemfile.lock
 ```
 
-**Steg 2: SKapa och konfigurera `_config.yml` för GitHub Pages**
+#### Steg 3: Konfigurera development variant av filen `_config.yml`
+
+
+Se till att du har en fil med namnet *_config.yml*. 
+
+**OBS!** Är det *en webbplats för ett repo* ska du ändra *baseurl* nedan från ett tom värde "" till namnet på ditt repo med inledande snedstreck, ex "/repository-1".
 
 ``` yaml
-
-# Startsida för användare
+title: Min Docker Jekyll Site
+description: Testsite i Docker
+baseurl: ""
 url: "https://username.github.io"
-
-# Ett repository
-baseurl: "/repository-name"  
-
+remote_theme: pages-themes/cayman@v0.2.0
+plugins:
+- jekyll-remote-theme 
 ```
 
-**Steg 3: Bygg lokalt i Docker**
+Skapa en fil med namnet *_config.dev.yml*, och ange:
 
-``` bash
-docker-compose up
+``` yaml
+baseurl: ""
+url: ""
 ```
 
-Verifiera att webbplatsen ser korrekt ut på `http://localhost:4000`. Om du får ett felmeddelande age tillfälligt *baseurl: ""* 
 
-**Steg 4: Committa och Pusha till GitHub**
+Redigera därefter filen docker-compose.yml. Den här filen körs inte på GitHub, endast lokalt. Det kommando som lokalt installerar Jekyll ersätter värden för *url* eller *baseurl* med följande instruktion (notera att båda filerna anges i slutet ` --config _config.yml,_config.dev.yml`).
+
+Var noggrann med att rader i filen har rätt indentering - indrag.
+
+
+```yml
+    # command: bash -c "bundle install && bundle exec jekyll serve --host 0.0.0.0 --incremental --force_polling"
+    command: bash -c "bundle install && bundle exec jekyll serve --host 0.0.0.0 --incremental --force_polling --config _config.yml,_config.dev.yml"
+```
+
+
+#### Steg 4: Utveckla lokalt i Docker
+
+```bash
+docker compose down -v
+docker compose build --no-cache
+docker compose up
+```
+
+Verifiera att webbplatsen ser korrekt ut, se: `http://localhost:4000` 
+
+
+#### Steg 5: Committa och Pusha till GitHub
 
 ``` bash
 git add .
-git commit -m "Initial Jekyll setup"
-git push origin main
+git commit -m "update ..."
+git push
 ```
 
-**Steg 5: Aktivera GitHub Pages**
+#### Steg 6: Aktivera GitHub Pages
 
 1. Gå till Repository → Settings → Pages
 2. Under "Source", välj Branch: `main`
 3. Välj mapp: `/ (root)` eller `/docs` beroende på konfiguration
 4. GitHub bygger automatiskt med Jekyll
 
-**Steg 6: Verifiera Deployment**
+
+#### Steg 7: Verifiera Deployment
 
 Efter några minuter är webbplatsen tillgänglig på:
 - Användarwebbplats: `https://username.github.io`
-- Projektwebbplats: `https://username.github.io/repository-name`
+- Projektwebbplats: `https://username.github.io/repository-1`
 
-**Tips:**
-- Använd `gem "github-pages"` i Gemfile för kompatibilitet
+
+
+**Tips**
+
+Om du har flera Docker projekt igång parallellt kan du *utelämna namngivning av en container*:
+
+
+*docker-compose.yml*
+
+```yml
+    # container_name: jekyll-theme
+```
+
 
 
 Deployment-flöde:
