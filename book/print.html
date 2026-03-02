@@ -8,7 +8,7 @@
 
 
         <!-- Custom HTML head -->
-        
+
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
@@ -100,7 +100,7 @@
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar-hover-placeholder"></div>
                 <div id="menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
                         <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
@@ -8824,7 +8824,7 @@ function displayUsersFallback(users) {
 <li><strong>Fråga om krav</strong> - behövs felhantering? Browser-support?</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="hosting-cms-och-wordpress"><a class="header" href="#hosting-cms-och-wordpress">Hosting, CMS och WordPress</a></h1>
-<p>Detta kapitel täcker hosting-lösningar, innehållshanteringssystem och WordPress.</p>
+<p>Detta kapitel täcker hosting-lösningar, innehållshanteringssystem, Markdown och dokumentation, samt WordPress.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="vad-är-hosting"><a class="header" href="#vad-är-hosting">Vad är hosting?</a></h1>
 <p>När du utvecklar en webbplats lokalt på din dator kan bara du se den. För att göra den tillgänglig för andra på internet behöver du <strong>hosting</strong> (värdskap) – en plats där din webbplats kan "bo" och vara tillgänglig dygnet runt. I den här lektionen går vi igenom de grundläggande begreppen du kommer att stöta på när du sätter upp och hostar webbapplikationer.</p>
 <h2 id="varför-behövs-hosting"><a class="header" href="#varför-behövs-hosting">Varför behövs hosting?</a></h2>
@@ -10854,6 +10854,229 @@ add_action( 'wp_footer', 'school_site_notice' );
 <li>Hur skulle du strukturera kategorier för inlägg så att det blir lätt att hitta rätt?</li>
 <li>Vilka sidor behöver alltid vara tillgängliga i huvudmenyn?</li>
 </ol>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="markdown-och-dokumentation"><a class="header" href="#markdown-och-dokumentation">Markdown och dokumentation</a></h1>
+<p>Markdown är ett enkelt markeringsspråk som används överallt i modern utveckling: README-filer på GitHub, dokumentation, bloggar, och denna kursbok. Att behärska Markdown och kunna skriva bra dokumentation är en viktig färdighet för varje webbutvecklare.</p>
+<h2 id="vad-är-markdown-och-varför-använda-det"><a class="header" href="#vad-är-markdown-och-varför-använda-det">Vad är Markdown och varför använda det?</a></h2>
+<p><strong>Markdown</strong> är ett lättviktigt markeringsspråk (markup language) skapat av John Gruber 2004. Idén är enkel: skriv vanlig text med enkla symboler för formatering, som sedan kan konverteras till HTML eller andra format.</p>
+<h3 id="varför-markdown"><a class="header" href="#varför-markdown">Varför Markdown?</a></h3>
+<ul>
+<li><strong>Läsbart som vanlig text</strong> – även i råformat (raw) är Markdown lätt att läsa, till skillnad från HTML med många taggar</li>
+<li><strong>Plattformsoberoende</strong> – fungerar överallt: GitHub, GitLab, Slack, Notion, VS Code, och många fler</li>
+<li><strong>Snabbt att skriva</strong> – mindre kod för samma resultat jämfört med HTML</li>
+<li><strong>Versionshantering</strong> – textfiler passar perfekt för Git; diff (skillnader) blir tydliga</li>
+<li><strong>Standard i utvecklingsvärlden</strong> – README, CHANGELOG, och dokumentation skrivs ofta i Markdown</li>
+</ul>
+<pre class="mermaid">%%{init: {'theme': 'default'}}%%
+flowchart LR
+    A[Markdown .md] --&gt; B[Parser]
+    B --&gt; C[HTML / PDF / andra format]
+</pre>
+<h2 id="grundläggande-markdown"><a class="header" href="#grundläggande-markdown">Grundläggande Markdown</a></h2>
+<h3 id="rubriker"><a class="header" href="#rubriker">Rubriker</a></h3>
+<p>Använd <code>#</code> för rubriker. Ett <code>#</code> är störst (h1), sex <code>#</code> minst (h6).</p>
+<pre><code class="language-markdown"># Rubrik nivå 1
+## Rubrik nivå 2
+### Rubrik nivå 3
+</code></pre>
+<h3 id="textformatering"><a class="header" href="#textformatering">Textformatering</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Syntax</th><th>Resultat</th></tr></thead><tbody>
+<tr><td><code>**fet text**</code> eller <code>__fet text__</code></td><td><strong>fet text</strong></td></tr>
+<tr><td><code>*kursiv*</code> eller <code>_kursiv_</code></td><td><em>kursiv</em></td></tr>
+<tr><td><code>~~genomstruken~~</code></td><td><del>genomstruken</del></td></tr>
+<tr><td><code>`kod`</code></td><td><code>kod</code></td></tr>
+</tbody></table>
+</div>
+<h3 id="listor-1"><a class="header" href="#listor-1">Listor</a></h3>
+<p><strong>Punktlistor</strong> med <code>-</code>, <code>*</code> eller <code>+</code>:</p>
+<pre><code class="language-markdown">- Första punkten
+- Andra punkten
+  - Underpunkt (indentera med två mellanslag)
+</code></pre>
+<p><strong>Numrerade listor</strong>:</p>
+<pre><code class="language-markdown">1. Steg ett
+2. Steg två
+3. Steg tre
+</code></pre>
+<h3 id="länkar-och-bilder"><a class="header" href="#länkar-och-bilder">Länkar och bilder</a></h3>
+<pre><code class="language-markdown">[Länktext](https://example.com)
+[Bokmärke i samma fil](#rubrik-id)
+
+![Alt-text för bild](bild.png)
+</code></pre>
+<h3 id="kodblock"><a class="header" href="#kodblock">Kodblock</a></h3>
+<p>En rad kod med backticks: <code>`kod`</code></p>
+<p>Flera rader med fenced code blocks:</p>
+<pre><code class="language-markdown">```javascript
+function hello() {
+  console.log("Hej världen!");
+}
+```
+</code></pre>
+<h2 id="avancerade-markdown-funktioner"><a class="header" href="#avancerade-markdown-funktioner">Avancerade Markdown-funktioner</a></h2>
+<h3 id="tabeller"><a class="header" href="#tabeller">Tabeller</a></h3>
+<pre><code class="language-markdown">| Kolumn 1 | Kolumn 2 | Kolumn 3 |
+|----------|----------|----------|
+| Cell A   | Cell B   | Cell C   |
+| Cell D   | Cell E   | Cell F   |
+</code></pre>
+<p>Alignment med kolon:</p>
+<pre><code class="language-markdown">| Vänster | Center | Höger |
+|:--------|:------:|------:|
+| vänster | mitt   | höger |
+</code></pre>
+<h3 id="blockquotes-citat"><a class="header" href="#blockquotes-citat">Blockquotes (citat)</a></h3>
+<pre><code class="language-markdown">&gt; Detta är ett citat.
+&gt; Flera rader behåller citatet.
+</code></pre>
+<h3 id="horisontella-linjer"><a class="header" href="#horisontella-linjer">Horisontella linjer</a></h3>
+<pre><code class="language-markdown">---
+***
+___
+</code></pre>
+<h3 id="checkboxar-task-lists"><a class="header" href="#checkboxar-task-lists">Checkboxar (task lists)</a></h3>
+<pre><code class="language-markdown">- [x] Klar uppgift
+- [ ] Ej klar uppgift
+</code></pre>
+<h3 id="fusk-escape-av-specialtecken"><a class="header" href="#fusk-escape-av-specialtecken">Fusk (escape) av specialtecken</a></h3>
+<p>Använd backslash <code>\</code> för att skriva tecken som annars har betydelse: <code>\*</code>, <code>\#</code>, <code>\[</code>, etc.</p>
+<h3 id="html-i-markdown"><a class="header" href="#html-i-markdown">HTML i Markdown</a></h3>
+<p>De flesta Markdown-parsers tillåter HTML. När Markdown inte räcker till kan du blanda in HTML:</p>
+<pre><code class="language-markdown">&lt;details&gt;
+&lt;summary&gt;Klicka för att expandera&lt;/summary&gt;
+
+Dolt innehåll här.
+
+&lt;/details&gt;
+</code></pre>
+<h2 id="hur-man-skriver-en-bra-readme"><a class="header" href="#hur-man-skriver-en-bra-readme">Hur man skriver en bra README</a></h2>
+<p>README.md är ofta det första en besökare ser på GitHub eller GitLab. En bra README gör projektet tillgängligt och professionellt.</p>
+<h3 id="grundstruktur-för-readme"><a class="header" href="#grundstruktur-för-readme">Grundstruktur för README</a></h3>
+<pre><code class="language-markdown"># Projektnamn
+
+Kort beskrivning (1–2 meningar) av vad projektet gör.
+
+## Installation
+
+Steg för att installera och köra projektet.
+
+## Användning
+
+Exempel på hur man använder projektet.
+
+## Bidra
+
+Hur andra kan bidra (om öppen källkod).
+</code></pre>
+<h3 id="viktiga-sektioner"><a class="header" href="#viktiga-sektioner">Viktiga sektioner</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Sektion</th><th>Syfte</th></tr></thead><tbody>
+<tr><td><strong>Titel och beskrivning</strong></td><td>Vad är projektet? Vem är det för?</td></tr>
+<tr><td><strong>Installation</strong></td><td>Konkreta steg: klona, installera beroenden, konfigurera</td></tr>
+<tr><td><strong>Användning</strong></td><td>Exempel, kommandon, skärmdummar</td></tr>
+<tr><td><strong>Konfiguration</strong></td><td>Miljövariabler, config-filer</td></tr>
+<tr><td><strong>Bidra</strong></td><td>Contributing guidelines, kodstil</td></tr>
+<tr><td><strong>Licens</strong></td><td>Vilken licens används?</td></tr>
+</tbody></table>
+</div>
+<h3 id="praktiska-tips"><a class="header" href="#praktiska-tips">Praktiska tips</a></h3>
+<ul>
+<li><strong>Skriv för nybörjare</strong> – anta att läsaren inte känner till projektet</li>
+<li><strong>Inkludera exempel</strong> – kod eller kommandon som faktiskt fungerar</li>
+<li><strong>Uppdatera</strong> – README som inte stämmer med koden skadar förtroendet</li>
+<li><strong>Använd bilder</strong> – skärmdummar eller diagram kan förklara mycket snabbt</li>
+</ul>
+<h2 id="olika-licenser"><a class="header" href="#olika-licenser">Olika licenser</a></h2>
+<p>När du publicerar kod – särskilt som öppen källkod (open source) – behöver du ange en licens. Utan licens behåller du alla rättigheter (all rights reserved), vilket i praktiken innebär att andra inte får använda, kopiera eller modifiera koden utan ditt tillstånd.</p>
+<h3 id="permissiva-licenser-öppna-få-krav"><a class="header" href="#permissiva-licenser-öppna-få-krav">Permissiva licenser (öppna, få krav)</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Licens</th><th>Krav</th><th>När den passar</th></tr></thead><tbody>
+<tr><td><strong>MIT</strong></td><td>Behåll licensnotisen i koden</td><td>När du vill att så många som möjligt ska kunna använda koden, även i proprietära projekt. Mycket vanlig för bibliotek och verktyg.</td></tr>
+<tr><td><strong>Apache 2.0</strong></td><td>Behåll licensnotisen + patentgrant</td><td>Lik MIT men ger tydlig patentlicens. Bra för företagsprojekt och när patentfrågor är viktiga.</td></tr>
+<tr><td><strong>BSD</strong></td><td>Behåll licensnotisen</td><td>Lik MIT. Används ofta i akademiska och forskningsprojekt.</td></tr>
+</tbody></table>
+</div>
+<p><strong>MIT</strong> är en av de enklaste och mest använda licenserna. Kort sagt: gör vad du vill, men inkludera originalet av licensen.</p>
+<h3 id="copyleft-licenser-kräver-att-derivat-också-är-öppna"><a class="header" href="#copyleft-licenser-kräver-att-derivat-också-är-öppna">Copyleft-licenser (kräver att derivat också är öppna)</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Licens</th><th>Krav</th><th>När den passar</th></tr></thead><tbody>
+<tr><td><strong>GPL</strong></td><td>Derivater måste vara GPL och källkod måste delas</td><td>När du vill att förbättringar och tillägg också ska vara öppen källkod. Används av Linux, WordPress, många verktyg.</td></tr>
+<tr><td><strong>AGPL</strong></td><td>Som GPL + krav vid nätverksanvändning</td><td>När du vill att även SaaS (software as a service) som bygger på koden ska dela sin källkod.</td></tr>
+</tbody></table>
+</div>
+<p><strong>GPL</strong> (General Public License) säkerställer att koden förblir fri – även om någon bygger vidare på den. Det kan vara en dealbreaker för företag som vill använda koden i slutna produkter.</p>
+<h3 id="public-domain-och-ingen-licens"><a class="header" href="#public-domain-och-ingen-licens">Public domain och ingen licens</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Licens</th><th>Krav</th><th>När den passar</th></tr></thead><tbody>
+<tr><td><strong>Unlicense</strong> / <strong>CC0</strong></td><td>Inga</td><td>När du vill ge bort allt – koden tillhör alla. Mindre vanligt för kod.</td></tr>
+</tbody></table>
+</div>
+<h3 id="proprietär-licens-sluten-källkod"><a class="header" href="#proprietär-licens-sluten-källkod">Proprietär licens (sluten källkod)</a></h3>
+<p>Om du inte anger någon öppen licens behåller du copyright. Andra får inte använda koden utan avtal. Passar för kommersiella produkter, internkod eller när du vill behålla full kontroll.</p>
+<h3 id="sammanfattning--vilken-ska-jag-välja"><a class="header" href="#sammanfattning--vilken-ska-jag-välja">Sammanfattning – vilken ska jag välja?</a></h3>
+<ul>
+<li><strong>Vill du maximal spridning?</strong> → MIT eller Apache 2.0</li>
+<li><strong>Vill du att förbättringar också ska vara öppna?</strong> → GPL</li>
+<li><strong>Bygger du på befintlig GPL-kod?</strong> → Du måste använda GPL för ditt projekt</li>
+<li><strong>Vill du behålla all kontroll?</strong> → Ingen licens (proprietär) eller skriv en egen licens</li>
+</ul>
+<p>Se <a href="https://choosealicense.com/">choosealicense.com</a> för en interaktiv guide.</p>
+<p>Utöver README finns flera dokument som gör ett repo mer professionellt och lättare att arbeta med.</p>
+<h3 id="vanliga-dokumentfiler"><a class="header" href="#vanliga-dokumentfiler">Vanliga dokumentfiler</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Fil</th><th>Syfte</th></tr></thead><tbody>
+<tr><td><code>README.md</code></td><td>Introduktion, installation, användning</td></tr>
+<tr><td><code>CHANGELOG.md</code></td><td>Historik över ändringar (versionshantering)</td></tr>
+<tr><td><code>CONTRIBUTING.md</code></td><td>Hur man bidrar till projektet</td></tr>
+<tr><td><code>LICENSE</code></td><td>Licensvillkor</td></tr>
+<tr><td><code>.gitignore</code></td><td>Filer som inte ska versioneras</td></tr>
+<tr><td><code>docs/</code></td><td>Utökad dokumentation</td></tr>
+</tbody></table>
+</div>
+<h3 id="changelog"><a class="header" href="#changelog">CHANGELOG</a></h3>
+<p>Följ <a href="https://keepachangelog.com/">Keep a Changelog</a> för en tydlig struktur:</p>
+<pre><code class="language-markdown"># Changelog
+
+## [1.1.0] - 2024-03-15
+
+### Added
+- Ny funktion för export till PDF
+
+### Changed
+- Uppdaterad inloggningsflöde
+
+### Fixed
+- Bugg i sökfunktionen
+</code></pre>
+<h3 id="ai-relaterad-dokumentation"><a class="header" href="#ai-relaterad-dokumentation">AI-relaterad dokumentation</a></h3>
+<p>Med AI-verktyg (t.ex. Cursor, GitHub Copilot, ChatGPT) som används i utveckling blir det viktigt att dokumentera hur AI ska användas i projektet.</p>
+<h4 id="cursor-rules-och-agentsmd"><a class="header" href="#cursor-rules-och-agentsmd">Cursor rules och AGENTS.md</a></h4>
+<ul>
+<li><strong><code>.cursor/rules/</code></strong> – Regler som styr hur AI beter sig i projektet</li>
+<li><strong><code>AGENTS.md</code></strong> eller <strong><code>.cursor/AGENTS.md</code></strong> – Instruktioner för AI-agenter: arkitektur, konventioner, vad som är tillåtet</li>
+</ul>
+<p>Exempel på vad som kan dokumenteras:</p>
+<pre><code class="language-markdown"># AI Agent Guidelines
+
+## Kodstil
+- Använd TypeScript för nya filer
+- Följ befintliga namngivningskonventioner
+
+## Arkitektur
+- API-routes i /api/
+- Komponenter i /components/
+
+## Begränsningar
+- Ändra inte databasschemat utan migrering
+</code></pre>
+<h4 id="ai-skills-och-instruktioner"><a class="header" href="#ai-skills-och-instruktioner">AI-skills och instruktioner</a></h4>
+<ul>
+<li><strong><code>SKILL.md</code></strong> – Återanvändbara färdigheter/instruktioner för AI</li>
+<li><strong><code>docs/ai-usage.md</code></strong> – Beskriver hur AI används i projektet, vilka verktyg, vilka begränsningar</li>
+</ul>
+<h4 id="dokumentation-för-ai-parsning"><a class="header" href="#dokumentation-för-ai-parsning">Dokumentation för AI-parsning</a></h4>
+<p>AI läser ofta README, CONTRIBUTING och kodkommentarer. Tydlig strukturering hjälper:</p>
+<ul>
+<li><strong>Tydliga rubriker</strong> – AI kan hitta rätt sektion snabbare</li>
+<li><strong>Konsekvent terminologi</strong> – minskar missförstånd</li>
+<li><strong>Exempel i kod</strong> – AI kan bättre förstå och generera liknande kod</li>
+</ul>
+<h3 id="sammanfattning-34"><a class="header" href="#sammanfattning-34">Sammanfattning</a></h3>
+<p>En bra dokumentationsstruktur gör projektet lättare att förstå, bidra till och underhålla – både för människor och för AI-verktyg som används i utvecklingsprocessen.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="static-site-generators-med-jekyll"><a class="header" href="#static-site-generators-med-jekyll">Static Site Generators med Jekyll</a></h1>
 <h2 id="1-introduktion----vad-är-en-static-site-generator"><a class="header" href="#1-introduktion----vad-är-en-static-site-generator">1. Introduktion -- Vad är en Static Site Generator?</a></h2>
 <p>En Static Site Generator (SSG) är ett verktyg som genererar färdiga
@@ -11221,7 +11444,7 @@ flowchart LR
     D --&gt; E[Public Website]
 </pre>
 <hr />
-<h2 id="sammanfattning-34"><a class="header" href="#sammanfattning-34">Sammanfattning</a></h2>
+<h2 id="sammanfattning-35"><a class="header" href="#sammanfattning-35">Sammanfattning</a></h2>
 <ul>
 <li>Static Site Generators är snabba och säkra</li>
 <li>Jekyll är enkelt och kraftfullt</li>
@@ -14836,7 +15059,7 @@ session.cookie_samesite = "Lax"
 ; session.sid_entropy_length = 32 (eller högre)
 ; session.sid_bits_per_character = 5 (eller 6)
 </code></pre>
-<h2 id="sammanfattning-35"><a class="header" href="#sammanfattning-35">Sammanfattning</a></h2>
+<h2 id="sammanfattning-36"><a class="header" href="#sammanfattning-36">Sammanfattning</a></h2>
 <p>Cookies och sessioner är avgörande verktyg för att skapa dynamiska och användarvänliga webbapplikationer genom att överbrygga HTTP:s tillståndslösa natur. Cookies lagrar data på klienten och är bra för icke-känsliga preferenser, medan sessioner lagrar data på servern och är standardmetoden för att hantera inloggningsstatus och annan känslig temporär data. Att förstå hur man använder dem säkert, särskilt genom att skydda session-ID:t och konfigurera cookie-attribut korrekt, är fundamentalt för säker webbutveckling med PHP.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="webbsäkerhet-i-php-vanliga-hot-och-skydd"><a class="header" href="#webbsäkerhet-i-php-vanliga-hot-och-skydd">Webbsäkerhet i PHP: Vanliga Hot och Skydd</a></h1>
 <p>Att bygga en fungerande webbapplikation är en sak, men att göra den säker är en helt annan och minst lika viktig uppgift. En osäker applikation kan leda till att användardata läcker, att obehöriga får kontroll över systemet, eller att webbplatsen används för att sprida skadlig kod. Detta avsnitt täcker några av de mest kritiska säkerhetsriskerna och hur du skyddar din PHP-applikation mot dem.</p>
@@ -16427,7 +16650,7 @@ ob_end_flush();
 </ul>
 <p><strong>Intervjutips:</strong> Diskutera olika nivåer av optimering - från kod-nivå till infrastruktur (load balancers, database replicas etc.).</p>
 <hr />
-<h2 id="sammanfattning-36"><a class="header" href="#sammanfattning-36">Sammanfattning</a></h2>
+<h2 id="sammanfattning-37"><a class="header" href="#sammanfattning-37">Sammanfattning</a></h2>
 <p>Dessa frågor täcker de viktigaste aspekterna av fullstack-utveckling med PHP:</p>
 <ul>
 <li><strong>Grundläggande PHP:</strong> Syntax, variabler, funktioner</li>
@@ -17508,7 +17731,7 @@ const isLoading = true;
 function LoadingSpinner() { }  // Bättre än Spinner()
 function ErrorMessage() { }   // Bättre än Error()
 </code></pre>
-<h2 id="sammanfattning-37"><a class="header" href="#sammanfattning-37">Sammanfattning</a></h2>
+<h2 id="sammanfattning-38"><a class="header" href="#sammanfattning-38">Sammanfattning</a></h2>
 <p>Komponenter är byggstenen i React-applikationer:</p>
 <ul>
 <li><strong>Komponenter</strong> är JavaScript-funktioner som returnerar JSX</li>
@@ -18283,7 +18506,7 @@ const [state, setState] = useState({
   comments: { 1: { id: 1, text: 'Bra inlägg!', authorId: 2 } }
 });
 </code></pre>
-<h2 id="sammanfattning-38"><a class="header" href="#sammanfattning-38">Sammanfattning</a></h2>
+<h2 id="sammanfattning-39"><a class="header" href="#sammanfattning-39">Sammanfattning</a></h2>
 <p>Nu kan du skapa interaktiva React-komponenter:</p>
 <ul>
 <li><strong>Props</strong> skickar data från föräldra- till barnkomponenter</li>
@@ -18825,7 +19048,7 @@ function ProductDetail() {
   // ...
 }
 </code></pre>
-<h2 id="sammanfattning-39"><a class="header" href="#sammanfattning-39">Sammanfattning</a></h2>
+<h2 id="sammanfattning-40"><a class="header" href="#sammanfattning-40">Sammanfattning</a></h2>
 <p>React Router är kraftfullt verktyg för navigation i React-applikationer:</p>
 <ul>
 <li><strong>BrowserRouter</strong> ger rena URLs och är bästa valet för de flesta applikationer</li>
@@ -19947,7 +20170,7 @@ const API_KEY = import.meta.env.VITE_API_KEY;
 <li>Testa ändringar lokalt innan deployment</li>
 <li>Använd versionshantering (Git tags) för viktiga releases</li>
 </ul>
-<h2 id="sammanfattning-40"><a class="header" href="#sammanfattning-40">Sammanfattning</a></h2>
+<h2 id="sammanfattning-41"><a class="header" href="#sammanfattning-41">Sammanfattning</a></h2>
 <p>Deployment med Dokploy gör det enkelt att få din React-applikation live på internet:</p>
 <ol>
 <li><strong>Förbered</strong> din kod och pusha till GitHub</li>
@@ -20561,7 +20784,7 @@ class ErrorTracker {
 
 export default ErrorTracker;
 </code></pre>
-<h2 id="sammanfattning-41"><a class="header" href="#sammanfattning-41">Sammanfattning</a></h2>
+<h2 id="sammanfattning-42"><a class="header" href="#sammanfattning-42">Sammanfattning</a></h2>
 <p>Single Page Applications erbjuder många fördelar för moderna webbapplikationer:</p>
 <ul>
 <li><strong>Smidig användarupplevelse</strong> med snabb navigering</li>
@@ -21574,7 +21797,7 @@ function App() {
 <li>Ha fallback UI för kritiska komponenter</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-42"><a class="header" href="#sammanfattning-42">Sammanfattning</a></h2>
+<h2 id="sammanfattning-43"><a class="header" href="#sammanfattning-43">Sammanfattning</a></h2>
 <p>Dessa frågor täcker de viktigaste aspekterna av React-utveckling:</p>
 <ul>
 <li><strong>React Fundamentals:</strong> JSX, Virtual DOM, komponenter</li>
@@ -23143,7 +23366,7 @@ async function processMultipleFiles() {
   }
 }
 </code></pre>
-<h2 id="sammanfattning-43"><a class="header" href="#sammanfattning-43">Sammanfattning</a></h2>
+<h2 id="sammanfattning-44"><a class="header" href="#sammanfattning-44">Sammanfattning</a></h2>
 <p>I denna introduktion har vi gått igenom grunderna i Node.js och fokuserat på moderna utvecklingsmetoder:</p>
 <p><strong>Vad vi har lärt oss:</strong></p>
 <ul>
@@ -25400,7 +25623,7 @@ app.use(express.json({ limit: '10mb' })); // Begränsa request size
 <li><strong>Glömma validering:</strong> Validera alltid användarinput</li>
 <li><strong>Sakna rate limiting:</strong> Låt inte en användare överbelasta ditt API</li>
 </ol>
-<h2 id="sammanfattning-44"><a class="header" href="#sammanfattning-44">Sammanfattning</a></h2>
+<h2 id="sammanfattning-45"><a class="header" href="#sammanfattning-45">Sammanfattning</a></h2>
 <p>RESTful API:er ger dig en solid grund för att bygga skalbara och underhållbara backend-tjänster. Genom att följa REST-principerna skapar du API:er som är intuitiva för utvecklare att använda och enkla att underhålla över tid.</p>
 <h3 id="viktiga-takeaways-1"><a class="header" href="#viktiga-takeaways-1">Viktiga takeaways:</a></h3>
 <ul>
@@ -27069,7 +27292,7 @@ import { add } from './math';
   // Standard timeout är 5000ms, öka om nödvändigt
 }, 10000); // 10 sekunder
 </code></pre>
-<h2 id="sammanfattning-45"><a class="header" href="#sammanfattning-45">Sammanfattning</a></h2>
+<h2 id="sammanfattning-46"><a class="header" href="#sammanfattning-46">Sammanfattning</a></h2>
 <p>I denna lektion har du lärt dig:</p>
 <p>✅ <strong>Varför testa</strong>: Säkerhet vid ändringar, dokumentation, snabbare utveckling<br />
 ✅ <strong>Jest setup</strong>: Installera och konfigurera Jest med ES6-moduler<br />
@@ -30945,7 +31168,7 @@ class InventoryService {
 module.exports = InventoryService;
 </code></pre>
 <hr />
-<h2 id="sammanfattning-46"><a class="header" href="#sammanfattning-46">Sammanfattning</a></h2>
+<h2 id="sammanfattning-47"><a class="header" href="#sammanfattning-47">Sammanfattning</a></h2>
 <p>Dessa fyra övningar tar dig från grundläggande Express-applikationer till avancerade real-time system. Varje projekt bygger på kunskaperna från föregående och introducerar nya koncept:</p>
 <ol>
 <li><strong>Todo API</strong>: Grundläggande CRUD, MongoDB, felhantering</li>
@@ -33702,7 +33925,7 @@ class BulletManager {
   }
 }
 </code></pre>
-<h2 id="sammanfattning-47"><a class="header" href="#sammanfattning-47">Sammanfattning</a></h2>
+<h2 id="sammanfattning-48"><a class="header" href="#sammanfattning-48">Sammanfattning</a></h2>
 <p>OOP i spelutveckling handlar om att:</p>
 <p><strong>Strukturera kod effektivt</strong>:</p>
 <ul>
@@ -34178,7 +34401,7 @@ this.socket.onopen = () =&gt; {
 <li>Servern köar kommandona och kör dem i turordning</li>
 <li><strong>Uppgift</strong>: Skapa ett enkelt commands-system där spelare kan skicka kommandon som servern kör asynkront</li>
 </ul>
-<h2 id="sammanfattning-48"><a class="header" href="#sammanfattning-48">Sammanfattning</a></h2>
+<h2 id="sammanfattning-49"><a class="header" href="#sammanfattning-49">Sammanfattning</a></h2>
 <p>I detta kapitel har vi byggt en enkel multiplayer-server steg för steg:</p>
 <ol>
 <li><strong>Grundstruktur</strong>: Servern är auktoritativ - den validerar och uppdaterar allt spelstatus</li>
@@ -35883,7 +36106,7 @@ module.exports = {
 <li>Gör kortet klickbart genom att lägga till en länk runt hela kortet.</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-49"><a class="header" href="#sammanfattning-49">Sammanfattning</a></h2>
+<h2 id="sammanfattning-50"><a class="header" href="#sammanfattning-50">Sammanfattning</a></h2>
 <ul>
 <li><strong>Färger</strong>: Använd fördefinierade eller anpassade färger för att skapa en konsekvent design.</li>
 <li><strong>Typografi</strong>: Hantera textstorlekar, typsnitt och andra textrelaterade egenskaper med utility-klasser.</li>
@@ -35988,7 +36211,7 @@ module.exports = {
 <li>Lägg till en responsiv grid-layout som visar flera produktkort bredvid varandra på större skärmar.</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-50"><a class="header" href="#sammanfattning-50">Sammanfattning</a></h2>
+<h2 id="sammanfattning-51"><a class="header" href="#sammanfattning-51">Sammanfattning</a></h2>
 <ul>
 <li><strong>Breakpoints</strong>: Använd Tailwinds inbyggda breakpoints för att skapa responsiva layouter.</li>
 <li><strong>Responsivitet</strong>: Anpassa layout, typografi och andra stilar för olika skärmstorlekar.</li>
@@ -36127,7 +36350,7 @@ module.exports = {
 <li>Gör menyn sticky så att den alltid är synlig högst upp på sidan.</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-51"><a class="header" href="#sammanfattning-51">Sammanfattning</a></h2>
+<h2 id="sammanfattning-52"><a class="header" href="#sammanfattning-52">Sammanfattning</a></h2>
 <ul>
 <li><strong>Pseudo-klasser</strong>: Använd <code>hover:</code>, <code>focus:</code>, <code>active:</code>, och <code>disabled:</code> för att hantera olika tillstånd.</li>
 <li><strong>Gruppbaserade effekter</strong>: Använd <code>group</code> och <code>group-hover:</code> för att skapa interaktivitet mellan element.</li>
@@ -36309,7 +36532,7 @@ export default {
 <li>Lägg till en animation som gör att hover-effekten övergångar mjukt.</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-52"><a class="header" href="#sammanfattning-52">Sammanfattning</a></h2>
+<h2 id="sammanfattning-53"><a class="header" href="#sammanfattning-53">Sammanfattning</a></h2>
 <ul>
 <li><strong>Konfiguration</strong>: Använd <code>tailwind.config.js</code> för att anpassa Tailwind CSS.</li>
 <li><strong>Anpassningar</strong>: Lägg till egna färger, typsnitt, spacing och breakpoints.</li>
@@ -36505,7 +36728,7 @@ export default {
 <li>Lägg till en hover-effekt på sidomenyns länkar.</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-53"><a class="header" href="#sammanfattning-53">Sammanfattning</a></h2>
+<h2 id="sammanfattning-54"><a class="header" href="#sammanfattning-54">Sammanfattning</a></h2>
 <ul>
 <li><strong>Planering</strong>: Definiera syftet och prioritera innehållet.</li>
 <li><strong>Element</strong>: Inkludera sidhuvud, sidomeny, KPI-kort, tabeller och grafer.</li>
@@ -36672,7 +36895,7 @@ export default {
 }
 </code></pre>
 <hr />
-<h2 id="sammanfattning-54"><a class="header" href="#sammanfattning-54">Sammanfattning</a></h2>
+<h2 id="sammanfattning-55"><a class="header" href="#sammanfattning-55">Sammanfattning</a></h2>
 <ul>
 <li><strong>Best Practices</strong>: Använd återanvändbara komponenter, håll HTML-strukturen ren och dra nytta av Tailwinds konfigurationsfil.</li>
 <li><strong>Komponentbibliotek</strong>: Utforska bibliotek som Tailwind UI, Flowbite och DaisyUI för att snabba upp utvecklingen.</li>
@@ -36875,7 +37098,7 @@ function App() {
 export default App;
 </code></pre>
 <hr />
-<h2 id="sammanfattning-55"><a class="header" href="#sammanfattning-55">Sammanfattning</a></h2>
+<h2 id="sammanfattning-56"><a class="header" href="#sammanfattning-56">Sammanfattning</a></h2>
 <ul>
 <li><strong>Installation</strong>: Installera och konfigurera Tailwind CSS i ditt React-projekt med Vite.</li>
 <li><strong>Komponenter</strong>: Använd Tailwind CSS för att snabbt styla React-komponenter.</li>
@@ -37099,22 +37322,6 @@ Den här sammanfattningen fungerar bra som referens i ett GitHub-projekt, underv
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

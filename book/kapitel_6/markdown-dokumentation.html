@@ -1,0 +1,431 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Markdown och dokumentation - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="markdown-och-dokumentation"><a class="header" href="#markdown-och-dokumentation">Markdown och dokumentation</a></h1>
+<p>Markdown är ett enkelt markeringsspråk som används överallt i modern utveckling: README-filer på GitHub, dokumentation, bloggar, och denna kursbok. Att behärska Markdown och kunna skriva bra dokumentation är en viktig färdighet för varje webbutvecklare.</p>
+<h2 id="vad-är-markdown-och-varför-använda-det"><a class="header" href="#vad-är-markdown-och-varför-använda-det">Vad är Markdown och varför använda det?</a></h2>
+<p><strong>Markdown</strong> är ett lättviktigt markeringsspråk (markup language) skapat av John Gruber 2004. Idén är enkel: skriv vanlig text med enkla symboler för formatering, som sedan kan konverteras till HTML eller andra format.</p>
+<h3 id="varför-markdown"><a class="header" href="#varför-markdown">Varför Markdown?</a></h3>
+<ul>
+<li><strong>Läsbart som vanlig text</strong> – även i råformat (raw) är Markdown lätt att läsa, till skillnad från HTML med många taggar</li>
+<li><strong>Plattformsoberoende</strong> – fungerar överallt: GitHub, GitLab, Slack, Notion, VS Code, och många fler</li>
+<li><strong>Snabbt att skriva</strong> – mindre kod för samma resultat jämfört med HTML</li>
+<li><strong>Versionshantering</strong> – textfiler passar perfekt för Git; diff (skillnader) blir tydliga</li>
+<li><strong>Standard i utvecklingsvärlden</strong> – README, CHANGELOG, och dokumentation skrivs ofta i Markdown</li>
+</ul>
+<pre class="mermaid">%%{init: {'theme': 'default'}}%%
+flowchart LR
+    A[Markdown .md] --&gt; B[Parser]
+    B --&gt; C[HTML / PDF / andra format]
+</pre>
+<h2 id="grundläggande-markdown"><a class="header" href="#grundläggande-markdown">Grundläggande Markdown</a></h2>
+<h3 id="rubriker"><a class="header" href="#rubriker">Rubriker</a></h3>
+<p>Använd <code>#</code> för rubriker. Ett <code>#</code> är störst (h1), sex <code>#</code> minst (h6).</p>
+<pre><code class="language-markdown"># Rubrik nivå 1
+## Rubrik nivå 2
+### Rubrik nivå 3
+</code></pre>
+<h3 id="textformatering"><a class="header" href="#textformatering">Textformatering</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Syntax</th><th>Resultat</th></tr></thead><tbody>
+<tr><td><code>**fet text**</code> eller <code>__fet text__</code></td><td><strong>fet text</strong></td></tr>
+<tr><td><code>*kursiv*</code> eller <code>_kursiv_</code></td><td><em>kursiv</em></td></tr>
+<tr><td><code>~~genomstruken~~</code></td><td><del>genomstruken</del></td></tr>
+<tr><td><code>`kod`</code></td><td><code>kod</code></td></tr>
+</tbody></table>
+</div>
+<h3 id="listor"><a class="header" href="#listor">Listor</a></h3>
+<p><strong>Punktlistor</strong> med <code>-</code>, <code>*</code> eller <code>+</code>:</p>
+<pre><code class="language-markdown">- Första punkten
+- Andra punkten
+  - Underpunkt (indentera med två mellanslag)
+</code></pre>
+<p><strong>Numrerade listor</strong>:</p>
+<pre><code class="language-markdown">1. Steg ett
+2. Steg två
+3. Steg tre
+</code></pre>
+<h3 id="länkar-och-bilder"><a class="header" href="#länkar-och-bilder">Länkar och bilder</a></h3>
+<pre><code class="language-markdown">[Länktext](https://example.com)
+[Bokmärke i samma fil](#rubrik-id)
+
+![Alt-text för bild](bild.png)
+</code></pre>
+<h3 id="kodblock"><a class="header" href="#kodblock">Kodblock</a></h3>
+<p>En rad kod med backticks: <code>`kod`</code></p>
+<p>Flera rader med fenced code blocks:</p>
+<pre><code class="language-markdown">```javascript
+function hello() {
+  console.log("Hej världen!");
+}
+```
+</code></pre>
+<h2 id="avancerade-markdown-funktioner"><a class="header" href="#avancerade-markdown-funktioner">Avancerade Markdown-funktioner</a></h2>
+<h3 id="tabeller"><a class="header" href="#tabeller">Tabeller</a></h3>
+<pre><code class="language-markdown">| Kolumn 1 | Kolumn 2 | Kolumn 3 |
+|----------|----------|----------|
+| Cell A   | Cell B   | Cell C   |
+| Cell D   | Cell E   | Cell F   |
+</code></pre>
+<p>Alignment med kolon:</p>
+<pre><code class="language-markdown">| Vänster | Center | Höger |
+|:--------|:------:|------:|
+| vänster | mitt   | höger |
+</code></pre>
+<h3 id="blockquotes-citat"><a class="header" href="#blockquotes-citat">Blockquotes (citat)</a></h3>
+<pre><code class="language-markdown">&gt; Detta är ett citat.
+&gt; Flera rader behåller citatet.
+</code></pre>
+<h3 id="horisontella-linjer"><a class="header" href="#horisontella-linjer">Horisontella linjer</a></h3>
+<pre><code class="language-markdown">---
+***
+___
+</code></pre>
+<h3 id="checkboxar-task-lists"><a class="header" href="#checkboxar-task-lists">Checkboxar (task lists)</a></h3>
+<pre><code class="language-markdown">- [x] Klar uppgift
+- [ ] Ej klar uppgift
+</code></pre>
+<h3 id="fusk-escape-av-specialtecken"><a class="header" href="#fusk-escape-av-specialtecken">Fusk (escape) av specialtecken</a></h3>
+<p>Använd backslash <code>\</code> för att skriva tecken som annars har betydelse: <code>\*</code>, <code>\#</code>, <code>\[</code>, etc.</p>
+<h3 id="html-i-markdown"><a class="header" href="#html-i-markdown">HTML i Markdown</a></h3>
+<p>De flesta Markdown-parsers tillåter HTML. När Markdown inte räcker till kan du blanda in HTML:</p>
+<pre><code class="language-markdown">&lt;details&gt;
+&lt;summary&gt;Klicka för att expandera&lt;/summary&gt;
+
+Dolt innehåll här.
+
+&lt;/details&gt;
+</code></pre>
+<h2 id="hur-man-skriver-en-bra-readme"><a class="header" href="#hur-man-skriver-en-bra-readme">Hur man skriver en bra README</a></h2>
+<p>README.md är ofta det första en besökare ser på GitHub eller GitLab. En bra README gör projektet tillgängligt och professionellt.</p>
+<h3 id="grundstruktur-för-readme"><a class="header" href="#grundstruktur-för-readme">Grundstruktur för README</a></h3>
+<pre><code class="language-markdown"># Projektnamn
+
+Kort beskrivning (1–2 meningar) av vad projektet gör.
+
+## Installation
+
+Steg för att installera och köra projektet.
+
+## Användning
+
+Exempel på hur man använder projektet.
+
+## Bidra
+
+Hur andra kan bidra (om öppen källkod).
+</code></pre>
+<h3 id="viktiga-sektioner"><a class="header" href="#viktiga-sektioner">Viktiga sektioner</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Sektion</th><th>Syfte</th></tr></thead><tbody>
+<tr><td><strong>Titel och beskrivning</strong></td><td>Vad är projektet? Vem är det för?</td></tr>
+<tr><td><strong>Installation</strong></td><td>Konkreta steg: klona, installera beroenden, konfigurera</td></tr>
+<tr><td><strong>Användning</strong></td><td>Exempel, kommandon, skärmdummar</td></tr>
+<tr><td><strong>Konfiguration</strong></td><td>Miljövariabler, config-filer</td></tr>
+<tr><td><strong>Bidra</strong></td><td>Contributing guidelines, kodstil</td></tr>
+<tr><td><strong>Licens</strong></td><td>Vilken licens används?</td></tr>
+</tbody></table>
+</div>
+<h3 id="praktiska-tips"><a class="header" href="#praktiska-tips">Praktiska tips</a></h3>
+<ul>
+<li><strong>Skriv för nybörjare</strong> – anta att läsaren inte känner till projektet</li>
+<li><strong>Inkludera exempel</strong> – kod eller kommandon som faktiskt fungerar</li>
+<li><strong>Uppdatera</strong> – README som inte stämmer med koden skadar förtroendet</li>
+<li><strong>Använd bilder</strong> – skärmdummar eller diagram kan förklara mycket snabbt</li>
+</ul>
+<h2 id="olika-licenser"><a class="header" href="#olika-licenser">Olika licenser</a></h2>
+<p>När du publicerar kod – särskilt som öppen källkod (open source) – behöver du ange en licens. Utan licens behåller du alla rättigheter (all rights reserved), vilket i praktiken innebär att andra inte får använda, kopiera eller modifiera koden utan ditt tillstånd.</p>
+<h3 id="permissiva-licenser-öppna-få-krav"><a class="header" href="#permissiva-licenser-öppna-få-krav">Permissiva licenser (öppna, få krav)</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Licens</th><th>Krav</th><th>När den passar</th></tr></thead><tbody>
+<tr><td><strong>MIT</strong></td><td>Behåll licensnotisen i koden</td><td>När du vill att så många som möjligt ska kunna använda koden, även i proprietära projekt. Mycket vanlig för bibliotek och verktyg.</td></tr>
+<tr><td><strong>Apache 2.0</strong></td><td>Behåll licensnotisen + patentgrant</td><td>Lik MIT men ger tydlig patentlicens. Bra för företagsprojekt och när patentfrågor är viktiga.</td></tr>
+<tr><td><strong>BSD</strong></td><td>Behåll licensnotisen</td><td>Lik MIT. Används ofta i akademiska och forskningsprojekt.</td></tr>
+</tbody></table>
+</div>
+<p><strong>MIT</strong> är en av de enklaste och mest använda licenserna. Kort sagt: gör vad du vill, men inkludera originalet av licensen.</p>
+<h3 id="copyleft-licenser-kräver-att-derivat-också-är-öppna"><a class="header" href="#copyleft-licenser-kräver-att-derivat-också-är-öppna">Copyleft-licenser (kräver att derivat också är öppna)</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Licens</th><th>Krav</th><th>När den passar</th></tr></thead><tbody>
+<tr><td><strong>GPL</strong></td><td>Derivater måste vara GPL och källkod måste delas</td><td>När du vill att förbättringar och tillägg också ska vara öppen källkod. Används av Linux, WordPress, många verktyg.</td></tr>
+<tr><td><strong>AGPL</strong></td><td>Som GPL + krav vid nätverksanvändning</td><td>När du vill att även SaaS (software as a service) som bygger på koden ska dela sin källkod.</td></tr>
+</tbody></table>
+</div>
+<p><strong>GPL</strong> (General Public License) säkerställer att koden förblir fri – även om någon bygger vidare på den. Det kan vara en dealbreaker för företag som vill använda koden i slutna produkter.</p>
+<h3 id="public-domain-och-ingen-licens"><a class="header" href="#public-domain-och-ingen-licens">Public domain och ingen licens</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Licens</th><th>Krav</th><th>När den passar</th></tr></thead><tbody>
+<tr><td><strong>Unlicense</strong> / <strong>CC0</strong></td><td>Inga</td><td>När du vill ge bort allt – koden tillhör alla. Mindre vanligt för kod.</td></tr>
+</tbody></table>
+</div>
+<h3 id="proprietär-licens-sluten-källkod"><a class="header" href="#proprietär-licens-sluten-källkod">Proprietär licens (sluten källkod)</a></h3>
+<p>Om du inte anger någon öppen licens behåller du copyright. Andra får inte använda koden utan avtal. Passar för kommersiella produkter, internkod eller när du vill behålla full kontroll.</p>
+<h3 id="sammanfattning--vilken-ska-jag-välja"><a class="header" href="#sammanfattning--vilken-ska-jag-välja">Sammanfattning – vilken ska jag välja?</a></h3>
+<ul>
+<li><strong>Vill du maximal spridning?</strong> → MIT eller Apache 2.0</li>
+<li><strong>Vill du att förbättringar också ska vara öppna?</strong> → GPL</li>
+<li><strong>Bygger du på befintlig GPL-kod?</strong> → Du måste använda GPL för ditt projekt</li>
+<li><strong>Vill du behålla all kontroll?</strong> → Ingen licens (proprietär) eller skriv en egen licens</li>
+</ul>
+<p>Se <a href="https://choosealicense.com/">choosealicense.com</a> för en interaktiv guide.</p>
+<p>Utöver README finns flera dokument som gör ett repo mer professionellt och lättare att arbeta med.</p>
+<h3 id="vanliga-dokumentfiler"><a class="header" href="#vanliga-dokumentfiler">Vanliga dokumentfiler</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Fil</th><th>Syfte</th></tr></thead><tbody>
+<tr><td><code>README.md</code></td><td>Introduktion, installation, användning</td></tr>
+<tr><td><code>CHANGELOG.md</code></td><td>Historik över ändringar (versionshantering)</td></tr>
+<tr><td><code>CONTRIBUTING.md</code></td><td>Hur man bidrar till projektet</td></tr>
+<tr><td><code>LICENSE</code></td><td>Licensvillkor</td></tr>
+<tr><td><code>.gitignore</code></td><td>Filer som inte ska versioneras</td></tr>
+<tr><td><code>docs/</code></td><td>Utökad dokumentation</td></tr>
+</tbody></table>
+</div>
+<h3 id="changelog"><a class="header" href="#changelog">CHANGELOG</a></h3>
+<p>Följ <a href="https://keepachangelog.com/">Keep a Changelog</a> för en tydlig struktur:</p>
+<pre><code class="language-markdown"># Changelog
+
+## [1.1.0] - 2024-03-15
+
+### Added
+- Ny funktion för export till PDF
+
+### Changed
+- Uppdaterad inloggningsflöde
+
+### Fixed
+- Bugg i sökfunktionen
+</code></pre>
+<h3 id="ai-relaterad-dokumentation"><a class="header" href="#ai-relaterad-dokumentation">AI-relaterad dokumentation</a></h3>
+<p>Med AI-verktyg (t.ex. Cursor, GitHub Copilot, ChatGPT) som används i utveckling blir det viktigt att dokumentera hur AI ska användas i projektet.</p>
+<h4 id="cursor-rules-och-agentsmd"><a class="header" href="#cursor-rules-och-agentsmd">Cursor rules och AGENTS.md</a></h4>
+<ul>
+<li><strong><code>.cursor/rules/</code></strong> – Regler som styr hur AI beter sig i projektet</li>
+<li><strong><code>AGENTS.md</code></strong> eller <strong><code>.cursor/AGENTS.md</code></strong> – Instruktioner för AI-agenter: arkitektur, konventioner, vad som är tillåtet</li>
+</ul>
+<p>Exempel på vad som kan dokumenteras:</p>
+<pre><code class="language-markdown"># AI Agent Guidelines
+
+## Kodstil
+- Använd TypeScript för nya filer
+- Följ befintliga namngivningskonventioner
+
+## Arkitektur
+- API-routes i /api/
+- Komponenter i /components/
+
+## Begränsningar
+- Ändra inte databasschemat utan migrering
+</code></pre>
+<h4 id="ai-skills-och-instruktioner"><a class="header" href="#ai-skills-och-instruktioner">AI-skills och instruktioner</a></h4>
+<ul>
+<li><strong><code>SKILL.md</code></strong> – Återanvändbara färdigheter/instruktioner för AI</li>
+<li><strong><code>docs/ai-usage.md</code></strong> – Beskriver hur AI används i projektet, vilka verktyg, vilka begränsningar</li>
+</ul>
+<h4 id="dokumentation-för-ai-parsning"><a class="header" href="#dokumentation-för-ai-parsning">Dokumentation för AI-parsning</a></h4>
+<p>AI läser ofta README, CONTRIBUTING och kodkommentarer. Tydlig strukturering hjälper:</p>
+<ul>
+<li><strong>Tydliga rubriker</strong> – AI kan hitta rätt sektion snabbare</li>
+<li><strong>Konsekvent terminologi</strong> – minskar missförstånd</li>
+<li><strong>Exempel i kod</strong> – AI kan bättre förstå och generera liknande kod</li>
+</ul>
+<h3 id="sammanfattning"><a class="header" href="#sammanfattning">Sammanfattning</a></h3>
+<p>En bra dokumentationsstruktur gör projektet lättare att förstå, bidra till och underhålla – både för människor och för AI-verktyg som används i utvecklingsprocessen.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_6/wordpress-posts-vs-pages.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_6/jekyll.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_6/wordpress-posts-vs-pages.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_6/jekyll.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

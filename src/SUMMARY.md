@@ -55,6 +55,7 @@
     - [WordPress plugins](./kapitel_6/wordpress-plugins.md)
     - [WordPress page builders](./kapitel_6/wordpress-page-builders.md)
     - [Skillnaden mellan Posts och Pages](./kapitel_6/wordpress-posts-vs-pages.md)
+  - [Markdown och dokumentation](./kapitel_6/markdown-dokumentation.md)
   - [Static Site Generators](./kapitel_6/jekyll.md)
   - [Praktiska övningar](./kapitel_6/ovningar.md)
   - [Teknisk Intervju](./kapitel_6/teknisk-intervju.md)
