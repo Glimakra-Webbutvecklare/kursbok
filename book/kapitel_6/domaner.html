@@ -153,12 +153,142 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="domänhantering-och-dns"><a class="header" href="#domänhantering-och-dns">Domänhantering och DNS</a></h1>
+<p>I lektionen om hosting lärde du dig att domännamn (t.ex. <code>example.com</code>) pekar på IP-adresser via DNS. Här går vi djupare: hur du registrerar en domän, konfigurerar DNS-poster (A-record, CNAME) och sätter upp SSL-certifikat för HTTPS.</p>
+<h2 id="domänregistrering"><a class="header" href="#domänregistrering">Domänregistrering</a></h2>
+<p>En <strong>domän</strong> är en unik adress på internet som du kan hyra – inte köpa – för en begränsad tid (vanligtvis 1–10 år). Registreringen sker hos en <strong>domänregistrator</strong> (domain registrar).</p>
+<h3 id="hur-domännamn-är-uppbyggda"><a class="header" href="#hur-domännamn-är-uppbyggda">Hur domännamn är uppbyggda</a></h3>
+<p>Ett domännamn består av delar separerade med punkt:</p>
+<pre><code>www.example.com
+│   │       │
+│   │       └── TLD (top-level domain): .com, .se, .org
+│   └────────── Domännamn (second-level): example
+└────────────── Subdomän (valfri): www, mail, api
+</code></pre>
+<div class="table-wrapper"><table><thead><tr><th>Del</th><th>Exempel</th><th>Beskrivning</th></tr></thead><tbody>
+<tr><td><strong>TLD</strong></td><td>.com, .se, .org, .net</td><td>Toppnivå – ofta land (.se) eller typ (.com)</td></tr>
+<tr><td><strong>Domännamn</strong></td><td>example</td><td>Den unika delen du registrerar</td></tr>
+<tr><td><strong>Subdomän</strong></td><td>www, mail, api</td><td>Valfria delar du själv konfigurerar i DNS</td></tr>
+</tbody></table>
+</div>
+<h3 id="var-och-hur-registrerar-man"><a class="header" href="#var-och-hur-registrerar-man">Var och hur registrerar man?</a></h3>
+<p>Populära registratorer:</p>
+<div class="table-wrapper"><table><thead><tr><th>Leverantör</th><th>Fördelar</th></tr></thead><tbody>
+<tr><td><a href="https://www.loopia.se/">Loopia</a></td><td>Svensk, bra för .se, enkel hantering</td></tr>
+<tr><td><a href="https://www.binero.se/">Binero</a></td><td>Svensk, domän + hosting i samma paket</td></tr>
+<tr><td><a href="https://www.one.com/">One.com</a></td><td>Nordisk, ofta kampanjer</td></tr>
+<tr><td><a href="https://www.namecheap.com/">Namecheap</a></td><td>Billiga .com, många TLD:er</td></tr>
+<tr><td><a href="https://www.cloudflare.com/">Cloudflare</a></td><td>Transparent prissättning, inkluderar DNS och CDN</td></tr>
+</tbody></table>
+</div>
+<p><strong>Typiska priser:</strong> .se cirka 150–300 kr/år, .com cirka 100–150 kr/år. Kontrollera alltid förnyelsepriset – första året kan vara kampanjpris.</p>
+<h3 id="vad-att-tänka-på-vid-registrering"><a class="header" href="#vad-att-tänka-på-vid-registrering">Vad att tänka på vid registrering</a></h3>
 <ul>
-<li>Domänregistrering</li>
-<li>DNS-inställningar</li>
-<li>A-records och CNAME</li>
-<li>SSL-certifikat</li>
+<li><strong>WHOIS-skydd</strong> – dölj dina personuppgifter i den offentliga WHOIS-databasen (många registratorer erbjuder detta gratis)</li>
+<li><strong>Auto-förnyelse</strong> – aktivera så att domänen inte löper ut av misstag</li>
+<li><strong>E-post</strong> – använd en e-postadress du har tillgång till långsiktigt (för återställning och varningar)</li>
 </ul>
+<h2 id="dns-inställningar"><a class="header" href="#dns-inställningar">DNS-inställningar</a></h2>
+<p><strong>DNS</strong> (Domain Name System) översätter domännamn till IP-adresser. När du registrerar en domän får du tillgång till DNS-inställningarna – antingen hos registratorn eller hos en extern DNS-leverantör (t.ex. Cloudflare).</p>
+<pre class="mermaid">%%{init: {'theme': 'default'}}%%
+sequenceDiagram
+    participant U as Användare
+    participant B as Webbläsare
+    participant D as DNS-server
+    participant S as Webbserver
+
+    U-&gt;&gt;B: Skriver example.com
+    B-&gt;&gt;D: Vilken IP har example.com?
+    D-&gt;&gt;B: 93.184.216.34
+    B-&gt;&gt;S: HTTP Request till IP
+    S-&gt;&gt;B: HTTP Response
+</pre>
+<h3 id="name-servers-namnservrar"><a class="header" href="#name-servers-namnservrar">Name servers (namnservrar)</a></h3>
+<p>Varje domän pekar på <strong>name servers</strong> som innehåller de faktiska DNS-posterna. Registratorn anger vilka name servers som gäller.</p>
+<ul>
+<li><strong>Standard</strong> – ofta registratorns egna (t.ex. ns1.loopia.se)</li>
+<li><strong>Extern</strong> – du kan använda Cloudflare, AWS Route 53 eller annan leverantör för mer funktionalitet</li>
+</ul>
+<p>När du byter hosting eller använder extern DNS måste du uppdatera name servers hos registratorn.</p>
+<h2 id="a-record-och-cname"><a class="header" href="#a-record-och-cname">A-record och CNAME</a></h2>
+<p>DNS består av <strong>poster</strong> (records) som kopplar domännamn till mål. De vanligaste för webbplatser är A-record och CNAME.</p>
+<h3 id="a-record-address-record"><a class="header" href="#a-record-address-record">A-record (Address record)</a></h3>
+<p>En <strong>A-record</strong> kopplar ett domännamn direkt till en <strong>IPv4-adress</strong>.</p>
+<div class="table-wrapper"><table><thead><tr><th>Typ</th><th>Namn</th><th>Värde</th><th>TTL</th></tr></thead><tbody>
+<tr><td>A</td><td>@</td><td>93.184.216.34</td><td>3600</td></tr>
+<tr><td>A</td><td>www</td><td>93.184.216.34</td><td>3600</td></tr>
+</tbody></table>
+</div>
+<ul>
+<li><strong>@</strong> betyder roten (example.com)</li>
+<li><strong>www</strong> betyder www.example.com</li>
+<li><strong>TTL</strong> (Time To Live) – hur länge svaret får cachelagras (i sekunder)</li>
+</ul>
+<p><strong>När använda:</strong> När du pekar din domän mot en servers IP-adress. Det är den vanligaste posten för en webbplats.</p>
+<h3 id="cname-canonical-name"><a class="header" href="#cname-canonical-name">CNAME (Canonical Name)</a></h3>
+<p>En <strong>CNAME</strong> pekar ett domännamn på ett <em>annat</em> domännamn – en alias. Målet måste ha en A-record (eller annan post).</p>
+<div class="table-wrapper"><table><thead><tr><th>Typ</th><th>Namn</th><th>Värde</th></tr></thead><tbody>
+<tr><td>CNAME</td><td>www</td><td>example.com</td></tr>
+<tr><td>CNAME</td><td>api</td><td>myapp.herokuapp.com</td></tr>
+</tbody></table>
+</div>
+<p><strong>När använda:</strong> När du vill att flera namn ska peka på samma plats, eller när du pekar på en tjänst som byter IP (t.ex. Heroku, Netlify, Vercel). Då behöver du bara uppdatera A-recorden för målet – alla CNAME följer automatiskt.</p>
+<div class="table-wrapper"><table><thead><tr><th>📝 Notera</th></tr></thead><tbody>
+<tr><td>Du kan inte ha en CNAME på roten (@). För example.com måste du använda A-record (eller ANAME/ALIAS om leverantören stödjer det).</td></tr>
+</tbody></table>
+</div>
+<h3 id="Övriga-användbara-poster"><a class="header" href="#Övriga-användbara-poster">Övriga användbara poster</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Typ</th><th>Syfte</th></tr></thead><tbody>
+<tr><td><strong>AAAA</strong></td><td>Som A-record men för IPv6-adresser</td></tr>
+<tr><td><strong>MX</strong></td><td>Mail exchange – vilka servrar som tar emot e-post för domänen</td></tr>
+<tr><td><strong>TXT</strong></td><td>Fri text – ofta för verifiering (t.ex. Google, Let's Encrypt)</td></tr>
+</tbody></table>
+</div>
+<h3 id="exempel-peka-domän-mot-en-server"><a class="header" href="#exempel-peka-domän-mot-en-server">Exempel: peka domän mot en server</a></h3>
+<p>Du har köpt <code>minbutik.se</code> och en VPS med IP <code>203.0.113.50</code>. I DNS-panelen hos din registrator lägger du till:</p>
+<div class="table-wrapper"><table><thead><tr><th>Typ</th><th>Namn</th><th>Värde</th></tr></thead><tbody>
+<tr><td>A</td><td>@</td><td>203.0.113.50</td></tr>
+<tr><td>A</td><td>www</td><td>203.0.113.50</td></tr>
+</tbody></table>
+</div>
+<p>Nu pekar både <code>minbutik.se</code> och <code>www.minbutik.se</code> på din server. Det kan ta upp till 24–48 timmar innan ändringarna sprids (DNS propagation), men ofta är det klart inom minuter till några timmar.</p>
+<h3 id="exempel-peka-domän-mot-netlifyvercel"><a class="header" href="#exempel-peka-domän-mot-netlifyvercel">Exempel: peka domän mot Netlify/Vercel</a></h3>
+<p>Många hostingtjänster för statiska sajter och frontend ger dig ett domännamn (t.ex. <code>mittprojekt.netlify.app</code>). Du vill använda <code>mittprojekt.se</code> istället.</p>
+<ol>
+<li>I Netlify/Vercel: lägg till din domän under Domain settings.</li>
+<li>Tjänsten visar vilka poster du behöver.</li>
+<li>I DNS hos din registrator:
+<ul>
+<li>För <strong>apex</strong> (mittprojekt.se): använd A-record med deras IP, eller ALIAS/ANAME om tillgängligt.</li>
+<li>För <strong>www</strong>: CNAME som pekar på deras domän (t.ex. <code>mittprojekt.netlify.app</code>).</li>
+</ul>
+</li>
+</ol>
+<h2 id="ssl-certifikat"><a class="header" href="#ssl-certifikat">SSL-certifikat</a></h2>
+<p><strong>HTTPS</strong> kräver ett <strong>SSL-certifikat</strong> (TLS-certifikat) på servern. Certifikatet verifierar att servern är den den utger sig för att vara och möjliggör krypterad trafik.</p>
+<h3 id="lets-encrypt--gratis-certifikat"><a class="header" href="#lets-encrypt--gratis-certifikat">Let's Encrypt – gratis certifikat</a></h3>
+<p><strong>Let's Encrypt</strong> är en gratis certifikatutfärdare. Certifikaten gäller i 90 dagar och förnyas automatiskt med verktyg som <strong>Certbot</strong>.</p>
+<pre><code class="language-bash"># Installera Certbot (Ubuntu/Debian med Nginx)
+apt install -y certbot python3-certbot-nginx
+certbot --nginx -d example.com -d www.example.com
+</code></pre>
+<p>Certbot konfigurerar Nginx och sätter upp automatisk förnyelse. Efteråt svarar din webbplats på <code>https://example.com</code>.</p>
+<h3 id="vad-krävs-för-ssl"><a class="header" href="#vad-krävs-för-ssl">Vad krävs för SSL?</a></h3>
+<ul>
+<li>Domänen måste peka på servern (A-record) <em>innan</em> du kör Certbot.</li>
+<li>Port 80 måste vara öppen (Certbot använder HTTP för verifiering).</li>
+<li>Servern måste vara nåbar från internet.</li>
+</ul>
+<h3 id="hosting-med-inkluderat-ssl"><a class="header" href="#hosting-med-inkluderat-ssl">Hosting med inkluderat SSL</a></h3>
+<p>Många leverantörer (Loopia, Netlify, Vercel, m.fl.) erbjuder SSL inkluderat. De hanterar certifikat och förnyelse åt dig – du behöver bara aktivera HTTPS i panelen.</p>
+<h3 id="http-vs-https"><a class="header" href="#http-vs-https">HTTP vs HTTPS</a></h3>
+<div class="table-wrapper"><table><thead><tr><th></th><th>HTTP</th><th>HTTPS</th></tr></thead><tbody>
+<tr><td><strong>Port</strong></td><td>80</td><td>443</td></tr>
+<tr><td><strong>Kryptering</strong></td><td>Nej</td><td>Ja</td></tr>
+<tr><td><strong>Webbläsarens indikator</strong></td><td>Ofta "Osäker"</td><td>Lås-ikon</td></tr>
+<tr><td><strong>SEO</strong></td><td>Sämre</td><td>Bättre (Google prioriterar HTTPS)</td></tr>
+</tbody></table>
+</div>
+<p>För produktionswebbplatser ska du alltid använda HTTPS.</p>
 
                     </main>
 
