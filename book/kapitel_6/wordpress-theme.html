@@ -196,6 +196,78 @@
 <li><code>page.php</code> – enskild sida</li>
 <li><code>archive.php</code> – listning av inlägg</li>
 </ul>
+<h2 id="den-första-kommentaren-i-stylecss-vad-är-den-och-varför-behövs-den"><a class="header" href="#den-första-kommentaren-i-stylecss-vad-är-den-och-varför-behövs-den">Den första kommentaren i <code>style.css</code>: vad är den och varför behövs den?</a></h2>
+<p>I ett WordPress-tema är den första kommentaren i <code>style.css</code> inte bara en vanlig kommentar. Den fungerar som en <strong>temahead(er) med metadata</strong> som WordPress läser.</p>
+<p>Exempel:</p>
+<pre><code class="language-css">/*
+Theme Name: My School Theme
+Theme URI: https://example.com/my-school-theme
+Author: Ditt Namn
+Description: Ett enkelt kurs-tema för WordPress.
+Version: 1.0.0
+Text Domain: my-school-theme
+*/
+</code></pre>
+<h3 id="vad-används-den-till"><a class="header" href="#vad-används-den-till">Vad används den till?</a></h3>
+<ul>
+<li>WordPress visar temat i <strong>Utseende &gt; Teman</strong> med namn och beskrivning.</li>
+<li>WordPress identifierar temat och dess version.</li>
+<li><code>Text Domain</code> kopplar temat till översättningar.</li>
+</ul>
+<h3 id="varför-är-den-viktig"><a class="header" href="#varför-är-den-viktig">Varför är den viktig?</a></h3>
+<p>Utan korrekt header kan WordPress missa viktig information om temat, och i vissa fall visas temat felaktigt i adminpanelen.</p>
+<p>Kort sagt: den här kommentaren är en "ID-handling" för ditt tema.</p>
+<h2 id="egen-bild-för-temat-förhandsvisning-i-admin"><a class="header" href="#egen-bild-för-temat-förhandsvisning-i-admin">Egen bild för temat (förhandsvisning i admin)</a></h2>
+<p>Om du vill visa en egen bild på temat i <strong>Utseende &gt; Teman</strong> lägger du en fil i temats rotmapp med namnet:</p>
+<pre><code class="language-text">screenshot.png
+</code></pre>
+<p>Exempel på sökväg:</p>
+<pre><code class="language-text">wp-content/themes/my-school-theme/screenshot.png
+</code></pre>
+<h3 id="rekommendationer"><a class="header" href="#rekommendationer">Rekommendationer</a></h3>
+<ul>
+<li>Filnamn: exakt <code>screenshot.png</code> (WordPress känner automatiskt igen den)</li>
+<li>Format: <code>.png</code> (även <code>.jpg</code> fungerar i många fall)</li>
+<li>Rekommenderad storlek: cirka <code>1200 x 900</code> px</li>
+</ul>
+<h3 id="tips-för-bra-förhandsbild"><a class="header" href="#tips-för-bra-förhandsbild">Tips för bra förhandsbild</a></h3>
+<ul>
+<li>Visa startsidan eller en representativ sektion av temat</li>
+<li>Använd tydlig kontrast och läsbar typografi</li>
+<li>Undvik för mycket detaljer som blir svåra att se i miniatyr</li>
+</ul>
+<h2 id="text-domain-vad-har-den-för-funktion"><a class="header" href="#text-domain-vad-har-den-för-funktion">Text Domain: vad har den för funktion?</a></h2>
+<p>I ett eget tema används <strong>Text Domain</strong> för översättning (internationalization, internationalisering). Det är ett unikt namn som kopplar ihop:</p>
+<ul>
+<li>texter i koden</li>
+<li>språkfiler (<code>.po</code> / <code>.mo</code>)</li>
+<li>temat som helhet</li>
+</ul>
+<h3 id="exempel-i-stylecss"><a class="header" href="#exempel-i-stylecss">Exempel i <code>style.css</code></a></h3>
+<p>I temats header brukar du ha:</p>
+<pre><code class="language-css">/*
+Theme Name: My School Theme
+Text Domain: my-school-theme
+*/
+</code></pre>
+<p><code>Text Domain: my-school-theme</code> talar om för WordPress vilket "språkpaket" som hör till temat.</p>
+<h3 id="exempel-i-php-kod"><a class="header" href="#exempel-i-php-kod">Exempel i PHP-kod</a></h3>
+<p>När du skriver texter i temat använder du samma text domain:</p>
+<pre><code class="language-php">echo esc_html__( 'Read more', 'my-school-theme' );
+</code></pre>
+<p>Här betyder:</p>
+<ul>
+<li><code>'Read more'</code> = textsträng som kan översättas</li>
+<li><code>'my-school-theme'</code> = vilken text domain strängen tillhör</li>
+</ul>
+<p>Om text domain i koden inte matchar den i <code>style.css</code> kan översättningen misslyckas.</p>
+<h3 id="kort-tumregel"><a class="header" href="#kort-tumregel">Kort tumregel</a></h3>
+<p>Använd <strong>samma text domain överallt i temat</strong>:</p>
+<ul>
+<li>i <code>style.css</code></li>
+<li>i funktioner som <code>__()</code>, <code>_e()</code>, <code>esc_html__()</code></li>
+<li>i språkfiler</li>
+</ul>
 <h2 id="4-börja-bygga-din-egen-design"><a class="header" href="#4-börja-bygga-din-egen-design">4. Börja bygga din egen design</a></h2>
 <p>Ett bra arbetsflöde:</p>
 <ol>

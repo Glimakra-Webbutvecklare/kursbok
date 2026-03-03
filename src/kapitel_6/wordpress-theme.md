@@ -48,6 +48,105 @@ De vanligaste filerna att börja med:
 - `page.php` – enskild sida
 - `archive.php` – listning av inlägg
 
+## Den första kommentaren i `style.css`: vad är den och varför behövs den?
+
+I ett WordPress-tema är den första kommentaren i `style.css` inte bara en vanlig kommentar. Den fungerar som en **temahead(er) med metadata** som WordPress läser.
+
+Exempel:
+
+```css
+/*
+Theme Name: My School Theme
+Theme URI: https://example.com/my-school-theme
+Author: Ditt Namn
+Description: Ett enkelt kurs-tema för WordPress.
+Version: 1.0.0
+Text Domain: my-school-theme
+*/
+```
+
+### Vad används den till?
+
+- WordPress visar temat i **Utseende > Teman** med namn och beskrivning.
+- WordPress identifierar temat och dess version.
+- `Text Domain` kopplar temat till översättningar.
+
+### Varför är den viktig?
+
+Utan korrekt header kan WordPress missa viktig information om temat, och i vissa fall visas temat felaktigt i adminpanelen.
+
+Kort sagt: den här kommentaren är en "ID-handling" för ditt tema.
+
+## Egen bild för temat (förhandsvisning i admin)
+
+Om du vill visa en egen bild på temat i **Utseende > Teman** lägger du en fil i temats rotmapp med namnet:
+
+```text
+screenshot.png
+```
+
+Exempel på sökväg:
+
+```text
+wp-content/themes/my-school-theme/screenshot.png
+```
+
+### Rekommendationer
+
+- Filnamn: exakt `screenshot.png` (WordPress känner automatiskt igen den)
+- Format: `.png` (även `.jpg` fungerar i många fall)
+- Rekommenderad storlek: cirka `1200 x 900` px
+
+### Tips för bra förhandsbild
+
+- Visa startsidan eller en representativ sektion av temat
+- Använd tydlig kontrast och läsbar typografi
+- Undvik för mycket detaljer som blir svåra att se i miniatyr
+
+## Text Domain: vad har den för funktion?
+
+I ett eget tema används **Text Domain** för översättning (internationalization, internationalisering). Det är ett unikt namn som kopplar ihop:
+
+- texter i koden
+- språkfiler (`.po` / `.mo`)
+- temat som helhet
+
+### Exempel i `style.css`
+
+I temats header brukar du ha:
+
+```css
+/*
+Theme Name: My School Theme
+Text Domain: my-school-theme
+*/
+```
+
+`Text Domain: my-school-theme` talar om för WordPress vilket "språkpaket" som hör till temat.
+
+### Exempel i PHP-kod
+
+När du skriver texter i temat använder du samma text domain:
+
+```php
+echo esc_html__( 'Read more', 'my-school-theme' );
+```
+
+Här betyder:
+
+- `'Read more'` = textsträng som kan översättas
+- `'my-school-theme'` = vilken text domain strängen tillhör
+
+Om text domain i koden inte matchar den i `style.css` kan översättningen misslyckas.
+
+### Kort tumregel
+
+Använd **samma text domain överallt i temat**:
+
+- i `style.css`
+- i funktioner som `__()`, `_e()`, `esc_html__()`
+- i språkfiler
+
 ## 4. Börja bygga din egen design
 
 Ett bra arbetsflöde:
