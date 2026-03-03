@@ -176,7 +176,7 @@
 <p>Vi bygger i tre steg:</p>
 <ol>
 <li>Registrerar en ny post type: <code>portfolio</code></li>
-<li>Aktiverar kategorier för den post typen</li>
+<li>Registrerar en egen taxonomy för portfolio-kategorier</li>
 <li>Skapar en shortcode som hämtar och visar Portfolio-inlägg</li>
 </ol>
 <p>Tänk så här:</p>
@@ -211,14 +211,40 @@
 		'supports'              =&gt; array( 'title', 'editor', 'thumbnail', 'excerpt' ),
 		'has_archive'           =&gt; true,
 		'rewrite'               =&gt; array( 'slug' =&gt; 'portfolio' ),
-		'taxonomies'            =&gt; array( 'category' ),
 	);
 
 	register_post_type( 'portfolio', $args );
 }
 add_action( 'init', 'school_register_portfolio_post_type' );
+
+function school_register_portfolio_taxonomy() {
+	$labels = array(
+		'name'              =&gt; __( 'Portfolio Categories', 'school-theme' ),
+		'singular_name'     =&gt; __( 'Portfolio Category', 'school-theme' ),
+		'search_items'      =&gt; __( 'Search Portfolio Categories', 'school-theme' ),
+		'all_items'         =&gt; __( 'All Portfolio Categories', 'school-theme' ),
+		'edit_item'         =&gt; __( 'Edit Portfolio Category', 'school-theme' ),
+		'update_item'       =&gt; __( 'Update Portfolio Category', 'school-theme' ),
+		'add_new_item'      =&gt; __( 'Add New Portfolio Category', 'school-theme' ),
+		'new_item_name'     =&gt; __( 'New Portfolio Category Name', 'school-theme' ),
+		'menu_name'         =&gt; __( 'Portfolio Categories', 'school-theme' ),
+	);
+
+	$args = array(
+		'hierarchical'      =&gt; true,
+		'labels'            =&gt; $labels,
+		'show_ui'           =&gt; true,
+		'show_admin_column' =&gt; true,
+		'query_var'         =&gt; true,
+		'show_in_rest'      =&gt; true,
+		'rewrite'           =&gt; array( 'slug' =&gt; 'portfolio-category' ),
+	);
+
+	register_taxonomy( 'portfolio_category', array( 'portfolio' ), $args );
+}
+add_action( 'init', 'school_register_portfolio_taxonomy' );
 </code></pre>
-<p><code>'taxonomies' =&gt; array( 'category' )</code> betyder att Portfolio får stöd för samma kategorier som vanliga inlägg.</p>
+<p>Nu får Portfolio en egen taxonomy: <code>portfolio_category</code>. Det betyder att portfolio inte delar kategorier med vanliga inlägg.</p>
 <h3 id="förklaring-av-koden-viktigaste-delarna"><a class="header" href="#förklaring-av-koden-viktigaste-delarna">Förklaring av koden (viktigaste delarna)</a></h3>
 <ul>
 <li><code>school_register_portfolio_post_type()</code> är vår funktion som beskriver hur post typen ska fungera.</li>
@@ -229,11 +255,11 @@ add_action( 'init', 'school_register_portfolio_post_type' );
 <li><code>show_in_rest =&gt; true</code> gör att Gutenberg-editorn och REST API fungerar.</li>
 <li><code>supports</code> talar om vilka fält som finns (titel, editor, utvald bild, utdrag).</li>
 <li><code>rewrite</code> bestämmer URL-struktur, här <code>/portfolio/...</code>.</li>
-<li><code>taxonomies =&gt; array( 'category' )</code> kopplar på kategorier.</li>
 </ul>
 </li>
 <li><code>register_post_type( 'portfolio', $args )</code> registrerar själva typen i WordPress.</li>
 <li><code>add_action( 'init', ... )</code> betyder: kör funktionen när WordPress startar upp (hook/action, krok/händelse).</li>
+<li><code>register_taxonomy( 'portfolio_category', array( 'portfolio' ), $args )</code> skapar egna portfolio-kategorier.</li>
 </ul>
 <h3 id="hur-ser-du-att-det-fungerar"><a class="header" href="#hur-ser-du-att-det-fungerar">Hur ser du att det fungerar?</a></h3>
 <p>Efter att koden laddats ska du se en ny meny i adminpanelen: <strong>Portfolio</strong>.</p>
@@ -268,7 +294,13 @@ add_action( 'init', 'school_register_portfolio_post_type' );
 	);
 
 	if ( ! empty( $atts['category'] ) ) {
-		$query_args['category_name'] = sanitize_text_field( $atts['category'] );
+		$query_args['tax_query'] = array(
+			array(
+				'taxonomy' =&gt; 'portfolio_category',
+				'field'    =&gt; 'slug',
+				'terms'    =&gt; sanitize_text_field( $atts['category'] ),
+			),
+		);
 	}
 
 	$portfolio_query = new WP_Query( $query_args );
@@ -287,7 +319,7 @@ add_action( 'init', 'school_register_portfolio_post_type' );
 		$item_url   = get_permalink( $item_id );
 		$item_title = get_the_title( $item_id );
 		$image_url  = get_the_post_thumbnail_url( $item_id, 'large' );
-		$terms      = get_the_terms( $item_id, 'category' );
+		$terms      = get_the_terms( $item_id, 'portfolio_category' );
 
 		echo '&lt;article class="portfolio-grid__item" style="background-image:url(' . esc_url( $image_url ) . ');"&gt;';
 		echo '&lt;div class="portfolio-grid__overlay"&gt;';
@@ -328,7 +360,7 @@ add_shortcode( 'portfolio_grid', 'school_portfolio_shortcode' );
 <li><code>ob_start()</code> startar output buffering (utmatningsbuffert): vi bygger HTML som en sträng och returnerar den.</li>
 <li>Loopen <code>while ( $portfolio_query-&gt;have_posts() )</code> går igenom varje träff och skriver ut en grid-ruta.</li>
 <li><code>get_the_post_thumbnail_url()</code> hämtar bild-URL för bakgrunden.</li>
-<li><code>get_the_terms( $item_id, 'category' )</code> hämtar kategorier för just den posten.</li>
+<li><code>get_the_terms( $item_id, 'portfolio_category' )</code> hämtar portfolio-kategorier för just den posten.</li>
 <li><code>esc_url()</code> och <code>esc_html()</code> skyddar output.</li>
 <li><code>wp_reset_postdata()</code> återställer WordPress globala loop så annan kod inte påverkas.</li>
 </ul>
@@ -381,9 +413,9 @@ add_shortcode( 'portfolio_grid', 'school_portfolio_shortcode' );
 </code></pre>
 <ul>
 <li><code>count</code> styr antal inlägg</li>
-<li><code>category</code> filtrerar på kategorins slug</li>
+<li><code>category</code> filtrerar på portfolio-kategorins slug</li>
 </ul>
-<p>Tips: <code>category</code> ska vara kategori-slug, inte visningsnamn. Om kategorin heter "Webbdesign" kan slug vara <code>webbdesign</code>.</p>
+<p>Tips: <code>category</code> ska vara slug för <strong>portfolio category</strong>, inte visningsnamn. Om kategorin heter "Webbdesign" kan slug vara <code>webbdesign</code>.</p>
 <h2 id="4-egen-template-för-portfolio-item"><a class="header" href="#4-egen-template-för-portfolio-item">4) Egen template för portfolio item</a></h2>
 <p>För att styra hur en enskild Portfolio-post visas skapar du en template-fil i temat:</p>
 <pre><code class="language-text">wp-content/themes/ditt-tema/single-portfolio.php
@@ -396,7 +428,7 @@ get_header();
 if ( have_posts() ) :
 	while ( have_posts() ) :
 		the_post();
-		$terms = get_the_terms( get_the_ID(), 'category' );
+		$terms = get_the_terms( get_the_ID(), 'portfolio_category' );
 		?&gt;
 		&lt;main class="portfolio-single"&gt;
 			&lt;h1&gt;&lt;?php the_title(); ?&gt;&lt;/h1&gt;
@@ -443,7 +475,7 @@ get_footer();
 </li>
 <li><strong>Kategorifilter fungerar inte</strong>
 <ul>
-<li>Kontrollera att du använder kategori-slug i <code>category</code>.</li>
+<li>Kontrollera att du använder slug från <code>portfolio_category</code> i <code>category</code>.</li>
 </ul>
 </li>
 <li><strong>Portfolio syns inte i admin</strong>
@@ -467,7 +499,7 @@ get_footer();
 <h2 id="praktisk-övning"><a class="header" href="#praktisk-övning">Praktisk övning</a></h2>
 <ol>
 <li>Skapa tre Portfolio-inlägg.</li>
-<li>Lägg dem i minst två olika kategorier.</li>
+<li>Skapa minst två <code>Portfolio Categories</code> och koppla dem till inläggen.</li>
 <li>Skapa en sida med <code>[portfolio_grid]</code>.</li>
 <li>Skapa en till sida med <code>[portfolio_grid count="2" category="webbdesign"]</code>.</li>
 <li>Skapa <code>single-portfolio.php</code> i ditt tema och testa en enskild portfolio-post.</li>
