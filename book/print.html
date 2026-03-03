@@ -10143,6 +10143,7 @@ add_action( 'after_setup_theme', 'school_theme_setup' );
 <li>Använda starka lösenord och minst en admin-användare med säkra inloggningsrutiner.</li>
 <li>Testa uppdateringar i lokal miljö innan produktion.</li>
 </ol>
+<p>Vill du arbeta mer praktiskt med WordPress-kod? Se lektionen <a href="kapitel_6/./wordpress-custom-post-type.html">Egen post type i WordPress (Portfolio)</a>, där du registrerar en egen innehållstyp med kategorier och visar den med shortcode.</p>
 <h2 id="nästa-lektioner"><a class="header" href="#nästa-lektioner">Nästa lektioner</a></h2>
 <p>Fortsätt gärna i den här ordningen:</p>
 <ul>
@@ -10151,7 +10152,9 @@ add_action( 'after_setup_theme', 'school_theme_setup' );
 <li><a href="kapitel_6/./wordpress-admin.html">WordPress adminpanel</a></li>
 <li><a href="kapitel_6/./wordpress-teman.html">WordPress teman</a></li>
 <li><a href="kapitel_6/./wordpress-theme.html">Skapa eget tema med Underscores</a></li>
+<li><a href="kapitel_6/./wordpress-custom-post-type.html">Egen post type i WordPress (Portfolio)</a></li>
 <li><a href="kapitel_6/./wordpress-plugins.html">WordPress plugins</a></li>
+<li><a href="kapitel_6/./wordpress-eget-plugin-slider.html">Skapa eget WordPress-plugin: Content Slider</a></li>
 <li><a href="kapitel_6/./wordpress-page-builders.html">WordPress page builders</a></li>
 <li><a href="kapitel_6/./wordpress-posts-vs-pages.html">Skillnaden mellan Posts och Pages</a></li>
 </ul>
@@ -10689,9 +10692,134 @@ if (
 <li>Vilka delar av ett tema vill du göra återanvändbara tidigt i projektet?</li>
 <li>Hur skulle du organisera CSS och templates för att förenkla underhåll?</li>
 </ol>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="egen-post-type-i-wordpress-portfolio"><a class="header" href="#egen-post-type-i-wordpress-portfolio">Egen post type i WordPress (Portfolio)</a></h1>
+<p>I den här lektionen skapar vi en egen post type (innehållstyp) med namnet <strong>Portfolio</strong>. Vi lägger också till stöd för kategorier och bygger en shortcode (kortkod) så innehållet kan visas på valfri sida.</p>
+<h2 id="förkunskaper-6"><a class="header" href="#förkunskaper-6">Förkunskaper</a></h2>
+<p>Innan du börjar är det bra om du har läst:</p>
+<ul>
+<li><a href="kapitel_6/./wordpress.html">WordPress</a></li>
+<li><a href="kapitel_6/./wordpress-teman.html">WordPress teman</a></li>
+<li><a href="kapitel_6/./wordpress-plugins.html">WordPress plugins</a></li>
+</ul>
+<h2 id="varför-använda-en-egen-post-type"><a class="header" href="#varför-använda-en-egen-post-type">Varför använda en egen post type?</a></h2>
+<p>Standardtyperna i WordPress är <strong>Inlägg</strong> och <strong>Sidor</strong>. För innehåll som inte riktigt passar där, till exempel projekt, case eller kundjobb, blir en egen post type tydligare.</p>
+<p>Exempel:</p>
+<ul>
+<li>Inlägg = nyheter och blogg</li>
+<li>Sidor = statiska undersidor</li>
+<li>Portfolio = projekt och referenser</li>
+</ul>
+<p>Det gör adminpanelen enklare för redaktören och minskar risken att innehåll blandas ihop.</p>
+<h2 id="1-registrera-post-typen-portfolio"><a class="header" href="#1-registrera-post-typen-portfolio">1) Registrera post typen Portfolio</a></h2>
+<p>Lägg koden i <code>functions.php</code> i ditt tema eller i ett eget plugin.</p>
+<pre><code class="language-php">function school_register_portfolio_post_type() {
+	$labels = array(
+		'name'                  =&gt; __( 'Portfolio', 'school-theme' ),
+		'singular_name'         =&gt; __( 'Portfolio Item', 'school-theme' ),
+		'add_new'               =&gt; __( 'Add New', 'school-theme' ),
+		'add_new_item'          =&gt; __( 'Add New Portfolio Item', 'school-theme' ),
+		'edit_item'             =&gt; __( 'Edit Portfolio Item', 'school-theme' ),
+		'new_item'              =&gt; __( 'New Portfolio Item', 'school-theme' ),
+		'view_item'             =&gt; __( 'View Portfolio Item', 'school-theme' ),
+		'search_items'          =&gt; __( 'Search Portfolio', 'school-theme' ),
+		'not_found'             =&gt; __( 'No portfolio items found', 'school-theme' ),
+		'not_found_in_trash'    =&gt; __( 'No portfolio items found in Trash', 'school-theme' ),
+		'menu_name'             =&gt; __( 'Portfolio', 'school-theme' ),
+	);
+
+	$args = array(
+		'labels'                =&gt; $labels,
+		'public'                =&gt; true,
+		'show_in_rest'          =&gt; true,
+		'menu_position'         =&gt; 20,
+		'menu_icon'             =&gt; 'dashicons-portfolio',
+		'supports'              =&gt; array( 'title', 'editor', 'thumbnail', 'excerpt' ),
+		'has_archive'           =&gt; true,
+		'rewrite'               =&gt; array( 'slug' =&gt; 'portfolio' ),
+		'taxonomies'            =&gt; array( 'category' ),
+	);
+
+	register_post_type( 'portfolio', $args );
+}
+add_action( 'init', 'school_register_portfolio_post_type' );
+</code></pre>
+<p><code>'taxonomies' =&gt; array( 'category' )</code> betyder att Portfolio får stöd för samma kategorier som vanliga inlägg.</p>
+<h2 id="2-skapa-shortcode-för-att-visa-portfolio"><a class="header" href="#2-skapa-shortcode-för-att-visa-portfolio">2) Skapa shortcode för att visa Portfolio</a></h2>
+<p>Nu skapar vi en shortcode som hämtar Portfolio-inlägg och skriver ut dem som en lista.</p>
+<pre><code class="language-php">function school_portfolio_shortcode( $atts ) {
+	$atts = shortcode_atts(
+		array(
+			'count'    =&gt; 6,
+			'category' =&gt; '',
+		),
+		$atts,
+		'portfolio_list'
+	);
+
+	$query_args = array(
+		'post_type'      =&gt; 'portfolio',
+		'posts_per_page' =&gt; (int) $atts['count'],
+	);
+
+	if ( ! empty( $atts['category'] ) ) {
+		$query_args['category_name'] = sanitize_text_field( $atts['category'] );
+	}
+
+	$portfolio_query = new WP_Query( $query_args );
+
+	if ( ! $portfolio_query-&gt;have_posts() ) {
+		return '&lt;p&gt;Inga portfolio-inlägg hittades.&lt;/p&gt;';
+	}
+
+	ob_start();
+	echo '&lt;ul class="portfolio-list"&gt;';
+
+	while ( $portfolio_query-&gt;have_posts() ) {
+		$portfolio_query-&gt;the_post();
+		echo '&lt;li&gt;';
+		echo '&lt;a href="' . esc_url( get_permalink() ) . '"&gt;';
+		echo esc_html( get_the_title() );
+		echo '&lt;/a&gt;';
+		echo '&lt;/li&gt;';
+	}
+
+	echo '&lt;/ul&gt;';
+
+	wp_reset_postdata();
+	return ob_get_clean();
+}
+add_shortcode( 'portfolio_list', 'school_portfolio_shortcode' );
+</code></pre>
+<h2 id="3-använd-shortcoden-på-en-sida"><a class="header" href="#3-använd-shortcoden-på-en-sida">3) Använd shortcoden på en sida</a></h2>
+<p>Grundexempel:</p>
+<pre><code class="language-text">[portfolio_list]
+</code></pre>
+<p>Med parametrar:</p>
+<pre><code class="language-text">[portfolio_list count="3" category="webbdesign"]
+</code></pre>
+<ul>
+<li><code>count</code> styr antal inlägg</li>
+<li><code>category</code> filtrerar på kategorins slug</li>
+</ul>
+<h2 id="säkerhet-och-kvalitet"><a class="header" href="#säkerhet-och-kvalitet">Säkerhet och kvalitet</a></h2>
+<p>I koden ovan används:</p>
+<ul>
+<li><code>sanitize_text_field()</code> för indata från shortcode-attribut</li>
+<li><code>esc_url()</code> och <code>esc_html()</code> vid utskrift</li>
+<li><code>wp_reset_postdata()</code> för att återställa global loop</li>
+</ul>
+<p>Detta minskar risk för fel och gör koden säkrare i praktisk användning.</p>
+<h2 id="praktisk-övning"><a class="header" href="#praktisk-övning">Praktisk övning</a></h2>
+<ol>
+<li>Skapa tre Portfolio-inlägg.</li>
+<li>Lägg dem i minst två olika kategorier.</li>
+<li>Skapa en sida med <code>[portfolio_list]</code>.</li>
+<li>Skapa en till sida med <code>[portfolio_list count="2" category="webbdesign"]</code>.</li>
+<li>Jämför resultaten och förklara vad parametrarna gör.</li>
+</ol>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="wordpress-plugins"><a class="header" href="#wordpress-plugins">WordPress plugins</a></h1>
 <p>Plugins (tillägg) i WordPress är moduler som lägger till funktionalitet utan att du behöver bygga allt från grunden. När du förstår hur plugins fungerar kan du bygga webbplatser snabbare, men också mer säkert och hållbart.</p>
-<h2 id="förkunskaper-6"><a class="header" href="#förkunskaper-6">Förkunskaper</a></h2>
+<h2 id="förkunskaper-7"><a class="header" href="#förkunskaper-7">Förkunskaper</a></h2>
 <p>Innan du börjar bör du ha läst:</p>
 <ul>
 <li><a href="kapitel_6/./wordpress.html">WordPress</a></li>
@@ -10799,15 +10927,420 @@ add_action( 'wp_footer', 'school_site_notice' );
 </ul>
 <h2 id="sammanfattning-31"><a class="header" href="#sammanfattning-31">Sammanfattning</a></h2>
 <p>Plugins gör WordPress kraftfullt och flexibelt. Med en liten, genomtänkt plugin-bas och bra underhållsrutiner får du en snabbare, säkrare och mer stabil webbplats.</p>
+<p>Vill du bygga ett plugin själv? Fortsätt med <a href="kapitel_6/./wordpress-eget-plugin-slider.html">Skapa eget WordPress-plugin: Content Slider</a>.</p>
 <h2 id="reflektionsfrågor-6"><a class="header" href="#reflektionsfrågor-6">Reflektionsfrågor</a></h2>
 <ol>
 <li>Vilka plugin-kategorier är viktigast för en skolwebbplats och varför?</li>
 <li>Hur undviker du att plugin-miljön blir svår att underhålla?</li>
 <li>Vilka risker finns med att uppdatera plugins utan testmiljö?</li>
 </ol>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="skapa-eget-wordpress-plugin-content-slider"><a class="header" href="#skapa-eget-wordpress-plugin-content-slider">Skapa eget WordPress-plugin: Content Slider</a></h1>
+<p>I den här lektionen bygger vi ett eget plugin från grunden. Målet är en content slider som går att lägga in på valfri sida med en shortcode (kortkod).</p>
+<p>Varje slide ska kunna ha:</p>
+<ul>
+<li>bild som bakgrund</li>
+<li>rubrik</li>
+<li>underrubrik</li>
+<li>knapp</li>
+</ul>
+<h2 id="förkunskaper-8"><a class="header" href="#förkunskaper-8">Förkunskaper</a></h2>
+<p>Innan du börjar är det bra om du har läst:</p>
+<ul>
+<li><a href="kapitel_6/./wordpress.html">WordPress</a></li>
+<li><a href="kapitel_6/./wordpress-plugins.html">WordPress plugins</a></li>
+<li><a href="kapitel_6/./wordpress-teman.html">WordPress teman</a></li>
+</ul>
+<h2 id="plugin-struktur"><a class="header" href="#plugin-struktur">Plugin-struktur</a></h2>
+<p>Skapa en mapp i <code>wp-content/plugins</code>:</p>
+<pre><code class="language-text">school-content-slider/
+├─ school-content-slider.php
+├─ assets/
+│  ├─ slider.css
+│  └─ slider.js
+</code></pre>
+<h2 id="1-skapa-pluginets-huvudfil"><a class="header" href="#1-skapa-pluginets-huvudfil">1) Skapa pluginets huvudfil</a></h2>
+<p>Skapa filen <code>school-content-slider.php</code>:</p>
+<pre><code class="language-php">&lt;?php
+/**
+ * Plugin Name: School Content Slider
+ * Description: Enkel content slider med shortcode.
+ * Version: 1.0.0
+ * Author: Glimakra Webbutvecklare
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+function school_slider_register_post_type() {
+	register_post_type(
+		'school_slide',
+		array(
+			'labels' =&gt; array(
+				'name'          =&gt; __( 'Slides', 'school-slider' ),
+				'singular_name' =&gt; __( 'Slide', 'school-slider' ),
+			),
+			'public'       =&gt; true,
+			'show_in_rest' =&gt; true,
+			'menu_icon'    =&gt; 'dashicons-images-alt2',
+			'supports'     =&gt; array( 'title', 'thumbnail' ),
+			'has_archive'  =&gt; false,
+		)
+	);
+}
+add_action( 'init', 'school_slider_register_post_type' );
+</code></pre>
+<p>Här används en egen post type: <code>school_slide</code>. Rubriken hämtas från postens titel och bilden hanteras via Featured Image (utvald bild).</p>
+<h2 id="2-lägg-till-fält-för-underrubrik-och-knapp"><a class="header" href="#2-lägg-till-fält-för-underrubrik-och-knapp">2) Lägg till fält för underrubrik och knapp</a></h2>
+<p>Lägg till i samma fil:</p>
+<pre><code class="language-php">function school_slider_add_meta_box() {
+	add_meta_box(
+		'school_slider_fields',
+		__( 'Slide-innehåll', 'school-slider' ),
+		'school_slider_render_meta_box',
+		'school_slide',
+		'normal',
+		'default'
+	);
+}
+add_action( 'add_meta_boxes', 'school_slider_add_meta_box' );
+
+function school_slider_render_meta_box( $post ) {
+	wp_nonce_field( 'school_slider_save_fields', 'school_slider_nonce' );
+
+	$subtitle   = get_post_meta( $post-&gt;ID, '_school_slide_subtitle', true );
+	$button_txt = get_post_meta( $post-&gt;ID, '_school_slide_button_text', true );
+	$button_url = get_post_meta( $post-&gt;ID, '_school_slide_button_url', true );
+
+	echo '&lt;p&gt;&lt;label for="school_slide_subtitle"&gt;Underrubrik&lt;/label&gt;&lt;/p&gt;';
+	echo '&lt;input type="text" id="school_slide_subtitle" name="school_slide_subtitle" value="' . esc_attr( $subtitle ) . '" style="width:100%;" /&gt;';
+
+	echo '&lt;p&gt;&lt;label for="school_slide_button_text"&gt;Knapptext&lt;/label&gt;&lt;/p&gt;';
+	echo '&lt;input type="text" id="school_slide_button_text" name="school_slide_button_text" value="' . esc_attr( $button_txt ) . '" style="width:100%;" /&gt;';
+
+	echo '&lt;p&gt;&lt;label for="school_slide_button_url"&gt;Knapp-länk&lt;/label&gt;&lt;/p&gt;';
+	echo '&lt;input type="url" id="school_slide_button_url" name="school_slide_button_url" value="' . esc_attr( $button_url ) . '" style="width:100%;" /&gt;';
+}
+
+function school_slider_save_meta_box( $post_id ) {
+	if ( ! isset( $_POST['school_slider_nonce'] ) ) {
+		return;
+	}
+
+	if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['school_slider_nonce'] ) ), 'school_slider_save_fields' ) ) {
+		return;
+	}
+
+	if ( defined( 'DOING_AUTOSAVE' ) &amp;&amp; DOING_AUTOSAVE ) {
+		return;
+	}
+
+	if ( ! current_user_can( 'edit_post', $post_id ) ) {
+		return;
+	}
+
+	if ( isset( $_POST['school_slide_subtitle'] ) ) {
+		update_post_meta( $post_id, '_school_slide_subtitle', sanitize_text_field( wp_unslash( $_POST['school_slide_subtitle'] ) ) );
+	}
+
+	if ( isset( $_POST['school_slide_button_text'] ) ) {
+		update_post_meta( $post_id, '_school_slide_button_text', sanitize_text_field( wp_unslash( $_POST['school_slide_button_text'] ) ) );
+	}
+
+	if ( isset( $_POST['school_slide_button_url'] ) ) {
+		update_post_meta( $post_id, '_school_slide_button_url', esc_url_raw( wp_unslash( $_POST['school_slide_button_url'] ) ) );
+	}
+}
+add_action( 'save_post_school_slide', 'school_slider_save_meta_box' );
+</code></pre>
+<p>Nu kan varje slide få en underrubrik samt knappens text och länk.</p>
+<h2 id="3-registrera-shortcode"><a class="header" href="#3-registrera-shortcode">3) Registrera shortcode</a></h2>
+<p>Lägg till i plugin-filen:</p>
+<pre><code class="language-php">function school_slider_shortcode( $atts ) {
+	$atts = shortcode_atts(
+		array(
+			'count' =&gt; 5,
+		),
+		$atts,
+		'school_slider'
+	);
+
+	$slides = new WP_Query(
+		array(
+			'post_type'      =&gt; 'school_slide',
+			'posts_per_page' =&gt; (int) $atts['count'],
+			'orderby'        =&gt; 'date',
+			'order'          =&gt; 'DESC',
+		)
+	);
+
+	if ( ! $slides-&gt;have_posts() ) {
+		return '&lt;p&gt;Inga slides hittades.&lt;/p&gt;';
+	}
+
+	$slider_id = 'school-slider-' . wp_rand( 1000, 9999 );
+
+	ob_start();
+	echo '&lt;div class="school-slider" id="' . esc_attr( $slider_id ) . '" data-slider&gt;';
+	echo '&lt;div class="school-slider__track"&gt;';
+
+	$dot_index = 0;
+
+	while ( $slides-&gt;have_posts() ) {
+		$slides-&gt;the_post();
+
+		$subtitle   = get_post_meta( get_the_ID(), '_school_slide_subtitle', true );
+		$button_txt = get_post_meta( get_the_ID(), '_school_slide_button_text', true );
+		$button_url = get_post_meta( get_the_ID(), '_school_slide_button_url', true );
+		$image_url  = get_the_post_thumbnail_url( get_the_ID(), 'full' );
+
+		echo '&lt;article class="school-slide" style="background-image:url(' . esc_url( $image_url ) . ');"&gt;';
+		echo '&lt;div class="school-slide__overlay"&gt;';
+		echo '&lt;h2 class="school-slide__title"&gt;' . esc_html( get_the_title() ) . '&lt;/h2&gt;';
+
+		if ( ! empty( $subtitle ) ) {
+			echo '&lt;p class="school-slide__subtitle"&gt;' . esc_html( $subtitle ) . '&lt;/p&gt;';
+		}
+
+		if ( ! empty( $button_txt ) &amp;&amp; ! empty( $button_url ) ) {
+			echo '&lt;a class="school-slide__button" href="' . esc_url( $button_url ) . '"&gt;' . esc_html( $button_txt ) . '&lt;/a&gt;';
+		}
+
+		echo '&lt;/div&gt;';
+		echo '&lt;/article&gt;';
+
+		$dot_index++;
+	}
+
+	echo '&lt;/div&gt;';
+	echo '&lt;button class="school-slider__nav school-slider__nav--prev" type="button" data-slider-prev aria-label="Föregående slide"&gt;&amp;#10094;&lt;/button&gt;';
+	echo '&lt;button class="school-slider__nav school-slider__nav--next" type="button" data-slider-next aria-label="Nästa slide"&gt;&amp;#10095;&lt;/button&gt;';
+
+	echo '&lt;div class="school-slider__dots" role="tablist" aria-label="Slide navigation"&gt;';
+	for ( $i = 0; $i &lt; $dot_index; $i++ ) {
+		echo '&lt;button class="school-slider__dot" type="button" data-slide-to="' . esc_attr( $i ) . '" aria-label="Gå till slide ' . esc_attr( (string) ( $i + 1 ) ) . '"&gt;&lt;/button&gt;';
+	}
+	echo '&lt;/div&gt;';
+
+	echo '&lt;/div&gt;';
+
+	wp_reset_postdata();
+	return ob_get_clean();
+}
+add_shortcode( 'school_slider', 'school_slider_shortcode' );
+</code></pre>
+<p>Shortcoden blir:</p>
+<pre><code class="language-text">[school_slider]
+</code></pre>
+<p>Du kan styra antal slides:</p>
+<pre><code class="language-text">[school_slider count="3"]
+</code></pre>
+<h2 id="4-ladda-css-och-javascript"><a class="header" href="#4-ladda-css-och-javascript">4) Ladda CSS och JavaScript</a></h2>
+<p>Lägg till i plugin-filen:</p>
+<pre><code class="language-php">function school_slider_enqueue_assets() {
+	wp_enqueue_style(
+		'school-slider-style',
+		plugin_dir_url( __FILE__ ) . 'assets/slider.css',
+		array(),
+		'1.0.0'
+	);
+
+	wp_enqueue_script(
+		'school-slider-script',
+		plugin_dir_url( __FILE__ ) . 'assets/slider.js',
+		array(),
+		'1.0.0',
+		true
+	);
+}
+add_action( 'wp_enqueue_scripts', 'school_slider_enqueue_assets' );
+</code></pre>
+<p>Skapa <code>assets/slider.css</code>:</p>
+<pre><code class="language-css">.school-slider {
+	position: relative;
+	overflow: hidden;
+	min-height: 380px;
+}
+
+.school-slider__track {
+	position: relative;
+}
+
+.school-slide {
+	display: none;
+	min-height: 380px;
+	background-size: cover;
+	background-position: center;
+}
+
+.school-slide.is-active {
+	display: block;
+}
+
+.school-slide__overlay {
+	background: rgba(0, 0, 0, 0.45);
+	color: #fff;
+	padding: 64px 40px;
+	min-height: 380px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 12px;
+}
+
+.school-slide__title {
+	margin: 0;
+	font-size: 2rem;
+}
+
+.school-slide__subtitle {
+	margin: 0;
+	font-size: 1.1rem;
+}
+
+.school-slide__button {
+	align-self: flex-start;
+	padding: 10px 18px;
+	background: #ffffff;
+	color: #111111;
+	text-decoration: none;
+	border-radius: 6px;
+}
+
+.school-slider__nav {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	background: rgba(0, 0, 0, 0.55);
+	color: #ffffff;
+	border: 0;
+	width: 42px;
+	height: 42px;
+	border-radius: 50%;
+	cursor: pointer;
+	font-size: 1.2rem;
+	z-index: 10;
+}
+
+.school-slider__nav--prev {
+	left: 16px;
+}
+
+.school-slider__nav--next {
+	right: 16px;
+}
+
+.school-slider__dots {
+	position: absolute;
+	left: 50%;
+	bottom: 18px;
+	transform: translateX(-50%);
+	display: flex;
+	gap: 8px;
+	z-index: 10;
+}
+
+.school-slider__dot {
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	border: 0;
+	background: rgba(255, 255, 255, 0.5);
+	cursor: pointer;
+}
+
+.school-slider__dot.is-active {
+	background: #ffffff;
+}
+</code></pre>
+<p>Skapa <code>assets/slider.js</code>:</p>
+<pre><code class="language-javascript">document.addEventListener('DOMContentLoaded', () =&gt; {
+	const sliders = document.querySelectorAll('[data-slider]');
+
+	if (!sliders.length) {
+		return;
+	}
+
+	sliders.forEach((slider) =&gt; {
+		const slides = Array.from(slider.querySelectorAll('.school-slide'));
+		const dots = Array.from(slider.querySelectorAll('.school-slider__dot'));
+		const prevButton = slider.querySelector('[data-slider-prev]');
+		const nextButton = slider.querySelector('[data-slider-next]');
+
+		if (!slides.length) {
+			return;
+		}
+
+		let activeIndex = 0;
+
+		const render = () =&gt; {
+			slides.forEach((slide, index) =&gt; {
+				slide.classList.toggle('is-active', index === activeIndex);
+			});
+
+			dots.forEach((dot, index) =&gt; {
+				dot.classList.toggle('is-active', index === activeIndex);
+			});
+		};
+
+		const goToNext = () =&gt; {
+			activeIndex = (activeIndex + 1) % slides.length;
+			render();
+		};
+
+		const goToPrev = () =&gt; {
+			activeIndex = (activeIndex - 1 + slides.length) % slides.length;
+			render();
+		};
+
+		if (nextButton) {
+			nextButton.addEventListener('click', goToNext);
+		}
+
+		if (prevButton) {
+			prevButton.addEventListener('click', goToPrev);
+		}
+
+		dots.forEach((dot) =&gt; {
+			dot.addEventListener('click', () =&gt; {
+				activeIndex = Number(dot.dataset.slideTo);
+				render();
+			});
+		});
+
+		render();
+
+		setInterval(goToNext, 5000);
+	});
+});
+</code></pre>
+<h2 id="5-aktivera-och-testa"><a class="header" href="#5-aktivera-och-testa">5) Aktivera och testa</a></h2>
+<ol>
+<li>Gå till <strong>Tillägg &gt; Installerade tillägg</strong> och aktivera <code>School Content Slider</code>.</li>
+<li>Gå till <strong>Slides</strong> i adminpanelen och skapa några slides.</li>
+<li>Ange titel, underrubrik, knapptext och knapp-länk.</li>
+<li>Sätt en Featured Image (utvald bild) för varje slide.</li>
+<li>Lägg in <code>[school_slider]</code> på en sida.</li>
+<li>Testa navigeringen med pilarna och dots under sliden.</li>
+</ol>
+<h2 id="säkerhet-i-plugin-kod"><a class="header" href="#säkerhet-i-plugin-kod">Säkerhet i plugin-kod</a></h2>
+<p>I exemplet används flera viktiga säkerhetsdelar:</p>
+<ul>
+<li><code>wp_nonce_field()</code> och <code>wp_verify_nonce()</code></li>
+<li><code>current_user_can()</code></li>
+<li><code>sanitize_text_field()</code> och <code>esc_url_raw()</code> vid sparning</li>
+<li><code>esc_html()</code> och <code>esc_url()</code> vid utskrift</li>
+</ul>
+<p>Detta minskar risk för XSS (cross-site scripting) och felaktig indata.</p>
+<h2 id="reflektionsfrågor-7"><a class="header" href="#reflektionsfrågor-7">Reflektionsfrågor</a></h2>
+<ol>
+<li>Varför är det bättre att lägga den här funktionen i ett plugin istället för i temat?</li>
+<li>Hur påverkas sliden om en post saknar Featured Image?</li>
+<li>Hur skulle du lägga till swipe-stöd för mobil (touch events)?</li>
+</ol>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="wordpress-page-builders"><a class="header" href="#wordpress-page-builders">WordPress page builders</a></h1>
 <p>Page builders är verktyg som gör att du kan bygga sidlayout visuellt i WordPress utan att skriva all kod själv. De används ofta för landningssidor, kampanjsidor och projekt där redaktörer snabbt behöver skapa egna layouter.</p>
-<h2 id="förkunskaper-7"><a class="header" href="#förkunskaper-7">Förkunskaper</a></h2>
+<h2 id="förkunskaper-9"><a class="header" href="#förkunskaper-9">Förkunskaper</a></h2>
 <p>Innan du börjar bör du ha läst:</p>
 <ul>
 <li><a href="kapitel_6/./wordpress.html">WordPress</a></li>
@@ -10884,7 +11417,7 @@ add_action( 'wp_footer', 'school_site_notice' );
 </ol>
 <h2 id="sammanfattning-32"><a class="header" href="#sammanfattning-32">Sammanfattning</a></h2>
 <p>Page builders kan vara ett effektivt verktyg för snabb visuell produktion i WordPress. Med tydliga riktlinjer för prestanda, struktur och uppdateringar kan de fungera bra i både små och medelstora projekt.</p>
-<h2 id="reflektionsfrågor-7"><a class="header" href="#reflektionsfrågor-7">Reflektionsfrågor</a></h2>
+<h2 id="reflektionsfrågor-8"><a class="header" href="#reflektionsfrågor-8">Reflektionsfrågor</a></h2>
 <ol>
 <li>När skulle du välja Gutenberg framför en extern page builder?</li>
 <li>Vilka risker ser du med att bygga hela sajten i en enda builder?</li>
@@ -10893,7 +11426,7 @@ add_action( 'wp_footer', 'school_site_notice' );
 <div style="break-before: page; page-break-before: always;"></div><h1 id="skillnaden-mellan-posts-och-pages-i-wordpress"><a class="header" href="#skillnaden-mellan-posts-och-pages-i-wordpress">Skillnaden mellan Posts och Pages i WordPress</a></h1>
 <p>När du bygger en webbplats i WordPress är en av de första frågorna: ska innehållet vara ett <strong>Post (inlägg)</strong> eller en <strong>Page (sida)</strong>?</p>
 <p>Det här valet påverkar hur innehållet visas, hur lätt det blir att navigera på sajten och hur redaktörer arbetar i adminpanelen.</p>
-<h2 id="förkunskaper-8"><a class="header" href="#förkunskaper-8">Förkunskaper</a></h2>
+<h2 id="förkunskaper-10"><a class="header" href="#förkunskaper-10">Förkunskaper</a></h2>
 <p>Innan du börjar bör du ha läst:</p>
 <ul>
 <li><a href="kapitel_6/./wordpress.html">WordPress</a></li>
@@ -10978,7 +11511,7 @@ add_action( 'wp_footer', 'school_site_notice' );
 <li><strong>Page (sida)</strong> passar för stabilt innehåll i webbplatsens grundstruktur.</li>
 <li>Rätt val från början gör sajten enklare att underhålla, navigera och skala.</li>
 </ul>
-<h2 id="reflektionsfrågor-8"><a class="header" href="#reflektionsfrågor-8">Reflektionsfrågor</a></h2>
+<h2 id="reflektionsfrågor-9"><a class="header" href="#reflektionsfrågor-9">Reflektionsfrågor</a></h2>
 <ol>
 <li>Vilket innehåll på din tänkta webbplats ska vara inlägg respektive sidor?</li>
 <li>Hur skulle du strukturera kategorier för inlägg så att det blir lätt att hitta rätt?</li>
@@ -37660,6 +38193,22 @@ Den här sammanfattningen fungerar bra som referens i ett GitHub-projekt, underv
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

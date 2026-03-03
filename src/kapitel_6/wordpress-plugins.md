@@ -129,6 +129,8 @@ För ett tryggare plugin-arbete:
 
 Plugins gör WordPress kraftfullt och flexibelt. Med en liten, genomtänkt plugin-bas och bra underhållsrutiner får du en snabbare, säkrare och mer stabil webbplats.
 
+Vill du bygga ett plugin själv? Fortsätt med [Skapa eget WordPress-plugin: Content Slider](./wordpress-eget-plugin-slider.md).
+
 ## Reflektionsfrågor
 
 1. Vilka plugin-kategorier är viktigast för en skolwebbplats och varför?
