@@ -2,12 +2,24 @@
 
 I den här lektionen bygger vi ett eget plugin från grunden. Målet är en content slider som går att lägga in på valfri sida med en shortcode (kortkod).
 
+Du får både **kod** och **förklaring av varför varje del finns**, så att du kan förstå flödet även om du aldrig byggt plugin tidigare.
+
 Varje slide ska kunna ha:
 
 - bild som bakgrund
 - rubrik
 - underrubrik
 - knapp
+
+## Så fungerar hela lösningen (innan vi kodar)
+
+1. Vi registrerar ett plugin så WordPress kan aktivera det.
+2. Vi skapar en egen post type `school_slide` där redaktören lägger slides.
+3. Vi lägger till extra fält (underrubrik, knapptext, knapp-länk).
+4. Vi skapar shortcoden `[school_slider]` som bygger HTML för sliden.
+5. Vi laddar CSS och JavaScript som ger layout, auto-play och navigering.
+
+Det här är ett vanligt WordPress-mönster: **lagra data i adminpanelen**, och **presentera data med shortcode i frontend**.
 
 ## Förkunskaper
 
@@ -16,6 +28,7 @@ Innan du börjar är det bra om du har läst:
 - [WordPress](./wordpress.md)
 - [WordPress plugins](./wordpress-plugins.md)
 - [WordPress teman](./wordpress-teman.md)
+- [WordPress shortcodes](./wordpress-shortcodes.md)
 
 ## Plugin-struktur
 
@@ -28,6 +41,10 @@ school-content-slider/
 │  ├─ slider.css
 │  └─ slider.js
 ```
+
+- `school-content-slider.php` innehåller pluginets PHP-logik.
+- `slider.css` styr hur sliden ser ut.
+- `slider.js` styr beteendet (byte av slide, klick på navigering).
 
 ## 1) Skapa pluginets huvudfil
 
@@ -66,6 +83,16 @@ add_action( 'init', 'school_slider_register_post_type' );
 ```
 
 Här används en egen post type: `school_slide`. Rubriken hämtas från postens titel och bilden hanteras via Featured Image (utvald bild).
+
+### Vad händer i den här koden?
+
+- Plugin-huvudet (`Plugin Name`, `Version` ...) gör att WordPress känner igen pluginet i listan under **Tillägg**.
+- `if ( ! defined( 'ABSPATH' ) ) { exit; }` skyddar filen mot direkt anrop.
+- `register_post_type( 'school_slide', ... )` skapar en ny innehållstyp i adminpanelen.
+- `supports => array( 'title', 'thumbnail' )` betyder att varje slide får titel och Featured Image.
+- `add_action( 'init', ... )` kör registreringen när WordPress startar.
+
+När pluginet aktiveras ska du se en ny meny i adminpanelen: **Slides**.
 
 ## 2) Lägg till fält för underrubrik och knapp
 
@@ -134,6 +161,23 @@ add_action( 'save_post_school_slide', 'school_slider_save_meta_box' );
 ```
 
 Nu kan varje slide få en underrubrik samt knappens text och länk.
+
+### Vad gör meta box-delen?
+
+- `add_meta_box(...)` lägger till en extra panel under editorn för `school_slide`.
+- `school_slider_render_meta_box()` visar formulärfälten i admin.
+- `get_post_meta(...)` läser tidigare sparade värden.
+- `school_slider_save_meta_box()` körs vid sparning av slide.
+
+Säkerhetsflödet vid sparning:
+
+1. Kontrollera att nonce-fält finns.
+2. Verifiera nonce (skydd mot CSRF).
+3. Stoppa autosave-fall.
+4. Kontrollera behörighet med `current_user_can()`.
+5. Sanera data och spara med `update_post_meta()`.
+
+Det här är standardmönstret i WordPress när du sparar egna fält.
 
 ## 3) Registrera shortcode
 
@@ -214,6 +258,25 @@ function school_slider_shortcode( $atts ) {
 add_shortcode( 'school_slider', 'school_slider_shortcode' );
 ```
 
+### Hur shortcoden jobbar
+
+- `add_shortcode( 'school_slider', ... )` kopplar `[school_slider]` till funktionen.
+- `shortcode_atts(...)` sätter standardvärde för `count`.
+- `WP_Query` hämtar slides från databasen.
+- `ob_start()` används för att bygga HTML och returnera den som en sträng.
+- Loopen skriver ut varje slide:
+	- bakgrundsbild från `get_the_post_thumbnail_url()`
+	- rubrik från post title
+	- underrubrik + knapp från post meta
+- Efter loopen skapas navigering:
+	- två knappar (föregående/nästa)
+	- en dot-knapp per slide
+- `wp_reset_postdata()` återställer global query.
+
+Varför både `esc_html()` och `esc_url()`?
+
+- För att skydda output mot skadligt innehåll och trasig HTML.
+
 Shortcoden blir:
 
 ```text
@@ -225,6 +288,8 @@ Du kan styra antal slides:
 ```text
 [school_slider count="3"]
 ```
+
+Om en sida innehåller flera sliders fungerar det också, eftersom JavaScript-koden loopar över alla element med `data-slider`.
 
 ## 4) Ladda CSS och JavaScript
 
@@ -249,6 +314,16 @@ function school_slider_enqueue_assets() {
 }
 add_action( 'wp_enqueue_scripts', 'school_slider_enqueue_assets' );
 ```
+
+### Vad betyder enqueue?
+
+`wp_enqueue_style()` och `wp_enqueue_script()` är WordPress sätt att ladda filer på rätt sätt.
+
+Fördelar:
+
+- undviker dubbel inladdning
+- bättre kompatibilitet med andra teman/plugins
+- WordPress kan hantera ordning och beroenden
 
 Skapa `assets/slider.css`:
 
@@ -415,6 +490,21 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 ```
 
+### Hur JavaScript-navigeringen fungerar
+
+1. Hitta alla sliders på sidan.
+2. För varje slider:
+	- hämta slides, dots och pilknappar
+	- sätt `activeIndex = 0`
+	- kör `render()` för att markera aktiv slide/dot
+3. Lägg event listeners:
+	- nästa-knapp -> `goToNext()`
+	- föregående-knapp -> `goToPrev()`
+	- dot -> hoppa till vald index
+4. Starta auto-play med `setInterval(goToNext, 5000)`.
+
+Det betyder att användaren kan både klicka manuellt och låta sliden rotera automatiskt.
+
 ## 5) Aktivera och testa
 
 1. Gå till **Tillägg > Installerade tillägg** och aktivera `School Content Slider`.
@@ -423,6 +513,28 @@ document.addEventListener('DOMContentLoaded', () => {
 4. Sätt en Featured Image (utvald bild) för varje slide.
 5. Lägg in `[school_slider]` på en sida.
 6. Testa navigeringen med pilarna och dots under sliden.
+
+## Felsökning för nybörjare
+
+### Jag ser inte menyn Slides i admin
+
+- Kontrollera att pluginet är aktiverat.
+- Kontrollera att filnamnet är rätt och att plugin-huvudet finns kvar.
+
+### Shortcoden visar bara "Inga slides hittades"
+
+- Kontrollera att du har publicerat slides (inte utkast).
+- Kontrollera att post typen heter exakt `school_slide` i queryn.
+
+### Bakgrundsbild syns inte
+
+- Kontrollera att varje slide har en Featured Image.
+- Kontrollera att temat visar featured images korrekt i admin.
+
+### Navigering klickar men inget händer
+
+- Kontrollera att `slider.js` laddas (t.ex. i webbläsarens DevTools).
+- Kontrollera att klassnamn i HTML, CSS och JS matchar exakt.
 
 ## Säkerhet i plugin-kod
 
@@ -434,6 +546,10 @@ I exemplet används flera viktiga säkerhetsdelar:
 - `esc_html()` och `esc_url()` vid utskrift
 
 Detta minskar risk för XSS (cross-site scripting) och felaktig indata.
+
+## Sammanfattning
+
+Du har byggt ett komplett plugin med egen datamodell (post type), egna fält, shortcode, styling och JavaScript-navigering. Det är en bra mall för många andra plugin-idéer, till exempel testimonials, teamkort eller kundcase.
 
 ## Reflektionsfrågor
 

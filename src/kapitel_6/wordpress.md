@@ -100,7 +100,7 @@ För ett hållbart WordPress-projekt bör du alltid:
 4. Använda starka lösenord och minst en admin-användare med säkra inloggningsrutiner.
 5. Testa uppdateringar i lokal miljö innan produktion.
 
-Vill du arbeta mer praktiskt med WordPress-kod? Se lektionen [Egen post type i WordPress (Portfolio)](./wordpress-custom-post-type.md), där du registrerar en egen innehållstyp med kategorier och visar den med shortcode.
+Vill du arbeta mer praktiskt med WordPress-kod? Börja med [WordPress shortcodes](./wordpress-shortcodes.md) och gå sedan vidare till [Egen post type i WordPress (Portfolio)](./wordpress-custom-post-type.md).
 
 ## Nästa lektioner
 
@@ -111,6 +111,7 @@ Fortsätt gärna i den här ordningen:
 - [WordPress adminpanel](./wordpress-admin.md)
 - [WordPress teman](./wordpress-teman.md)
 - [Skapa eget tema med Underscores](./wordpress-theme.md)
+- [WordPress shortcodes](./wordpress-shortcodes.md)
 - [Egen post type i WordPress (Portfolio)](./wordpress-custom-post-type.md)
 - [WordPress plugins](./wordpress-plugins.md)
 - [Skapa eget WordPress-plugin: Content Slider](./wordpress-eget-plugin-slider.md)

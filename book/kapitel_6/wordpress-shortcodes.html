@@ -1,0 +1,344 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>WordPress shortcodes - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="wordpress-shortcodes"><a class="header" href="#wordpress-shortcodes">WordPress shortcodes</a></h1>
+<p>Shortcodes (kortkoder) är ett sätt att köra PHP-funktioner direkt från innehåll i WordPress, till exempel i en sida eller ett inlägg.</p>
+<p>Exempel:</p>
+<pre><code class="language-text">[my_shortcode]
+</code></pre>
+<p>När WordPress ser shortcoden ersätts den med HTML från din funktion.</p>
+<h2 id="förkunskaper"><a class="header" href="#förkunskaper">Förkunskaper</a></h2>
+<p>Innan du börjar är det bra om du har läst:</p>
+<ul>
+<li><a href="./wordpress.html">WordPress</a></li>
+<li><a href="./wordpress-admin.html">WordPress adminpanel</a></li>
+<li><a href="./wordpress-teman.html">WordPress teman</a></li>
+</ul>
+<h2 id="varför-shortcodes"><a class="header" href="#varför-shortcodes">Varför shortcodes?</a></h2>
+<p>Shortcodes är användbara när du vill att redaktören ska kunna lägga in dynamiskt innehåll utan att skriva kod.</p>
+<p>Vanliga exempel:</p>
+<ul>
+<li>kontaktkort</li>
+<li>listor med senaste inlägg</li>
+<li>custom post type-listor</li>
+<li>sliders och gallerier</li>
+</ul>
+<h2 id="hur-fungerar-det"><a class="header" href="#hur-fungerar-det">Hur fungerar det?</a></h2>
+<p>Du kopplar ett shortcode-namn till en PHP-funktion:</p>
+<ol>
+<li><code>add_shortcode()</code> registrerar namnet</li>
+<li>WordPress hittar <code>[namn]</code> i innehållet</li>
+<li>Din funktion körs</li>
+<li>Funktionen returnerar HTML som visas på sidan</li>
+</ol>
+<pre class="mermaid">flowchart LR
+	A[Innehåll med shortcode] --&gt; B[WordPress parser shortcode]
+	B --&gt; C[PHP-funktion körs]
+	C --&gt; D[HTML returneras]
+	D --&gt; E[Visas för besökaren]
+</pre>
+<h2 id="1-en-första-shortcode-utan-parametrar"><a class="header" href="#1-en-första-shortcode-utan-parametrar">1) En första shortcode (utan parametrar)</a></h2>
+<p>Lägg i <code>functions.php</code> eller i ett plugin:</p>
+<pre><code class="language-php">function school_hello_shortcode() {
+	return '&lt;p&gt;Hej från min första shortcode!&lt;/p&gt;';
+}
+add_shortcode( 'school_hello', 'school_hello_shortcode' );
+</code></pre>
+<p>Använd i en sida:</p>
+<pre><code class="language-text">[school_hello]
+</code></pre>
+<h3 id="vad-händer-i-koden"><a class="header" href="#vad-händer-i-koden">Vad händer i koden?</a></h3>
+<ul>
+<li><code>school_hello_shortcode()</code> skapar innehållet</li>
+<li><code>add_shortcode( 'school_hello', ... )</code> registrerar namnet</li>
+<li>WordPress ersätter <code>[school_hello]</code> med texten från funktionen</li>
+</ul>
+<h2 id="2-shortcode-med-parametrar-attributes-attribut"><a class="header" href="#2-shortcode-med-parametrar-attributes-attribut">2) Shortcode med parametrar (attributes, attribut)</a></h2>
+<p>Nu gör vi en mer flexibel shortcode.</p>
+<pre><code class="language-php">function school_box_shortcode( $atts ) {
+	$atts = shortcode_atts(
+		array(
+			'title' =&gt; 'Standardrubrik',
+			'text'  =&gt; 'Standardtext',
+		),
+		$atts,
+		'school_box'
+	);
+
+	return '&lt;div class="school-box"&gt;&lt;h3&gt;' . esc_html( $atts['title'] ) . '&lt;/h3&gt;&lt;p&gt;' . esc_html( $atts['text'] ) . '&lt;/p&gt;&lt;/div&gt;';
+}
+add_shortcode( 'school_box', 'school_box_shortcode' );
+</code></pre>
+<p>Användning:</p>
+<pre><code class="language-text">[school_box title="Välkommen" text="Detta innehåll kommer från en shortcode."]
+</code></pre>
+<h3 id="varför-shortcode_atts"><a class="header" href="#varför-shortcode_atts">Varför <code>shortcode_atts()</code>?</a></h3>
+<p>Funktionen sätter standardvärden. Om redaktören inte skickar in <code>title</code> eller <code>text</code> så fungerar shortcoden ändå.</p>
+<h2 id="viktig-regel-returnera-inte-echo"><a class="header" href="#viktig-regel-returnera-inte-echo">Viktig regel: returnera, inte echo</a></h2>
+<p>I en shortcode-funktion ska du nästan alltid använda <code>return</code>, inte <code>echo</code>.</p>
+<ul>
+<li><code>return</code> skickar tillbaka innehållet till rätt plats i sidan</li>
+<li><code>echo</code> kan skriva ut innehåll på fel ställe i renderingen</li>
+</ul>
+<h2 id="säkerhet-i-shortcodes"><a class="header" href="#säkerhet-i-shortcodes">Säkerhet i shortcodes</a></h2>
+<p>Använd alltid escaping (escapning) när du skriver ut data:</p>
+<ul>
+<li><code>esc_html()</code> för text</li>
+<li><code>esc_url()</code> för länkar</li>
+<li><code>sanitize_text_field()</code> för indata du vill rensa</li>
+</ul>
+<p>Det minskar risk för XSS (cross-site scripting).</p>
+<h2 id="vanliga-nybörjarfel"><a class="header" href="#vanliga-nybörjarfel">Vanliga nybörjarfel</a></h2>
+<ol>
+<li>Shortcoden syns som text i sidan
+<ul>
+<li>Kontrollera att du skrev <code>[school_hello]</code> och inte glömde hakparenteser.</li>
+</ul>
+</li>
+<li>Inget händer alls
+<ul>
+<li>Kontrollera att funktionen laddas (rätt fil, aktivt tema/plugin).</li>
+</ul>
+</li>
+<li>Fel namn i <code>add_shortcode</code>
+<ul>
+<li>Kontrollera att shortcode-namn och funktionsnamn stämmer.</li>
+</ul>
+</li>
+<li>Trasig HTML
+<ul>
+<li>Kontrollera att alla taggar öppnas/stängs korrekt.</li>
+</ul>
+</li>
+</ol>
+<h2 id="när-passar-shortcodes-bäst"><a class="header" href="#när-passar-shortcodes-bäst">När passar shortcodes bäst?</a></h2>
+<p>Shortcodes passar bra när:</p>
+<ul>
+<li>redaktörer ska kunna placera funktioner var som helst</li>
+<li>du vill återanvända samma funktion på flera sidor</li>
+<li>innehållet är dynamiskt (hämtas från databas)</li>
+</ul>
+<p>Om du bygger nyare block-baserat innehåll i Gutenberg kan ett block ibland vara bättre på sikt, men shortcodes är fortfarande vanliga i många projekt.</p>
+<h2 id="praktisk-övning"><a class="header" href="#praktisk-övning">Praktisk övning</a></h2>
+<ol>
+<li>Skapa shortcoden <code>school_hello</code> och testa den på en sida.</li>
+<li>Skapa shortcoden <code>school_box</code> och testa två olika varianter med olika <code>title</code> och <code>text</code>.</li>
+<li>Lägg till egen CSS-klass i HTML-strängen och styla boxen i temat.</li>
+<li>Förklara varför <code>esc_html()</code> är viktig i båda exemplen.</li>
+</ol>
+<h2 id="nästa-steg"><a class="header" href="#nästa-steg">Nästa steg</a></h2>
+<p>När du kan shortcodes är nästa naturliga steg att:</p>
+<ul>
+<li>skapa en egen post type som visas med shortcode</li>
+<li>bygga plugin som använder shortcode för mer avancerat innehåll</li>
+</ul>
+<p>Fortsätt med:</p>
+<ul>
+<li><a href="./wordpress-custom-post-type.html">Egen post type i WordPress (Portfolio)</a></li>
+<li><a href="./wordpress-plugins.html">WordPress plugins</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_6/wordpress-theme.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_6/wordpress-custom-post-type.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_6/wordpress-theme.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_6/wordpress-custom-post-type.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

@@ -154,12 +154,14 @@
                     <main>
                         <h1 id="egen-post-type-i-wordpress-portfolio"><a class="header" href="#egen-post-type-i-wordpress-portfolio">Egen post type i WordPress (Portfolio)</a></h1>
 <p>I den här lektionen skapar vi en egen post type (innehållstyp) med namnet <strong>Portfolio</strong>. Vi lägger också till stöd för kategorier och bygger en shortcode (kortkod) så innehållet kan visas på valfri sida.</p>
+<p>Målet är att du ska förstå <strong>vad koden gör</strong>, inte bara kopiera den.</p>
 <h2 id="förkunskaper"><a class="header" href="#förkunskaper">Förkunskaper</a></h2>
 <p>Innan du börjar är det bra om du har läst:</p>
 <ul>
 <li><a href="./wordpress.html">WordPress</a></li>
 <li><a href="./wordpress-teman.html">WordPress teman</a></li>
 <li><a href="./wordpress-plugins.html">WordPress plugins</a></li>
+<li><a href="./wordpress-shortcodes.html">WordPress shortcodes</a></li>
 </ul>
 <h2 id="varför-använda-en-egen-post-type"><a class="header" href="#varför-använda-en-egen-post-type">Varför använda en egen post type?</a></h2>
 <p>Standardtyperna i WordPress är <strong>Inlägg</strong> och <strong>Sidor</strong>. För innehåll som inte riktigt passar där, till exempel projekt, case eller kundjobb, blir en egen post type tydligare.</p>
@@ -170,6 +172,19 @@
 <li>Portfolio = projekt och referenser</li>
 </ul>
 <p>Det gör adminpanelen enklare för redaktören och minskar risken att innehåll blandas ihop.</p>
+<h2 id="Översikt-vad-vi-bygger"><a class="header" href="#Översikt-vad-vi-bygger">Översikt: vad vi bygger</a></h2>
+<p>Vi bygger i tre steg:</p>
+<ol>
+<li>Registrerar en ny post type: <code>portfolio</code></li>
+<li>Aktiverar kategorier för den post typen</li>
+<li>Skapar en shortcode som hämtar och visar Portfolio-inlägg</li>
+</ol>
+<p>Tänk så här:</p>
+<ul>
+<li>WordPress har ett "register" med innehållstyper</li>
+<li>Du lägger till en ny typ i registret med <code>register_post_type()</code></li>
+<li>Shortcoden läser data från databasen och skriver ut HTML</li>
+</ul>
 <h2 id="1-registrera-post-typen-portfolio"><a class="header" href="#1-registrera-post-typen-portfolio">1) Registrera post typen Portfolio</a></h2>
 <p>Lägg koden i <code>functions.php</code> i ditt tema eller i ett eget plugin.</p>
 <pre><code class="language-php">function school_register_portfolio_post_type() {
@@ -204,8 +219,39 @@
 add_action( 'init', 'school_register_portfolio_post_type' );
 </code></pre>
 <p><code>'taxonomies' =&gt; array( 'category' )</code> betyder att Portfolio får stöd för samma kategorier som vanliga inlägg.</p>
+<h3 id="förklaring-av-koden-viktigaste-delarna"><a class="header" href="#förklaring-av-koden-viktigaste-delarna">Förklaring av koden (viktigaste delarna)</a></h3>
+<ul>
+<li><code>school_register_portfolio_post_type()</code> är vår funktion som beskriver hur post typen ska fungera.</li>
+<li><code>$labels</code> styr texter i adminpanelen, till exempel "Add New Portfolio Item".</li>
+<li><code>$args</code> styr beteendet:
+<ul>
+<li><code>public =&gt; true</code> gör typen synlig i admin och på frontend.</li>
+<li><code>show_in_rest =&gt; true</code> gör att Gutenberg-editorn och REST API fungerar.</li>
+<li><code>supports</code> talar om vilka fält som finns (titel, editor, utvald bild, utdrag).</li>
+<li><code>rewrite</code> bestämmer URL-struktur, här <code>/portfolio/...</code>.</li>
+<li><code>taxonomies =&gt; array( 'category' )</code> kopplar på kategorier.</li>
+</ul>
+</li>
+<li><code>register_post_type( 'portfolio', $args )</code> registrerar själva typen i WordPress.</li>
+<li><code>add_action( 'init', ... )</code> betyder: kör funktionen när WordPress startar upp (hook/action, krok/händelse).</li>
+</ul>
+<h3 id="hur-ser-du-att-det-fungerar"><a class="header" href="#hur-ser-du-att-det-fungerar">Hur ser du att det fungerar?</a></h3>
+<p>Efter att koden laddats ska du se en ny meny i adminpanelen: <strong>Portfolio</strong>.</p>
+<p>Om du inte ser den:</p>
+<ol>
+<li>kontrollera att funktionen ligger i fil som verkligen laddas</li>
+<li>uppdatera sidan i adminpanelen</li>
+<li>gå till <strong>Inställningar &gt; Permalänkar</strong> och klicka "Spara" en gång</li>
+</ol>
 <h2 id="2-skapa-shortcode-för-att-visa-portfolio"><a class="header" href="#2-skapa-shortcode-för-att-visa-portfolio">2) Skapa shortcode för att visa Portfolio</a></h2>
-<p>Nu skapar vi en shortcode som hämtar Portfolio-inlägg och skriver ut dem som en lista.</p>
+<p>Nu skapar vi en shortcode som hämtar Portfolio-inlägg och skriver ut dem som en <strong>grid</strong>.</p>
+<p>Varje ruta i griden ska:</p>
+<ul>
+<li>använda Featured Image som bakgrund</li>
+<li>visa titel</li>
+<li>länka till portfolio-itemets sida</li>
+<li>visa kategorier</li>
+</ul>
 <pre><code class="language-php">function school_portfolio_shortcode( $atts ) {
 	$atts = shortcode_atts(
 		array(
@@ -213,7 +259,7 @@ add_action( 'init', 'school_register_portfolio_post_type' );
 			'category' =&gt; '',
 		),
 		$atts,
-		'portfolio_list'
+		'portfolio_grid'
 	);
 
 	$query_args = array(
@@ -232,35 +278,154 @@ add_action( 'init', 'school_register_portfolio_post_type' );
 	}
 
 	ob_start();
-	echo '&lt;ul class="portfolio-list"&gt;';
+	echo '&lt;div class="portfolio-grid"&gt;';
 
 	while ( $portfolio_query-&gt;have_posts() ) {
 		$portfolio_query-&gt;the_post();
-		echo '&lt;li&gt;';
-		echo '&lt;a href="' . esc_url( get_permalink() ) . '"&gt;';
-		echo esc_html( get_the_title() );
-		echo '&lt;/a&gt;';
-		echo '&lt;/li&gt;';
+
+		$item_id    = get_the_ID();
+		$item_url   = get_permalink( $item_id );
+		$item_title = get_the_title( $item_id );
+		$image_url  = get_the_post_thumbnail_url( $item_id, 'large' );
+		$terms      = get_the_terms( $item_id, 'category' );
+
+		echo '&lt;article class="portfolio-grid__item" style="background-image:url(' . esc_url( $image_url ) . ');"&gt;';
+		echo '&lt;div class="portfolio-grid__overlay"&gt;';
+		echo '&lt;h3 class="portfolio-grid__title"&gt;';
+		echo '&lt;a href="' . esc_url( $item_url ) . '"&gt;' . esc_html( $item_title ) . '&lt;/a&gt;';
+		echo '&lt;/h3&gt;';
+
+		if ( ! empty( $terms ) &amp;&amp; ! is_wp_error( $terms ) ) {
+			echo '&lt;p class="portfolio-grid__categories"&gt;';
+			foreach ( $terms as $term ) {
+				echo '&lt;span&gt;' . esc_html( $term-&gt;name ) . '&lt;/span&gt; ';
+			}
+			echo '&lt;/p&gt;';
+		}
+
+		echo '&lt;/div&gt;';
+		echo '&lt;/article&gt;';
 	}
 
-	echo '&lt;/ul&gt;';
+	echo '&lt;/div&gt;';
 
 	wp_reset_postdata();
 	return ob_get_clean();
 }
-add_shortcode( 'portfolio_list', 'school_portfolio_shortcode' );
+add_shortcode( 'portfolio_grid', 'school_portfolio_shortcode' );
+</code></pre>
+<h3 id="förklaring-av-koden-steg-för-steg"><a class="header" href="#förklaring-av-koden-steg-för-steg">Förklaring av koden (steg för steg)</a></h3>
+<ul>
+<li><code>add_shortcode( 'portfolio_grid', ... )</code> kopplar texten <code>[portfolio_grid]</code> till vår PHP-funktion.</li>
+<li><code>$atts = shortcode_atts(...)</code> sätter standardvärden:
+<ul>
+<li><code>count</code> = hur många poster som visas</li>
+<li><code>category</code> = valfritt filter på kategori</li>
+</ul>
+</li>
+<li><code>new WP_Query(...)</code> gör en databasfråga och hämtar rätt Portfolio-poster.</li>
+<li><code>if ( ! $portfolio_query-&gt;have_posts() )</code> hanterar fallet där inget hittas.</li>
+<li><code>ob_start()</code> startar output buffering (utmatningsbuffert): vi bygger HTML som en sträng och returnerar den.</li>
+<li>Loopen <code>while ( $portfolio_query-&gt;have_posts() )</code> går igenom varje träff och skriver ut en grid-ruta.</li>
+<li><code>get_the_post_thumbnail_url()</code> hämtar bild-URL för bakgrunden.</li>
+<li><code>get_the_terms( $item_id, 'category' )</code> hämtar kategorier för just den posten.</li>
+<li><code>esc_url()</code> och <code>esc_html()</code> skyddar output.</li>
+<li><code>wp_reset_postdata()</code> återställer WordPress globala loop så annan kod inte påverkas.</li>
+</ul>
+<h3 id="css-för-griden-lägg-i-ditt-tema"><a class="header" href="#css-för-griden-lägg-i-ditt-tema">CSS för griden (lägg i ditt tema)</a></h3>
+<pre><code class="language-css">.portfolio-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+	gap: 20px;
+}
+
+.portfolio-grid__item {
+	min-height: 260px;
+	background-size: cover;
+	background-position: center;
+	border-radius: 10px;
+	overflow: hidden;
+}
+
+.portfolio-grid__overlay {
+	min-height: 260px;
+	background: rgba(0, 0, 0, 0.45);
+	color: #ffffff;
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	gap: 8px;
+}
+
+.portfolio-grid__title {
+	margin: 0;
+}
+
+.portfolio-grid__title a {
+	color: #ffffff;
+	text-decoration: none;
+}
+
+.portfolio-grid__categories {
+	margin: 0;
+	font-size: 0.9rem;
+}
 </code></pre>
 <h2 id="3-använd-shortcoden-på-en-sida"><a class="header" href="#3-använd-shortcoden-på-en-sida">3) Använd shortcoden på en sida</a></h2>
 <p>Grundexempel:</p>
-<pre><code class="language-text">[portfolio_list]
+<pre><code class="language-text">[portfolio_grid]
 </code></pre>
 <p>Med parametrar:</p>
-<pre><code class="language-text">[portfolio_list count="3" category="webbdesign"]
+<pre><code class="language-text">[portfolio_grid count="3" category="webbdesign"]
 </code></pre>
 <ul>
 <li><code>count</code> styr antal inlägg</li>
 <li><code>category</code> filtrerar på kategorins slug</li>
 </ul>
+<p>Tips: <code>category</code> ska vara kategori-slug, inte visningsnamn. Om kategorin heter "Webbdesign" kan slug vara <code>webbdesign</code>.</p>
+<h2 id="4-egen-template-för-portfolio-item"><a class="header" href="#4-egen-template-för-portfolio-item">4) Egen template för portfolio item</a></h2>
+<p>För att styra hur en enskild Portfolio-post visas skapar du en template-fil i temat:</p>
+<pre><code class="language-text">wp-content/themes/ditt-tema/single-portfolio.php
+</code></pre>
+<p>WordPress template hierarchy (mall-hierarki) gör att <code>single-portfolio.php</code> används automatiskt för post typen <code>portfolio</code>.</p>
+<p>Exempel:</p>
+<pre><code class="language-php">&lt;?php
+get_header();
+
+if ( have_posts() ) :
+	while ( have_posts() ) :
+		the_post();
+		$terms = get_the_terms( get_the_ID(), 'category' );
+		?&gt;
+		&lt;main class="portfolio-single"&gt;
+			&lt;h1&gt;&lt;?php the_title(); ?&gt;&lt;/h1&gt;
+
+			&lt;?php if ( has_post_thumbnail() ) : ?&gt;
+				&lt;div class="portfolio-single__image"&gt;
+					&lt;?php the_post_thumbnail( 'large' ); ?&gt;
+				&lt;/div&gt;
+			&lt;?php endif; ?&gt;
+
+			&lt;div class="portfolio-single__content"&gt;
+				&lt;?php the_content(); ?&gt;
+			&lt;/div&gt;
+
+			&lt;?php if ( ! empty( $terms ) &amp;&amp; ! is_wp_error( $terms ) ) : ?&gt;
+				&lt;p class="portfolio-single__categories"&gt;
+					&lt;?php foreach ( $terms as $term ) : ?&gt;
+						&lt;span&gt;&lt;?php echo esc_html( $term-&gt;name ); ?&gt;&lt;/span&gt;
+					&lt;?php endforeach; ?&gt;
+				&lt;/p&gt;
+			&lt;?php endif; ?&gt;
+		&lt;/main&gt;
+		&lt;?php
+	endwhile;
+endif;
+
+get_footer();
+</code></pre>
+<p>Nu får varje portfolio-item en egen visning med titel, bild, innehåll och kategorier.</p>
 <h2 id="säkerhet-och-kvalitet"><a class="header" href="#säkerhet-och-kvalitet">Säkerhet och kvalitet</a></h2>
 <p>I koden ovan används:</p>
 <ul>
@@ -269,20 +434,50 @@ add_shortcode( 'portfolio_list', 'school_portfolio_shortcode' );
 <li><code>wp_reset_postdata()</code> för att återställa global loop</li>
 </ul>
 <p>Detta minskar risk för fel och gör koden säkrare i praktisk användning.</p>
+<h2 id="vanliga-nybörjarfel-och-lösning"><a class="header" href="#vanliga-nybörjarfel-och-lösning">Vanliga nybörjarfel (och lösning)</a></h2>
+<ol>
+<li><strong>Shortcoden visar inget</strong>
+<ul>
+<li>Kontrollera att det finns publicerade Portfolio-inlägg.</li>
+</ul>
+</li>
+<li><strong>Kategorifilter fungerar inte</strong>
+<ul>
+<li>Kontrollera att du använder kategori-slug i <code>category</code>.</li>
+</ul>
+</li>
+<li><strong>Portfolio syns inte i admin</strong>
+<ul>
+<li>Kontrollera stavning på <code>register_post_type</code> och hooken <code>init</code>.</li>
+</ul>
+</li>
+<li><strong>Konstig visning efter egen query</strong>
+<ul>
+<li>Kontrollera att <code>wp_reset_postdata()</code> finns kvar.</li>
+</ul>
+</li>
+<li><strong>Template-filen används inte</strong>
+<ul>
+<li>Kontrollera att filen heter exakt <code>single-portfolio.php</code>.</li>
+</ul>
+</li>
+</ol>
+<h2 id="sammanfattning"><a class="header" href="#sammanfattning">Sammanfattning</a></h2>
+<p>Du har nu byggt en egen innehållstyp och en återanvändbar shortcode. Det är en vanlig och viktig grund i WordPress-utveckling: först modellera innehållet (post type), sedan visa det där redaktören behöver det (shortcode).</p>
 <h2 id="praktisk-övning"><a class="header" href="#praktisk-övning">Praktisk övning</a></h2>
 <ol>
 <li>Skapa tre Portfolio-inlägg.</li>
 <li>Lägg dem i minst två olika kategorier.</li>
-<li>Skapa en sida med <code>[portfolio_list]</code>.</li>
-<li>Skapa en till sida med <code>[portfolio_list count="2" category="webbdesign"]</code>.</li>
-<li>Jämför resultaten och förklara vad parametrarna gör.</li>
+<li>Skapa en sida med <code>[portfolio_grid]</code>.</li>
+<li>Skapa en till sida med <code>[portfolio_grid count="2" category="webbdesign"]</code>.</li>
+<li>Skapa <code>single-portfolio.php</code> i ditt tema och testa en enskild portfolio-post.</li>
 </ol>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../kapitel_6/wordpress-theme.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../kapitel_6/wordpress-shortcodes.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
@@ -296,7 +491,7 @@ add_shortcode( 'portfolio_list', 'school_portfolio_shortcode' );
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../kapitel_6/wordpress-theme.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../kapitel_6/wordpress-shortcodes.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
@@ -307,22 +502,6 @@ add_shortcode( 'portfolio_list', 'school_portfolio_shortcode' );
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

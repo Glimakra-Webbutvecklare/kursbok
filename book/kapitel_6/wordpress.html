@@ -239,7 +239,7 @@ add_action( 'after_setup_theme', 'school_theme_setup' );
 <li>Använda starka lösenord och minst en admin-användare med säkra inloggningsrutiner.</li>
 <li>Testa uppdateringar i lokal miljö innan produktion.</li>
 </ol>
-<p>Vill du arbeta mer praktiskt med WordPress-kod? Se lektionen <a href="./wordpress-custom-post-type.html">Egen post type i WordPress (Portfolio)</a>, där du registrerar en egen innehållstyp med kategorier och visar den med shortcode.</p>
+<p>Vill du arbeta mer praktiskt med WordPress-kod? Börja med <a href="./wordpress-shortcodes.html">WordPress shortcodes</a> och gå sedan vidare till <a href="./wordpress-custom-post-type.html">Egen post type i WordPress (Portfolio)</a>.</p>
 <h2 id="nästa-lektioner"><a class="header" href="#nästa-lektioner">Nästa lektioner</a></h2>
 <p>Fortsätt gärna i den här ordningen:</p>
 <ul>
@@ -248,6 +248,7 @@ add_action( 'after_setup_theme', 'school_theme_setup' );
 <li><a href="./wordpress-admin.html">WordPress adminpanel</a></li>
 <li><a href="./wordpress-teman.html">WordPress teman</a></li>
 <li><a href="./wordpress-theme.html">Skapa eget tema med Underscores</a></li>
+<li><a href="./wordpress-shortcodes.html">WordPress shortcodes</a></li>
 <li><a href="./wordpress-custom-post-type.html">Egen post type i WordPress (Portfolio)</a></li>
 <li><a href="./wordpress-plugins.html">WordPress plugins</a></li>
 <li><a href="./wordpress-eget-plugin-slider.html">Skapa eget WordPress-plugin: Content Slider</a></li>
@@ -291,22 +292,6 @@ add_action( 'after_setup_theme', 'school_theme_setup' );
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 
