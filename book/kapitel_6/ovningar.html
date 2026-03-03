@@ -266,6 +266,214 @@ docker compose up -d
 <p><strong>Förklaring:</strong> <code>docker compose down</code> stoppar och tar bort alla containrar samt det skapade nätverket. Namngivna volymer (t.ex. <code>dbdata</code>) behålls som standard. Använd <code>docker compose down -v</code> om du vill ta bort även volymerna.</p>
 </details>
 <hr />
+<h2 id="markdown-övningar"><a class="header" href="#markdown-övningar">Markdown-övningar</a></h2>
+<p>Installera verktyget <strong>marked</strong> för att konvertera Markdown till HTML och verifiera dina lösningar:</p>
+<pre><code class="language-bash">npm install -g marked
+</code></pre>
+<p>Använd sedan <code>marked fil.md</code> eller <code>echo "din markdown" | marked</code> för att se den genererade HTML:en.</p>
+<p>I varje övning får du se HTML-resultatet. Din uppgift är att skriva Markdown som ger samma HTML.</p>
+<hr />
+<h3 id="markdown-1-enkel-rubrik"><a class="header" href="#markdown-1-enkel-rubrik">Markdown 1: Enkel rubrik</a></h3>
+<p>Du ser följande HTML. Skriv Markdown som ger samma resultat.</p>
+<pre><code class="language-html">&lt;h1&gt;Välkommen till min sida&lt;/h1&gt;
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-markdown"># Välkommen till min sida
+</code></pre>
+<p><strong>Förklaring:</strong> En <code>#</code> i Markdown genererar en <code>&lt;h1&gt;</code>-rubrik. Ju fler <code>#</code> desto mindre rubrik (h2, h3, osv.).</p>
+</details>
+<hr />
+<h3 id="markdown-2-stycke-med-fet-text"><a class="header" href="#markdown-2-stycke-med-fet-text">Markdown 2: Stycke med fet text</a></h3>
+<p>Du ser följande HTML. Skriv Markdown som ger samma resultat.</p>
+<pre><code class="language-html">&lt;p&gt;Detta är &lt;strong&gt;viktig&lt;/strong&gt; information.&lt;/p&gt;
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-markdown">Detta är **viktig** information.
+</code></pre>
+<p><strong>Förklaring:</strong> <code>**text**</code> eller <code>__text__</code> ger fet stil (<code>&lt;strong&gt;</code>). Tomma rader skapar nya stycken (<code>&lt;p&gt;</code>).</p>
+</details>
+<hr />
+<h3 id="markdown-3-punktlista"><a class="header" href="#markdown-3-punktlista">Markdown 3: Punktlista</a></h3>
+<p>Du ser följande HTML. Skriv Markdown som ger samma resultat.</p>
+<pre><code class="language-html">&lt;ul&gt;
+&lt;li&gt;Äpplen&lt;/li&gt;
+&lt;li&gt;Bananer&lt;/li&gt;
+&lt;li&gt;Citroner&lt;/li&gt;
+&lt;/ul&gt;
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-markdown">- Äpplen
+- Bananer
+- Citroner
+</code></pre>
+<p><strong>Förklaring:</strong> <code>-</code>, <code>*</code> eller <code>+</code> följt av mellanslag skapar en punktlista. Varje rad blir ett <code>&lt;li&gt;</code>-element.</p>
+</details>
+<hr />
+<h3 id="markdown-4-numrerad-lista"><a class="header" href="#markdown-4-numrerad-lista">Markdown 4: Numrerad lista</a></h3>
+<p>Du ser följande HTML. Skriv Markdown som ger samma resultat.</p>
+<pre><code class="language-html">&lt;ol&gt;
+&lt;li&gt;Koka vatten&lt;/li&gt;
+&lt;li&gt;Lägg i pasta&lt;/li&gt;
+&lt;li&gt;Vänta 10 minuter&lt;/li&gt;
+&lt;/ol&gt;
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-markdown">1. Koka vatten
+2. Lägg i pasta
+3. Vänta 10 minuter
+</code></pre>
+<p><strong>Förklaring:</strong> <code>1.</code> följt av mellanslag skapar en numrerad lista. Markdown numrerar om automatiskt – du kan skriva <code>1.</code> på alla rader om du vill.</p>
+</details>
+<hr />
+<h3 id="markdown-5-länk"><a class="header" href="#markdown-5-länk">Markdown 5: Länk</a></h3>
+<p>Du ser följande HTML. Skriv Markdown som ger samma resultat.</p>
+<pre><code class="language-html">&lt;p&gt;Besök &lt;a href="https://github.com"&gt;GitHub&lt;/a&gt; för mer information.&lt;/p&gt;
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-markdown">Besök [GitHub](https://github.com) för mer information.
+</code></pre>
+<p><strong>Förklaring:</strong> Syntax för länk är <code>[länktext](url)</code>. Länktexten står inom hakparenteser, URL:en inom vanliga parenteser.</p>
+</details>
+<hr />
+<h3 id="markdown-6-bild"><a class="header" href="#markdown-6-bild">Markdown 6: Bild</a></h3>
+<p>Du ser följande HTML. Skriv Markdown som ger samma resultat.</p>
+<pre><code class="language-html">&lt;p&gt;&lt;img src="logo.png" alt="Företagets logotyp"&gt;&lt;/p&gt;
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-markdown">![Företagets logotyp](logo.png)
+</code></pre>
+<p><strong>Förklaring:</strong> Bildsyntax liknar länk men börjar med <code>!</code>. Format: <code>![alt-text](url)</code>. Alt-texten är viktig för tillgänglighet.</p>
+</details>
+<hr />
+<h3 id="markdown-7-inline-kod-och-kodblock"><a class="header" href="#markdown-7-inline-kod-och-kodblock">Markdown 7: Inline-kod och kodblock</a></h3>
+<p>Du ser följande HTML. Skriv Markdown som ger samma resultat.</p>
+<pre><code class="language-html">&lt;p&gt;Använd kommandot &lt;code&gt;npm install&lt;/code&gt; för att installera paket.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;function hello() {
+  console.log("Hej!");
+}
+&lt;/code&gt;&lt;/pre&gt;
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-markdown">Använd kommandot `npm install` för att installera paket.
+
+</code></pre>
+<p>function hello() {
+console.log("Hej!");
+}</p>
+<pre><code></code></pre>
+<p><strong>Förklaring:</strong> Enkla backticks <code>`</code> ger inline-kod (<code>&lt;code&gt;</code>). Tre backticks (<code>) skapar ett kodblock (`&lt;pre&gt;&lt;code&gt;`). Du kan ange språk efter öppnande backticks, t.ex. </code>javascript.</p>
+</details>
+<hr />
+<h3 id="markdown-8-citat-blockquote"><a class="header" href="#markdown-8-citat-blockquote">Markdown 8: Citat (blockquote)</a></h3>
+<p>Du ser följande HTML. Skriv Markdown som ger samma resultat.</p>
+<pre><code class="language-html">&lt;blockquote&gt;
+&lt;p&gt;Citatet är det viktigaste.&lt;/p&gt;
+&lt;/blockquote&gt;
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-markdown">&gt; Citatet är det viktigaste.
+</code></pre>
+<p><strong>Förklaring:</strong> <code>&gt;</code> i början av en rad skapar ett blockquote. Flera rader med <code>&gt;</code> blir ett längre citat.</p>
+</details>
+<hr />
+<h3 id="markdown-9-tabell"><a class="header" href="#markdown-9-tabell">Markdown 9: Tabell</a></h3>
+<p>Du ser följande HTML. Skriv Markdown som ger samma resultat.</p>
+<pre><code class="language-html">&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;&lt;th&gt;Namn&lt;/th&gt;&lt;th&gt;Pris&lt;/th&gt;&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;Äpple&lt;/td&gt;&lt;td&gt;5 kr&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Banan&lt;/td&gt;&lt;td&gt;3 kr&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-markdown">| Namn  | Pris |
+|-------|------|
+| Äpple | 5 kr |
+| Banan | 3 kr |
+</code></pre>
+<p><strong>Förklaring:</strong> Tabeller i Markdown (GFM) använder <code>|</code> som kolumnavgränsare. Den andra raden med <code>---</code> definierar headern. Minst tre bindestreck behövs per kolumn.</p>
+</details>
+<hr />
+<h3 id="markdown-10-kombination--rubrik-lista-och-länk"><a class="header" href="#markdown-10-kombination--rubrik-lista-och-länk">Markdown 10: Kombination – rubrik, lista och länk</a></h3>
+<p>Du ser följande HTML. Skriv Markdown som ger samma resultat.</p>
+<pre><code class="language-html">&lt;h2&gt;Snabbstart&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Klona repot&lt;/li&gt;
+&lt;li&gt;Kör &lt;code&gt;npm install&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Läs &lt;a href="README.md"&gt;README&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</code></pre>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-markdown">## Snabbstart
+
+- Klona repot
+- Kör `npm install`
+- Läs [README](README.md)
+</code></pre>
+<p><strong>Förklaring:</strong> Kombinera rubriker (<code>##</code>), listor (<code>-</code>) och inline-kod (<code>`</code>) samt länkar (<code>[]()</code>). Tom rad mellan rubrik och lista ger tydlig struktur.</p>
+</details>
+<hr />
+<h2 id="licensövningar"><a class="header" href="#licensövningar">Licensövningar</a></h2>
+<p>I varje övning beskrivs en kodbas och dess syfte. Välj vilken licens som passar bäst och motivera ditt val.</p>
+<hr />
+<h3 id="licens-1-Öppen-källkodsbibliotek"><a class="header" href="#licens-1-Öppen-källkodsbibliotek">Licens 1: Öppen källkodsbibliotek</a></h3>
+<p>Du har skapat ett JavaScript-bibliotek för datumformatering som du vill att så många som möjligt ska använda – inklusive företag med slutna produkter. Du vill ha cred (att du nämns) men inga andra krav.</p>
+<p><strong>Alternativ:</strong> A) MIT  B) GPL  C) Apache 2.0  D) Ingen licens (proprietär)</p>
+<details>
+<summary>Lösningsförslag</summary>
+<p><strong>Svar: A) MIT</strong> (eller C) Apache 2.0)</p>
+<p><strong>Förklaring:</strong> MIT är mycket permissiv – alla får använda, modifiera och distribuera koden, även i proprietära projekt. Enda kravet är att licensen följer med. Apache 2.0 är liknande men ger explicit patentlicens, vilket kan vara bra för företag. GPL skulle kräva att alla som använder biblioteket i sin app också gör sin app öppen källkod – det begränsar adoptionen. Proprietär licens ger ingen rätt att använda koden.</p>
+</details>
+<hr />
+<h3 id="licens-2-wordpress-tema-med-copyleft"><a class="header" href="#licens-2-wordpress-tema-med-copyleft">Licens 2: WordPress-tema med copyleft</a></h3>
+<p>Du har byggt ett WordPress-tema som du vill dela öppet. Du vill att förbättringar och varianter av temat också ska vara öppen källkod – ingen får ta ditt tema, ändra det och sälja det som stängt.</p>
+<p><strong>Alternativ:</strong> A) MIT  B) GPL  C) Proprietär  D) Unlicense</p>
+<details>
+<summary>Lösningsförslag</summary>
+<p><strong>Svar: B) GPL</strong></p>
+<p><strong>Förklaring:</strong> GPL är en copyleft-licens – om någon modifierar och distribuerar din kod måste de göra det under samma licens (GPL). Det säkerställer att förbättringar förblir öppna. WordPress själv använder GPL, så teman som bygger på WordPress brukar också använda GPL. MIT och Unlicense tillåter att någon tar din kod och säljer den som proprietär. Proprietär licens skulle hindra andra från att använda temat överhuvudtaget.</p>
+</details>
+<hr />
+<h3 id="licens-3-intern-företagskod"><a class="header" href="#licens-3-intern-företagskod">Licens 3: Intern företagskod</a></h3>
+<p>Du utvecklar en webbapplikation åt ett företag. Koden är deras affärshemlighet – de vill inte att konkurrenter eller andra får tillgång till källkoden.</p>
+<p><strong>Alternativ:</strong> A) MIT  B) GPL  C) Apache 2.0  D) Ingen öppen licens</p>
+<details>
+<summary>Lösningsförslag</summary>
+<p><strong>Svar: D) Ingen öppen licens</strong></p>
+<p><strong>Förklaring:</strong> När koden ska vara hemlig använder man ingen öppen källkodslicens. Koden är då "all rights reserved" – endast rättighetshavaren (företaget) har rätt att använda, kopiera och modifiera. Avtalet mellan dig och företaget reglerar vem som äger koden. Öppna licenser (MIT, GPL, Apache) ger andra rättigheter – det strider mot målet att hålla koden sluten.</p>
+</details>
+<hr />
+<h3 id="licens-4-saas-med-öppen-kärna"><a class="header" href="#licens-4-saas-med-öppen-kärna">Licens 4: SaaS med öppen kärna</a></h3>
+<p>Du har byggt en projektverktyg-app som körs som SaaS (användare loggar in i webbläsaren). Du vill att kärnan ska vara öppen så att andra kan bygga vidare, men du vill att om någon hostar en klon av din app som tjänst måste de också dela sin modifierade kod.</p>
+<p><strong>Alternativ:</strong> A) MIT  B) GPL  C) AGPL  D) BSD</p>
+<details>
+<summary>Lösningsförslag</summary>
+<p><strong>Svar: C) AGPL</strong></p>
+<p><strong>Förklaring:</strong> AGPL (Affero GPL) utökar GPL med ett viktigt tillägg: om du erbjuder tjänsten över nätverket (t.ex. SaaS) måste du erbjuda källkoden till användarna. Vanlig GPL täcker bara distribution av binärer/filer – någon som hostar din app som SaaS behöver inte dela koden. AGPL stänger den luckan. MIT och BSD tillåter att någon hostar en stängd klon utan att dela ändringar.</p>
+</details>
+<hr />
+<h3 id="licens-5-skolprojekt-för-portfolio"><a class="header" href="#licens-5-skolprojekt-för-portfolio">Licens 5: Skolprojekt för portfolio</a></h3>
+<p>Du har gjort ett examensprojekt – en React-app – som du vill visa på din portfolio. Du vill att arbetsgivare ska kunna titta på koden, men du bryr dig inte om att andra använder eller bygger vidare på den.</p>
+<p><strong>Alternativ:</strong> A) MIT  B) GPL  C) CC0 (public domain)  D) Ingen licens</p>
+<details>
+<summary>Lösningsförslag</summary>
+<p><strong>Svar: A) MIT</strong> (eller C) CC0 om du vill vara extra generös)</p>
+<p><strong>Förklaring:</strong> MIT är enkelt och välkänt – perfekt för portfolio. Det signalerar att du kan arbeta med öppen källkod och att du inte har något emot att andra använder koden. GPL fungerar också men kan kännas "tyngre" för ett enkelt skolprojekt. CC0 (public domain) ger bort allt – bra om du vill maximera friheten. "Ingen licens" är oklart – juridisk standard är då att du behåller alla rättigheter, vilket kan göra arbetsgivare osäkra på vad de får göra med koden.</p>
+</details>
+<hr />
 <h2 id="Övriga-projekt"><a class="header" href="#Övriga-projekt">Övriga projekt</a></h2>
 <ul>
 <li>WordPress-site setup</li>
