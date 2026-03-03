@@ -231,6 +231,7 @@ add_action( 'init', 'school_slider_register_post_type' );
 <li><code>if ( ! defined( 'ABSPATH' ) ) { exit; }</code> skyddar filen mot direkt anrop.</li>
 <li><code>register_post_type( 'school_slide', ... )</code> skapar en ny innehållstyp i adminpanelen.</li>
 <li><code>supports =&gt; array( 'title', 'thumbnail' )</code> betyder att varje slide får titel och Featured Image.</li>
+<li>Eftersom <code>editor</code> inte finns i <code>supports</code> visas inget textfält (classic editor/Gutenberg content) för denna post type.</li>
 <li><code>add_action( 'init', ... )</code> kör registreringen när WordPress startar.</li>
 </ul>
 <p>När pluginet aktiveras ska du se en ny meny i adminpanelen: <strong>Slides</strong>.</p>

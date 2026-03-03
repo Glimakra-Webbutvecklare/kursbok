@@ -112,6 +112,7 @@ Nu får Portfolio en egen taxonomy: `portfolio_category`. Det betyder att portfo
 	- `public => true` gör typen synlig i admin och på frontend.
 	- `show_in_rest => true` gör att Gutenberg-editorn och REST API fungerar.
 	- `supports` talar om vilka fält som finns (titel, editor, utvald bild, utdrag).
+	- `editor` gör att du kan skriva innehållstext för varje portfolio-item.
 	- `rewrite` bestämmer URL-struktur, här `/portfolio/...`.
 - `register_post_type( 'portfolio', $args )` registrerar själva typen i WordPress.
 - `add_action( 'init', ... )` betyder: kör funktionen när WordPress startar upp (hook/action, krok/händelse).

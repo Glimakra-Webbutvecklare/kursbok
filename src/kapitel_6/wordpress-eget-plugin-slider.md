@@ -90,6 +90,7 @@ Här används en egen post type: `school_slide`. Rubriken hämtas från postens 
 - `if ( ! defined( 'ABSPATH' ) ) { exit; }` skyddar filen mot direkt anrop.
 - `register_post_type( 'school_slide', ... )` skapar en ny innehållstyp i adminpanelen.
 - `supports => array( 'title', 'thumbnail' )` betyder att varje slide får titel och Featured Image.
+- Eftersom `editor` inte finns i `supports` visas inget textfält (classic editor/Gutenberg content) för denna post type.
 - `add_action( 'init', ... )` kör registreringen när WordPress startar.
 
 När pluginet aktiveras ska du se en ny meny i adminpanelen: **Slides**.
