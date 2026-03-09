@@ -1,0 +1,346 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Del 2: Komma igång - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="komma-igång-med-laravel"><a class="header" href="#komma-igång-med-laravel">Komma igång med Laravel</a></h1>
+<p>I denna del får du ett Laravel-projekt igång och lär dig grundstrukturen. Vi bygger inte hela bloggen ännu – fokus är att förstå hur Laravel är uppbyggt.</p>
+<p><strong>Förutsättning:</strong> Du har läst <a href="laravel-intro.html">Introduktion till Laravel</a>.</p>
+<hr />
+<h2 id="förutsättningar"><a class="header" href="#förutsättningar">Förutsättningar</a></h2>
+<p>Samma som för CRUD-appen:</p>
+<ul>
+<li><strong>PHP 8.2 eller senare</strong> – kolla med <code>php -v</code></li>
+<li><strong>Composer</strong> – PHP:s pakethanterare (<code>composer --version</code>)</li>
+<li><strong>MySQL eller MariaDB</strong> – för databasen (samma som i <a href="crud-app-1-setup.html">Del 1: Setup och databas</a>)</li>
+</ul>
+<p>Om du körde CRUD-appen med Docker kan du använda samma <code>mysql</code>-service för Laravel.</p>
+<hr />
+<h2 id="installation"><a class="header" href="#installation">Installation</a></h2>
+<p>Skapa ett nytt Laravel-projekt med Composer:</p>
+<pre><code class="language-bash">composer create-project laravel/laravel blogg
+cd blogg
+</code></pre>
+<p>Alternativt kan du installera Laravel Installer globalt och använda:</p>
+<pre><code class="language-bash">laravel new blogg
+</code></pre>
+<p>Projektet skapas med alla nödvändiga filer. Det tar några minuter första gången.</p>
+<p><strong>Kontrollera att det fungerar:</strong> Efter installationen ska mappen <code>blogg</code> innehålla underkataloger som <code>app/</code>, <code>routes/</code>, <code>resources/</code> och <code>database/</code>.</p>
+<hr />
+<h2 id="projektstruktur-översikt"><a class="header" href="#projektstruktur-översikt">Projektstruktur (översikt)</a></h2>
+<p>Efter installationen ser du en mappstruktur. Här är de viktigaste delarna:</p>
+<div class="table-wrapper"><table><thead><tr><th>Mapp/Fil</th><th>Syfte</th></tr></thead><tbody>
+<tr><td><code>app/</code></td><td>Huvudlogik – Models, Controllers, Middleware</td></tr>
+<tr><td><code>app/Http/Controllers/</code></td><td>Controllers som hanterar förfrågningar</td></tr>
+<tr><td><code>app/Models/</code></td><td>Eloquent-modeller (databasentiteter)</td></tr>
+<tr><td><code>routes/</code></td><td>Definition av URL:er – <code>web.php</code> för webb, <code>api.php</code> för API</td></tr>
+<tr><td><code>resources/views/</code></td><td>Blade-mallar (HTML med dynamiskt innehåll)</td></tr>
+<tr><td><code>database/migrations/</code></td><td>Databasversionering – skapa och ändra tabeller</td></tr>
+<tr><td><code>.env</code></td><td>Konfiguration som inte ska i Git (databas, nycklar)</td></tr>
+</tbody></table>
+</div>
+<p>Jämfört med CRUD-appen: <code>routes/web.php</code> ersätter din filbaserade routing, <code>resources/views</code> ersätter inline PHP i HTML, och <code>app/Models</code> + Eloquent ersätter <code>connect_db()</code> och PDO-frågor.</p>
+<hr />
+<h2 id="konfiguration-env"><a class="header" href="#konfiguration-env">Konfiguration (.env)</a></h2>
+<p>Filen <code>.env</code> innehåller känslig och miljöspecifik konfiguration. Öppna den och sätt databasuppgifterna:</p>
+<pre><code class="language-env">DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=db_fullstack
+DB_USERNAME=db_user
+DB_PASSWORD=db_password
+</code></pre>
+<p>Anpassa efter din miljö (t.ex. <code>DB_HOST=mysql</code> om du använder Docker). <code>APP_KEY</code> genereras automatiskt vid installation – den används för kryptering och sessioner.</p>
+<p><strong>Kontrollera att det fungerar:</strong> Starta servern med <code>php artisan serve</code> och öppna <code>http://localhost:8000</code>. Om du får databasfel, kontrollera att <code>.env</code> har rätt uppgifter och att databasen finns.</p>
+<hr />
+<h2 id="artisan--laravels-kommandorad"><a class="header" href="#artisan--laravels-kommandorad">Artisan – Laravels kommandorad</a></h2>
+<p>Laravel levereras med <strong>Artisan</strong>, ett verktyg för vanliga uppgifter:</p>
+<pre><code class="language-bash">php artisan serve
+</code></pre>
+<p>Startar en utvecklingsserver på <code>http://localhost:8000</code>. Öppna adressen i webbläsaren – du ska se Laravels välkomstsida.</p>
+<p>Andra användbara kommandon:</p>
+<pre><code class="language-bash">php artisan migrate          # Kör migrations (skapar/uppdaterar tabeller)
+php artisan make:controller  # Skapa en ny controller
+php artisan make:model       # Skapa en ny model
+php artisan route:list       # Lista alla definierade routes
+</code></pre>
+<hr />
+<h2 id="enkel-testroute"><a class="header" href="#enkel-testroute">Enkel testroute</a></h2>
+<p>Öppna <code>routes/web.php</code>. Du ser redan en route:</p>
+<pre><code class="language-php">Route::get('/', function () {
+    return view('welcome');
+});
+</code></pre>
+<p>Detta betyder: för GET-förfrågningar till <code>/</code>, returnera vyn <code>welcome</code>. Ändra till något enkelt för att testa:</p>
+<pre><code class="language-php">Route::get('/', function () {
+    return 'Hej från Laravel!';
+});
+</code></pre>
+<p>Ladda om sidan – du ska se texten istället för välkomstsidan.</p>
+<h3 id="via-en-controller"><a class="header" href="#via-en-controller">Via en controller</a></h3>
+<p>I stället för att skriva logik direkt i route-filen använder man ofta en controller. Skapa en:</p>
+<pre><code class="language-bash">php artisan make:controller HejController
+</code></pre>
+<p>Öppna <code>app/Http/Controllers/HejController.php</code> och lägg till en metod:</p>
+<pre><code class="language-php">public function index()
+{
+    return 'Hej från HejController!';
+}
+</code></pre>
+<p>I <code>routes/web.php</code>, ändra till:</p>
+<pre><code class="language-php">use App\Http\Controllers\HejController;
+
+Route::get('/', [HejController::class, 'index']);
+</code></pre>
+<p>Nu hanteras <code>/</code> av <code>HejController::index</code>. Detta är MVC i miniatyr: routen pekar på en controller som returnerar ett svar.</p>
+<hr />
+<h2 id="blade--grunderna"><a class="header" href="#blade--grunderna">Blade – grunderna</a></h2>
+<p>Blade är Laravels templating-språk. Istället för att blanda PHP och HTML i samma fil (som i CRUD-appen) skriver du renare mallar.</p>
+<p>Skapa en vy: <code>resources/views/hej.blade.php</code>:</p>
+<pre><code class="language-blade">&lt;!DOCTYPE html&gt;
+&lt;html lang="sv"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;Hej&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;{{ $meddelande }}&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p><code>{{ $meddelande }}</code> skriver ut variabeln och escap:ar automatiskt (skyddar mot XSS). Jämför med <code>&lt;?php echo htmlspecialchars($meddelande); ?&gt;</code> i CRUD-appen.</p>
+<p>Uppdatera controllern för att skicka data till vyn:</p>
+<pre><code class="language-php">public function index()
+{
+    return view('hej', ['meddelande' =&gt; 'Välkommen till Laravel!']);
+}
+</code></pre>
+<p>Ladda om – du ska se rubriken med meddelandet.</p>
+<h3 id="vanliga-blade-direktiv"><a class="header" href="#vanliga-blade-direktiv">Vanliga Blade-direktiv</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Direktiv</th><th>Exempel</th><th>Betydelse</th></tr></thead><tbody>
+<tr><td><code>{{ }}</code></td><td><code>{{ $namn }}</code></td><td>Skriv ut och escap:a</td></tr>
+<tr><td><code>@if</code></td><td><code>@if($inloggad) ... @endif</code></td><td>Villkor</td></tr>
+<tr><td><code>@foreach</code></td><td><code>@foreach($posts as $post) ... @endforeach</code></td><td>Loop över en lista</td></tr>
+<tr><td><code>@forelse</code></td><td><code>@forelse($posts as $post) ... @empty ... @endforelse</code></td><td>Som foreach, men visar <code>@empty</code>-delen om listan är tom</td></tr>
+<tr><td><code>@error</code></td><td><code>@error('title') {{ $message }} @enderror</code></td><td>Visar valideringsfel för ett fält. <code>$message</code> innehåller felmeddelandet</td></tr>
+<tr><td><code>old()</code></td><td><code>value="{{ old('title') }}"</code></td><td>Återställer formulärvärde efter valideringsfel (så användaren inte behöver skriva om allt)</td></tr>
+<tr><td><code>@auth</code></td><td><code>@auth ... @endauth</code></td><td>Visa bara om användaren är inloggad</td></tr>
+<tr><td><code>@csrf</code></td><td><code>@csrf</code></td><td>Måste finnas i alla POST-formulär – genererar skydd mot CSRF-attacker</td></tr>
+</tbody></table>
+</div>
+<p><strong>Tips:</strong> Använd <code>@forelse</code> istället för <code>@foreach</code> när listan kan vara tom – då kan du visa ett meddelande som "Inga inlägg ännu". Använd <code>@error</code> och <code>old()</code> i formulär för att visa valideringsfel och behålla användarens input.</p>
+<hr />
+<h2 id="i-denna-del-har-du-lärt-dig"><a class="header" href="#i-denna-del-har-du-lärt-dig">I denna del har du lärt dig</a></h2>
+<ul>
+<li>Att installera ett Laravel-projekt med Composer</li>
+<li>Projektstrukturen (app/, routes/, resources/views/, database/migrations/)</li>
+<li>Att konfigurera <code>.env</code> för databasanslutning</li>
+<li>Att använda Artisan (<code>serve</code>, <code>migrate</code>, <code>make:controller</code>, <code>make:model</code>)</li>
+<li>Att skapa routes och koppla dem till controllers</li>
+<li>Blade-grunderna: <code>{{ }}</code>, <code>@if</code>, <code>@foreach</code>, <code>@forelse</code>, <code>@error</code>, <code>old()</code>, <code>@csrf</code></li>
+</ul>
+<hr />
+<p><strong>Föregående:</strong> <a href="laravel-intro.html">Del 1: Varför ett ramverk?</a> | <strong>Nästa:</strong> <a href="laravel-crud-3-setup.html">Del 3: Setup och autentisering</a></p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_7/laravel-intro.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_7/laravel-crud-3-setup.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_7/laravel-intro.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_7/laravel-crud-3-setup.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

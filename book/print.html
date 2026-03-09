@@ -10765,498 +10765,9 @@ if (
 <li>Vilka delar av ett tema vill du göra återanvändbara tidigt i projektet?</li>
 <li>Hur skulle du organisera CSS och templates för att förenkla underhåll?</li>
 </ol>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="wordpress-shortcodes"><a class="header" href="#wordpress-shortcodes">WordPress shortcodes</a></h1>
-<p>Shortcodes (kortkoder) är ett sätt att köra PHP-funktioner direkt från innehåll i WordPress, till exempel i en sida eller ett inlägg.</p>
-<p>Exempel:</p>
-<pre><code class="language-text">[my_shortcode]
-</code></pre>
-<p>När WordPress ser shortcoden ersätts den med HTML från din funktion.</p>
-<h2 id="förkunskaper-6"><a class="header" href="#förkunskaper-6">Förkunskaper</a></h2>
-<p>Innan du börjar är det bra om du har läst:</p>
-<ul>
-<li><a href="kapitel_6/./wordpress.html">WordPress</a></li>
-<li><a href="kapitel_6/./wordpress-admin.html">WordPress adminpanel</a></li>
-<li><a href="kapitel_6/./wordpress-teman.html">WordPress teman</a></li>
-</ul>
-<h2 id="varför-shortcodes"><a class="header" href="#varför-shortcodes">Varför shortcodes?</a></h2>
-<p>Shortcodes är användbara när du vill att redaktören ska kunna lägga in dynamiskt innehåll utan att skriva kod.</p>
-<p>Vanliga exempel:</p>
-<ul>
-<li>kontaktkort</li>
-<li>listor med senaste inlägg</li>
-<li>custom post type-listor</li>
-<li>sliders och gallerier</li>
-</ul>
-<h2 id="hur-fungerar-det"><a class="header" href="#hur-fungerar-det">Hur fungerar det?</a></h2>
-<p>Du kopplar ett shortcode-namn till en PHP-funktion:</p>
-<ol>
-<li><code>add_shortcode()</code> registrerar namnet</li>
-<li>WordPress hittar <code>[namn]</code> i innehållet</li>
-<li>Din funktion körs</li>
-<li>Funktionen returnerar HTML som visas på sidan</li>
-</ol>
-<pre class="mermaid">flowchart LR
-	A[Innehåll med shortcode] --&gt; B[WordPress parser shortcode]
-	B --&gt; C[PHP-funktion körs]
-	C --&gt; D[HTML returneras]
-	D --&gt; E[Visas för besökaren]
-</pre>
-<h2 id="1-en-första-shortcode-utan-parametrar"><a class="header" href="#1-en-första-shortcode-utan-parametrar">1) En första shortcode (utan parametrar)</a></h2>
-<p>Lägg i <code>functions.php</code> eller i ett plugin:</p>
-<pre><code class="language-php">function school_hello_shortcode() {
-	return '&lt;p&gt;Hej från min första shortcode!&lt;/p&gt;';
-}
-add_shortcode( 'school_hello', 'school_hello_shortcode' );
-</code></pre>
-<p>Använd i en sida:</p>
-<pre><code class="language-text">[school_hello]
-</code></pre>
-<h3 id="vad-händer-i-koden"><a class="header" href="#vad-händer-i-koden">Vad händer i koden?</a></h3>
-<ul>
-<li><code>school_hello_shortcode()</code> skapar innehållet</li>
-<li><code>add_shortcode( 'school_hello', ... )</code> registrerar namnet</li>
-<li>WordPress ersätter <code>[school_hello]</code> med texten från funktionen</li>
-</ul>
-<h2 id="2-shortcode-med-parametrar-attributes-attribut"><a class="header" href="#2-shortcode-med-parametrar-attributes-attribut">2) Shortcode med parametrar (attributes, attribut)</a></h2>
-<p>Nu gör vi en mer flexibel shortcode.</p>
-<pre><code class="language-php">function school_box_shortcode( $atts ) {
-	$atts = shortcode_atts(
-		array(
-			'title' =&gt; 'Standardrubrik',
-			'text'  =&gt; 'Standardtext',
-		),
-		$atts,
-		'school_box'
-	);
-
-	return '&lt;div class="school-box"&gt;&lt;h3&gt;' . esc_html( $atts['title'] ) . '&lt;/h3&gt;&lt;p&gt;' . esc_html( $atts['text'] ) . '&lt;/p&gt;&lt;/div&gt;';
-}
-add_shortcode( 'school_box', 'school_box_shortcode' );
-</code></pre>
-<p>Användning:</p>
-<pre><code class="language-text">[school_box title="Välkommen" text="Detta innehåll kommer från en shortcode."]
-</code></pre>
-<h3 id="varför-shortcode_atts"><a class="header" href="#varför-shortcode_atts">Varför <code>shortcode_atts()</code>?</a></h3>
-<p>Funktionen sätter standardvärden. Om redaktören inte skickar in <code>title</code> eller <code>text</code> så fungerar shortcoden ändå.</p>
-<h2 id="viktig-regel-returnera-inte-echo"><a class="header" href="#viktig-regel-returnera-inte-echo">Viktig regel: returnera, inte echo</a></h2>
-<p>I en shortcode-funktion ska du nästan alltid använda <code>return</code>, inte <code>echo</code>.</p>
-<ul>
-<li><code>return</code> skickar tillbaka innehållet till rätt plats i sidan</li>
-<li><code>echo</code> kan skriva ut innehåll på fel ställe i renderingen</li>
-</ul>
-<h2 id="säkerhet-i-shortcodes"><a class="header" href="#säkerhet-i-shortcodes">Säkerhet i shortcodes</a></h2>
-<p>Använd alltid escaping (escapning) när du skriver ut data:</p>
-<ul>
-<li><code>esc_html()</code> för text</li>
-<li><code>esc_url()</code> för länkar</li>
-<li><code>sanitize_text_field()</code> för indata du vill rensa</li>
-</ul>
-<p>Det minskar risk för XSS (cross-site scripting).</p>
-<h2 id="vanliga-nybörjarfel"><a class="header" href="#vanliga-nybörjarfel">Vanliga nybörjarfel</a></h2>
-<ol>
-<li>Shortcoden syns som text i sidan
-<ul>
-<li>Kontrollera att du skrev <code>[school_hello]</code> och inte glömde hakparenteser.</li>
-</ul>
-</li>
-<li>Inget händer alls
-<ul>
-<li>Kontrollera att funktionen laddas (rätt fil, aktivt tema/plugin).</li>
-</ul>
-</li>
-<li>Fel namn i <code>add_shortcode</code>
-<ul>
-<li>Kontrollera att shortcode-namn och funktionsnamn stämmer.</li>
-</ul>
-</li>
-<li>Trasig HTML
-<ul>
-<li>Kontrollera att alla taggar öppnas/stängs korrekt.</li>
-</ul>
-</li>
-</ol>
-<h2 id="när-passar-shortcodes-bäst"><a class="header" href="#när-passar-shortcodes-bäst">När passar shortcodes bäst?</a></h2>
-<p>Shortcodes passar bra när:</p>
-<ul>
-<li>redaktörer ska kunna placera funktioner var som helst</li>
-<li>du vill återanvända samma funktion på flera sidor</li>
-<li>innehållet är dynamiskt (hämtas från databas)</li>
-</ul>
-<p>Om du bygger nyare block-baserat innehåll i Gutenberg kan ett block ibland vara bättre på sikt, men shortcodes är fortfarande vanliga i många projekt.</p>
-<h2 id="praktisk-övning"><a class="header" href="#praktisk-övning">Praktisk övning</a></h2>
-<ol>
-<li>Skapa shortcoden <code>school_hello</code> och testa den på en sida.</li>
-<li>Skapa shortcoden <code>school_box</code> och testa två olika varianter med olika <code>title</code> och <code>text</code>.</li>
-<li>Lägg till egen CSS-klass i HTML-strängen och styla boxen i temat.</li>
-<li>Förklara varför <code>esc_html()</code> är viktig i båda exemplen.</li>
-</ol>
-<h2 id="nästa-steg-1"><a class="header" href="#nästa-steg-1">Nästa steg</a></h2>
-<p>När du kan shortcodes är nästa naturliga steg att:</p>
-<ul>
-<li>skapa en egen post type som visas med shortcode</li>
-<li>bygga plugin som använder shortcode för mer avancerat innehåll</li>
-</ul>
-<p>Fortsätt med:</p>
-<ul>
-<li><a href="kapitel_6/./wordpress-custom-post-type.html">Egen post type i WordPress (Portfolio)</a></li>
-<li><a href="kapitel_6/./wordpress-plugins.html">WordPress plugins</a></li>
-</ul>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="egen-post-type-i-wordpress-portfolio"><a class="header" href="#egen-post-type-i-wordpress-portfolio">Egen post type i WordPress (Portfolio)</a></h1>
-<p>I den här lektionen skapar vi en egen post type (innehållstyp) med namnet <strong>Portfolio</strong>. Vi lägger också till stöd för kategorier och bygger en shortcode (kortkod) så innehållet kan visas på valfri sida.</p>
-<p>Målet är att du ska förstå <strong>vad koden gör</strong>, inte bara kopiera den.</p>
-<h2 id="förkunskaper-7"><a class="header" href="#förkunskaper-7">Förkunskaper</a></h2>
-<p>Innan du börjar är det bra om du har läst:</p>
-<ul>
-<li><a href="kapitel_6/./wordpress.html">WordPress</a></li>
-<li><a href="kapitel_6/./wordpress-teman.html">WordPress teman</a></li>
-<li><a href="kapitel_6/./wordpress-plugins.html">WordPress plugins</a></li>
-<li><a href="kapitel_6/./wordpress-shortcodes.html">WordPress shortcodes</a></li>
-</ul>
-<h2 id="varför-använda-en-egen-post-type"><a class="header" href="#varför-använda-en-egen-post-type">Varför använda en egen post type?</a></h2>
-<p>Standardtyperna i WordPress är <strong>Inlägg</strong> och <strong>Sidor</strong>. För innehåll som inte riktigt passar där, till exempel projekt, case eller kundjobb, blir en egen post type tydligare.</p>
-<p>Exempel:</p>
-<ul>
-<li>Inlägg = nyheter och blogg</li>
-<li>Sidor = statiska undersidor</li>
-<li>Portfolio = projekt och referenser</li>
-</ul>
-<p>Det gör adminpanelen enklare för redaktören och minskar risken att innehåll blandas ihop.</p>
-<h2 id="Översikt-vad-vi-bygger"><a class="header" href="#Översikt-vad-vi-bygger">Översikt: vad vi bygger</a></h2>
-<p>Vi bygger i tre steg:</p>
-<ol>
-<li>Registrerar en ny post type: <code>portfolio</code></li>
-<li>Registrerar en egen taxonomy för portfolio-kategorier</li>
-<li>Skapar en shortcode som hämtar och visar Portfolio-inlägg</li>
-</ol>
-<p>Tänk så här:</p>
-<ul>
-<li>WordPress har ett "register" med innehållstyper</li>
-<li>Du lägger till en ny typ i registret med <code>register_post_type()</code></li>
-<li>Shortcoden läser data från databasen och skriver ut HTML</li>
-</ul>
-<h2 id="1-registrera-post-typen-portfolio"><a class="header" href="#1-registrera-post-typen-portfolio">1) Registrera post typen Portfolio</a></h2>
-<p>Lägg koden i <code>functions.php</code> i ditt tema eller i ett eget plugin.</p>
-<pre><code class="language-php">function school_register_portfolio_post_type() {
-	$labels = array(
-		'name'                  =&gt; __( 'Portfolio', 'school-theme' ),
-		'singular_name'         =&gt; __( 'Portfolio Item', 'school-theme' ),
-		'add_new'               =&gt; __( 'Add New', 'school-theme' ),
-		'add_new_item'          =&gt; __( 'Add New Portfolio Item', 'school-theme' ),
-		'edit_item'             =&gt; __( 'Edit Portfolio Item', 'school-theme' ),
-		'new_item'              =&gt; __( 'New Portfolio Item', 'school-theme' ),
-		'view_item'             =&gt; __( 'View Portfolio Item', 'school-theme' ),
-		'search_items'          =&gt; __( 'Search Portfolio', 'school-theme' ),
-		'not_found'             =&gt; __( 'No portfolio items found', 'school-theme' ),
-		'not_found_in_trash'    =&gt; __( 'No portfolio items found in Trash', 'school-theme' ),
-		'menu_name'             =&gt; __( 'Portfolio', 'school-theme' ),
-	);
-
-	$args = array(
-		'labels'                =&gt; $labels,
-		'public'                =&gt; true,
-		'show_in_rest'          =&gt; true,
-		'menu_position'         =&gt; 20,
-		'menu_icon'             =&gt; 'dashicons-portfolio',
-		'supports'              =&gt; array( 'title', 'editor', 'thumbnail', 'excerpt' ),
-		'has_archive'           =&gt; true,
-		'rewrite'               =&gt; array( 'slug' =&gt; 'portfolio' ),
-	);
-
-	register_post_type( 'portfolio', $args );
-}
-add_action( 'init', 'school_register_portfolio_post_type' );
-
-function school_register_portfolio_taxonomy() {
-	$labels = array(
-		'name'              =&gt; __( 'Portfolio Categories', 'school-theme' ),
-		'singular_name'     =&gt; __( 'Portfolio Category', 'school-theme' ),
-		'search_items'      =&gt; __( 'Search Portfolio Categories', 'school-theme' ),
-		'all_items'         =&gt; __( 'All Portfolio Categories', 'school-theme' ),
-		'edit_item'         =&gt; __( 'Edit Portfolio Category', 'school-theme' ),
-		'update_item'       =&gt; __( 'Update Portfolio Category', 'school-theme' ),
-		'add_new_item'      =&gt; __( 'Add New Portfolio Category', 'school-theme' ),
-		'new_item_name'     =&gt; __( 'New Portfolio Category Name', 'school-theme' ),
-		'menu_name'         =&gt; __( 'Portfolio Categories', 'school-theme' ),
-	);
-
-	$args = array(
-		'hierarchical'      =&gt; true,
-		'labels'            =&gt; $labels,
-		'show_ui'           =&gt; true,
-		'show_admin_column' =&gt; true,
-		'query_var'         =&gt; true,
-		'show_in_rest'      =&gt; true,
-		'rewrite'           =&gt; array( 'slug' =&gt; 'portfolio-category' ),
-	);
-
-	register_taxonomy( 'portfolio_category', array( 'portfolio' ), $args );
-}
-add_action( 'init', 'school_register_portfolio_taxonomy' );
-</code></pre>
-<p>Nu får Portfolio en egen taxonomy: <code>portfolio_category</code>. Det betyder att portfolio inte delar kategorier med vanliga inlägg.</p>
-<h3 id="förklaring-av-koden-viktigaste-delarna"><a class="header" href="#förklaring-av-koden-viktigaste-delarna">Förklaring av koden (viktigaste delarna)</a></h3>
-<ul>
-<li><code>school_register_portfolio_post_type()</code> är vår funktion som beskriver hur post typen ska fungera.</li>
-<li><code>$labels</code> styr texter i adminpanelen, till exempel "Add New Portfolio Item".</li>
-<li><code>$args</code> styr beteendet:
-<ul>
-<li><code>public =&gt; true</code> gör typen synlig i admin och på frontend.</li>
-<li><code>show_in_rest =&gt; true</code> gör att Gutenberg-editorn och REST API fungerar.</li>
-<li><code>supports</code> talar om vilka fält som finns (titel, editor, utvald bild, utdrag).</li>
-<li><code>editor</code> gör att du kan skriva innehållstext för varje portfolio-item.</li>
-<li><code>rewrite</code> bestämmer URL-struktur, här <code>/portfolio/...</code>.</li>
-</ul>
-</li>
-<li><code>register_post_type( 'portfolio', $args )</code> registrerar själva typen i WordPress.</li>
-<li><code>add_action( 'init', ... )</code> betyder: kör funktionen när WordPress startar upp (hook/action, krok/händelse).</li>
-<li><code>register_taxonomy( 'portfolio_category', array( 'portfolio' ), $args )</code> skapar egna portfolio-kategorier.</li>
-</ul>
-<h3 id="hur-ser-du-att-det-fungerar"><a class="header" href="#hur-ser-du-att-det-fungerar">Hur ser du att det fungerar?</a></h3>
-<p>Efter att koden laddats ska du se en ny meny i adminpanelen: <strong>Portfolio</strong>.</p>
-<p>Om du inte ser den:</p>
-<ol>
-<li>kontrollera att funktionen ligger i fil som verkligen laddas</li>
-<li>uppdatera sidan i adminpanelen</li>
-<li>gå till <strong>Inställningar &gt; Permalänkar</strong> och klicka "Spara" en gång</li>
-</ol>
-<h2 id="2-skapa-shortcode-för-att-visa-portfolio"><a class="header" href="#2-skapa-shortcode-för-att-visa-portfolio">2) Skapa shortcode för att visa Portfolio</a></h2>
-<p>Nu skapar vi en shortcode som hämtar Portfolio-inlägg och skriver ut dem som en <strong>grid</strong>.</p>
-<p>Varje ruta i griden ska:</p>
-<ul>
-<li>använda Featured Image som bakgrund</li>
-<li>visa titel</li>
-<li>länka till portfolio-itemets sida</li>
-<li>visa kategorier</li>
-</ul>
-<pre><code class="language-php">function school_portfolio_shortcode( $atts ) {
-	$atts = shortcode_atts(
-		array(
-			'count'    =&gt; 6,
-			'category' =&gt; '',
-		),
-		$atts,
-		'portfolio_grid'
-	);
-
-	$query_args = array(
-		'post_type'      =&gt; 'portfolio',
-		'posts_per_page' =&gt; (int) $atts['count'],
-	);
-
-	if ( ! empty( $atts['category'] ) ) {
-		$query_args['tax_query'] = array(
-			array(
-				'taxonomy' =&gt; 'portfolio_category',
-				'field'    =&gt; 'slug',
-				'terms'    =&gt; sanitize_text_field( $atts['category'] ),
-			),
-		);
-	}
-
-	$portfolio_query = new WP_Query( $query_args );
-
-	if ( ! $portfolio_query-&gt;have_posts() ) {
-		return '&lt;p&gt;Inga portfolio-inlägg hittades.&lt;/p&gt;';
-	}
-
-	ob_start();
-	echo '&lt;div class="portfolio-grid"&gt;';
-
-	while ( $portfolio_query-&gt;have_posts() ) {
-		$portfolio_query-&gt;the_post();
-
-		$item_id    = get_the_ID();
-		$item_url   = get_permalink( $item_id );
-		$item_title = get_the_title( $item_id );
-		$image_url  = get_the_post_thumbnail_url( $item_id, 'large' );
-		$terms      = get_the_terms( $item_id, 'portfolio_category' );
-
-		echo '&lt;article class="portfolio-grid__item" style="background-image:url(' . esc_url( $image_url ) . ');"&gt;';
-		echo '&lt;div class="portfolio-grid__overlay"&gt;';
-		echo '&lt;h3 class="portfolio-grid__title"&gt;';
-		echo '&lt;a href="' . esc_url( $item_url ) . '"&gt;' . esc_html( $item_title ) . '&lt;/a&gt;';
-		echo '&lt;/h3&gt;';
-
-		if ( ! empty( $terms ) &amp;&amp; ! is_wp_error( $terms ) ) {
-			echo '&lt;p class="portfolio-grid__categories"&gt;';
-			foreach ( $terms as $term ) {
-				echo '&lt;span&gt;' . esc_html( $term-&gt;name ) . '&lt;/span&gt; ';
-			}
-			echo '&lt;/p&gt;';
-		}
-
-		echo '&lt;/div&gt;';
-		echo '&lt;/article&gt;';
-	}
-
-	echo '&lt;/div&gt;';
-
-	wp_reset_postdata();
-	return ob_get_clean();
-}
-add_shortcode( 'portfolio_grid', 'school_portfolio_shortcode' );
-</code></pre>
-<h3 id="förklaring-av-koden-steg-för-steg"><a class="header" href="#förklaring-av-koden-steg-för-steg">Förklaring av koden (steg för steg)</a></h3>
-<ul>
-<li><code>add_shortcode( 'portfolio_grid', ... )</code> kopplar texten <code>[portfolio_grid]</code> till vår PHP-funktion.</li>
-<li><code>$atts = shortcode_atts(...)</code> sätter standardvärden:
-<ul>
-<li><code>count</code> = hur många poster som visas</li>
-<li><code>category</code> = valfritt filter på kategori</li>
-</ul>
-</li>
-<li><code>new WP_Query(...)</code> gör en databasfråga och hämtar rätt Portfolio-poster.</li>
-<li><code>if ( ! $portfolio_query-&gt;have_posts() )</code> hanterar fallet där inget hittas.</li>
-<li><code>ob_start()</code> startar output buffering (utmatningsbuffert): vi bygger HTML som en sträng och returnerar den.</li>
-<li>Loopen <code>while ( $portfolio_query-&gt;have_posts() )</code> går igenom varje träff och skriver ut en grid-ruta.</li>
-<li><code>get_the_post_thumbnail_url()</code> hämtar bild-URL för bakgrunden.</li>
-<li><code>get_the_terms( $item_id, 'portfolio_category' )</code> hämtar portfolio-kategorier för just den posten.</li>
-<li><code>esc_url()</code> och <code>esc_html()</code> skyddar output.</li>
-<li><code>wp_reset_postdata()</code> återställer WordPress globala loop så annan kod inte påverkas.</li>
-</ul>
-<h3 id="css-för-griden-lägg-i-ditt-tema"><a class="header" href="#css-för-griden-lägg-i-ditt-tema">CSS för griden (lägg i ditt tema)</a></h3>
-<pre><code class="language-css">.portfolio-grid {
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-	gap: 20px;
-}
-
-.portfolio-grid__item {
-	min-height: 260px;
-	background-size: cover;
-	background-position: center;
-	border-radius: 10px;
-	overflow: hidden;
-}
-
-.portfolio-grid__overlay {
-	min-height: 260px;
-	background: rgba(0, 0, 0, 0.45);
-	color: #ffffff;
-	padding: 20px;
-	display: flex;
-	flex-direction: column;
-	justify-content: flex-end;
-	gap: 8px;
-}
-
-.portfolio-grid__title {
-	margin: 0;
-}
-
-.portfolio-grid__title a {
-	color: #ffffff;
-	text-decoration: none;
-}
-
-.portfolio-grid__categories {
-	margin: 0;
-	font-size: 0.9rem;
-}
-</code></pre>
-<h2 id="3-använd-shortcoden-på-en-sida"><a class="header" href="#3-använd-shortcoden-på-en-sida">3) Använd shortcoden på en sida</a></h2>
-<p>Grundexempel:</p>
-<pre><code class="language-text">[portfolio_grid]
-</code></pre>
-<p>Med parametrar:</p>
-<pre><code class="language-text">[portfolio_grid count="3" category="webbdesign"]
-</code></pre>
-<ul>
-<li><code>count</code> styr antal inlägg</li>
-<li><code>category</code> filtrerar på portfolio-kategorins slug</li>
-</ul>
-<p>Tips: <code>category</code> ska vara slug för <strong>portfolio category</strong>, inte visningsnamn. Om kategorin heter "Webbdesign" kan slug vara <code>webbdesign</code>.</p>
-<h2 id="4-egen-template-för-portfolio-item"><a class="header" href="#4-egen-template-för-portfolio-item">4) Egen template för portfolio item</a></h2>
-<p>För att styra hur en enskild Portfolio-post visas skapar du en template-fil i temat:</p>
-<pre><code class="language-text">wp-content/themes/ditt-tema/single-portfolio.php
-</code></pre>
-<p>WordPress template hierarchy (mall-hierarki) gör att <code>single-portfolio.php</code> används automatiskt för post typen <code>portfolio</code>.</p>
-<p>Exempel:</p>
-<pre><code class="language-php">&lt;?php
-get_header();
-
-if ( have_posts() ) :
-	while ( have_posts() ) :
-		the_post();
-		$terms = get_the_terms( get_the_ID(), 'portfolio_category' );
-		?&gt;
-		&lt;main class="portfolio-single"&gt;
-			&lt;h1&gt;&lt;?php the_title(); ?&gt;&lt;/h1&gt;
-
-			&lt;?php if ( has_post_thumbnail() ) : ?&gt;
-				&lt;div class="portfolio-single__image"&gt;
-					&lt;?php the_post_thumbnail( 'large' ); ?&gt;
-				&lt;/div&gt;
-			&lt;?php endif; ?&gt;
-
-			&lt;div class="portfolio-single__content"&gt;
-				&lt;?php the_content(); ?&gt;
-			&lt;/div&gt;
-
-			&lt;?php if ( ! empty( $terms ) &amp;&amp; ! is_wp_error( $terms ) ) : ?&gt;
-				&lt;p class="portfolio-single__categories"&gt;
-					&lt;?php foreach ( $terms as $term ) : ?&gt;
-						&lt;span&gt;&lt;?php echo esc_html( $term-&gt;name ); ?&gt;&lt;/span&gt;
-					&lt;?php endforeach; ?&gt;
-				&lt;/p&gt;
-			&lt;?php endif; ?&gt;
-		&lt;/main&gt;
-		&lt;?php
-	endwhile;
-endif;
-
-get_footer();
-</code></pre>
-<p>Nu får varje portfolio-item en egen visning med titel, bild, innehåll och kategorier.</p>
-<h2 id="säkerhet-och-kvalitet"><a class="header" href="#säkerhet-och-kvalitet">Säkerhet och kvalitet</a></h2>
-<p>I koden ovan används:</p>
-<ul>
-<li><code>sanitize_text_field()</code> för indata från shortcode-attribut</li>
-<li><code>esc_url()</code> och <code>esc_html()</code> vid utskrift</li>
-<li><code>wp_reset_postdata()</code> för att återställa global loop</li>
-</ul>
-<p>Detta minskar risk för fel och gör koden säkrare i praktisk användning.</p>
-<h2 id="vanliga-nybörjarfel-och-lösning"><a class="header" href="#vanliga-nybörjarfel-och-lösning">Vanliga nybörjarfel (och lösning)</a></h2>
-<ol>
-<li><strong>Shortcoden visar inget</strong>
-<ul>
-<li>Kontrollera att det finns publicerade Portfolio-inlägg.</li>
-</ul>
-</li>
-<li><strong>Kategorifilter fungerar inte</strong>
-<ul>
-<li>Kontrollera att du använder slug från <code>portfolio_category</code> i <code>category</code>.</li>
-</ul>
-</li>
-<li><strong>Portfolio syns inte i admin</strong>
-<ul>
-<li>Kontrollera stavning på <code>register_post_type</code> och hooken <code>init</code>.</li>
-</ul>
-</li>
-<li><strong>Konstig visning efter egen query</strong>
-<ul>
-<li>Kontrollera att <code>wp_reset_postdata()</code> finns kvar.</li>
-</ul>
-</li>
-<li><strong>Template-filen används inte</strong>
-<ul>
-<li>Kontrollera att filen heter exakt <code>single-portfolio.php</code>.</li>
-</ul>
-</li>
-</ol>
-<h2 id="sammanfattning-31"><a class="header" href="#sammanfattning-31">Sammanfattning</a></h2>
-<p>Du har nu byggt en egen innehållstyp och en återanvändbar shortcode. Det är en vanlig och viktig grund i WordPress-utveckling: först modellera innehållet (post type), sedan visa det där redaktören behöver det (shortcode).</p>
-<h2 id="praktisk-övning-1"><a class="header" href="#praktisk-övning-1">Praktisk övning</a></h2>
-<ol>
-<li>Skapa tre Portfolio-inlägg.</li>
-<li>Skapa minst två <code>Portfolio Categories</code> och koppla dem till inläggen.</li>
-<li>Skapa en sida med <code>[portfolio_grid]</code>.</li>
-<li>Skapa en till sida med <code>[portfolio_grid count="2" category="webbdesign"]</code>.</li>
-<li>Skapa <code>single-portfolio.php</code> i ditt tema och testa en enskild portfolio-post.</li>
-</ol>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="wordpress-plugins"><a class="header" href="#wordpress-plugins">WordPress plugins</a></h1>
 <p>Plugins (tillägg) i WordPress är moduler som lägger till funktionalitet utan att du behöver bygga allt från grunden. När du förstår hur plugins fungerar kan du bygga webbplatser snabbare, men också mer säkert och hållbart.</p>
-<h2 id="förkunskaper-8"><a class="header" href="#förkunskaper-8">Förkunskaper</a></h2>
+<h2 id="förkunskaper-6"><a class="header" href="#förkunskaper-6">Förkunskaper</a></h2>
 <p>Innan du börjar bör du ha läst:</p>
 <ul>
 <li><a href="kapitel_6/./wordpress.html">WordPress</a></li>
@@ -11362,7 +10873,7 @@ add_action( 'wp_footer', 'school_site_notice' );
 <li>Avinstallera plugins du inte använder.</li>
 <li>Begränsa vem som får installera nya plugins.</li>
 </ul>
-<h2 id="sammanfattning-32"><a class="header" href="#sammanfattning-32">Sammanfattning</a></h2>
+<h2 id="sammanfattning-31"><a class="header" href="#sammanfattning-31">Sammanfattning</a></h2>
 <p>Plugins gör WordPress kraftfullt och flexibelt. Med en liten, genomtänkt plugin-bas och bra underhållsrutiner får du en snabbare, säkrare och mer stabil webbplats.</p>
 <p>Vill du bygga ett plugin själv? Fortsätt med <a href="kapitel_6/./wordpress-eget-plugin-slider.html">Skapa eget WordPress-plugin: Content Slider</a>.</p>
 <h2 id="reflektionsfrågor-6"><a class="header" href="#reflektionsfrågor-6">Reflektionsfrågor</a></h2>
@@ -11371,532 +10882,9 @@ add_action( 'wp_footer', 'school_site_notice' );
 <li>Hur undviker du att plugin-miljön blir svår att underhålla?</li>
 <li>Vilka risker finns med att uppdatera plugins utan testmiljö?</li>
 </ol>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="skapa-eget-wordpress-plugin-content-slider"><a class="header" href="#skapa-eget-wordpress-plugin-content-slider">Skapa eget WordPress-plugin: Content Slider</a></h1>
-<p>I den här lektionen bygger vi ett eget plugin från grunden. Målet är en content slider som går att lägga in på valfri sida med en shortcode (kortkod).</p>
-<p>Du får både <strong>kod</strong> och <strong>förklaring av varför varje del finns</strong>, så att du kan förstå flödet även om du aldrig byggt plugin tidigare.</p>
-<p>Varje slide ska kunna ha:</p>
-<ul>
-<li>bild som bakgrund</li>
-<li>rubrik</li>
-<li>underrubrik</li>
-<li>knapp</li>
-</ul>
-<h2 id="så-fungerar-hela-lösningen-innan-vi-kodar"><a class="header" href="#så-fungerar-hela-lösningen-innan-vi-kodar">Så fungerar hela lösningen (innan vi kodar)</a></h2>
-<ol>
-<li>Vi registrerar ett plugin så WordPress kan aktivera det.</li>
-<li>Vi skapar en egen post type <code>school_slide</code> där redaktören lägger slides.</li>
-<li>Vi lägger till extra fält (underrubrik, knapptext, knapp-länk).</li>
-<li>Vi skapar shortcoden <code>[school_slider]</code> som bygger HTML för sliden.</li>
-<li>Vi laddar CSS och JavaScript som ger layout, auto-play och navigering.</li>
-</ol>
-<p>Det här är ett vanligt WordPress-mönster: <strong>lagra data i adminpanelen</strong>, och <strong>presentera data med shortcode i frontend</strong>.</p>
-<h2 id="förkunskaper-9"><a class="header" href="#förkunskaper-9">Förkunskaper</a></h2>
-<p>Innan du börjar är det bra om du har läst:</p>
-<ul>
-<li><a href="kapitel_6/./wordpress.html">WordPress</a></li>
-<li><a href="kapitel_6/./wordpress-plugins.html">WordPress plugins</a></li>
-<li><a href="kapitel_6/./wordpress-teman.html">WordPress teman</a></li>
-<li><a href="kapitel_6/./wordpress-shortcodes.html">WordPress shortcodes</a></li>
-</ul>
-<h2 id="plugin-struktur"><a class="header" href="#plugin-struktur">Plugin-struktur</a></h2>
-<p>Skapa en mapp i <code>wp-content/plugins</code>:</p>
-<pre><code class="language-text">school-content-slider/
-├─ school-content-slider.php
-├─ assets/
-│  ├─ slider.css
-│  └─ slider.js
-</code></pre>
-<ul>
-<li><code>school-content-slider.php</code> innehåller pluginets PHP-logik.</li>
-<li><code>slider.css</code> styr hur sliden ser ut.</li>
-<li><code>slider.js</code> styr beteendet (byte av slide, klick på navigering).</li>
-</ul>
-<h2 id="1-skapa-pluginets-huvudfil"><a class="header" href="#1-skapa-pluginets-huvudfil">1) Skapa pluginets huvudfil</a></h2>
-<p>Skapa filen <code>school-content-slider.php</code>:</p>
-<pre><code class="language-php">&lt;?php
-/**
- * Plugin Name: School Content Slider
- * Description: Enkel content slider med shortcode.
- * Version: 1.0.0
- * Author: Glimakra Webbutvecklare
- */
-
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
-function school_slider_register_post_type() {
-	register_post_type(
-		'school_slide',
-		array(
-			'labels' =&gt; array(
-				'name'          =&gt; __( 'Slides', 'school-slider' ),
-				'singular_name' =&gt; __( 'Slide', 'school-slider' ),
-			),
-			'public'       =&gt; true,
-			'show_in_rest' =&gt; true,
-			'menu_icon'    =&gt; 'dashicons-images-alt2',
-			'supports'     =&gt; array( 'title', 'thumbnail' ),
-			'has_archive'  =&gt; false,
-		)
-	);
-}
-add_action( 'init', 'school_slider_register_post_type' );
-</code></pre>
-<p>Här används en egen post type: <code>school_slide</code>. Rubriken hämtas från postens titel och bilden hanteras via Featured Image (utvald bild).</p>
-<h3 id="vad-händer-i-den-här-koden"><a class="header" href="#vad-händer-i-den-här-koden">Vad händer i den här koden?</a></h3>
-<ul>
-<li>Plugin-huvudet (<code>Plugin Name</code>, <code>Version</code> ...) gör att WordPress känner igen pluginet i listan under <strong>Tillägg</strong>.</li>
-<li><code>if ( ! defined( 'ABSPATH' ) ) { exit; }</code> skyddar filen mot direkt anrop.</li>
-<li><code>register_post_type( 'school_slide', ... )</code> skapar en ny innehållstyp i adminpanelen.</li>
-<li><code>supports =&gt; array( 'title', 'thumbnail' )</code> betyder att varje slide får titel och Featured Image.</li>
-<li>Eftersom <code>editor</code> inte finns i <code>supports</code> visas inget textfält (classic editor/Gutenberg content) för denna post type.</li>
-<li><code>add_action( 'init', ... )</code> kör registreringen när WordPress startar.</li>
-</ul>
-<p>När pluginet aktiveras ska du se en ny meny i adminpanelen: <strong>Slides</strong>.</p>
-<h2 id="2-lägg-till-fält-för-underrubrik-och-knapp"><a class="header" href="#2-lägg-till-fält-för-underrubrik-och-knapp">2) Lägg till fält för underrubrik och knapp</a></h2>
-<p>Lägg till i samma fil:</p>
-<pre><code class="language-php">function school_slider_add_meta_box() {
-	add_meta_box(
-		'school_slider_fields',
-		__( 'Slide-innehåll', 'school-slider' ),
-		'school_slider_render_meta_box',
-		'school_slide',
-		'normal',
-		'default'
-	);
-}
-add_action( 'add_meta_boxes', 'school_slider_add_meta_box' );
-
-function school_slider_render_meta_box( $post ) {
-	wp_nonce_field( 'school_slider_save_fields', 'school_slider_nonce' );
-
-	$subtitle   = get_post_meta( $post-&gt;ID, '_school_slide_subtitle', true );
-	$button_txt = get_post_meta( $post-&gt;ID, '_school_slide_button_text', true );
-	$button_url = get_post_meta( $post-&gt;ID, '_school_slide_button_url', true );
-
-	echo '&lt;p&gt;&lt;label for="school_slide_subtitle"&gt;Underrubrik&lt;/label&gt;&lt;/p&gt;';
-	echo '&lt;input type="text" id="school_slide_subtitle" name="school_slide_subtitle" value="' . esc_attr( $subtitle ) . '" style="width:100%;" /&gt;';
-
-	echo '&lt;p&gt;&lt;label for="school_slide_button_text"&gt;Knapptext&lt;/label&gt;&lt;/p&gt;';
-	echo '&lt;input type="text" id="school_slide_button_text" name="school_slide_button_text" value="' . esc_attr( $button_txt ) . '" style="width:100%;" /&gt;';
-
-	echo '&lt;p&gt;&lt;label for="school_slide_button_url"&gt;Knapp-länk&lt;/label&gt;&lt;/p&gt;';
-	echo '&lt;input type="url" id="school_slide_button_url" name="school_slide_button_url" value="' . esc_attr( $button_url ) . '" style="width:100%;" /&gt;';
-}
-
-function school_slider_save_meta_box( $post_id ) {
-	if ( ! isset( $_POST['school_slider_nonce'] ) ) {
-		return;
-	}
-
-	if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['school_slider_nonce'] ) ), 'school_slider_save_fields' ) ) {
-		return;
-	}
-
-	if ( defined( 'DOING_AUTOSAVE' ) &amp;&amp; DOING_AUTOSAVE ) {
-		return;
-	}
-
-	if ( ! current_user_can( 'edit_post', $post_id ) ) {
-		return;
-	}
-
-	if ( isset( $_POST['school_slide_subtitle'] ) ) {
-		update_post_meta( $post_id, '_school_slide_subtitle', sanitize_text_field( wp_unslash( $_POST['school_slide_subtitle'] ) ) );
-	}
-
-	if ( isset( $_POST['school_slide_button_text'] ) ) {
-		update_post_meta( $post_id, '_school_slide_button_text', sanitize_text_field( wp_unslash( $_POST['school_slide_button_text'] ) ) );
-	}
-
-	if ( isset( $_POST['school_slide_button_url'] ) ) {
-		update_post_meta( $post_id, '_school_slide_button_url', esc_url_raw( wp_unslash( $_POST['school_slide_button_url'] ) ) );
-	}
-}
-add_action( 'save_post_school_slide', 'school_slider_save_meta_box' );
-</code></pre>
-<p>Nu kan varje slide få en underrubrik samt knappens text och länk.</p>
-<h3 id="vad-gör-meta-box-delen"><a class="header" href="#vad-gör-meta-box-delen">Vad gör meta box-delen?</a></h3>
-<ul>
-<li><code>add_meta_box(...)</code> lägger till en extra panel under editorn för <code>school_slide</code>.</li>
-<li><code>school_slider_render_meta_box()</code> visar formulärfälten i admin.</li>
-<li><code>get_post_meta(...)</code> läser tidigare sparade värden.</li>
-<li><code>school_slider_save_meta_box()</code> körs vid sparning av slide.</li>
-</ul>
-<p>Säkerhetsflödet vid sparning:</p>
-<ol>
-<li>Kontrollera att nonce-fält finns.</li>
-<li>Verifiera nonce (skydd mot CSRF).</li>
-<li>Stoppa autosave-fall.</li>
-<li>Kontrollera behörighet med <code>current_user_can()</code>.</li>
-<li>Sanera data och spara med <code>update_post_meta()</code>.</li>
-</ol>
-<p>Det här är standardmönstret i WordPress när du sparar egna fält.</p>
-<h2 id="3-registrera-shortcode"><a class="header" href="#3-registrera-shortcode">3) Registrera shortcode</a></h2>
-<p>Lägg till i plugin-filen:</p>
-<pre><code class="language-php">function school_slider_shortcode( $atts ) {
-	$atts = shortcode_atts(
-		array(
-			'count' =&gt; 5,
-		),
-		$atts,
-		'school_slider'
-	);
-
-	$slides = new WP_Query(
-		array(
-			'post_type'      =&gt; 'school_slide',
-			'posts_per_page' =&gt; (int) $atts['count'],
-			'orderby'        =&gt; 'date',
-			'order'          =&gt; 'DESC',
-		)
-	);
-
-	if ( ! $slides-&gt;have_posts() ) {
-		return '&lt;p&gt;Inga slides hittades.&lt;/p&gt;';
-	}
-
-	$slider_id = 'school-slider-' . wp_rand( 1000, 9999 );
-
-	ob_start();
-	echo '&lt;div class="school-slider" id="' . esc_attr( $slider_id ) . '" data-slider&gt;';
-	echo '&lt;div class="school-slider__track"&gt;';
-
-	$dot_index = 0;
-
-	while ( $slides-&gt;have_posts() ) {
-		$slides-&gt;the_post();
-
-		$subtitle   = get_post_meta( get_the_ID(), '_school_slide_subtitle', true );
-		$button_txt = get_post_meta( get_the_ID(), '_school_slide_button_text', true );
-		$button_url = get_post_meta( get_the_ID(), '_school_slide_button_url', true );
-		$image_url  = get_the_post_thumbnail_url( get_the_ID(), 'full' );
-
-		echo '&lt;article class="school-slide" style="background-image:url(' . esc_url( $image_url ) . ');"&gt;';
-		echo '&lt;div class="school-slide__overlay"&gt;';
-		echo '&lt;h2 class="school-slide__title"&gt;' . esc_html( get_the_title() ) . '&lt;/h2&gt;';
-
-		if ( ! empty( $subtitle ) ) {
-			echo '&lt;p class="school-slide__subtitle"&gt;' . esc_html( $subtitle ) . '&lt;/p&gt;';
-		}
-
-		if ( ! empty( $button_txt ) &amp;&amp; ! empty( $button_url ) ) {
-			echo '&lt;a class="school-slide__button" href="' . esc_url( $button_url ) . '"&gt;' . esc_html( $button_txt ) . '&lt;/a&gt;';
-		}
-
-		echo '&lt;/div&gt;';
-		echo '&lt;/article&gt;';
-
-		$dot_index++;
-	}
-
-	echo '&lt;/div&gt;';
-	echo '&lt;button class="school-slider__nav school-slider__nav--prev" type="button" data-slider-prev aria-label="Föregående slide"&gt;&amp;#10094;&lt;/button&gt;';
-	echo '&lt;button class="school-slider__nav school-slider__nav--next" type="button" data-slider-next aria-label="Nästa slide"&gt;&amp;#10095;&lt;/button&gt;';
-
-	echo '&lt;div class="school-slider__dots" role="tablist" aria-label="Slide navigation"&gt;';
-	for ( $i = 0; $i &lt; $dot_index; $i++ ) {
-		echo '&lt;button class="school-slider__dot" type="button" data-slide-to="' . esc_attr( $i ) . '" aria-label="Gå till slide ' . esc_attr( (string) ( $i + 1 ) ) . '"&gt;&lt;/button&gt;';
-	}
-	echo '&lt;/div&gt;';
-
-	echo '&lt;/div&gt;';
-
-	wp_reset_postdata();
-	return ob_get_clean();
-}
-add_shortcode( 'school_slider', 'school_slider_shortcode' );
-</code></pre>
-<h3 id="hur-shortcoden-jobbar"><a class="header" href="#hur-shortcoden-jobbar">Hur shortcoden jobbar</a></h3>
-<ul>
-<li><code>add_shortcode( 'school_slider', ... )</code> kopplar <code>[school_slider]</code> till funktionen.</li>
-<li><code>shortcode_atts(...)</code> sätter standardvärde för <code>count</code>.</li>
-<li><code>WP_Query</code> hämtar slides från databasen.</li>
-<li><code>ob_start()</code> används för att bygga HTML och returnera den som en sträng.</li>
-<li>Loopen skriver ut varje slide:
-<ul>
-<li>bakgrundsbild från <code>get_the_post_thumbnail_url()</code></li>
-<li>rubrik från post title</li>
-<li>underrubrik + knapp från post meta</li>
-</ul>
-</li>
-<li>Efter loopen skapas navigering:
-<ul>
-<li>två knappar (föregående/nästa)</li>
-<li>en dot-knapp per slide</li>
-</ul>
-</li>
-<li><code>wp_reset_postdata()</code> återställer global query.</li>
-</ul>
-<p>Varför både <code>esc_html()</code> och <code>esc_url()</code>?</p>
-<ul>
-<li>För att skydda output mot skadligt innehåll och trasig HTML.</li>
-</ul>
-<p>Shortcoden blir:</p>
-<pre><code class="language-text">[school_slider]
-</code></pre>
-<p>Du kan styra antal slides:</p>
-<pre><code class="language-text">[school_slider count="3"]
-</code></pre>
-<p>Om en sida innehåller flera sliders fungerar det också, eftersom JavaScript-koden loopar över alla element med <code>data-slider</code>.</p>
-<h2 id="4-ladda-css-och-javascript"><a class="header" href="#4-ladda-css-och-javascript">4) Ladda CSS och JavaScript</a></h2>
-<p>Lägg till i plugin-filen:</p>
-<pre><code class="language-php">function school_slider_enqueue_assets() {
-	wp_enqueue_style(
-		'school-slider-style',
-		plugin_dir_url( __FILE__ ) . 'assets/slider.css',
-		array(),
-		'1.0.0'
-	);
-
-	wp_enqueue_script(
-		'school-slider-script',
-		plugin_dir_url( __FILE__ ) . 'assets/slider.js',
-		array(),
-		'1.0.0',
-		true
-	);
-}
-add_action( 'wp_enqueue_scripts', 'school_slider_enqueue_assets' );
-</code></pre>
-<h3 id="vad-betyder-enqueue"><a class="header" href="#vad-betyder-enqueue">Vad betyder enqueue?</a></h3>
-<p><code>wp_enqueue_style()</code> och <code>wp_enqueue_script()</code> är WordPress sätt att ladda filer på rätt sätt.</p>
-<p>Fördelar:</p>
-<ul>
-<li>undviker dubbel inladdning</li>
-<li>bättre kompatibilitet med andra teman/plugins</li>
-<li>WordPress kan hantera ordning och beroenden</li>
-</ul>
-<p>Skapa <code>assets/slider.css</code>:</p>
-<pre><code class="language-css">.school-slider {
-	position: relative;
-	overflow: hidden;
-	min-height: 380px;
-}
-
-.school-slider__track {
-	position: relative;
-}
-
-.school-slide {
-	display: none;
-	min-height: 380px;
-	background-size: cover;
-	background-position: center;
-}
-
-.school-slide.is-active {
-	display: block;
-}
-
-.school-slide__overlay {
-	background: rgba(0, 0, 0, 0.45);
-	color: #fff;
-	padding: 64px 40px;
-	min-height: 380px;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	gap: 12px;
-}
-
-.school-slide__title {
-	margin: 0;
-	font-size: 2rem;
-}
-
-.school-slide__subtitle {
-	margin: 0;
-	font-size: 1.1rem;
-}
-
-.school-slide__button {
-	align-self: flex-start;
-	padding: 10px 18px;
-	background: #ffffff;
-	color: #111111;
-	text-decoration: none;
-	border-radius: 6px;
-}
-
-.school-slider__nav {
-	position: absolute;
-	top: 50%;
-	transform: translateY(-50%);
-	background: rgba(0, 0, 0, 0.55);
-	color: #ffffff;
-	border: 0;
-	width: 42px;
-	height: 42px;
-	border-radius: 50%;
-	cursor: pointer;
-	font-size: 1.2rem;
-	z-index: 10;
-}
-
-.school-slider__nav--prev {
-	left: 16px;
-}
-
-.school-slider__nav--next {
-	right: 16px;
-}
-
-.school-slider__dots {
-	position: absolute;
-	left: 50%;
-	bottom: 18px;
-	transform: translateX(-50%);
-	display: flex;
-	gap: 8px;
-	z-index: 10;
-}
-
-.school-slider__dot {
-	width: 10px;
-	height: 10px;
-	border-radius: 50%;
-	border: 0;
-	background: rgba(255, 255, 255, 0.5);
-	cursor: pointer;
-}
-
-.school-slider__dot.is-active {
-	background: #ffffff;
-}
-</code></pre>
-<p>Skapa <code>assets/slider.js</code>:</p>
-<pre><code class="language-javascript">document.addEventListener('DOMContentLoaded', () =&gt; {
-	const sliders = document.querySelectorAll('[data-slider]');
-
-	if (!sliders.length) {
-		return;
-	}
-
-	sliders.forEach((slider) =&gt; {
-		const slides = Array.from(slider.querySelectorAll('.school-slide'));
-		const dots = Array.from(slider.querySelectorAll('.school-slider__dot'));
-		const prevButton = slider.querySelector('[data-slider-prev]');
-		const nextButton = slider.querySelector('[data-slider-next]');
-
-		if (!slides.length) {
-			return;
-		}
-
-		let activeIndex = 0;
-
-		const render = () =&gt; {
-			slides.forEach((slide, index) =&gt; {
-				slide.classList.toggle('is-active', index === activeIndex);
-			});
-
-			dots.forEach((dot, index) =&gt; {
-				dot.classList.toggle('is-active', index === activeIndex);
-			});
-		};
-
-		const goToNext = () =&gt; {
-			activeIndex = (activeIndex + 1) % slides.length;
-			render();
-		};
-
-		const goToPrev = () =&gt; {
-			activeIndex = (activeIndex - 1 + slides.length) % slides.length;
-			render();
-		};
-
-		if (nextButton) {
-			nextButton.addEventListener('click', goToNext);
-		}
-
-		if (prevButton) {
-			prevButton.addEventListener('click', goToPrev);
-		}
-
-		dots.forEach((dot) =&gt; {
-			dot.addEventListener('click', () =&gt; {
-				activeIndex = Number(dot.dataset.slideTo);
-				render();
-			});
-		});
-
-		render();
-
-		setInterval(goToNext, 5000);
-	});
-});
-</code></pre>
-<h3 id="hur-javascript-navigeringen-fungerar"><a class="header" href="#hur-javascript-navigeringen-fungerar">Hur JavaScript-navigeringen fungerar</a></h3>
-<ol>
-<li>Hitta alla sliders på sidan.</li>
-<li>För varje slider:
-<ul>
-<li>hämta slides, dots och pilknappar</li>
-<li>sätt <code>activeIndex = 0</code></li>
-<li>kör <code>render()</code> för att markera aktiv slide/dot</li>
-</ul>
-</li>
-<li>Lägg event listeners:
-<ul>
-<li>nästa-knapp -&gt; <code>goToNext()</code></li>
-<li>föregående-knapp -&gt; <code>goToPrev()</code></li>
-<li>dot -&gt; hoppa till vald index</li>
-</ul>
-</li>
-<li>Starta auto-play med <code>setInterval(goToNext, 5000)</code>.</li>
-</ol>
-<p>Det betyder att användaren kan både klicka manuellt och låta sliden rotera automatiskt.</p>
-<h2 id="5-aktivera-och-testa"><a class="header" href="#5-aktivera-och-testa">5) Aktivera och testa</a></h2>
-<ol>
-<li>Gå till <strong>Tillägg &gt; Installerade tillägg</strong> och aktivera <code>School Content Slider</code>.</li>
-<li>Gå till <strong>Slides</strong> i adminpanelen och skapa några slides.</li>
-<li>Ange titel, underrubrik, knapptext och knapp-länk.</li>
-<li>Sätt en Featured Image (utvald bild) för varje slide.</li>
-<li>Lägg in <code>[school_slider]</code> på en sida.</li>
-<li>Testa navigeringen med pilarna och dots under sliden.</li>
-</ol>
-<h2 id="felsökning-för-nybörjare"><a class="header" href="#felsökning-för-nybörjare">Felsökning för nybörjare</a></h2>
-<h3 id="jag-ser-inte-menyn-slides-i-admin"><a class="header" href="#jag-ser-inte-menyn-slides-i-admin">Jag ser inte menyn Slides i admin</a></h3>
-<ul>
-<li>Kontrollera att pluginet är aktiverat.</li>
-<li>Kontrollera att filnamnet är rätt och att plugin-huvudet finns kvar.</li>
-</ul>
-<h3 id="shortcoden-visar-bara-inga-slides-hittades"><a class="header" href="#shortcoden-visar-bara-inga-slides-hittades">Shortcoden visar bara "Inga slides hittades"</a></h3>
-<ul>
-<li>Kontrollera att du har publicerat slides (inte utkast).</li>
-<li>Kontrollera att post typen heter exakt <code>school_slide</code> i queryn.</li>
-</ul>
-<h3 id="bakgrundsbild-syns-inte"><a class="header" href="#bakgrundsbild-syns-inte">Bakgrundsbild syns inte</a></h3>
-<ul>
-<li>Kontrollera att varje slide har en Featured Image.</li>
-<li>Kontrollera att temat visar featured images korrekt i admin.</li>
-</ul>
-<h3 id="navigering-klickar-men-inget-händer"><a class="header" href="#navigering-klickar-men-inget-händer">Navigering klickar men inget händer</a></h3>
-<ul>
-<li>Kontrollera att <code>slider.js</code> laddas (t.ex. i webbläsarens DevTools).</li>
-<li>Kontrollera att klassnamn i HTML, CSS och JS matchar exakt.</li>
-</ul>
-<h2 id="säkerhet-i-plugin-kod"><a class="header" href="#säkerhet-i-plugin-kod">Säkerhet i plugin-kod</a></h2>
-<p>I exemplet används flera viktiga säkerhetsdelar:</p>
-<ul>
-<li><code>wp_nonce_field()</code> och <code>wp_verify_nonce()</code></li>
-<li><code>current_user_can()</code></li>
-<li><code>sanitize_text_field()</code> och <code>esc_url_raw()</code> vid sparning</li>
-<li><code>esc_html()</code> och <code>esc_url()</code> vid utskrift</li>
-</ul>
-<p>Detta minskar risk för XSS (cross-site scripting) och felaktig indata.</p>
-<h2 id="sammanfattning-33"><a class="header" href="#sammanfattning-33">Sammanfattning</a></h2>
-<p>Du har byggt ett komplett plugin med egen datamodell (post type), egna fält, shortcode, styling och JavaScript-navigering. Det är en bra mall för många andra plugin-idéer, till exempel testimonials, teamkort eller kundcase.</p>
-<h2 id="reflektionsfrågor-7"><a class="header" href="#reflektionsfrågor-7">Reflektionsfrågor</a></h2>
-<ol>
-<li>Varför är det bättre att lägga den här funktionen i ett plugin istället för i temat?</li>
-<li>Hur påverkas sliden om en post saknar Featured Image?</li>
-<li>Hur skulle du lägga till swipe-stöd för mobil (touch events)?</li>
-</ol>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="wordpress-page-builders"><a class="header" href="#wordpress-page-builders">WordPress page builders</a></h1>
 <p>Page builders är verktyg som gör att du kan bygga sidlayout visuellt i WordPress utan att skriva all kod själv. De används ofta för landningssidor, kampanjsidor och projekt där redaktörer snabbt behöver skapa egna layouter.</p>
-<h2 id="förkunskaper-10"><a class="header" href="#förkunskaper-10">Förkunskaper</a></h2>
+<h2 id="förkunskaper-7"><a class="header" href="#förkunskaper-7">Förkunskaper</a></h2>
 <p>Innan du börjar bör du ha läst:</p>
 <ul>
 <li><a href="kapitel_6/./wordpress.html">WordPress</a></li>
@@ -11971,9 +10959,9 @@ add_action( 'wp_enqueue_scripts', 'school_slider_enqueue_assets' );
 <li>Blandning av flera page builders i samma projekt.</li>
 <li>Ingen plan för hur innehåll ska flyttas om builder byts.</li>
 </ol>
-<h2 id="sammanfattning-34"><a class="header" href="#sammanfattning-34">Sammanfattning</a></h2>
+<h2 id="sammanfattning-32"><a class="header" href="#sammanfattning-32">Sammanfattning</a></h2>
 <p>Page builders kan vara ett effektivt verktyg för snabb visuell produktion i WordPress. Med tydliga riktlinjer för prestanda, struktur och uppdateringar kan de fungera bra i både små och medelstora projekt.</p>
-<h2 id="reflektionsfrågor-8"><a class="header" href="#reflektionsfrågor-8">Reflektionsfrågor</a></h2>
+<h2 id="reflektionsfrågor-7"><a class="header" href="#reflektionsfrågor-7">Reflektionsfrågor</a></h2>
 <ol>
 <li>När skulle du välja Gutenberg framför en extern page builder?</li>
 <li>Vilka risker ser du med att bygga hela sajten i en enda builder?</li>
@@ -11982,7 +10970,7 @@ add_action( 'wp_enqueue_scripts', 'school_slider_enqueue_assets' );
 <div style="break-before: page; page-break-before: always;"></div><h1 id="skillnaden-mellan-posts-och-pages-i-wordpress"><a class="header" href="#skillnaden-mellan-posts-och-pages-i-wordpress">Skillnaden mellan Posts och Pages i WordPress</a></h1>
 <p>När du bygger en webbplats i WordPress är en av de första frågorna: ska innehållet vara ett <strong>Post (inlägg)</strong> eller en <strong>Page (sida)</strong>?</p>
 <p>Det här valet påverkar hur innehållet visas, hur lätt det blir att navigera på sajten och hur redaktörer arbetar i adminpanelen.</p>
-<h2 id="förkunskaper-11"><a class="header" href="#förkunskaper-11">Förkunskaper</a></h2>
+<h2 id="förkunskaper-8"><a class="header" href="#förkunskaper-8">Förkunskaper</a></h2>
 <p>Innan du börjar bör du ha läst:</p>
 <ul>
 <li><a href="kapitel_6/./wordpress.html">WordPress</a></li>
@@ -12061,13 +11049,13 @@ add_action( 'wp_enqueue_scripts', 'school_slider_enqueue_assets' );
 <li>Sakna tydlig kategori-struktur för inlägg.</li>
 <li>Otydlig meny där viktiga sidor är svåra att hitta.</li>
 </ol>
-<h2 id="sammanfattning-35"><a class="header" href="#sammanfattning-35">Sammanfattning</a></h2>
+<h2 id="sammanfattning-33"><a class="header" href="#sammanfattning-33">Sammanfattning</a></h2>
 <ul>
 <li><strong>Post (inlägg)</strong> passar för löpande, datumstyrt innehåll.</li>
 <li><strong>Page (sida)</strong> passar för stabilt innehåll i webbplatsens grundstruktur.</li>
 <li>Rätt val från början gör sajten enklare att underhålla, navigera och skala.</li>
 </ul>
-<h2 id="reflektionsfrågor-9"><a class="header" href="#reflektionsfrågor-9">Reflektionsfrågor</a></h2>
+<h2 id="reflektionsfrågor-8"><a class="header" href="#reflektionsfrågor-8">Reflektionsfrågor</a></h2>
 <ol>
 <li>Vilket innehåll på din tänkta webbplats ska vara inlägg respektive sidor?</li>
 <li>Hur skulle du strukturera kategorier för inlägg så att det blir lätt att hitta rätt?</li>
@@ -12294,7 +11282,7 @@ Hur andra kan bidra (om öppen källkod).
 <li><strong>Konsekvent terminologi</strong> – minskar missförstånd</li>
 <li><strong>Exempel i kod</strong> – AI kan bättre förstå och generera liknande kod</li>
 </ul>
-<h3 id="sammanfattning-36"><a class="header" href="#sammanfattning-36">Sammanfattning</a></h3>
+<h3 id="sammanfattning-34"><a class="header" href="#sammanfattning-34">Sammanfattning</a></h3>
 <p>En bra dokumentationsstruktur gör projektet lättare att förstå, bidra till och underhålla – både för människor och för AI-verktyg som används i utvecklingsprocessen.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="static-site-generators-med-jekyll"><a class="header" href="#static-site-generators-med-jekyll">Static Site Generators med Jekyll</a></h1>
 <h2 id="1-introduktion----vad-är-en-static-site-generator"><a class="header" href="#1-introduktion----vad-är-en-static-site-generator">1. Introduktion -- Vad är en Static Site Generator?</a></h2>
@@ -12305,7 +11293,7 @@ HTML-filer från mallar och innehåll (ofta Markdown). Tänk på en SSG som en <
 <p><a href="https://jekyllrb.com/" target="_blank">https://jekyllrb.com/</a></p>
 <p>Andra exempel på SSG är <strong>Hugo</strong> (Go), <strong>Gatsby</strong> (React/Node.js) och <strong>Next.js</strong> (JavaScript).</p>
 <hr />
-<h2 id="hur-fungerar-det-1"><a class="header" href="#hur-fungerar-det-1">Hur fungerar det?</a></h2>
+<h2 id="hur-fungerar-det"><a class="header" href="#hur-fungerar-det">Hur fungerar det?</a></h2>
 <pre class="mermaid">%%{init: {'theme': 'default'}}%%
 flowchart LR
     A[Markdown Files] --&gt; B[Jekyll Build]
@@ -12663,7 +11651,7 @@ flowchart LR
     D --&gt; E[Public Website]
 </pre>
 <hr />
-<h2 id="sammanfattning-37"><a class="header" href="#sammanfattning-37">Sammanfattning</a></h2>
+<h2 id="sammanfattning-35"><a class="header" href="#sammanfattning-35">Sammanfattning</a></h2>
 <ul>
 <li>Static Site Generators är snabba och säkra</li>
 <li>Jekyll är enkelt och kraftfullt</li>
@@ -13016,7 +12004,7 @@ console.log("Hej!");
 <li>Tillämpa grundläggande säkerhetsprinciper (XSS, SQL injection, lösenordshantering).</li>
 <li>Bygga en enkel CRUD-applikation (blogg) från grunden.</li>
 </ul>
-<h2 id="förkunskaper-12"><a class="header" href="#förkunskaper-12">Förkunskaper</a></h2>
+<h2 id="förkunskaper-9"><a class="header" href="#förkunskaper-9">Förkunskaper</a></h2>
 <p>Innan du börjar rekommenderas att du har genomgått:</p>
 <ul>
 <li><strong>Kapitel 1–5:</strong> HTML, CSS, JavaScript och grundläggande webbkoncept.</li>
@@ -16565,6 +15553,772 @@ require 'templates/partials/footer.php';
 <p>Du har nu byggt en fungerande CRUD-applikation och börjat refaktorera den. Bra jobbat!</p>
 <hr />
 <p><strong>Föregående:</strong> <a href="kapitel_7/crud-app-4-update-delete.html">Del 4: Uppdatera och radera</a></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="crud-applikation-med-laravel"><a class="header" href="#crud-applikation-med-laravel">CRUD-applikation med Laravel</a></h1>
+<p>I detta avsnitt bygger vi samma bloggapplikation som i <a href="kapitel_7/crud-app.html">CRUD-appen</a> – men med Laravel. Du får se hur ramverket ersätter mycket av den manuella koden och introducerar nya koncept steg för steg.</p>
+<p><strong>Applikationens funktioner (samma som CRUD-appen):</strong></p>
+<ul>
+<li>Användare kan registrera sig och logga in.</li>
+<li>Inloggade användare kan skapa, redigera och ta bort sina egna blogginlägg.</li>
+<li>Användare kan ladda upp en bild till varje blogginlägg.</li>
+<li>Alla besökare kan se listan över blogginlägg och läsa enskilda inlägg.</li>
+<li>En admin-sektion för inloggade användare att hantera sina inlägg.</li>
+</ul>
+<h2 id="läsordning-2"><a class="header" href="#läsordning-2">Läsordning</a></h2>
+<p>Lektionen är uppdelad i följande delar. Följ dem i ordning:</p>
+<ol>
+<li><strong><a href="kapitel_7/laravel-intro.html">Del 1: Varför ett ramverk?</a></strong> – Motivation, vad ett ramverk löser, när det är lämpligt</li>
+<li><strong><a href="kapitel_7/laravel-komma-igang.html">Del 2: Komma igång</a></strong> – Installation, projektstruktur, Artisan, Blade-grund</li>
+<li><strong><a href="kapitel_7/laravel-crud-3-setup.html">Del 3: Setup och autentisering</a></strong> – Laravel Breeze, migrations, modeller</li>
+<li><strong><a href="kapitel_7/laravel-crud-4-create-read.html">Del 4: Skapa och läsa inlägg</a></strong> – PostController, routes, Blade-vyer, bilduppladdning</li>
+<li><strong><a href="kapitel_7/laravel-crud-5-update-delete.html">Del 5: Uppdatera och radera</a></strong> – Edit, delete, Policy för ägarskap</li>
+</ol>
+<p><strong>Förutsättningar:</strong> Du har genomfört <a href="kapitel_7/crud-app.html">CRUD-applikationen</a> (alla fem delar) och <a href="kapitel_7/laravel-komma-igang.html">Komma igång med Laravel</a>.</p>
+<h2 id="vanliga-problem"><a class="header" href="#vanliga-problem">Vanliga problem</a></h2>
+<p>Om du stöter på problem under lektionerna kan följande hjälpa. <a href="kapitel_7/laravel-crud-4-create-read.html">Del 4</a> har en mer detaljerad felsökningssektion.</p>
+<div class="table-wrapper"><table><thead><tr><th>Problem</th><th>Lösning</th></tr></thead><tbody>
+<tr><td><strong>Bilder visas inte</strong></td><td>Kör <code>php artisan storage:link</code>. Kontrollera att filen finns i <code>storage/app/public/posts/</code>.</td></tr>
+<tr><td><strong>404 på <code>/posts/1</code></strong></td><td>Route model binding kräver <code>{post}</code> (singular) i routen och <code>Post $post</code> i metoden.</td></tr>
+<tr><td><strong>Valideringsfel visas inte</strong></td><td>Använd <code>@error('fältnamn')</code> i formuläret och <code>old('fältnamn')</code> för att återställa värden.</td></tr>
+<tr><td><strong>403 eller redirect till login på /admin</strong></td><td>Du måste vara inloggad. Gå till <code>/login</code> först.</td></tr>
+<tr><td><strong>Class "Post" not found</strong></td><td>Lägg till <code>use App\Models\Post;</code> högst upp i PostController.</td></tr>
+<tr><td><strong>Breeze använder e-post, inte användarnamn</strong></td><td>Det är Laravels standard. Registrering och inloggning finns på <code>/register</code> och <code>/login</code>.</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><h1 id="varför-ett-ramverk-introduktion-till-laravel"><a class="header" href="#varför-ett-ramverk-introduktion-till-laravel">Varför ett ramverk? Introduktion till Laravel</a></h1>
+<p>Du har nu byggt en komplett bloggapplikation från grunden med PHP, PDO, sessioner och manuell filhantering. Applikationen fungerar – men tänk tillbaka på vad som krävde mycket upprepning och manuellt arbete. Det är här ett ramverk som Laravel kommer in i bilden.</p>
+<p><strong>Förutsättning:</strong> Du har genomfört <a href="kapitel_7/crud-app.html">CRUD-applikationen</a> (alla fem delar).</p>
+<hr />
+<h2 id="Återkoppling-till-crud-appen"><a class="header" href="#Återkoppling-till-crud-appen">Återkoppling till CRUD-appen</a></h2>
+<p>Vad upprepade du mest när du byggde bloggen?</p>
+<ul>
+<li><strong>Session-kontroll i varje admin-fil:</strong> I början av <code>admin/index.php</code>, <code>admin/create_post.php</code>, <code>admin/edit_post.php</code> och <code>admin/delete_post.php</code> lade du samma kod: <code>if (!isset($_SESSION['user_id'])) { header('Location: ...'); exit; }</code>. Fyra filer, samma logik.</li>
+<li><strong>Manuell <code>require_once</code>:</strong> Varje sida inkluderade <code>config.php</code>, <code>database.php</code> och ibland <code>functions.php</code>. Glömde du en fil fick du fel.</li>
+<li><strong>PDO i varje fil:</strong> Du anropade <code>connect_db()</code> och skrev prepared statements överallt. SQL-frågor låg utspridda i många filer.</li>
+<li><strong>Formulärvalidering:</strong> I <code>register.php</code>, <code>login.php</code>, <code>create_post.php</code> och <code>edit_post.php</code> skrev du liknande validering – <code>empty()</code>, <code>filter_var()</code>, <code>strlen()</code> – och samlade fel i <code>$errors[]</code>.</li>
+<li><strong><code>htmlspecialchars()</code> överallt:</strong> Varje gång du skrev ut användardata i HTML behövde du komma ihåg att escap:a för att undvika XSS.</li>
+<li><strong>Routing:</strong> Vilken fil som hanterar vilken URL bestämdes av filstrukturen. <code>post.php?id=3</code> – vad händer om du vill ha <code>blogg/3</code> istället?</li>
+</ul>
+<p>Detta är inte fel – det är naturligt när man bygger utan ramverk. Men det blir mycket kod som inte handlar om din applikations <em>logik</em>, utan om infrastruktur.</p>
+<hr />
+<h2 id="vad-ett-ramverk-löser"><a class="header" href="#vad-ett-ramverk-löser">Vad ett ramverk löser</a></h2>
+<p>Ett ramverk som Laravel adresserar många av dessa problem genom att erbjuda:</p>
+<h3 id="konvention-över-konfiguration"><a class="header" href="#konvention-över-konfiguration">Konvention över konfiguration</a></h3>
+<p>Du behöver inte uppfinna var saker ska ligga. Laravel har en tydlig struktur: Controllers i <code>app/Http/Controllers</code>, vyer i <code>resources/views</code>, modeller i <code>app/Models</code>. Nya utvecklare som känner till Laravel kan direkt orientera sig i ett projekt. Färre beslut, konsekvent struktur.</p>
+<h3 id="inbyggd-säkerhet"><a class="header" href="#inbyggd-säkerhet">Inbyggd säkerhet</a></h3>
+<ul>
+<li><strong>CSRF:</strong> Laravel genererar och validerar automatiskt tokens för formulär – skyddar mot Cross-Site Request Forgery.</li>
+<li><strong>XSS:</strong> Blade-mallar escap:ar utdata som standard (<code>{{ $variabel }}</code>).</li>
+<li><strong>SQL injection:</strong> Eloquent (Laravels ORM) använder prepared statements under huven.</li>
+</ul>
+<p>Du behöver inte komma ihåg dessa saker varje gång – ramverket gör dem åt dig.</p>
+<h3 id="routing"><a class="header" href="#routing">Routing</a></h3>
+<p>Alla URL:er definieras på en plats (<code>routes/web.php</code>). Du kan skriva <code>Route::get('/blogg/{id}', ...)</code> istället för att förlita dig på filnamn. Det gör det enklare att ändra URL-struktur och att förstå vilken kod som körs för vilken adress.</p>
+<h3 id="separation-of-concerns-mvc"><a class="header" href="#separation-of-concerns-mvc">Separation of concerns (MVC)</a></h3>
+<ul>
+<li><strong>Model:</strong> Databaslogik – hur data lagras och hämtas.</li>
+<li><strong>View:</strong> HTML och presentation – vad användaren ser.</li>
+<li><strong>Controller:</strong> Hanterar förfrågningar, anropar modeller, skickar data till vyer.</li>
+</ul>
+<p>I din CRUD-app låg allt i samma filer – SQL, validering och HTML blandades. Med MVC blir varje del tydligare och lättare att underhålla.</p>
+<hr />
+<h2 id="laravel-i-php-ekosystemet"><a class="header" href="#laravel-i-php-ekosystemet">Laravel i PHP-ekosystemet</a></h2>
+<p>Laravel är ett av de mest använda PHP-ramverken. Det betyder:</p>
+<ul>
+<li><strong>Bra dokumentation</strong> – officiell guide och API-referens.</li>
+<li><strong>Stort community</strong> – tutorials, paket, svar på frågor.</li>
+<li><strong>Efterfrågat i arbetslivet</strong> – många företag använder Laravel.</li>
+</ul>
+<p>Om du förstår grunderna i PHP (som du nu gör) är Laravel ett naturligt nästa steg för att bygga större applikationer.</p>
+<hr />
+<h2 id="när-ett-ramverk-är-lämpligt"><a class="header" href="#när-ett-ramverk-är-lämpligt">När ett ramverk är lämpligt</a></h2>
+<p>Ett ramverk är inte alltid rätt val:</p>
+<ul>
+<li><strong>Små, enkla sidor:</strong> En statisk sida eller ett enkelt kontaktformulär behöver kanske inte Laravel. Vanlig PHP eller till och med en statisk generator kan räcka.</li>
+<li><strong>Applikationer som växer:</strong> När du har användare, inloggning, databas, många sidor och formulär – då sparar ett ramverk tid och minskar fel.</li>
+</ul>
+<p>Din bloggapplikation ligger precis i gränslandet. Du <em>kan</em> bygga den utan ramverk (som du gjort), men med Laravel hade samma funktionalitet krävt mindre kod och färre saker att komma ihåg.</p>
+<hr />
+<h2 id="i-denna-del-har-du-lärt-dig"><a class="header" href="#i-denna-del-har-du-lärt-dig">I denna del har du lärt dig</a></h2>
+<ul>
+<li>Vad som upprepas mest i en ramverkslös PHP-app (session-kontroll, PDO, validering, routing)</li>
+<li>Vad ett ramverk som Laravel löser (konvention, säkerhet, routing, MVC)</li>
+<li>När ett ramverk är lämpligt och när det inte behövs</li>
+</ul>
+<hr />
+<p><strong>Föregående:</strong> <a href="kapitel_7/crud-app-5-refaktorering.html">Del 5: Refaktorering</a> | <strong>Nästa:</strong> <a href="kapitel_7/laravel-komma-igang.html">Del 2: Komma igång</a></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="komma-igång-med-laravel"><a class="header" href="#komma-igång-med-laravel">Komma igång med Laravel</a></h1>
+<p>I denna del får du ett Laravel-projekt igång och lär dig grundstrukturen. Vi bygger inte hela bloggen ännu – fokus är att förstå hur Laravel är uppbyggt.</p>
+<p><strong>Förutsättning:</strong> Du har läst <a href="kapitel_7/laravel-intro.html">Introduktion till Laravel</a>.</p>
+<hr />
+<h2 id="förutsättningar-1"><a class="header" href="#förutsättningar-1">Förutsättningar</a></h2>
+<p>Samma som för CRUD-appen:</p>
+<ul>
+<li><strong>PHP 8.2 eller senare</strong> – kolla med <code>php -v</code></li>
+<li><strong>Composer</strong> – PHP:s pakethanterare (<code>composer --version</code>)</li>
+<li><strong>MySQL eller MariaDB</strong> – för databasen (samma som i <a href="kapitel_7/crud-app-1-setup.html">Del 1: Setup och databas</a>)</li>
+</ul>
+<p>Om du körde CRUD-appen med Docker kan du använda samma <code>mysql</code>-service för Laravel.</p>
+<hr />
+<h2 id="installation"><a class="header" href="#installation">Installation</a></h2>
+<p>Skapa ett nytt Laravel-projekt med Composer:</p>
+<pre><code class="language-bash">composer create-project laravel/laravel blogg
+cd blogg
+</code></pre>
+<p>Alternativt kan du installera Laravel Installer globalt och använda:</p>
+<pre><code class="language-bash">laravel new blogg
+</code></pre>
+<p>Projektet skapas med alla nödvändiga filer. Det tar några minuter första gången.</p>
+<p><strong>Kontrollera att det fungerar:</strong> Efter installationen ska mappen <code>blogg</code> innehålla underkataloger som <code>app/</code>, <code>routes/</code>, <code>resources/</code> och <code>database/</code>.</p>
+<hr />
+<h2 id="projektstruktur-översikt"><a class="header" href="#projektstruktur-översikt">Projektstruktur (översikt)</a></h2>
+<p>Efter installationen ser du en mappstruktur. Här är de viktigaste delarna:</p>
+<div class="table-wrapper"><table><thead><tr><th>Mapp/Fil</th><th>Syfte</th></tr></thead><tbody>
+<tr><td><code>app/</code></td><td>Huvudlogik – Models, Controllers, Middleware</td></tr>
+<tr><td><code>app/Http/Controllers/</code></td><td>Controllers som hanterar förfrågningar</td></tr>
+<tr><td><code>app/Models/</code></td><td>Eloquent-modeller (databasentiteter)</td></tr>
+<tr><td><code>routes/</code></td><td>Definition av URL:er – <code>web.php</code> för webb, <code>api.php</code> för API</td></tr>
+<tr><td><code>resources/views/</code></td><td>Blade-mallar (HTML med dynamiskt innehåll)</td></tr>
+<tr><td><code>database/migrations/</code></td><td>Databasversionering – skapa och ändra tabeller</td></tr>
+<tr><td><code>.env</code></td><td>Konfiguration som inte ska i Git (databas, nycklar)</td></tr>
+</tbody></table>
+</div>
+<p>Jämfört med CRUD-appen: <code>routes/web.php</code> ersätter din filbaserade routing, <code>resources/views</code> ersätter inline PHP i HTML, och <code>app/Models</code> + Eloquent ersätter <code>connect_db()</code> och PDO-frågor.</p>
+<hr />
+<h2 id="konfiguration-env"><a class="header" href="#konfiguration-env">Konfiguration (.env)</a></h2>
+<p>Filen <code>.env</code> innehåller känslig och miljöspecifik konfiguration. Öppna den och sätt databasuppgifterna:</p>
+<pre><code class="language-env">DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=db_fullstack
+DB_USERNAME=db_user
+DB_PASSWORD=db_password
+</code></pre>
+<p>Anpassa efter din miljö (t.ex. <code>DB_HOST=mysql</code> om du använder Docker). <code>APP_KEY</code> genereras automatiskt vid installation – den används för kryptering och sessioner.</p>
+<p><strong>Kontrollera att det fungerar:</strong> Starta servern med <code>php artisan serve</code> och öppna <code>http://localhost:8000</code>. Om du får databasfel, kontrollera att <code>.env</code> har rätt uppgifter och att databasen finns.</p>
+<hr />
+<h2 id="artisan--laravels-kommandorad"><a class="header" href="#artisan--laravels-kommandorad">Artisan – Laravels kommandorad</a></h2>
+<p>Laravel levereras med <strong>Artisan</strong>, ett verktyg för vanliga uppgifter:</p>
+<pre><code class="language-bash">php artisan serve
+</code></pre>
+<p>Startar en utvecklingsserver på <code>http://localhost:8000</code>. Öppna adressen i webbläsaren – du ska se Laravels välkomstsida.</p>
+<p>Andra användbara kommandon:</p>
+<pre><code class="language-bash">php artisan migrate          # Kör migrations (skapar/uppdaterar tabeller)
+php artisan make:controller  # Skapa en ny controller
+php artisan make:model       # Skapa en ny model
+php artisan route:list       # Lista alla definierade routes
+</code></pre>
+<hr />
+<h2 id="enkel-testroute"><a class="header" href="#enkel-testroute">Enkel testroute</a></h2>
+<p>Öppna <code>routes/web.php</code>. Du ser redan en route:</p>
+<pre><code class="language-php">Route::get('/', function () {
+    return view('welcome');
+});
+</code></pre>
+<p>Detta betyder: för GET-förfrågningar till <code>/</code>, returnera vyn <code>welcome</code>. Ändra till något enkelt för att testa:</p>
+<pre><code class="language-php">Route::get('/', function () {
+    return 'Hej från Laravel!';
+});
+</code></pre>
+<p>Ladda om sidan – du ska se texten istället för välkomstsidan.</p>
+<h3 id="via-en-controller"><a class="header" href="#via-en-controller">Via en controller</a></h3>
+<p>I stället för att skriva logik direkt i route-filen använder man ofta en controller. Skapa en:</p>
+<pre><code class="language-bash">php artisan make:controller HejController
+</code></pre>
+<p>Öppna <code>app/Http/Controllers/HejController.php</code> och lägg till en metod:</p>
+<pre><code class="language-php">public function index()
+{
+    return 'Hej från HejController!';
+}
+</code></pre>
+<p>I <code>routes/web.php</code>, ändra till:</p>
+<pre><code class="language-php">use App\Http\Controllers\HejController;
+
+Route::get('/', [HejController::class, 'index']);
+</code></pre>
+<p>Nu hanteras <code>/</code> av <code>HejController::index</code>. Detta är MVC i miniatyr: routen pekar på en controller som returnerar ett svar.</p>
+<hr />
+<h2 id="blade--grunderna"><a class="header" href="#blade--grunderna">Blade – grunderna</a></h2>
+<p>Blade är Laravels templating-språk. Istället för att blanda PHP och HTML i samma fil (som i CRUD-appen) skriver du renare mallar.</p>
+<p>Skapa en vy: <code>resources/views/hej.blade.php</code>:</p>
+<pre><code class="language-blade">&lt;!DOCTYPE html&gt;
+&lt;html lang="sv"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;Hej&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;{{ $meddelande }}&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p><code>{{ $meddelande }}</code> skriver ut variabeln och escap:ar automatiskt (skyddar mot XSS). Jämför med <code>&lt;?php echo htmlspecialchars($meddelande); ?&gt;</code> i CRUD-appen.</p>
+<p>Uppdatera controllern för att skicka data till vyn:</p>
+<pre><code class="language-php">public function index()
+{
+    return view('hej', ['meddelande' =&gt; 'Välkommen till Laravel!']);
+}
+</code></pre>
+<p>Ladda om – du ska se rubriken med meddelandet.</p>
+<h3 id="vanliga-blade-direktiv"><a class="header" href="#vanliga-blade-direktiv">Vanliga Blade-direktiv</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Direktiv</th><th>Exempel</th><th>Betydelse</th></tr></thead><tbody>
+<tr><td><code>{{ }}</code></td><td><code>{{ $namn }}</code></td><td>Skriv ut och escap:a</td></tr>
+<tr><td><code>@if</code></td><td><code>@if($inloggad) ... @endif</code></td><td>Villkor</td></tr>
+<tr><td><code>@foreach</code></td><td><code>@foreach($posts as $post) ... @endforeach</code></td><td>Loop över en lista</td></tr>
+<tr><td><code>@forelse</code></td><td><code>@forelse($posts as $post) ... @empty ... @endforelse</code></td><td>Som foreach, men visar <code>@empty</code>-delen om listan är tom</td></tr>
+<tr><td><code>@error</code></td><td><code>@error('title') {{ $message }} @enderror</code></td><td>Visar valideringsfel för ett fält. <code>$message</code> innehåller felmeddelandet</td></tr>
+<tr><td><code>old()</code></td><td><code>value="{{ old('title') }}"</code></td><td>Återställer formulärvärde efter valideringsfel (så användaren inte behöver skriva om allt)</td></tr>
+<tr><td><code>@auth</code></td><td><code>@auth ... @endauth</code></td><td>Visa bara om användaren är inloggad</td></tr>
+<tr><td><code>@csrf</code></td><td><code>@csrf</code></td><td>Måste finnas i alla POST-formulär – genererar skydd mot CSRF-attacker</td></tr>
+</tbody></table>
+</div>
+<p><strong>Tips:</strong> Använd <code>@forelse</code> istället för <code>@foreach</code> när listan kan vara tom – då kan du visa ett meddelande som "Inga inlägg ännu". Använd <code>@error</code> och <code>old()</code> i formulär för att visa valideringsfel och behålla användarens input.</p>
+<hr />
+<h2 id="i-denna-del-har-du-lärt-dig-1"><a class="header" href="#i-denna-del-har-du-lärt-dig-1">I denna del har du lärt dig</a></h2>
+<ul>
+<li>Att installera ett Laravel-projekt med Composer</li>
+<li>Projektstrukturen (app/, routes/, resources/views/, database/migrations/)</li>
+<li>Att konfigurera <code>.env</code> för databasanslutning</li>
+<li>Att använda Artisan (<code>serve</code>, <code>migrate</code>, <code>make:controller</code>, <code>make:model</code>)</li>
+<li>Att skapa routes och koppla dem till controllers</li>
+<li>Blade-grunderna: <code>{{ }}</code>, <code>@if</code>, <code>@foreach</code>, <code>@forelse</code>, <code>@error</code>, <code>old()</code>, <code>@csrf</code></li>
+</ul>
+<hr />
+<p><strong>Föregående:</strong> <a href="kapitel_7/laravel-intro.html">Del 1: Varför ett ramverk?</a> | <strong>Nästa:</strong> <a href="kapitel_7/laravel-crud-3-setup.html">Del 3: Setup och autentisering</a></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="del-3-setup-och-autentisering"><a class="header" href="#del-3-setup-och-autentisering">Del 3: Setup och autentisering</a></h1>
+<p>I denna del sätter vi upp databasen och autentiseringen med Laravel – motsvarar <a href="kapitel_7/crud-app-1-setup.html">Del 1: Setup och databas</a> och <a href="kapitel_7/crud-app-2-autentisering.html">Del 2: Autentisering</a> i CRUD-appen.</p>
+<p><strong>Förutsättning:</strong> Du har genomfört <a href="kapitel_7/laravel-komma-igang.html">Del 2: Komma igång</a> och har ett fungerande Laravel-projekt.</p>
+<hr />
+<h2 id="skillnad-från-crud-appen-breeze-använder-e-post"><a class="header" href="#skillnad-från-crud-appen-breeze-använder-e-post">Skillnad från CRUD-appen: Breeze använder e-post</a></h2>
+<p>I CRUD-appen loggade du in med <strong>användarnamn</strong>. Laravel Breeze använder <strong>e-post</strong> för inloggning. Båda är vanliga lösningar – Breeze följer Laravels standard. Registrering och inloggning finns på <code>/register</code> och <code>/login</code>. Breeze skapar vyer i <code>resources/views/auth/</code> och routes i <code>routes/auth.php</code>. Du behöver inte skriva någon auth-kod själv.</p>
+<hr />
+<h2 id="migrations-istället-för-manuella-create-table"><a class="header" href="#migrations-istället-för-manuella-create-table">Migrations istället för manuella CREATE TABLE</a></h2>
+<p>I CRUD-appen skapade du tabellerna manuellt med <code>CREATE TABLE</code>. I Laravel använder vi <strong>migrations</strong> – filer som beskriver databasstrukturen och kan köras med <code>php artisan migrate</code>. Det ger versionshantering av databasen och gör det enkelt att återskapa strukturen på en ny miljö.</p>
+<hr />
+<h2 id="steg-1-installera-laravel-breeze-och-verifiera-autentisering"><a class="header" href="#steg-1-installera-laravel-breeze-och-verifiera-autentisering">Steg 1: Installera Laravel Breeze och verifiera autentisering</a></h2>
+<p>Laravel Breeze ger dig registrering, inloggning och logout – motsvarar <a href="kapitel_7/crud-app-2-autentisering.html">Del 2: Autentisering</a> där du byggde <code>register.php</code>, <code>login.php</code> och <code>logout.php</code> manuellt.</p>
+<pre><code class="language-bash">composer require laravel/breeze --dev
+php artisan breeze:install
+</code></pre>
+<p>Välj <strong>"Blade"</strong> när du tillfrågas om vilken stack du vill använda. Breeze skapar routes, controllers och vyer för auth. Kör sedan:</p>
+<pre><code class="language-bash">php artisan migrate
+</code></pre>
+<p>Nu finns <code>users</code>-tabellen (med <code>name</code>, <code>email</code>, <code>password</code> m.m.).</p>
+<p><strong>Kontrollera att det fungerar:</strong> Starta servern med <code>php artisan serve</code> och gå till <code>http://localhost:8000/register</code>. Registrera en användare med e-post och lösenord. Du ska sedan vara inloggad och se dashboard. Testa att logga ut och logga in igen på <code>/login</code>.</p>
+<hr />
+<h2 id="steg-2-skapa-posts-tabellen-med-migration"><a class="header" href="#steg-2-skapa-posts-tabellen-med-migration">Steg 2: Skapa posts-tabellen med migration</a></h2>
+<p>Skapa en migration för blogginlägg:</p>
+<pre><code class="language-bash">php artisan make:model Post -m
+</code></pre>
+<p>Flaggan <code>-m</code> skapar samtidigt en migration. Öppna <code>database/migrations/xxxx_create_posts_table.php</code> och uppdatera:</p>
+<pre><code class="language-php">public function up(): void
+{
+    Schema::create('posts', function (Blueprint $table) {
+        $table-&gt;id();
+        $table-&gt;foreignId('user_id')-&gt;constrained()-&gt;onDelete('cascade');
+        $table-&gt;string('title');
+        $table-&gt;text('body');
+        $table-&gt;string('image_path')-&gt;nullable();
+        $table-&gt;timestamps();
+    });
+}
+</code></pre>
+<p>Detta motsvarar <code>posts</code>-tabellen från CRUD-appen: <code>user_id</code> (med foreign key och cascade), <code>title</code>, <code>body</code>, <code>image_path</code> (valfri). <code>timestamps()</code> lägger till <code>created_at</code> och <code>updated_at</code>.</p>
+<p>Kör migrationen:</p>
+<pre><code class="language-bash">php artisan migrate
+</code></pre>
+<p><strong>Kontrollera att det fungerar:</strong> Öppna din databas (t.ex. phpMyAdmin eller <code>mysql</code>-klienten) och verifiera att tabellen <code>posts</code> finns med kolumnerna <code>id</code>, <code>user_id</code>, <code>title</code>, <code>body</code>, <code>image_path</code>, <code>created_at</code>, <code>updated_at</code>.</p>
+<hr />
+<h2 id="steg-3-konfigurera-post-modellen-och-relationer"><a class="header" href="#steg-3-konfigurera-post-modellen-och-relationer">Steg 3: Konfigurera Post-modellen och relationer</a></h2>
+<p>Öppna <code>app/Models/Post.php</code>. Laravel skapar redan grunden. Lägg till fyllbara fält och relationen till User:</p>
+<pre><code class="language-php">protected $fillable = ['user_id', 'title', 'body', 'image_path'];
+
+public function user()
+{
+    return $this-&gt;belongsTo(User::class);
+}
+</code></pre>
+<p>I <code>app/Models/User.php</code>, lägg till den omvända relationen:</p>
+<pre><code class="language-php">public function posts()
+{
+    return $this-&gt;hasMany(Post::class);
+}
+</code></pre>
+<p><strong>Jämförelse:</strong> I CRUD-appen skrev du <code>connect_db()</code> och PDO-frågor. Här använder du <strong>Eloquent</strong> – modeller som representerar tabeller. <code>$post-&gt;user</code> hämtar automatiskt användaren för inlägget. Ingen manuell JOIN behövs.</p>
+<hr />
+<h2 id="steg-4-testa-modellen-med-tinker"><a class="header" href="#steg-4-testa-modellen-med-tinker">Steg 4: Testa modellen med Tinker</a></h2>
+<p>Verifiera att Post-modellen fungerar genom att skapa ett inlägg manuellt:</p>
+<pre><code class="language-bash">php artisan tinker
+</code></pre>
+<p>I Tinker-prompten:</p>
+<pre><code class="language-php">$user = \App\Models\User::first();
+$user-&gt;posts()-&gt;create(['title' =&gt; 'Testinlägg', 'body' =&gt; 'Detta är ett test.']);
+exit
+</code></pre>
+<p><strong>Kontrollera att det fungerar:</strong> Kör <code>$user-&gt;posts</code> i Tinker – du ska se ditt testinlägg. Du kan också köra <code>\App\Models\Post::with('user')-&gt;first()</code> för att se att relationen fungerar.</p>
+<hr />
+<h2 id="i-denna-del-har-du-lärt-dig-2"><a class="header" href="#i-denna-del-har-du-lärt-dig-2">I denna del har du lärt dig</a></h2>
+<ul>
+<li>Att installera Laravel Breeze för färdig autentisering (registrering, inloggning, logout)</li>
+<li>Att skapa migrations istället för manuella CREATE TABLE</li>
+<li>Att konfigurera Eloquent-modeller med <code>$fillable</code> och relationer (<code>belongsTo</code>, <code>hasMany</code>)</li>
+<li>Att använda Tinker för att testa modeller och relationer</li>
+</ul>
+<hr />
+<p><strong>Föregående:</strong> <a href="kapitel_7/laravel-komma-igang.html">Del 2: Komma igång</a> | <strong>Nästa:</strong> <a href="kapitel_7/laravel-crud-4-create-read.html">Del 4: Skapa och läsa inlägg</a></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="del-4-skapa-och-läsa-inlägg"><a class="header" href="#del-4-skapa-och-läsa-inlägg">Del 4: Skapa och läsa inlägg</a></h1>
+<p>I denna del implementerar vi Create och Read – motsvarar <a href="kapitel_7/crud-app-3-create-read.html">Del 3: Skapa och läsa inlägg</a> i CRUD-appen. Vi bygger steg för steg: först routes och grundstruktur, sedan skapa inlägg utan bild, därefter lista och visa, admin-panel och till sist bilduppladdning.</p>
+<p><strong>Förutsättning:</strong> Du har genomfört <a href="kapitel_7/laravel-crud-3-setup.html">Del 3: Setup och autentisering</a>.</p>
+<hr />
+<h2 id="steg-1-routes-och-grundläggande-postcontroller"><a class="header" href="#steg-1-routes-och-grundläggande-postcontroller">Steg 1: Routes och grundläggande PostController</a></h2>
+<p>Börja med att definiera alla routes och en controller som returnerar enkel output. Vi bygger vyer stegvis.</p>
+<p>Skapa controllern:</p>
+<pre><code class="language-bash">php artisan make:controller PostController
+</code></pre>
+<p>Lägg till i <code>routes/web.php</code> (under de routes Breeze skapat, men <strong>före</strong> Breeze:s route för <code>/</code> om den finns). Om Breeze har satt <code>/</code> som dashboard behöver vi ändra det – se avsnittet "Uppdatera startsidan" längst ned.</p>
+<pre><code class="language-php">use App\Http\Controllers\PostController;
+
+Route::get('/', [PostController::class, 'index'])-&gt;name('posts.index');
+Route::get('/posts/{post}', [PostController::class, 'show'])-&gt;name('posts.show');
+
+Route::middleware('auth')-&gt;group(function () {
+    Route::get('/admin', [PostController::class, 'admin'])-&gt;name('posts.admin');
+    Route::get('/admin/posts/create', [PostController::class, 'create'])-&gt;name('posts.create');
+    Route::post('/admin/posts', [PostController::class, 'store'])-&gt;name('posts.store');
+    Route::get('/admin/posts/{post}/edit', [PostController::class, 'edit'])-&gt;name('posts.edit');
+    Route::put('/admin/posts/{post}', [PostController::class, 'update'])-&gt;name('posts.update');
+    Route::delete('/admin/posts/{post}', [PostController::class, 'destroy'])-&gt;name('posts.destroy');
+});
+</code></pre>
+<p><strong>Nyckelkoncept:</strong></p>
+<ul>
+<li><strong><code>Route::middleware('auth')</code></strong> – Skyddar admin-routes. Motsvarar <code>if (!isset($_SESSION['user_id']))</code> i varje admin-fil. Om användaren inte är inloggad omdirigeras de till login.</li>
+<li><strong><code>{post}</code> i URL:en</strong> – <strong>Route model binding</strong>. Laravel hämtar automatiskt Post-modellen baserat på ID. Du behöver inte <code>filter_input</code> eller <code>get_post_by_id()</code>.</li>
+</ul>
+<p>Implementera temporära metoder i <code>PostController</code> som bara returnerar text (vi bygger vyer i nästa steg):</p>
+<pre><code class="language-php">&lt;?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Post;
+use Illuminate\Http\Request;
+
+class PostController extends Controller
+{
+    public function index()
+    {
+        $posts = Post::with('user')-&gt;latest()-&gt;get();
+        return view('posts.index', compact('posts'));
+    }
+
+    public function show(Post $post)
+    {
+        return view('posts.show', compact('post'));
+    }
+
+    public function admin()
+    {
+        $posts = auth()-&gt;user()-&gt;posts()-&gt;latest()-&gt;get();
+        return view('posts.admin', compact('posts'));
+    }
+
+    public function create()
+    {
+        return view('posts.create');
+    }
+
+    public function store(Request $request)
+    {
+        // Kommer i Steg 2
+        return redirect()-&gt;route('posts.admin');
+    }
+}
+</code></pre>
+<p>Skapa mappen <code>resources/views/posts/</code> och två minimala vyer.</p>
+<p><code>index.blade.php</code> (för startsidan):</p>
+<pre><code class="language-blade">@extends('layouts.app')
+
+@section('content')
+&lt;h1&gt;Välkommen till Bloggen!&lt;/h1&gt;
+@forelse($posts as $post)
+    &lt;p&gt;{{ $post-&gt;title }}&lt;/p&gt;
+@empty
+    &lt;p&gt;Det finns inga blogginlägg ännu.&lt;/p&gt;
+@endforelse
+@endsection
+</code></pre>
+<p><code>admin.blade.php</code> (för admin-panelen – vi bygger ut den i Steg 3):</p>
+<pre><code class="language-blade">@extends('layouts.app')
+
+@section('content')
+&lt;h1&gt;Admin Dashboard&lt;/h1&gt;
+&lt;p&gt;Välkommen, {{ auth()-&gt;user()-&gt;name }}!&lt;/p&gt;
+&lt;a href="{{ route('posts.create') }}"&gt;Skapa nytt inlägg&lt;/a&gt;
+@foreach($posts as $post)
+    &lt;p&gt;{{ $post-&gt;title }}&lt;/p&gt;
+@endforeach
+@endsection
+</code></pre>
+<p><strong>OBS:</strong> Create-vyn bygger vi i Steg 2. Om du klickar "Skapa nytt inlägg" innan dess får du fel – det är normalt, gå vidare till Steg 2.</p>
+<p><strong>Kontrollera att det fungerar:</strong> Gå till <code>/</code>. Om du har testinlägget från Del 3 (Tinker) ska du se det. Annars ska du se "Det finns inga blogginlägg ännu." Logga in och gå till <code>/admin</code> – du ska se admin-panelen med dina inlägg (eller tom lista). Om du får fel om att vyn saknas, kontrollera att <code>layouts.app</code> finns (Breeze skapar den).</p>
+<hr />
+<h2 id="steg-2-skapa-inlägg--utan-bild"><a class="header" href="#steg-2-skapa-inlägg--utan-bild">Steg 2: Skapa inlägg – utan bild</a></h2>
+<p>Nu lägger vi till formuläret och <code>store()</code>-metoden. Vi börjar <strong>utan</strong> bilduppladdning så att grundlogiken fungerar.</p>
+<p>Uppdatera <code>store()</code> i PostController:</p>
+<pre><code class="language-php">public function store(Request $request)
+{
+    $validated = $request-&gt;validate([
+        'title' =&gt; 'required|max:255',
+        'body' =&gt; 'required',
+    ]);
+
+    auth()-&gt;user()-&gt;posts()-&gt;create([
+        'title' =&gt; $validated['title'],
+        'body' =&gt; $validated['body'],
+        'image_path' =&gt; null,
+    ]);
+
+    return redirect()-&gt;route('posts.admin')-&gt;with('success', 'Nytt inlägg skapat!');
+}
+</code></pre>
+<p><strong>Nyckelkoncept:</strong> <code>$request-&gt;validate()</code> ersätter manuell <code>$errors[]</code>-logik. Laravel validerar och returnerar fel automatiskt till formuläret om valideringen misslyckas.</p>
+<p>Skapa <code>resources/views/posts/create.blade.php</code>:</p>
+<pre><code class="language-blade">@extends('layouts.app')
+
+@section('content')
+&lt;h1&gt;Skapa nytt blogginlägg&lt;/h1&gt;
+
+&lt;form action="{{ route('posts.store') }}" method="POST"&gt;
+    @csrf
+    &lt;div&gt;
+        &lt;label for="title"&gt;Titel:&lt;/label&gt;
+        &lt;input type="text" id="title" name="title" value="{{ old('title') }}" required&gt;
+        @error('title') &lt;span class="text-red-600"&gt;{{ $message }}&lt;/span&gt; @enderror
+    &lt;/div&gt;
+    &lt;div&gt;
+        &lt;label for="body"&gt;Innehåll:&lt;/label&gt;
+        &lt;textarea id="body" name="body" required&gt;{{ old('body') }}&lt;/textarea&gt;
+        @error('body') &lt;span class="text-red-600"&gt;{{ $message }}&lt;/span&gt; @enderror
+    &lt;/div&gt;
+    &lt;button type="submit"&gt;Spara inlägg&lt;/button&gt;
+&lt;/form&gt;
+@endsection
+</code></pre>
+<p><strong>Blade-tips:</strong> <code>@error('title')</code> visar valideringsfel för fältet. <code>old('title')</code> återställer värdet om formuläret skickas tillbaka med fel – så användaren inte behöver skriva om allt.</p>
+<p><strong>Kontrollera att det fungerar:</strong> Logga in och gå till <code>/admin/posts/create</code>. Skapa ett inlägg med titel och innehåll. Du ska omdirigeras till admin-panelen och se ditt nya inlägg. Testa att skicka formuläret tomt – du ska se valideringsfel.</p>
+<hr />
+<h2 id="steg-3-admin-panel-och-lista"><a class="header" href="#steg-3-admin-panel-och-lista">Steg 3: Admin-panel och lista</a></h2>
+<p>Skapa admin-vyn så att du kan se dina inlägg och nå "Skapa nytt inlägg":</p>
+<p>Skapa <code>resources/views/posts/admin.blade.php</code>:</p>
+<pre><code class="language-blade">@extends('layouts.app')
+
+@section('content')
+&lt;h1&gt;Admin Dashboard&lt;/h1&gt;
+&lt;p&gt;Välkommen, {{ auth()-&gt;user()-&gt;name }}!&lt;/p&gt;
+
+@if(session('success'))
+    &lt;p class="text-green-600"&gt;{{ session('success') }}&lt;/p&gt;
+@endif
+
+&lt;a href="{{ route('posts.create') }}"&gt;Skapa nytt inlägg&lt;/a&gt;
+
+&lt;table&gt;
+    &lt;thead&gt;
+        &lt;tr&gt;&lt;th&gt;Titel&lt;/th&gt;&lt;th&gt;Skapad&lt;/th&gt;&lt;th&gt;Åtgärder&lt;/th&gt;&lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+        @foreach($posts as $post)
+        &lt;tr&gt;
+            &lt;td&gt;{{ $post-&gt;title }}&lt;/td&gt;
+            &lt;td&gt;{{ $post-&gt;created_at-&gt;format('Y-m-d H:i') }}&lt;/td&gt;
+            &lt;td&gt;
+                &lt;a href="{{ route('posts.show', $post) }}"&gt;Visa&lt;/a&gt;
+                &lt;a href="{{ route('posts.edit', $post) }}"&gt;Redigera&lt;/a&gt;
+                &lt;!-- Radera-knapp kommer i Del 5 --&gt;
+            &lt;/td&gt;
+        &lt;/tr&gt;
+        @endforeach
+    &lt;/tbody&gt;
+&lt;/table&gt;
+@endsection
+</code></pre>
+<p><strong>Kontrollera att det fungerar:</strong> Gå till <code>/admin</code>. Du ska se dina inlägg i en tabell. Klicka "Skapa nytt inlägg", skapa ett inlägg – du ska se det i listan och få meddelandet "Nytt inlägg skapat!". ("Redigera"-länken ger fel tills Del 5 – det är normalt.)</p>
+<hr />
+<h2 id="steg-4-förbättra-index-och-show"><a class="header" href="#steg-4-förbättra-index-och-show">Steg 4: Förbättra index och show</a></h2>
+<p>Uppdatera <code>resources/views/posts/index.blade.php</code> så att listan visar mer information:</p>
+<pre><code class="language-blade">@extends('layouts.app')
+
+@section('content')
+&lt;h1&gt;Välkommen till Bloggen!&lt;/h1&gt;
+
+@forelse($posts as $post)
+    &lt;article&gt;
+        &lt;h2&gt;{{ $post-&gt;title }}&lt;/h2&gt;
+        &lt;p&gt;Publicerad {{ $post-&gt;created_at-&gt;format('Y-m-d H:i') }} av {{ $post-&gt;user-&gt;name }}&lt;/p&gt;
+        &lt;p&gt;{{ Str::limit($post-&gt;body, 200) }}&lt;/p&gt;
+        &lt;a href="{{ route('posts.show', $post) }}"&gt;Läs mer &amp;raquo;&lt;/a&gt;
+    &lt;/article&gt;
+@empty
+    &lt;p&gt;Det finns inga blogginlägg ännu.&lt;/p&gt;
+@endforelse
+@endsection
+</code></pre>
+<p>Skapa <code>resources/views/posts/show.blade.php</code>:</p>
+<pre><code class="language-blade">@extends('layouts.app')
+
+@section('content')
+&lt;article&gt;
+    &lt;h1&gt;{{ $post-&gt;title }}&lt;/h1&gt;
+    &lt;p&gt;Publicerad {{ $post-&gt;created_at-&gt;format('Y-m-d H:i') }} av {{ $post-&gt;user-&gt;name }}&lt;/p&gt;
+    &lt;div&gt;{!! nl2br(e($post-&gt;body)) !!}&lt;/div&gt;
+&lt;/article&gt;
+&lt;a href="{{ route('posts.index') }}"&gt;&amp;laquo; Tillbaka&lt;/a&gt;
+@endsection
+</code></pre>
+<p><strong>OBS:</strong> <code>{!! nl2br(e($post-&gt;body)) !!}</code> – vi använder <code>e()</code> för att escap:a (skydda mot XSS) och <code>nl2br()</code> för radbrytningar. <code>{!! !!}</code> skriver ut utan extra escaping eftersom vi redan escap:at med <code>e()</code>.</p>
+<p><strong>Kontrollera att det fungerar:</strong> Gå till <code>/</code>. Klicka "Läs mer" på ett inlägg – du ska se hela inlägget. Klicka "Tillbaka" – du ska tillbaka till listan.</p>
+<hr />
+<h2 id="steg-5-bilduppladdning"><a class="header" href="#steg-5-bilduppladdning">Steg 5: Bilduppladdning</a></h2>
+<p>Lägg till stöd för att ladda upp en bild när man skapar inlägg.</p>
+<p>Uppdatera <code>store()</code> i PostController:</p>
+<pre><code class="language-php">public function store(Request $request)
+{
+    $validated = $request-&gt;validate([
+        'title' =&gt; 'required|max:255',
+        'body' =&gt; 'required',
+        'image' =&gt; 'nullable|image|max:7168', // 7 MB
+    ]);
+
+    $path = null;
+    if ($request-&gt;hasFile('image')) {
+        $path = $request-&gt;file('image')-&gt;store('posts', 'public');
+    }
+
+    auth()-&gt;user()-&gt;posts()-&gt;create([
+        'title' =&gt; $validated['title'],
+        'body' =&gt; $validated['body'],
+        'image_path' =&gt; $path,
+    ]);
+
+    return redirect()-&gt;route('posts.admin')-&gt;with('success', 'Nytt inlägg skapat!');
+}
+</code></pre>
+<p>Uppdatera <code>resources/views/posts/create.blade.php</code> – lägg till <code>enctype="multipart/form-data"</code> i form-taggen och bildfältet:</p>
+<pre><code class="language-blade">&lt;form action="{{ route('posts.store') }}" method="POST" enctype="multipart/form-data"&gt;
+    @csrf
+    &lt;div&gt;
+        &lt;label for="title"&gt;Titel:&lt;/label&gt;
+        &lt;input type="text" id="title" name="title" value="{{ old('title') }}" required&gt;
+        @error('title') &lt;span class="text-red-600"&gt;{{ $message }}&lt;/span&gt; @enderror
+    &lt;/div&gt;
+    &lt;div&gt;
+        &lt;label for="body"&gt;Innehåll:&lt;/label&gt;
+        &lt;textarea id="body" name="body" required&gt;{{ old('body') }}&lt;/textarea&gt;
+        @error('body') &lt;span class="text-red-600"&gt;{{ $message }}&lt;/span&gt; @enderror
+    &lt;/div&gt;
+    &lt;div&gt;
+        &lt;label for="image"&gt;Bild (valfritt, max 7 MB):&lt;/label&gt;
+        &lt;input type="file" id="image" name="image" accept="image/jpeg,image/png,image/gif"&gt;
+        @error('image') &lt;span class="text-red-600"&gt;{{ $message }}&lt;/span&gt; @enderror
+    &lt;/div&gt;
+    &lt;button type="submit"&gt;Spara inlägg&lt;/button&gt;
+&lt;/form&gt;
+</code></pre>
+<p>Uppdatera <code>index.blade.php</code> och <code>show.blade.php</code> – lägg till bildvisning där det passar:</p>
+<p>I <code>index.blade.php</code>, inuti <code>@forelse</code>-loopen, före <code>&lt;h2&gt;</code>:</p>
+<pre><code class="language-blade">@if($post-&gt;image_path)
+    &lt;img src="{{ asset('storage/' . $post-&gt;image_path) }}" alt="" style="max-width: 150px;"&gt;
+@endif
+</code></pre>
+<p>I <code>show.blade.php</code>, efter rubriken:</p>
+<pre><code class="language-blade">@if($post-&gt;image_path)
+    &lt;img src="{{ asset('storage/' . $post-&gt;image_path) }}" alt="{{ $post-&gt;title }}" style="max-width: 100%;"&gt;
+@endif
+</code></pre>
+<hr />
+<h2 id="steg-6-symbolisk-länk-för-uppladdningar"><a class="header" href="#steg-6-symbolisk-länk-för-uppladdningar">Steg 6: Symbolisk länk för uppladdningar</a></h2>
+<p>För att bilder ska vara tillgängliga via webbläsaren måste du skapa en symbolisk länk:</p>
+<pre><code class="language-bash">php artisan storage:link
+</code></pre>
+<p>Detta skapar en länk från <code>public/storage</code> till <code>storage/app/public</code>. Uppladdade bilder hamnar i <code>storage/app/public/posts/</code>.</p>
+<p><strong>Kontrollera att det fungerar:</strong> Skapa ett nytt inlägg med en bild. Du ska se bilden på startsidan och på inläggets sida. Om bilden inte visas, se "Vanliga problem" nedan.</p>
+<hr />
+<h2 id="uppdatera-startsidan"><a class="header" href="#uppdatera-startsidan">Uppdatera startsidan</a></h2>
+<p>Breeze sätter som standard <code>/</code> som dashboard för inloggade användare. Vi vill att <code>/</code> alltid visar postlistan (som i CRUD-appens <code>index.php</code>).</p>
+<p><strong>Så här fixar du det:</strong></p>
+<ol>
+<li>Öppna <code>routes/web.php</code>.</li>
+<li>Ta bort eller kommentera bort Breeze:s route för <code>/</code> om den finns (t.ex. <code>Route::get('/', ...)</code> som pekar på dashboard).</li>
+<li>Se till att vår route <code>Route::get('/', [PostController::class, 'index'])</code> kommer <strong>före</strong> eventuella andra routes som matchar <code>/</code>.</li>
+<li>Om du vill ha en separat dashboard för inloggade användare kan du lägga <code>Route::get('/dashboard', ...)</code> och peka admin-länken dit – eller använd <code>/admin</code> som "dashboard" (som vi redan gör).</li>
+</ol>
+<p>Breeze:s <code>routes/auth.php</code> inkluderas via <code>Route::middleware('auth')-&gt;group(...)</code> i <code>web.php</code>. Kontrollera att vår <code>PostController</code>-route för <code>/</code> är definierad och att ingen annan route överskuggar den.</p>
+<hr />
+<h2 id="vanliga-problem-1"><a class="header" href="#vanliga-problem-1">Vanliga problem</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>Problem</th><th>Lösning</th></tr></thead><tbody>
+<tr><td><strong>Bilder visas inte</strong></td><td>Kör <code>php artisan storage:link</code>. Kontrollera att filen finns i <code>storage/app/public/posts/</code>.</td></tr>
+<tr><td><strong>404 på <code>/posts/1</code></strong></td><td>Route model binding kräver att parametern heter <code>{post}</code> (singular) och att metoden tar <code>Post $post</code>. Kontrollera <code>routes/web.php</code> och <code>show()</code>-metoden.</td></tr>
+<tr><td><strong>Valideringsfel visas inte</strong></td><td>Kontrollera att du har <code>@error('fältnamn')</code> i formuläret och att <code>old('fältnamn')</code> används för att återställa värdet.</td></tr>
+<tr><td><strong>403 eller redirect till login på /admin</strong></td><td>Du måste vara inloggad. Gå till <code>/login</code> och logga in först.</td></tr>
+<tr><td><strong>Class "Post" not found</strong></td><td>Kontrollera att du har <code>use App\Models\Post;</code> högst upp i PostController.</td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="i-denna-del-har-du-lärt-dig-3"><a class="header" href="#i-denna-del-har-du-lärt-dig-3">I denna del har du lärt dig</a></h2>
+<ul>
+<li>Att definiera routes med middleware för att skydda admin-sidor</li>
+<li>Att använda route model binding (<code>{post}</code> → <code>Post $post</code>)</li>
+<li>Att validera formulär med <code>$request-&gt;validate()</code></li>
+<li>Att använda Blade-direktiv som <code>@forelse</code>, <code>@error</code> och <code>old()</code> i formulär</li>
+<li>Att ladda upp filer med <code>$request-&gt;file()-&gt;store()</code> och <code>storage:link</code></li>
+</ul>
+<hr />
+<p><strong>Föregående:</strong> <a href="kapitel_7/laravel-crud-3-setup.html">Del 3: Setup och autentisering</a> | <strong>Nästa:</strong> <a href="kapitel_7/laravel-crud-5-update-delete.html">Del 5: Uppdatera och radera</a></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="del-5-uppdatera-och-radera"><a class="header" href="#del-5-uppdatera-och-radera">Del 5: Uppdatera och radera</a></h1>
+<p>I denna del implementerar vi redigering och radering – motsvarar <a href="kapitel_7/crud-app-4-update-delete.html">Del 4: Uppdatera och radera</a> i CRUD-appen. Vi använder en Policy för att säkerställa att användare bara kan redigera och radera sina egna inlägg.</p>
+<p><strong>Förutsättning:</strong> Du har genomfört <a href="kapitel_7/laravel-crud-4-create-read.html">Del 4: Skapa och läsa inlägg</a>.</p>
+<hr />
+<h2 id="steg-1-policy-för-ägarskap"><a class="header" href="#steg-1-policy-för-ägarskap">Steg 1: Policy för ägarskap</a></h2>
+<p>I CRUD-appen kollade du <code>$post['user_id'] != $logged_in_user_id</code> i edit och delete. I Laravel använder vi en <strong>Policy</strong> – en klass som centraliserar behörighetslogik. Användaren får bara redigera och radera sina egna inlägg.</p>
+<p>Skapa policyn:</p>
+<pre><code class="language-bash">php artisan make:policy PostPolicy --model=Post
+</code></pre>
+<p>Öppna <code>app/Policies/PostPolicy.php</code> och uppdatera metoderna <code>update</code> och <code>delete</code>:</p>
+<pre><code class="language-php">public function update(User $user, Post $post): bool
+{
+    return $user-&gt;id === $post-&gt;user_id;
+}
+
+public function delete(User $user, Post $post): bool
+{
+    return $user-&gt;id === $post-&gt;user_id;
+}
+</code></pre>
+<p>Laravel registrerar automatiskt policyn för Post-modellen. Vi använder den i nästa steg med <code>$this-&gt;authorize('update', $post)</code>.</p>
+<hr />
+<h2 id="steg-2-edit-vyn-och-edit-metoden"><a class="header" href="#steg-2-edit-vyn-och-edit-metoden">Steg 2: Edit-vyn och edit()-metoden</a></h2>
+<p>Skapa redigeringsformuläret och metoden som visar det.</p>
+<p>Lägg till i <code>PostController</code>:</p>
+<pre><code class="language-php">public function edit(Post $post)
+{
+    $this-&gt;authorize('update', $post);
+    return view('posts.edit', compact('post'));
+}
+</code></pre>
+<p><strong><code>$this-&gt;authorize('update', $post)</code></strong> – Anropar Policy:n. Om användaren inte äger inlägget returneras 403 Forbidden automatiskt. Du behöver inte skriva <code>if ($user-&gt;id !== $post-&gt;user_id)</code> – policyn gör det.</p>
+<p>Skapa <code>resources/views/posts/edit.blade.php</code>:</p>
+<pre><code class="language-blade">@extends('layouts.app')
+
+@section('content')
+&lt;h1&gt;Redigera blogginlägg&lt;/h1&gt;
+
+&lt;form action="{{ route('posts.update', $post) }}" method="POST" enctype="multipart/form-data"&gt;
+    @csrf
+    @method('PUT')
+    &lt;div&gt;
+        &lt;label for="title"&gt;Titel:&lt;/label&gt;
+        &lt;input type="text" id="title" name="title" value="{{ old('title', $post-&gt;title) }}" required&gt;
+        @error('title') &lt;span class="text-red-600"&gt;{{ $message }}&lt;/span&gt; @enderror
+    &lt;/div&gt;
+    &lt;div&gt;
+        &lt;label for="body"&gt;Innehåll:&lt;/label&gt;
+        &lt;textarea id="body" name="body" required&gt;{{ old('body', $post-&gt;body) }}&lt;/textarea&gt;
+        @error('body') &lt;span class="text-red-600"&gt;{{ $message }}&lt;/span&gt; @enderror
+    &lt;/div&gt;
+    @if($post-&gt;image_path)
+        &lt;div&gt;
+            &lt;img src="{{ asset('storage/' . $post-&gt;image_path) }}" alt="" style="max-width: 200px;"&gt;
+            &lt;label&gt;&lt;input type="checkbox" name="delete_image" value="1"&gt; Ta bort nuvarande bild&lt;/label&gt;
+        &lt;/div&gt;
+    @endif
+    &lt;div&gt;
+        &lt;label for="image"&gt;Ladda upp ny bild (ersätter nuvarande):&lt;/label&gt;
+        &lt;input type="file" id="image" name="image" accept="image/jpeg,image/png,image/gif"&gt;
+    &lt;/div&gt;
+    &lt;button type="submit"&gt;Uppdatera inlägg&lt;/button&gt;
+&lt;/form&gt;
+@endsection
+</code></pre>
+<p><strong>OBS:</strong> <code>@method('PUT')</code> – HTML-formulär stödjer bara GET och POST. Laravel använder detta dolda fält för att simulera PUT, så routen <code>Route::put(...)</code> matchar.</p>
+<p><strong>Kontrollera att det fungerar:</strong> Gå till <code>/admin</code> och klicka "Redigera" på ett inlägg. Du ska se formuläret med befintlig titel och innehåll. Om du försöker redigera ett inlägg som tillhör en annan användare (skapa en annan användare först) ska du få 403 Forbidden.</p>
+<hr />
+<h2 id="steg-3-update-metoden"><a class="header" href="#steg-3-update-metoden">Steg 3: update()-metoden</a></h2>
+<p>Lägg till <code>update()</code> i PostController så att ändringar sparas:</p>
+<pre><code class="language-php">public function update(Request $request, Post $post)
+{
+    $this-&gt;authorize('update', $post);
+
+    $validated = $request-&gt;validate([
+        'title' =&gt; 'required|max:255',
+        'body' =&gt; 'required',
+        'image' =&gt; 'nullable|image|max:5120',
+        'delete_image' =&gt; 'nullable|boolean',
+    ]);
+
+    $path = $post-&gt;image_path;
+    if (!empty($validated['delete_image']) &amp;&amp; $path) {
+        \Storage::disk('public')-&gt;delete($path);
+        $path = null;
+    }
+    if ($request-&gt;hasFile('image')) {
+        if ($path) \Storage::disk('public')-&gt;delete($path);
+        $path = $request-&gt;file('image')-&gt;store('posts', 'public');
+    }
+
+    $post-&gt;update([
+        'title' =&gt; $validated['title'],
+        'body' =&gt; $validated['body'],
+        'image_path' =&gt; $path,
+    ]);
+
+    return redirect()-&gt;route('posts.admin')-&gt;with('success', 'Inlägg uppdaterat!');
+}
+</code></pre>
+<p><strong>Kontrollera att det fungerar:</strong> Redigera ett inlägg – ändra titel eller innehåll – och spara. Du ska omdirigeras till admin-panelen med meddelandet "Inlägg uppdaterat!" och se dina ändringar. Testa också att ta bort bilden (kryssrutan) och att ladda upp en ny bild.</p>
+<hr />
+<h2 id="steg-4-destroy-och-radera-knapp"><a class="header" href="#steg-4-destroy-och-radera-knapp">Steg 4: destroy() och radera-knapp</a></h2>
+<p>Lägg till <code>destroy()</code> i PostController:</p>
+<pre><code class="language-php">public function destroy(Post $post)
+{
+    $this-&gt;authorize('delete', $post);
+    if ($post-&gt;image_path) {
+        \Storage::disk('public')-&gt;delete($post-&gt;image_path);
+    }
+    $post-&gt;delete();
+    return redirect()-&gt;route('posts.admin')-&gt;with('success', 'Inlägg raderat!');
+}
+</code></pre>
+<p>Uppdatera <code>resources/views/posts/admin.blade.php</code> – ersätt kommentaren <code>&lt;!-- Radera-knapp kommer i Del 5 --&gt;</code> med ett formulär:</p>
+<pre><code class="language-blade">&lt;form action="{{ route('posts.destroy', $post) }}" method="POST" style="display:inline;"
+      onsubmit="return confirm('Är du säker på att du vill radera detta inlägg?');"&gt;
+    @csrf
+    @method('DELETE')
+    &lt;button type="submit"&gt;Radera&lt;/button&gt;
+&lt;/form&gt;
+</code></pre>
+<p>Radering ska ske via <strong>POST</strong> (med <code>@method('DELETE')</code>), inte GET – samma princip som i CRUD-appen. GET ska inte ha sidoeffekter som radering.</p>
+<p><strong>Kontrollera att det fungerar:</strong> Klicka "Radera" på ett inlägg. Du ska få en bekräftelsedialog. Bekräfta – inlägget ska försvinna från listan. Om inlägget hade en bild ska filen också tas bort från <code>storage/app/public/posts/</code>.</p>
+<hr />
+<h2 id="jämförelse-plain-php-vs-laravel"><a class="header" href="#jämförelse-plain-php-vs-laravel">Jämförelse: Plain PHP vs. Laravel</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>Uppgift</th><th>CRUD-app (plain PHP)</th><th>Laravel</th></tr></thead><tbody>
+<tr><td><strong>Autentisering</strong></td><td>register.php, login.php, logout.php, session-hantering, password_hash</td><td>Laravel Breeze – färdigt</td></tr>
+<tr><td><strong>Skydda admin-sidor</strong></td><td><code>if (!isset($_SESSION['user_id']))</code> i varje fil</td><td><code>Route::middleware('auth')</code></td></tr>
+<tr><td><strong>Databasfrågor</strong></td><td>PDO, prepare, bindParam, fetch</td><td>Eloquent: <code>Post::with('user')-&gt;get()</code></td></tr>
+<tr><td><strong>Hämta ett inlägg</strong></td><td><code>filter_input</code> + <code>get_post_by_id()</code></td><td>Route model binding: <code>show(Post $post)</code></td></tr>
+<tr><td><strong>Validering</strong></td><td>Manuell <code>$errors[]</code>, empty(), filter_var</td><td><code>$request-&gt;validate([...])</code></td></tr>
+<tr><td><strong>Vyer</strong></td><td>PHP och HTML blandat, <code>htmlspecialchars()</code></td><td>Blade: <code>{{ $post-&gt;title }}</code> (escapas automatiskt)</td></tr>
+<tr><td><strong>Ägarskap (edit/delete)</strong></td><td><code>$post['user_id'] != $logged_in_user_id</code></td><td>Policy: <code>$this-&gt;authorize('update', $post)</code></td></tr>
+</tbody></table>
+</div>
+<p>I plain PHP skrev du hundratals rader för auth, routing och infrastruktur. I Laravel fokuserar du på applikationslogiken – ramverket löser resten.</p>
+<hr />
+<h2 id="i-denna-del-har-du-lärt-dig-4"><a class="header" href="#i-denna-del-har-du-lärt-dig-4">I denna del har du lärt dig</a></h2>
+<ul>
+<li>Att använda Policies för att centralisera behörighetslogik (ägarskap)</li>
+<li>Att anropa <code>$this-&gt;authorize('update', $post)</code> för att skydda edit/update/delete</li>
+<li>Att använda <code>@method('PUT')</code> och <code>@method('DELETE')</code> i formulär för RESTful routes</li>
+<li>Att uppdatera och radera poster med Eloquent, samt ta bort associerade filer från storage</li>
+</ul>
+<hr />
+<p><strong>Föregående:</strong> <a href="kapitel_7/laravel-crud-4-create-read.html">Del 4: Skapa och läsa inlägg</a> | <strong>Nästa:</strong> <a href="kapitel_7/sessions.html">Sessioner och cookies</a></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="sessioner-och-cookies-att-komma-ihåg-användare"><a class="header" href="#sessioner-och-cookies-att-komma-ihåg-användare">Sessioner och Cookies: Att Komma Ihåg Användare</a></h1>
 <p>En av de grundläggande utmaningarna i webbutveckling är att <strong>HTTP (Hypertext Transfer Protocol)</strong>, protokollet som webbläsare och servrar använder för att kommunicera, är <strong>stateless</strong> (tillståndslöst). Varje HTTP-förfrågan (request) från en webbläsare till en server behandlas som en helt oberoende händelse. Servern har inget inbyggt minne av tidigare förfrågningar från samma användare.</p>
 <p>Detta är ett problem när vi vill bygga funktioner som kräver att servern "kommer ihåg" användaren mellan sidladdningar, till exempel:</p>
@@ -16859,7 +16613,7 @@ session.cookie_samesite = "Lax"
 ; session.sid_entropy_length = 32 (eller högre)
 ; session.sid_bits_per_character = 5 (eller 6)
 </code></pre>
-<h2 id="sammanfattning-38"><a class="header" href="#sammanfattning-38">Sammanfattning</a></h2>
+<h2 id="sammanfattning-36"><a class="header" href="#sammanfattning-36">Sammanfattning</a></h2>
 <p>Cookies och sessioner är avgörande verktyg för att skapa dynamiska och användarvänliga webbapplikationer genom att överbrygga HTTP:s tillståndslösa natur. Cookies lagrar data på klienten och är bra för icke-känsliga preferenser, medan sessioner lagrar data på servern och är standardmetoden för att hantera inloggningsstatus och annan känslig temporär data. Att förstå hur man använder dem säkert, särskilt genom att skydda session-ID:t och konfigurera cookie-attribut korrekt, är fundamentalt för säker webbutveckling med PHP.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="webbsäkerhet-i-php-vanliga-hot-och-skydd"><a class="header" href="#webbsäkerhet-i-php-vanliga-hot-och-skydd">Webbsäkerhet i PHP: Vanliga Hot och Skydd</a></h1>
 <p>Att bygga en fungerande webbapplikation är en sak, men att göra den säker är en helt annan och minst lika viktig uppgift. En osäker applikation kan leda till att användardata läcker, att obehöriga får kontroll över systemet, eller att webbplatsen används för att sprida skadlig kod. Detta avsnitt täcker några av de mest kritiska säkerhetsriskerna och hur du skyddar din PHP-applikation mot dem.</p>
@@ -18086,7 +17840,7 @@ if (!isset($_SESSION['user_id'])) {
 <p><strong>Förklaring:</strong> Denna "guard"-kod måste köras före all annan output. <code>header('Location: ...')</code> skickar en redirect. <code>exit</code> förhindrar att resten av skriptet körs efter redirect. <code>__DIR__</code> ger aktuell mapps sökväg för relativ inkludering.</p>
 </details>
 <hr />
-<h2 id="sammanfattning-39"><a class="header" href="#sammanfattning-39">Sammanfattning</a></h2>
+<h2 id="sammanfattning-37"><a class="header" href="#sammanfattning-37">Sammanfattning</a></h2>
 <p>Dessa övningar täcker:</p>
 <ul>
 <li><strong>PHP intro</strong>: Server vs klient, Docker-miljö</li>
@@ -18829,7 +18583,7 @@ ob_end_flush();
 </ul>
 <p><strong>Intervjutips:</strong> Diskutera olika nivåer av optimering - från kod-nivå till infrastruktur (load balancers, database replicas etc.).</p>
 <hr />
-<h2 id="sammanfattning-40"><a class="header" href="#sammanfattning-40">Sammanfattning</a></h2>
+<h2 id="sammanfattning-38"><a class="header" href="#sammanfattning-38">Sammanfattning</a></h2>
 <p>Dessa frågor täcker de viktigaste aspekterna av fullstack-utveckling med PHP:</p>
 <ul>
 <li><strong>Grundläggande PHP:</strong> Syntax, variabler, funktioner</li>
@@ -19910,7 +19664,7 @@ const isLoading = true;
 function LoadingSpinner() { }  // Bättre än Spinner()
 function ErrorMessage() { }   // Bättre än Error()
 </code></pre>
-<h2 id="sammanfattning-41"><a class="header" href="#sammanfattning-41">Sammanfattning</a></h2>
+<h2 id="sammanfattning-39"><a class="header" href="#sammanfattning-39">Sammanfattning</a></h2>
 <p>Komponenter är byggstenen i React-applikationer:</p>
 <ul>
 <li><strong>Komponenter</strong> är JavaScript-funktioner som returnerar JSX</li>
@@ -20685,7 +20439,7 @@ const [state, setState] = useState({
   comments: { 1: { id: 1, text: 'Bra inlägg!', authorId: 2 } }
 });
 </code></pre>
-<h2 id="sammanfattning-42"><a class="header" href="#sammanfattning-42">Sammanfattning</a></h2>
+<h2 id="sammanfattning-40"><a class="header" href="#sammanfattning-40">Sammanfattning</a></h2>
 <p>Nu kan du skapa interaktiva React-komponenter:</p>
 <ul>
 <li><strong>Props</strong> skickar data från föräldra- till barnkomponenter</li>
@@ -20711,7 +20465,7 @@ const [state, setState] = useState({
 <p><strong>React Router</strong> är det de facto-standardbiblioteket för routing i React-applikationer.</p>
 <p><strong>Mål:</strong> Lära sig React Router, implementera BrowserRouter, konfigurera routes, hantera navigation programmatiskt och skapa protected routes.</p>
 <h2 id="installation-och-grundkonfiguration"><a class="header" href="#installation-och-grundkonfiguration">Installation och Grundkonfiguration</a></h2>
-<h3 id="installation"><a class="header" href="#installation">Installation</a></h3>
+<h3 id="installation-1"><a class="header" href="#installation-1">Installation</a></h3>
 <pre><code class="language-bash">npm install react-router-dom
 </code></pre>
 <h3 id="grundläggande-router-setup"><a class="header" href="#grundläggande-router-setup">Grundläggande Router Setup</a></h3>
@@ -21227,7 +20981,7 @@ function ProductDetail() {
   // ...
 }
 </code></pre>
-<h2 id="sammanfattning-43"><a class="header" href="#sammanfattning-43">Sammanfattning</a></h2>
+<h2 id="sammanfattning-41"><a class="header" href="#sammanfattning-41">Sammanfattning</a></h2>
 <p>React Router är kraftfullt verktyg för navigation i React-applikationer:</p>
 <ul>
 <li><strong>BrowserRouter</strong> ger rena URLs och är bästa valet för de flesta applikationer</li>
@@ -22349,7 +22103,7 @@ const API_KEY = import.meta.env.VITE_API_KEY;
 <li>Testa ändringar lokalt innan deployment</li>
 <li>Använd versionshantering (Git tags) för viktiga releases</li>
 </ul>
-<h2 id="sammanfattning-44"><a class="header" href="#sammanfattning-44">Sammanfattning</a></h2>
+<h2 id="sammanfattning-42"><a class="header" href="#sammanfattning-42">Sammanfattning</a></h2>
 <p>Deployment med Dokploy gör det enkelt att få din React-applikation live på internet:</p>
 <ol>
 <li><strong>Förbered</strong> din kod och pusha till GitHub</li>
@@ -22360,7 +22114,7 @@ const API_KEY = import.meta.env.VITE_API_KEY;
 <li><strong>Uppdatera</strong> genom att pusha ändringar</li>
 </ol>
 <p>Med Dokploy kan du fokusera på att utveckla fantastiska applikationer medan plattformen hanterar infrastrukturen åt dig!</p>
-<h2 id="nästa-steg-2"><a class="header" href="#nästa-steg-2">Nästa steg</a></h2>
+<h2 id="nästa-steg-1"><a class="header" href="#nästa-steg-1">Nästa steg</a></h2>
 <p>Nu när du kan deploya React-applikationer, utforska:</p>
 <ul>
 <li><strong>Databaser</strong>: Lägg till PostgreSQL eller MongoDB</li>
@@ -22963,7 +22717,7 @@ class ErrorTracker {
 
 export default ErrorTracker;
 </code></pre>
-<h2 id="sammanfattning-45"><a class="header" href="#sammanfattning-45">Sammanfattning</a></h2>
+<h2 id="sammanfattning-43"><a class="header" href="#sammanfattning-43">Sammanfattning</a></h2>
 <p>Single Page Applications erbjuder många fördelar för moderna webbapplikationer:</p>
 <ul>
 <li><strong>Smidig användarupplevelse</strong> med snabb navigering</li>
@@ -23976,7 +23730,7 @@ function App() {
 <li>Ha fallback UI för kritiska komponenter</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-46"><a class="header" href="#sammanfattning-46">Sammanfattning</a></h2>
+<h2 id="sammanfattning-44"><a class="header" href="#sammanfattning-44">Sammanfattning</a></h2>
 <p>Dessa frågor täcker de viktigaste aspekterna av React-utveckling:</p>
 <ul>
 <li><strong>React Fundamentals:</strong> JSX, Virtual DOM, komponenter</li>
@@ -25545,7 +25299,7 @@ async function processMultipleFiles() {
   }
 }
 </code></pre>
-<h2 id="sammanfattning-47"><a class="header" href="#sammanfattning-47">Sammanfattning</a></h2>
+<h2 id="sammanfattning-45"><a class="header" href="#sammanfattning-45">Sammanfattning</a></h2>
 <p>I denna introduktion har vi gått igenom grunderna i Node.js och fokuserat på moderna utvecklingsmetoder:</p>
 <p><strong>Vad vi har lärt oss:</strong></p>
 <ul>
@@ -26037,7 +25791,7 @@ document.getElementById('userForm').addEventListener('submit', async (e) =&gt; {
 <li><strong>Säkerhetsfeatures</strong> och best practices</li>
 <li><strong>Plugin-ekosystem</strong> för utökad funktionalitet</li>
 </ul>
-<h2 id="nästa-steg-3"><a class="header" href="#nästa-steg-3">Nästa steg</a></h2>
+<h2 id="nästa-steg-2"><a class="header" href="#nästa-steg-2">Nästa steg</a></h2>
 <p>Nu förstår du hur HTTP-servrar fungerar under huven! Detta ger dig en solid grund för att:</p>
 <ol>
 <li><strong>Uppskatta Express.js</strong> - Du vet nu vad det abstraherar bort</li>
@@ -27802,7 +27556,7 @@ app.use(express.json({ limit: '10mb' })); // Begränsa request size
 <li><strong>Glömma validering:</strong> Validera alltid användarinput</li>
 <li><strong>Sakna rate limiting:</strong> Låt inte en användare överbelasta ditt API</li>
 </ol>
-<h2 id="sammanfattning-48"><a class="header" href="#sammanfattning-48">Sammanfattning</a></h2>
+<h2 id="sammanfattning-46"><a class="header" href="#sammanfattning-46">Sammanfattning</a></h2>
 <p>RESTful API:er ger dig en solid grund för att bygga skalbara och underhållbara backend-tjänster. Genom att följa REST-principerna skapar du API:er som är intuitiva för utvecklare att använda och enkla att underhålla över tid.</p>
 <h3 id="viktiga-takeaways-1"><a class="header" href="#viktiga-takeaways-1">Viktiga takeaways:</a></h3>
 <ul>
@@ -27812,7 +27566,7 @@ app.use(express.json({ limit: '10mb' })); // Begränsa request size
 <li><strong>Validering och felhantering</strong> är kritiskt för robusthet</li>
 <li><strong>Best practices</strong> (rate limiting, CORS, säkerhet) gör API:et produktionsklart</li>
 </ul>
-<h3 id="nästa-steg-4"><a class="header" href="#nästa-steg-4">Nästa steg:</a></h3>
+<h3 id="nästa-steg-3"><a class="header" href="#nästa-steg-3">Nästa steg:</a></h3>
 <ul>
 <li>Lär dig om <strong>autentisering och säkerhet</strong> för att skydda dina API:er</li>
 <li>Implementera <strong>testning</strong> för dina API-endpoints</li>
@@ -29471,7 +29225,7 @@ import { add } from './math';
   // Standard timeout är 5000ms, öka om nödvändigt
 }, 10000); // 10 sekunder
 </code></pre>
-<h2 id="sammanfattning-49"><a class="header" href="#sammanfattning-49">Sammanfattning</a></h2>
+<h2 id="sammanfattning-47"><a class="header" href="#sammanfattning-47">Sammanfattning</a></h2>
 <p>I denna lektion har du lärt dig:</p>
 <p>✅ <strong>Varför testa</strong>: Säkerhet vid ändringar, dokumentation, snabbare utveckling<br />
 ✅ <strong>Jest setup</strong>: Installera och konfigurera Jest med ES6-moduler<br />
@@ -29480,7 +29234,7 @@ import { add } from './math';
 ✅ <strong>Setup/Teardown</strong>: Använda <code>beforeEach</code>, <code>afterEach</code>, <code>beforeAll</code>, <code>afterAll</code><br />
 ✅ <strong>API-testning</strong>: Testa Express-routes med Supertest<br />
 ✅ <strong>Best practices</strong>: Hur du skriver bra test</p>
-<h3 id="nästa-steg-5"><a class="header" href="#nästa-steg-5">Nästa steg</a></h3>
+<h3 id="nästa-steg-4"><a class="header" href="#nästa-steg-4">Nästa steg</a></h3>
 <ul>
 <li>Öva på att skriva test för dina egna funktioner</li>
 <li>Lär dig om mocks (låtsaskod) för att isolera test</li>
@@ -31683,7 +31437,7 @@ export default Home;
 <li>Webbläsarens utvecklarverktyg: Inspektera element, nätverkstrafik och konsol för att hitta fel.</li>
 <li>React Developer Tools: För att inspektera komponenternas tillstånd och props.</li>
 </ul>
-<h3 id="vanliga-problem"><a class="header" href="#vanliga-problem">Vanliga problem</a></h3>
+<h3 id="vanliga-problem-2"><a class="header" href="#vanliga-problem-2">Vanliga problem</a></h3>
 <ul>
 <li>CORS-fel: Se till att cors-middleware är korrekt konfigurerad i backend. Det bör räcka med att skriva <code>server.use(cors())</code> i <code>backend/server.js</code></li>
 <li>Felaktig token: Kontrollera att token lagras och skickas korrekt.</li>
@@ -33347,7 +33101,7 @@ class InventoryService {
 module.exports = InventoryService;
 </code></pre>
 <hr />
-<h2 id="sammanfattning-50"><a class="header" href="#sammanfattning-50">Sammanfattning</a></h2>
+<h2 id="sammanfattning-48"><a class="header" href="#sammanfattning-48">Sammanfattning</a></h2>
 <p>Dessa fyra övningar tar dig från grundläggande Express-applikationer till avancerade real-time system. Varje projekt bygger på kunskaperna från föregående och introducerar nya koncept:</p>
 <ol>
 <li><strong>Todo API</strong>: Grundläggande CRUD, MongoDB, felhantering</li>
@@ -33355,7 +33109,7 @@ module.exports = InventoryService;
 <li><strong>E-handel API</strong>: Komplex datamodellering, transaktioner, inventoriehantering</li>
 </ol>
 <p>Efter att ha genomfört dessa projekt har du en solid grund i modern backend-utveckling med Node.js!</p>
-<h2 id="nästa-steg-6"><a class="header" href="#nästa-steg-6">Nästa steg</a></h2>
+<h2 id="nästa-steg-5"><a class="header" href="#nästa-steg-5">Nästa steg</a></h2>
 <ul>
 <li><strong>Deploiera till produktion</strong> med Docker och cloud services</li>
 <li><strong>Implementera CI/CD</strong> för automatisk testning och deployment</li>
@@ -35062,7 +34816,7 @@ wss.on('connection', (ws) =&gt; {
 <h2 id="introduktion"><a class="header" href="#introduktion">Introduktion</a></h2>
 <p>En chattapplikation är ett utmärkt exempel på realtidskommunikation på webben. Vi kommer att använda native WebSockets för att bygga en interaktiv chattapplikation med flera funktioner.</p>
 <h2 id="websocket-setup"><a class="header" href="#websocket-setup">WebSocket Setup</a></h2>
-<h3 id="installation-1"><a class="header" href="#installation-1">Installation</a></h3>
+<h3 id="installation-2"><a class="header" href="#installation-2">Installation</a></h3>
 <pre><code class="language-bash">npm install ws
 </code></pre>
 <h3 id="grundläggande-konfiguration-1"><a class="header" href="#grundläggande-konfiguration-1">Grundläggande konfiguration</a></h3>
@@ -36104,7 +35858,7 @@ class BulletManager {
   }
 }
 </code></pre>
-<h2 id="sammanfattning-51"><a class="header" href="#sammanfattning-51">Sammanfattning</a></h2>
+<h2 id="sammanfattning-49"><a class="header" href="#sammanfattning-49">Sammanfattning</a></h2>
 <p>OOP i spelutveckling handlar om att:</p>
 <p><strong>Strukturera kod effektivt</strong>:</p>
 <ul>
@@ -36580,7 +36334,7 @@ this.socket.onopen = () =&gt; {
 <li>Servern köar kommandona och kör dem i turordning</li>
 <li><strong>Uppgift</strong>: Skapa ett enkelt commands-system där spelare kan skicka kommandon som servern kör asynkront</li>
 </ul>
-<h2 id="sammanfattning-52"><a class="header" href="#sammanfattning-52">Sammanfattning</a></h2>
+<h2 id="sammanfattning-50"><a class="header" href="#sammanfattning-50">Sammanfattning</a></h2>
 <p>I detta kapitel har vi byggt en enkel multiplayer-server steg för steg:</p>
 <ol>
 <li><strong>Grundstruktur</strong>: Servern är auktoritativ - den validerar och uppdaterar allt spelstatus</li>
@@ -38285,7 +38039,7 @@ module.exports = {
 <li>Gör kortet klickbart genom att lägga till en länk runt hela kortet.</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-53"><a class="header" href="#sammanfattning-53">Sammanfattning</a></h2>
+<h2 id="sammanfattning-51"><a class="header" href="#sammanfattning-51">Sammanfattning</a></h2>
 <ul>
 <li><strong>Färger</strong>: Använd fördefinierade eller anpassade färger för att skapa en konsekvent design.</li>
 <li><strong>Typografi</strong>: Hantera textstorlekar, typsnitt och andra textrelaterade egenskaper med utility-klasser.</li>
@@ -38390,7 +38144,7 @@ module.exports = {
 <li>Lägg till en responsiv grid-layout som visar flera produktkort bredvid varandra på större skärmar.</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-54"><a class="header" href="#sammanfattning-54">Sammanfattning</a></h2>
+<h2 id="sammanfattning-52"><a class="header" href="#sammanfattning-52">Sammanfattning</a></h2>
 <ul>
 <li><strong>Breakpoints</strong>: Använd Tailwinds inbyggda breakpoints för att skapa responsiva layouter.</li>
 <li><strong>Responsivitet</strong>: Anpassa layout, typografi och andra stilar för olika skärmstorlekar.</li>
@@ -38529,7 +38283,7 @@ module.exports = {
 <li>Gör menyn sticky så att den alltid är synlig högst upp på sidan.</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-55"><a class="header" href="#sammanfattning-55">Sammanfattning</a></h2>
+<h2 id="sammanfattning-53"><a class="header" href="#sammanfattning-53">Sammanfattning</a></h2>
 <ul>
 <li><strong>Pseudo-klasser</strong>: Använd <code>hover:</code>, <code>focus:</code>, <code>active:</code>, och <code>disabled:</code> för att hantera olika tillstånd.</li>
 <li><strong>Gruppbaserade effekter</strong>: Använd <code>group</code> och <code>group-hover:</code> för att skapa interaktivitet mellan element.</li>
@@ -38711,7 +38465,7 @@ export default {
 <li>Lägg till en animation som gör att hover-effekten övergångar mjukt.</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-56"><a class="header" href="#sammanfattning-56">Sammanfattning</a></h2>
+<h2 id="sammanfattning-54"><a class="header" href="#sammanfattning-54">Sammanfattning</a></h2>
 <ul>
 <li><strong>Konfiguration</strong>: Använd <code>tailwind.config.js</code> för att anpassa Tailwind CSS.</li>
 <li><strong>Anpassningar</strong>: Lägg till egna färger, typsnitt, spacing och breakpoints.</li>
@@ -38907,7 +38661,7 @@ export default {
 <li>Lägg till en hover-effekt på sidomenyns länkar.</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-57"><a class="header" href="#sammanfattning-57">Sammanfattning</a></h2>
+<h2 id="sammanfattning-55"><a class="header" href="#sammanfattning-55">Sammanfattning</a></h2>
 <ul>
 <li><strong>Planering</strong>: Definiera syftet och prioritera innehållet.</li>
 <li><strong>Element</strong>: Inkludera sidhuvud, sidomeny, KPI-kort, tabeller och grafer.</li>
@@ -39014,7 +38768,7 @@ export default {
 <hr />
 <h2 id="exempel-bygga-en-komponent-med-daisyui"><a class="header" href="#exempel-bygga-en-komponent-med-daisyui">Exempel: Bygga en komponent med DaisyUI</a></h2>
 <p>Här är ett exempel på hur du kan använda DaisyUI för att skapa en knapp:</p>
-<h3 id="installation-2"><a class="header" href="#installation-2">Installation</a></h3>
+<h3 id="installation-3"><a class="header" href="#installation-3">Installation</a></h3>
 <p>Installera DaisyUI:</p>
 <pre><code class="language-bash">npm install daisyui
 </code></pre>
@@ -39074,7 +38828,7 @@ export default {
 }
 </code></pre>
 <hr />
-<h2 id="sammanfattning-58"><a class="header" href="#sammanfattning-58">Sammanfattning</a></h2>
+<h2 id="sammanfattning-56"><a class="header" href="#sammanfattning-56">Sammanfattning</a></h2>
 <ul>
 <li><strong>Best Practices</strong>: Använd återanvändbara komponenter, håll HTML-strukturen ren och dra nytta av Tailwinds konfigurationsfil.</li>
 <li><strong>Komponentbibliotek</strong>: Utforska bibliotek som Tailwind UI, Flowbite och DaisyUI för att snabba upp utvecklingen.</li>
@@ -39277,7 +39031,7 @@ function App() {
 export default App;
 </code></pre>
 <hr />
-<h2 id="sammanfattning-59"><a class="header" href="#sammanfattning-59">Sammanfattning</a></h2>
+<h2 id="sammanfattning-57"><a class="header" href="#sammanfattning-57">Sammanfattning</a></h2>
 <ul>
 <li><strong>Installation</strong>: Installera och konfigurera Tailwind CSS i ditt React-projekt med Vite.</li>
 <li><strong>Komponenter</strong>: Använd Tailwind CSS för att snabbt styla React-komponenter.</li>
