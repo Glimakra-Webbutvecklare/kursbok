@@ -62,6 +62,8 @@ Lägg till `require_once 'includes/functions.php';` (efter config och före elle
 
 Testa att öppna ett inlägg. Det ska fungera som tidigare, men koden i post.php är nu enklare.
 
+![Enskilt inlägg fungerar fortfarande efter refaktorering](./assets/crud-app/del-5/del-5-post-fungerar.png)
+
 **Du har nu lärt dig:** Att extrahera databaslogik till funktioner och att använda type hints (`int`, `array|false`).
 
 ---

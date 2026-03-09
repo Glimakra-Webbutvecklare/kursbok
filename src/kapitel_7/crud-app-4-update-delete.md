@@ -134,6 +134,8 @@ Lägg till HTML-delen med navigering, länk till "Skapa nytt inlägg" och tabell
 
 Nu har du en fungerande admin-panel. "Redigera"-länken pekar på `edit_post.php` som vi skapar nästa.
 
+![Admin-panelen med lista över dina inlägg](./assets/crud-app/del-4/del-4-admin-panel.png)
+
 ---
 
 ## Steg 9b: Redigera inlägg – utan bildhantering
@@ -297,6 +299,8 @@ Lägg till HTML-delen (formuläret visas bara om `$post` finns):
 ```
 
 **OBS:** Formulärets `action` inkluderar `?id=<?php echo $post_id; ?>` så att vi vet vilket inlägg som uppdateras vid POST.
+
+![Redigeringsformuläret](./assets/crud-app/del-4/del-4-edit-formular.png)
 
 Testa att redigera ett inlägg. Titeln och innehållet ska uppdateras.
 
@@ -481,6 +485,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $post) {
 }
 ```
 
+![Redigera inlägg med bildhantering – visa nuvarande bild, ta bort eller ersätta](./assets/crud-app/del-4/del-4-edit-med-bild.png)
+
 **Du har nu lärt dig:** Att hantera tre fall – behålla bild, ta bort bild, ersätta bild – och att städa upp filer om databasen misslyckas.
 
 ---
@@ -593,6 +599,8 @@ I `admin/index.php`, ersätt kommentaren `<!-- Radera-knapp kommer i steg 10 -->
 ```
 
 `confirm()` visar en dialog innan formuläret skickas. För titlar med citationstecken kan du använda `htmlspecialchars($post['title'], ENT_QUOTES, 'UTF-8')` i bekräftelsetexten om du vill visa titeln.
+
+![Bekräftelsedialog innan radering av inlägg](./assets/crud-app/del-4/del-4-delete-bekraftelse.png)
 
 **Du har nu lärt dig:** Att använda POST för destruktiva operationer, att radera relaterade filer vid radering av databasrad, och att använda `confirm()` för att undvika misstag.
 

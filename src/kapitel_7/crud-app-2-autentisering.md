@@ -107,6 +107,8 @@ $email = '';
 
 Testa att ladda sidan. Formuläret visas, men skickar ännu ingen data till databasen.
 
+![Registreringsformuläret](./assets/crud-app/del-2/del-2-register-formular.png)
+
 ### Steg 2: Lägg till POST-hantering
 
 **Nytt i detta steg:** Att kolla `$_SERVER['REQUEST_METHOD']`, hämta data från `$_POST`, och använda prepared statements för INSERT.
@@ -244,6 +246,8 @@ Lägg till detta *ovanför* `<form>`-taggen i HTML-delen:
 
 Lägg också till `required` och `minlength="6"` på lösenordsfälten i formuläret för extra skydd i webbläsaren.
 
+![Registrering med valideringsfel](./assets/crud-app/del-2/del-2-register-validering.png)
+
 **Du har nu lärt dig:** Validering med `empty()`, `filter_var()` och `strlen()`, att kolla dubbletter i databasen med prepared statements, och att visa fel med `htmlspecialchars()` för att undvika XSS.
 
 ---
@@ -356,6 +360,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 **Viktigt:** Använd `password_verify($password, $user['password_hash'])` – aldrig jämför hashar direkt. `password_verify` hanterar salt och algoritm automatiskt.
 
+![Inloggningsformuläret](./assets/crud-app/del-2/del-2-login-formular.png)
+
+![Inloggning lyckad – omdirigering till admin](./assets/crud-app/del-2/del-2-login-success.png)
+
 ---
 
 ## Steg 6: Sessioner – spara inloggning och skydda sidor
@@ -438,6 +446,8 @@ require_once '../includes/database.php';
 
 Om du inte är inloggad omdirigeras du till login.php. I Del 4 bygger vi ut denna sida till en full admin-panel med lista över dina inlägg.
 
+![Admin Dashboard – minimal version](./assets/crud-app/del-2/del-2-admin-dashboard.png)
+
 ### Steg 3a: Logout – enkel version
 
 Skapa `logout.php` med den enklaste varianten:
@@ -479,6 +489,8 @@ exit;
 ```
 
 `session_get_cookie_params()` ger oss samma inställningar som PHP använde när cookien skapades. Genom att sätta cookien med ett datum i förflutna (`time() - 42000`) säger vi åt webbläsaren att ta bort den. Nu loggas du verkligen ut.
+
+![Utloggad – tillbaka på startsidan](./assets/crud-app/del-2/del-2-logout.png)
 
 **Du har nu lärt dig:** Att använda `$_SESSION` för att spara inloggningsstatus, att skydda sidor genom att kolla `$_SESSION['user_id']`, och att logga ut genom att tömma sessionen och förstöra cookien.
 

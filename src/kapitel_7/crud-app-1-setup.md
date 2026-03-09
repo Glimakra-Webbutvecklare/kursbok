@@ -60,6 +60,8 @@ CREATE TABLE posts (
 
 Skapa dessa tabeller i din MariaDB/MySQL-databas (t.ex. via phpMyAdmin eller kommandoraden). Vi antar att databasen heter `db_fullstack` som i tidigare exempel.
 
+![phpMyAdmin med tabellerna users och posts](./assets/crud-app/del-1/del-1-phpmyadmin-tabeller.png)
+
 ## 2. Projektstruktur (Initial)
 
 Vi börjar med en väldigt platt och enkel filstruktur. Skapa följande filer och mappar i roten av ditt projekt (t.ex. i `app/public` om du följer `docker-compose`-exemplet):
@@ -148,6 +150,8 @@ $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 ```
 
 Kör igen. Nu får du bara associativa nycklar (`["test" => "1"]`) – lättare att använda med `$result['test']` istället för att hålla reda på index. Detta är vad `ATTR_DEFAULT_FETCH_MODE` gör.
+
+![Utdata från test_pdo.php](./assets/crud-app/del-1/del-1-test-pdo.png)
 
 ### Databasanslutning (`includes/database.php`)
 

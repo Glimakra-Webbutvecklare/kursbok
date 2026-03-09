@@ -73,6 +73,8 @@ $body = '';
 
 **OBS:** Länken "Tillbaka till Admin Dashboard" pekar på `admin/index.php`. Se till att du har en `admin/index.php` som visar något (t.ex. en rubrik "Admin Dashboard" och en länk till create_post.php).
 
+![Formulär för att skapa nytt inlägg](./assets/crud-app/del-3/del-3-create-formular.png)
+
 ### Steg 2: Lägg till POST-hantering och spara i databasen
 
 **Nytt i detta steg:** INSERT till `posts`-tabellen med `user_id` från sessionen.
@@ -262,6 +264,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 **Förklaring:** `UPLOAD_PATH` definieras i `config.php` (Del 1). `uniqid()` ger unika filnamn så att filer inte skriver över varandra. Om databasen misslyckas efter att bilden sparats tar vi bort bilden med `unlink()`.
 
+![Skapa inlägg med bilduppladdning](./assets/crud-app/del-3/del-3-create-med-bild.png)
+
 **Du har nu lärt dig:** Filuppladdning med `$_FILES`, `move_uploaded_file()`, validering av filtyp och storlek, och att spara relativ sökväg i databasen.
 
 ---
@@ -385,6 +389,10 @@ Lägg till HTML-delen med navigering och listan:
 </html>
 ```
 
+![Startsidan när inga inlägg finns ännu](./assets/crud-app/del-3/del-3-index-tom.png)
+
+![Startsidan med listan över blogginlägg](./assets/crud-app/del-3/del-3-index-med-inlagg.png)
+
 **Du har nu lärt dig:** JOIN för att hämta relaterad data, `fetchAll()` för flera rader, `substr()` och `nl2br()` för textvisning.
 
 ---
@@ -488,6 +496,8 @@ Lägg till HTML-delen (med samma `<nav>` som index.php):
 </body>
 </html>
 ```
+
+![Enskilt blogginlägg med bild](./assets/crud-app/del-3/del-3-post-enskilt.png)
 
 **Du har nu lärt dig:** `filter_input()` för säker validering av GET-parametrar, prepared statements med `bindParam` för SELECT, och att hantera fall där inlägget inte hittas.
 

@@ -217,6 +217,7 @@ $body = '';
 &lt;/html&gt;
 </code></pre>
 <p><strong>OBS:</strong> Länken "Tillbaka till Admin Dashboard" pekar på <code>admin/index.php</code>. Se till att du har en <code>admin/index.php</code> som visar något (t.ex. en rubrik "Admin Dashboard" och en länk till create_post.php).</p>
+<p><img src="./assets/crud-app/del-3/del-3-create-formular.png" alt="Formulär för att skapa nytt inlägg" /></p>
 <h3 id="steg-2-lägg-till-post-hantering-och-spara-i-databasen"><a class="header" href="#steg-2-lägg-till-post-hantering-och-spara-i-databasen">Steg 2: Lägg till POST-hantering och spara i databasen</a></h3>
 <p><strong>Nytt i detta steg:</strong> INSERT till <code>posts</code>-tabellen med <code>user_id</code> från sessionen.</p>
 <p>Lägg till följande <em>efter</em> <code>$body = '';</code> och <em>före</em> <code>?&gt;</code>:</p>
@@ -374,6 +375,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 </code></pre>
 <p><strong>Förklaring:</strong> <code>UPLOAD_PATH</code> definieras i <code>config.php</code> (Del 1). <code>uniqid()</code> ger unika filnamn så att filer inte skriver över varandra. Om databasen misslyckas efter att bilden sparats tar vi bort bilden med <code>unlink()</code>.</p>
+<p><img src="./assets/crud-app/del-3/del-3-create-med-bild.png" alt="Skapa inlägg med bilduppladdning" /></p>
 <p><strong>Du har nu lärt dig:</strong> Filuppladdning med <code>$_FILES</code>, <code>move_uploaded_file()</code>, validering av filtyp och storlek, och att spara relativ sökväg i databasen.</p>
 <hr />
 <h2 id="mini-exempel-varför-join"><a class="header" href="#mini-exempel-varför-join">Mini-exempel: Varför JOIN?</a></h2>
@@ -481,6 +483,8 @@ try {
 &lt;/body&gt;
 &lt;/html&gt;
 </code></pre>
+<p><img src="./assets/crud-app/del-3/del-3-index-tom.png" alt="Startsidan när inga inlägg finns ännu" /></p>
+<p><img src="./assets/crud-app/del-3/del-3-index-med-inlagg.png" alt="Startsidan med listan över blogginlägg" /></p>
 <p><strong>Du har nu lärt dig:</strong> JOIN för att hämta relaterad data, <code>fetchAll()</code> för flera rader, <code>substr()</code> och <code>nl2br()</code> för textvisning.</p>
 <hr />
 <h2 id="steg-8b-visa-enskilt-inlägg-postphp"><a class="header" href="#steg-8b-visa-enskilt-inlägg-postphp">Steg 8b: Visa enskilt inlägg (<code>post.php</code>)</a></h2>
@@ -572,6 +576,7 @@ if ($post_id === false || $post_id &lt;= 0) {
 &lt;/body&gt;
 &lt;/html&gt;
 </code></pre>
+<p><img src="./assets/crud-app/del-3/del-3-post-enskilt.png" alt="Enskilt blogginlägg med bild" /></p>
 <p><strong>Du har nu lärt dig:</strong> <code>filter_input()</code> för säker validering av GET-parametrar, prepared statements med <code>bindParam</code> för SELECT, och att hantera fall där inlägget inte hittas.</p>
 <hr />
 <p><strong>Föregående:</strong> <a href="crud-app-2-autentisering.html">Del 2: Autentisering</a> | <strong>Nästa:</strong> <a href="crud-app-4-update-delete.html">Del 4: Uppdatera och radera</a></p>

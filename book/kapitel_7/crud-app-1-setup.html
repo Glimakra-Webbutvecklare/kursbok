@@ -204,6 +204,7 @@
 <li><code>FOREIGN KEY ...</code>: Definierar en relation mellan <code>posts.user_id</code> och <code>users.id</code>. <code>ON DELETE CASCADE</code> betyder att om en användare tas bort, tas alla dennes inlägg också bort automatiskt.</li>
 </ul>
 <p>Skapa dessa tabeller i din MariaDB/MySQL-databas (t.ex. via phpMyAdmin eller kommandoraden). Vi antar att databasen heter <code>db_fullstack</code> som i tidigare exempel.</p>
+<p><img src="./assets/crud-app/del-1/del-1-phpmyadmin-tabeller.png" alt="phpMyAdmin med tabellerna users och posts" /></p>
 <h2 id="2-projektstruktur-initial"><a class="header" href="#2-projektstruktur-initial">2. Projektstruktur (Initial)</a></h2>
 <p>Vi börjar med en väldigt platt och enkel filstruktur. Skapa följande filer och mappar i roten av ditt projekt (t.ex. i <code>app/public</code> om du följer <code>docker-compose</code>-exemplet):</p>
 <pre><code>.
@@ -277,6 +278,7 @@ var_dump($result);  // Vad får du? Både numeriska index (0 =&gt; "1") OCH kolu
 <pre><code class="language-php">$pdo-&gt;setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 </code></pre>
 <p>Kör igen. Nu får du bara associativa nycklar (<code>["test" =&gt; "1"]</code>) – lättare att använda med <code>$result['test']</code> istället för att hålla reda på index. Detta är vad <code>ATTR_DEFAULT_FETCH_MODE</code> gör.</p>
+<p><img src="./assets/crud-app/del-1/del-1-test-pdo.png" alt="Utdata från test_pdo.php" /></p>
 <h3 id="databasanslutning-includesdatabasephp"><a class="header" href="#databasanslutning-includesdatabasephp">Databasanslutning (<code>includes/database.php</code>)</a></h3>
 <p>Skapa filen <code>includes/database.php</code>. Vi använder <strong>PDO (PHP Data Objects)</strong> för att ansluta. PDO ger ett konsekvent sätt att interagera med olika databaser och hjälper till att skydda mot SQL-injektion genom "prepared statements".</p>
 <pre><code class="language-php">&lt;?php

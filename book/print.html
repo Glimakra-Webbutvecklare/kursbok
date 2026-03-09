@@ -13913,6 +13913,7 @@ echo "Ny användare skapad med ID: " . $new_id;
 <li><code>FOREIGN KEY ...</code>: Definierar en relation mellan <code>posts.user_id</code> och <code>users.id</code>. <code>ON DELETE CASCADE</code> betyder att om en användare tas bort, tas alla dennes inlägg också bort automatiskt.</li>
 </ul>
 <p>Skapa dessa tabeller i din MariaDB/MySQL-databas (t.ex. via phpMyAdmin eller kommandoraden). Vi antar att databasen heter <code>db_fullstack</code> som i tidigare exempel.</p>
+<p><img src="kapitel_7/./assets/crud-app/del-1/del-1-phpmyadmin-tabeller.png" alt="phpMyAdmin med tabellerna users och posts" /></p>
 <h2 id="2-projektstruktur-initial"><a class="header" href="#2-projektstruktur-initial">2. Projektstruktur (Initial)</a></h2>
 <p>Vi börjar med en väldigt platt och enkel filstruktur. Skapa följande filer och mappar i roten av ditt projekt (t.ex. i <code>app/public</code> om du följer <code>docker-compose</code>-exemplet):</p>
 <pre><code>.
@@ -13986,6 +13987,7 @@ var_dump($result);  // Vad får du? Både numeriska index (0 =&gt; "1") OCH kolu
 <pre><code class="language-php">$pdo-&gt;setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 </code></pre>
 <p>Kör igen. Nu får du bara associativa nycklar (<code>["test" =&gt; "1"]</code>) – lättare att använda med <code>$result['test']</code> istället för att hålla reda på index. Detta är vad <code>ATTR_DEFAULT_FETCH_MODE</code> gör.</p>
+<p><img src="kapitel_7/./assets/crud-app/del-1/del-1-test-pdo.png" alt="Utdata från test_pdo.php" /></p>
 <h3 id="databasanslutning-includesdatabasephp"><a class="header" href="#databasanslutning-includesdatabasephp">Databasanslutning (<code>includes/database.php</code>)</a></h3>
 <p>Skapa filen <code>includes/database.php</code>. Vi använder <strong>PDO (PHP Data Objects)</strong> för att ansluta. PDO ger ett konsekvent sätt att interagera med olika databaser och hjälper till att skydda mot SQL-injektion genom "prepared statements".</p>
 <pre><code class="language-php">&lt;?php
@@ -14126,6 +14128,7 @@ $email = '';
 &lt;/html&gt;
 </code></pre>
 <p>Testa att ladda sidan. Formuläret visas, men skickar ännu ingen data till databasen.</p>
+<p><img src="kapitel_7/./assets/crud-app/del-2/del-2-register-formular.png" alt="Registreringsformuläret" /></p>
 <h3 id="steg-2-lägg-till-post-hantering"><a class="header" href="#steg-2-lägg-till-post-hantering">Steg 2: Lägg till POST-hantering</a></h3>
 <p><strong>Nytt i detta steg:</strong> Att kolla <code>$_SERVER['REQUEST_METHOD']</code>, hämta data från <code>$_POST</code>, och använda prepared statements för INSERT.</p>
 <p>Lägg till följande kod <em>efter</em> raderna med <code>$errors</code>, <code>$username</code>, <code>$email</code> och <em>före</em> <code>?&gt;</code>:</p>
@@ -14242,6 +14245,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 &lt;?php endif; ?&gt;
 </code></pre>
 <p>Lägg också till <code>required</code> och <code>minlength="6"</code> på lösenordsfälten i formuläret för extra skydd i webbläsaren.</p>
+<p><img src="kapitel_7/./assets/crud-app/del-2/del-2-register-validering.png" alt="Registrering med valideringsfel" /></p>
 <p><strong>Du har nu lärt dig:</strong> Validering med <code>empty()</code>, <code>filter_var()</code> och <code>strlen()</code>, att kolla dubbletter i databasen med prepared statements, och att visa fel med <code>htmlspecialchars()</code> för att undvika XSS.</p>
 <hr />
 <h2 id="steg-5-inloggning-loginphp"><a class="header" href="#steg-5-inloggning-loginphp">Steg 5: Inloggning (<code>login.php</code>)</a></h2>
@@ -14345,6 +14349,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 &lt;/html&gt;
 </code></pre>
 <p><strong>Viktigt:</strong> Använd <code>password_verify($password, $user['password_hash'])</code> – aldrig jämför hashar direkt. <code>password_verify</code> hanterar salt och algoritm automatiskt.</p>
+<p><img src="kapitel_7/./assets/crud-app/del-2/del-2-login-formular.png" alt="Inloggningsformuläret" /></p>
+<p><img src="kapitel_7/./assets/crud-app/del-2/del-2-login-success.png" alt="Inloggning lyckad – omdirigering till admin" /></p>
 <hr />
 <h2 id="steg-6-sessioner--spara-inloggning-och-skydda-sidor"><a class="header" href="#steg-6-sessioner--spara-inloggning-och-skydda-sidor">Steg 6: Sessioner – spara inloggning och skydda sidor</a></h2>
 <p>När användaren loggar in måste vi <em>komma ihåg</em> det på andra sidor. Det gör vi med sessioner.</p>
@@ -14411,6 +14417,7 @@ require_once '../includes/database.php';
 &lt;/html&gt;
 </code></pre>
 <p>Om du inte är inloggad omdirigeras du till login.php. I Del 4 bygger vi ut denna sida till en full admin-panel med lista över dina inlägg.</p>
+<p><img src="kapitel_7/./assets/crud-app/del-2/del-2-admin-dashboard.png" alt="Admin Dashboard – minimal version" /></p>
 <h3 id="steg-3a-logout--enkel-version"><a class="header" href="#steg-3a-logout--enkel-version">Steg 3a: Logout – enkel version</a></h3>
 <p>Skapa <code>logout.php</code> med den enklaste varianten:</p>
 <pre><code class="language-php">&lt;?php
@@ -14443,6 +14450,7 @@ exit;
 ?&gt;
 </code></pre>
 <p><code>session_get_cookie_params()</code> ger oss samma inställningar som PHP använde när cookien skapades. Genom att sätta cookien med ett datum i förflutna (<code>time() - 42000</code>) säger vi åt webbläsaren att ta bort den. Nu loggas du verkligen ut.</p>
+<p><img src="kapitel_7/./assets/crud-app/del-2/del-2-logout.png" alt="Utloggad – tillbaka på startsidan" /></p>
 <p><strong>Du har nu lärt dig:</strong> Att använda <code>$_SESSION</code> för att spara inloggningsstatus, att skydda sidor genom att kolla <code>$_SESSION['user_id']</code>, och att logga ut genom att tömma sessionen och förstöra cookien.</p>
 <hr />
 <p><strong>Föregående:</strong> <a href="kapitel_7/crud-app-1-setup.html">Del 1: Setup och databas</a> | <strong>Nästa:</strong> <a href="kapitel_7/crud-app-3-create-read.html">Del 3: Skapa och läsa inlägg</a></p>
@@ -14511,6 +14519,7 @@ $body = '';
 &lt;/html&gt;
 </code></pre>
 <p><strong>OBS:</strong> Länken "Tillbaka till Admin Dashboard" pekar på <code>admin/index.php</code>. Se till att du har en <code>admin/index.php</code> som visar något (t.ex. en rubrik "Admin Dashboard" och en länk till create_post.php).</p>
+<p><img src="kapitel_7/./assets/crud-app/del-3/del-3-create-formular.png" alt="Formulär för att skapa nytt inlägg" /></p>
 <h3 id="steg-2-lägg-till-post-hantering-och-spara-i-databasen"><a class="header" href="#steg-2-lägg-till-post-hantering-och-spara-i-databasen">Steg 2: Lägg till POST-hantering och spara i databasen</a></h3>
 <p><strong>Nytt i detta steg:</strong> INSERT till <code>posts</code>-tabellen med <code>user_id</code> från sessionen.</p>
 <p>Lägg till följande <em>efter</em> <code>$body = '';</code> och <em>före</em> <code>?&gt;</code>:</p>
@@ -14668,6 +14677,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 </code></pre>
 <p><strong>Förklaring:</strong> <code>UPLOAD_PATH</code> definieras i <code>config.php</code> (Del 1). <code>uniqid()</code> ger unika filnamn så att filer inte skriver över varandra. Om databasen misslyckas efter att bilden sparats tar vi bort bilden med <code>unlink()</code>.</p>
+<p><img src="kapitel_7/./assets/crud-app/del-3/del-3-create-med-bild.png" alt="Skapa inlägg med bilduppladdning" /></p>
 <p><strong>Du har nu lärt dig:</strong> Filuppladdning med <code>$_FILES</code>, <code>move_uploaded_file()</code>, validering av filtyp och storlek, och att spara relativ sökväg i databasen.</p>
 <hr />
 <h2 id="mini-exempel-varför-join"><a class="header" href="#mini-exempel-varför-join">Mini-exempel: Varför JOIN?</a></h2>
@@ -14775,6 +14785,8 @@ try {
 &lt;/body&gt;
 &lt;/html&gt;
 </code></pre>
+<p><img src="kapitel_7/./assets/crud-app/del-3/del-3-index-tom.png" alt="Startsidan när inga inlägg finns ännu" /></p>
+<p><img src="kapitel_7/./assets/crud-app/del-3/del-3-index-med-inlagg.png" alt="Startsidan med listan över blogginlägg" /></p>
 <p><strong>Du har nu lärt dig:</strong> JOIN för att hämta relaterad data, <code>fetchAll()</code> för flera rader, <code>substr()</code> och <code>nl2br()</code> för textvisning.</p>
 <hr />
 <h2 id="steg-8b-visa-enskilt-inlägg-postphp"><a class="header" href="#steg-8b-visa-enskilt-inlägg-postphp">Steg 8b: Visa enskilt inlägg (<code>post.php</code>)</a></h2>
@@ -14866,6 +14878,7 @@ if ($post_id === false || $post_id &lt;= 0) {
 &lt;/body&gt;
 &lt;/html&gt;
 </code></pre>
+<p><img src="kapitel_7/./assets/crud-app/del-3/del-3-post-enskilt.png" alt="Enskilt blogginlägg med bild" /></p>
 <p><strong>Du har nu lärt dig:</strong> <code>filter_input()</code> för säker validering av GET-parametrar, prepared statements med <code>bindParam</code> för SELECT, och att hantera fall där inlägget inte hittas.</p>
 <hr />
 <p><strong>Föregående:</strong> <a href="kapitel_7/crud-app-2-autentisering.html">Del 2: Autentisering</a> | <strong>Nästa:</strong> <a href="kapitel_7/crud-app-4-update-delete.html">Del 4: Uppdatera och radera</a></p>
@@ -14989,6 +15002,7 @@ try {
 &lt;/html&gt;
 </code></pre>
 <p>Nu har du en fungerande admin-panel. "Redigera"-länken pekar på <code>edit_post.php</code> som vi skapar nästa.</p>
+<p><img src="kapitel_7/./assets/crud-app/del-4/del-4-admin-panel.png" alt="Admin-panelen med lista över dina inlägg" /></p>
 <hr />
 <h2 id="steg-9b-redigera-inlägg--utan-bildhantering"><a class="header" href="#steg-9b-redigera-inlägg--utan-bildhantering">Steg 9b: Redigera inlägg – utan bildhantering</a></h2>
 <p>Redigering kräver två saker: hämta befintlig data (GET) och spara ändringar (POST). Vi börjar utan bildhantering.</p>
@@ -15134,6 +15148,7 @@ if ($post_id === false || $post_id &lt;= 0) {
 &lt;/html&gt;
 </code></pre>
 <p><strong>OBS:</strong> Formulärets <code>action</code> inkluderar <code>?id=&lt;?php echo $post_id; ?&gt;</code> så att vi vet vilket inlägg som uppdateras vid POST.</p>
+<p><img src="kapitel_7/./assets/crud-app/del-4/del-4-edit-formular.png" alt="Redigeringsformuläret" /></p>
 <p>Testa att redigera ett inlägg. Titeln och innehållet ska uppdateras.</p>
 <hr />
 <h2 id="steg-9c-redigering--lägg-till-bildhantering"><a class="header" href="#steg-9c-redigering--lägg-till-bildhantering">Steg 9c: Redigering – lägg till bildhantering</a></h2>
@@ -15289,6 +15304,7 @@ if ($delete_image &amp;&amp; $current_image_path) {
     }
 }
 </code></pre>
+<p><img src="kapitel_7/./assets/crud-app/del-4/del-4-edit-med-bild.png" alt="Redigera inlägg med bildhantering – visa nuvarande bild, ta bort eller ersätta" /></p>
 <p><strong>Du har nu lärt dig:</strong> Att hantera tre fall – behålla bild, ta bort bild, ersätta bild – och att städa upp filer om databasen misslyckas.</p>
 <hr />
 <h2 id="steg-10-radera-inlägg"><a class="header" href="#steg-10-radera-inlägg">Steg 10: Radera inlägg</a></h2>
@@ -15388,6 +15404,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 &lt;/form&gt;
 </code></pre>
 <p><code>confirm()</code> visar en dialog innan formuläret skickas. För titlar med citationstecken kan du använda <code>htmlspecialchars($post['title'], ENT_QUOTES, 'UTF-8')</code> i bekräftelsetexten om du vill visa titeln.</p>
+<p><img src="kapitel_7/./assets/crud-app/del-4/del-4-delete-bekraftelse.png" alt="Bekräftelsedialog innan radering av inlägg" /></p>
 <p><strong>Du har nu lärt dig:</strong> Att använda POST för destruktiva operationer, att radera relaterade filer vid radering av databasrad, och att använda <code>confirm()</code> för att undvika misstag.</p>
 <hr />
 <p>Nu har du en fungerande bloggapplikation med CRUD, autentisering, sessioner och bildhantering.</p>
@@ -15439,6 +15456,7 @@ function get_post_by_id(int $post_id): array|false {
 </code></pre>
 <p>Lägg till <code>require_once 'includes/functions.php';</code> (efter config och före eller istället för database – functions inkluderar database). Du kan ta bort den direkta <code>require_once 'includes/database.php';</code> om du vill, eftersom functions.php inkluderar den.</p>
 <p>Testa att öppna ett inlägg. Det ska fungera som tidigare, men koden i post.php är nu enklare.</p>
+<p><img src="kapitel_7/./assets/crud-app/del-5/del-5-post-fungerar.png" alt="Enskilt inlägg fungerar fortfarande efter refaktorering" /></p>
 <p><strong>Du har nu lärt dig:</strong> Att extrahera databaslogik till funktioner och att använda type hints (<code>int</code>, <code>array|false</code>).</p>
 <hr />
 <h2 id="steg-12b-lägg-till-fler-funktioner"><a class="header" href="#steg-12b-lägg-till-fler-funktioner">Steg 12b: Lägg till fler funktioner</a></h2>

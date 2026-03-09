@@ -237,6 +237,7 @@ $email = '';
 &lt;/html&gt;
 </code></pre>
 <p>Testa att ladda sidan. Formuläret visas, men skickar ännu ingen data till databasen.</p>
+<p><img src="./assets/crud-app/del-2/del-2-register-formular.png" alt="Registreringsformuläret" /></p>
 <h3 id="steg-2-lägg-till-post-hantering"><a class="header" href="#steg-2-lägg-till-post-hantering">Steg 2: Lägg till POST-hantering</a></h3>
 <p><strong>Nytt i detta steg:</strong> Att kolla <code>$_SERVER['REQUEST_METHOD']</code>, hämta data från <code>$_POST</code>, och använda prepared statements för INSERT.</p>
 <p>Lägg till följande kod <em>efter</em> raderna med <code>$errors</code>, <code>$username</code>, <code>$email</code> och <em>före</em> <code>?&gt;</code>:</p>
@@ -353,6 +354,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 &lt;?php endif; ?&gt;
 </code></pre>
 <p>Lägg också till <code>required</code> och <code>minlength="6"</code> på lösenordsfälten i formuläret för extra skydd i webbläsaren.</p>
+<p><img src="./assets/crud-app/del-2/del-2-register-validering.png" alt="Registrering med valideringsfel" /></p>
 <p><strong>Du har nu lärt dig:</strong> Validering med <code>empty()</code>, <code>filter_var()</code> och <code>strlen()</code>, att kolla dubbletter i databasen med prepared statements, och att visa fel med <code>htmlspecialchars()</code> för att undvika XSS.</p>
 <hr />
 <h2 id="steg-5-inloggning-loginphp"><a class="header" href="#steg-5-inloggning-loginphp">Steg 5: Inloggning (<code>login.php</code>)</a></h2>
@@ -456,6 +458,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 &lt;/html&gt;
 </code></pre>
 <p><strong>Viktigt:</strong> Använd <code>password_verify($password, $user['password_hash'])</code> – aldrig jämför hashar direkt. <code>password_verify</code> hanterar salt och algoritm automatiskt.</p>
+<p><img src="./assets/crud-app/del-2/del-2-login-formular.png" alt="Inloggningsformuläret" /></p>
+<p><img src="./assets/crud-app/del-2/del-2-login-success.png" alt="Inloggning lyckad – omdirigering till admin" /></p>
 <hr />
 <h2 id="steg-6-sessioner--spara-inloggning-och-skydda-sidor"><a class="header" href="#steg-6-sessioner--spara-inloggning-och-skydda-sidor">Steg 6: Sessioner – spara inloggning och skydda sidor</a></h2>
 <p>När användaren loggar in måste vi <em>komma ihåg</em> det på andra sidor. Det gör vi med sessioner.</p>
@@ -522,6 +526,7 @@ require_once '../includes/database.php';
 &lt;/html&gt;
 </code></pre>
 <p>Om du inte är inloggad omdirigeras du till login.php. I Del 4 bygger vi ut denna sida till en full admin-panel med lista över dina inlägg.</p>
+<p><img src="./assets/crud-app/del-2/del-2-admin-dashboard.png" alt="Admin Dashboard – minimal version" /></p>
 <h3 id="steg-3a-logout--enkel-version"><a class="header" href="#steg-3a-logout--enkel-version">Steg 3a: Logout – enkel version</a></h3>
 <p>Skapa <code>logout.php</code> med den enklaste varianten:</p>
 <pre><code class="language-php">&lt;?php
@@ -554,6 +559,7 @@ exit;
 ?&gt;
 </code></pre>
 <p><code>session_get_cookie_params()</code> ger oss samma inställningar som PHP använde när cookien skapades. Genom att sätta cookien med ett datum i förflutna (<code>time() - 42000</code>) säger vi åt webbläsaren att ta bort den. Nu loggas du verkligen ut.</p>
+<p><img src="./assets/crud-app/del-2/del-2-logout.png" alt="Utloggad – tillbaka på startsidan" /></p>
 <p><strong>Du har nu lärt dig:</strong> Att använda <code>$_SESSION</code> för att spara inloggningsstatus, att skydda sidor genom att kolla <code>$_SESSION['user_id']</code>, och att logga ut genom att tömma sessionen och förstöra cookien.</p>
 <hr />
 <p><strong>Föregående:</strong> <a href="crud-app-1-setup.html">Del 1: Setup och databas</a> | <strong>Nästa:</strong> <a href="crud-app-3-create-read.html">Del 3: Skapa och läsa inlägg</a></p>

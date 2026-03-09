@@ -199,6 +199,7 @@ function get_post_by_id(int $post_id): array|false {
 </code></pre>
 <p>Lägg till <code>require_once 'includes/functions.php';</code> (efter config och före eller istället för database – functions inkluderar database). Du kan ta bort den direkta <code>require_once 'includes/database.php';</code> om du vill, eftersom functions.php inkluderar den.</p>
 <p>Testa att öppna ett inlägg. Det ska fungera som tidigare, men koden i post.php är nu enklare.</p>
+<p><img src="./assets/crud-app/del-5/del-5-post-fungerar.png" alt="Enskilt inlägg fungerar fortfarande efter refaktorering" /></p>
 <p><strong>Du har nu lärt dig:</strong> Att extrahera databaslogik till funktioner och att använda type hints (<code>int</code>, <code>array|false</code>).</p>
 <hr />
 <h2 id="steg-12b-lägg-till-fler-funktioner"><a class="header" href="#steg-12b-lägg-till-fler-funktioner">Steg 12b: Lägg till fler funktioner</a></h2>
