@@ -16,6 +16,12 @@ Skapa policyn:
 php artisan make:policy PostPolicy --model=Post
 ```
 
+**Exempel på utdata:**
+
+```
+  INFO  Policy [app/Policies/PostPolicy.php] created successfully.
+```
+
 Öppna `app/Policies/PostPolicy.php` och uppdatera metoderna `update` och `delete`:
 
 ```php
@@ -90,6 +96,8 @@ Skapa `resources/views/posts/edit.blade.php`:
 
 **Kontrollera att det fungerar:** Gå till `/admin` och klicka "Redigera" på ett inlägg. Du ska se formuläret med befintlig titel och innehåll. Om du försöker redigera ett inlägg som tillhör en annan användare (skapa en annan användare först) ska du få 403 Forbidden.
 
+![Redigeringsformuläret](./assets/laravel-crud/del-5/del-5-edit-formular.png)
+
 ---
 
 ## Steg 3: update()-metoden
@@ -162,6 +170,8 @@ Uppdatera `resources/views/posts/admin.blade.php` – ersätt kommentaren `<!-- 
 Radering ska ske via **POST** (med `@method('DELETE')`), inte GET – samma princip som i CRUD-appen. GET ska inte ha sidoeffekter som radering.
 
 **Kontrollera att det fungerar:** Klicka "Radera" på ett inlägg. Du ska få en bekräftelsedialog. Bekräfta – inlägget ska försvinna från listan. Om inlägget hade en bild ska filen också tas bort från `storage/app/public/posts/`.
+
+![Bekräftelsedialog innan radering av inlägg](./assets/laravel-crud/del-5/del-5-delete-bekraftelse.png)
 
 ---
 

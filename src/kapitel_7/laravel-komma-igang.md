@@ -27,6 +27,20 @@ composer create-project laravel/laravel blogg
 cd blogg
 ```
 
+**Exempel på utdata** (installationen tar några minuter):
+
+```
+Creating a "laravel/laravel" project at "./blogg"
+...
+> @php artisan key:generate --ansi
+  INFO  Application key set successfully.
+> @php artisan migrate --graceful --ansi
+  INFO  Running migrations.
+  0001_01_01_000000_create_users_table ........ DONE
+  0001_01_01_000001_create_cache_table ........ DONE
+  0001_01_01_000002_create_jobs_table .......... DONE
+```
+
 Alternativt kan du installera Laravel Installer globalt och använda:
 
 ```bash
@@ -84,6 +98,14 @@ Laravel levereras med **Artisan**, ett verktyg för vanliga uppgifter:
 php artisan serve
 ```
 
+**Exempel på utdata:**
+
+```
+  INFO  Server running on [http://127.0.0.1:8000].
+
+  Press Ctrl+C to stop the server
+```
+
 Startar en utvecklingsserver på `http://localhost:8000`. Öppna adressen i webbläsaren – du ska se Laravels välkomstsida.
 
 Andra användbara kommandon:
@@ -93,6 +115,15 @@ php artisan migrate          # Kör migrations (skapar/uppdaterar tabeller)
 php artisan make:controller  # Skapa en ny controller
 php artisan make:model       # Skapa en ny model
 php artisan route:list       # Lista alla definierade routes
+```
+
+**Exempel på utdata** för `php artisan route:list` (visar alla URL:er och vilka controllers som hanterar dem):
+
+```
+  GET|HEAD  / ......... HejController@index
+  GET|HEAD  login ..... Auth\AuthenticatedSessionController@create
+  POST     login ..... Auth\AuthenticatedSessionController@store
+  ...
 ```
 
 ---
@@ -123,6 +154,12 @@ I stället för att skriva logik direkt i route-filen använder man ofta en cont
 
 ```bash
 php artisan make:controller HejController
+```
+
+**Exempel på utdata:**
+
+```
+  INFO  Controller [app/Http/Controllers/HejController.php] created successfully.
 ```
 
 Öppna `app/Http/Controllers/HejController.php` och lägg till en metod:

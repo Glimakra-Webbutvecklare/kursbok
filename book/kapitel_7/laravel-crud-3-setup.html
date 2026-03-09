@@ -167,11 +167,25 @@
 <pre><code class="language-bash">composer require laravel/breeze --dev
 php artisan breeze:install
 </code></pre>
-<p>Välj <strong>"Blade"</strong> när du tillfrågas om vilken stack du vill använda. Breeze skapar routes, controllers och vyer för auth. Kör sedan:</p>
+<p><strong>Exempel på utdata</strong> för <code>composer require</code>:</p>
+<pre><code>  INFO  Running composer update laravel/breeze
+  ...
+  - Installing laravel/breeze (v2.x): Extracting archive
+</code></pre>
+<p>För <code>breeze:install</code> – välj <strong>"Blade"</strong> när du tillfrågas om vilken stack du vill använda. Breeze bygger sedan frontend-assets (npm, vite). Breeze skapar routes, controllers och vyer för auth. Kör sedan:</p>
 <pre><code class="language-bash">php artisan migrate
+</code></pre>
+<p><strong>Exempel på utdata:</strong></p>
+<pre><code>  INFO  Running migrations.
+  0001_01_01_000000_create_users_table ........ DONE
+  0001_01_01_000001_create_cache_table ........ DONE
+  0001_01_01_000002_create_jobs_table .......... DONE
 </code></pre>
 <p>Nu finns <code>users</code>-tabellen (med <code>name</code>, <code>email</code>, <code>password</code> m.m.).</p>
 <p><strong>Kontrollera att det fungerar:</strong> Starta servern med <code>php artisan serve</code> och gå till <code>http://localhost:8000/register</code>. Registrera en användare med e-post och lösenord. Du ska sedan vara inloggad och se dashboard. Testa att logga ut och logga in igen på <code>/login</code>.</p>
+<p><img src="./assets/laravel-crud/del-3/del-3-register-formular.png" alt="Registreringsformuläret (Breeze)" /></p>
+<p><img src="./assets/laravel-crud/del-3/del-3-login-formular.png" alt="Inloggningsformuläret (Breeze)" /></p>
+<p><img src="./assets/laravel-crud/del-3/del-3-admin-dashboard.png" alt="Dashboard efter inloggning" /></p>
 <hr />
 <h2 id="steg-2-skapa-posts-tabellen-med-migration"><a class="header" href="#steg-2-skapa-posts-tabellen-med-migration">Steg 2: Skapa posts-tabellen med migration</a></h2>
 <p>Skapa en migration för blogginlägg:</p>
@@ -194,6 +208,11 @@ php artisan breeze:install
 <p>Kör migrationen:</p>
 <pre><code class="language-bash">php artisan migrate
 </code></pre>
+<p><strong>Exempel på utdata:</strong></p>
+<pre><code>  INFO  Running migrations.
+  2026_03_09_140608_create_posts_table ........ DONE
+</code></pre>
+<p>(Migrationsfilens namn kan variera – ditt datum/tid visas i stället.)</p>
 <p><strong>Kontrollera att det fungerar:</strong> Öppna din databas (t.ex. phpMyAdmin eller <code>mysql</code>-klienten) och verifiera att tabellen <code>posts</code> finns med kolumnerna <code>id</code>, <code>user_id</code>, <code>title</code>, <code>body</code>, <code>image_path</code>, <code>created_at</code>, <code>updated_at</code>.</p>
 <hr />
 <h2 id="steg-3-konfigurera-post-modellen-och-relationer"><a class="header" href="#steg-3-konfigurera-post-modellen-och-relationer">Steg 3: Konfigurera Post-modellen och relationer</a></h2>
@@ -217,12 +236,29 @@ public function user()
 <p>Verifiera att Post-modellen fungerar genom att skapa ett inlägg manuellt:</p>
 <pre><code class="language-bash">php artisan tinker
 </code></pre>
+<p><strong>Exempel på utdata</strong> (Tinker startar en interaktiv PHP-prompt):</p>
+<pre><code>  Psy Shell v0.12.x (PHP 8.x.x — cli)
+  &gt;&gt;&gt; 
+</code></pre>
 <p>I Tinker-prompten:</p>
 <pre><code class="language-php">$user = \App\Models\User::first();
 $user-&gt;posts()-&gt;create(['title' =&gt; 'Testinlägg', 'body' =&gt; 'Detta är ett test.']);
 exit
 </code></pre>
 <p><strong>Kontrollera att det fungerar:</strong> Kör <code>$user-&gt;posts</code> i Tinker – du ska se ditt testinlägg. Du kan också köra <code>\App\Models\Post::with('user')-&gt;first()</code> för att se att relationen fungerar.</p>
+<p><strong>Exempel på utdata</strong> när du kör <code>$user-&gt;posts</code>:</p>
+<pre><code>=&gt; Illuminate\Database\Eloquent\Collection {
+     all: [
+       App\Models\Post {
+         id: 1,
+         user_id: 1,
+         title: "Testinlägg",
+         body: "Detta är ett test.",
+         ...
+       },
+     ],
+   }
+</code></pre>
 <hr />
 <h2 id="i-denna-del-har-du-lärt-dig"><a class="header" href="#i-denna-del-har-du-lärt-dig">I denna del har du lärt dig</a></h2>
 <ul>
@@ -263,6 +299,22 @@ exit
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

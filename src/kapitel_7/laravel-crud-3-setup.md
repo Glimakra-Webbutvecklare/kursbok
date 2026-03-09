@@ -27,15 +27,38 @@ composer require laravel/breeze --dev
 php artisan breeze:install
 ```
 
-Välj **"Blade"** när du tillfrågas om vilken stack du vill använda. Breeze skapar routes, controllers och vyer för auth. Kör sedan:
+**Exempel på utdata** för `composer require`:
+
+```
+  INFO  Running composer update laravel/breeze
+  ...
+  - Installing laravel/breeze (v2.x): Extracting archive
+```
+
+För `breeze:install` – välj **"Blade"** när du tillfrågas om vilken stack du vill använda. Breeze bygger sedan frontend-assets (npm, vite). Breeze skapar routes, controllers och vyer för auth. Kör sedan:
 
 ```bash
 php artisan migrate
 ```
 
+**Exempel på utdata:**
+
+```
+  INFO  Running migrations.
+  0001_01_01_000000_create_users_table ........ DONE
+  0001_01_01_000001_create_cache_table ........ DONE
+  0001_01_01_000002_create_jobs_table .......... DONE
+```
+
 Nu finns `users`-tabellen (med `name`, `email`, `password` m.m.).
 
 **Kontrollera att det fungerar:** Starta servern med `php artisan serve` och gå till `http://localhost:8000/register`. Registrera en användare med e-post och lösenord. Du ska sedan vara inloggad och se dashboard. Testa att logga ut och logga in igen på `/login`.
+
+![Registreringsformuläret (Breeze)](./assets/laravel-crud/del-3/del-3-register-formular.png)
+
+![Inloggningsformuläret (Breeze)](./assets/laravel-crud/del-3/del-3-login-formular.png)
+
+![Dashboard efter inloggning](./assets/laravel-crud/del-3/del-3-admin-dashboard.png)
 
 ---
 
@@ -70,6 +93,15 @@ Kör migrationen:
 ```bash
 php artisan migrate
 ```
+
+**Exempel på utdata:**
+
+```
+  INFO  Running migrations.
+  2026_03_09_140608_create_posts_table ........ DONE
+```
+
+(Migrationsfilens namn kan variera – ditt datum/tid visas i stället.)
 
 **Kontrollera att det fungerar:** Öppna din databas (t.ex. phpMyAdmin eller `mysql`-klienten) och verifiera att tabellen `posts` finns med kolumnerna `id`, `user_id`, `title`, `body`, `image_path`, `created_at`, `updated_at`.
 
@@ -109,6 +141,13 @@ Verifiera att Post-modellen fungerar genom att skapa ett inlägg manuellt:
 php artisan tinker
 ```
 
+**Exempel på utdata** (Tinker startar en interaktiv PHP-prompt):
+
+```
+  Psy Shell v0.12.x (PHP 8.x.x — cli)
+  >>> 
+```
+
 I Tinker-prompten:
 
 ```php
@@ -118,6 +157,22 @@ exit
 ```
 
 **Kontrollera att det fungerar:** Kör `$user->posts` i Tinker – du ska se ditt testinlägg. Du kan också köra `\App\Models\Post::with('user')->first()` för att se att relationen fungerar.
+
+**Exempel på utdata** när du kör `$user->posts`:
+
+```
+=> Illuminate\Database\Eloquent\Collection {
+     all: [
+       App\Models\Post {
+         id: 1,
+         user_id: 1,
+         title: "Testinlägg",
+         body: "Detta är ett test.",
+         ...
+       },
+     ],
+   }
+```
 
 ---
 

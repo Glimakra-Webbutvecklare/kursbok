@@ -170,6 +170,17 @@
 <pre><code class="language-bash">composer create-project laravel/laravel blogg
 cd blogg
 </code></pre>
+<p><strong>Exempel på utdata</strong> (installationen tar några minuter):</p>
+<pre><code>Creating a "laravel/laravel" project at "./blogg"
+...
+&gt; @php artisan key:generate --ansi
+  INFO  Application key set successfully.
+&gt; @php artisan migrate --graceful --ansi
+  INFO  Running migrations.
+  0001_01_01_000000_create_users_table ........ DONE
+  0001_01_01_000001_create_cache_table ........ DONE
+  0001_01_01_000002_create_jobs_table .......... DONE
+</code></pre>
 <p>Alternativt kan du installera Laravel Installer globalt och använda:</p>
 <pre><code class="language-bash">laravel new blogg
 </code></pre>
@@ -206,12 +217,23 @@ DB_PASSWORD=db_password
 <p>Laravel levereras med <strong>Artisan</strong>, ett verktyg för vanliga uppgifter:</p>
 <pre><code class="language-bash">php artisan serve
 </code></pre>
+<p><strong>Exempel på utdata:</strong></p>
+<pre><code>  INFO  Server running on [http://127.0.0.1:8000].
+
+  Press Ctrl+C to stop the server
+</code></pre>
 <p>Startar en utvecklingsserver på <code>http://localhost:8000</code>. Öppna adressen i webbläsaren – du ska se Laravels välkomstsida.</p>
 <p>Andra användbara kommandon:</p>
 <pre><code class="language-bash">php artisan migrate          # Kör migrations (skapar/uppdaterar tabeller)
 php artisan make:controller  # Skapa en ny controller
 php artisan make:model       # Skapa en ny model
 php artisan route:list       # Lista alla definierade routes
+</code></pre>
+<p><strong>Exempel på utdata</strong> för <code>php artisan route:list</code> (visar alla URL:er och vilka controllers som hanterar dem):</p>
+<pre><code>  GET|HEAD  / ......... HejController@index
+  GET|HEAD  login ..... Auth\AuthenticatedSessionController@create
+  POST     login ..... Auth\AuthenticatedSessionController@store
+  ...
 </code></pre>
 <hr />
 <h2 id="enkel-testroute"><a class="header" href="#enkel-testroute">Enkel testroute</a></h2>
@@ -229,6 +251,9 @@ php artisan route:list       # Lista alla definierade routes
 <h3 id="via-en-controller"><a class="header" href="#via-en-controller">Via en controller</a></h3>
 <p>I stället för att skriva logik direkt i route-filen använder man ofta en controller. Skapa en:</p>
 <pre><code class="language-bash">php artisan make:controller HejController
+</code></pre>
+<p><strong>Exempel på utdata:</strong></p>
+<pre><code>  INFO  Controller [app/Http/Controllers/HejController.php] created successfully.
 </code></pre>
 <p>Öppna <code>app/Http/Controllers/HejController.php</code> och lägg till en metod:</p>
 <pre><code class="language-php">public function index()
@@ -320,6 +345,22 @@ Route::get('/', [HejController::class, 'index']);
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

@@ -161,6 +161,9 @@
 <p>Skapa policyn:</p>
 <pre><code class="language-bash">php artisan make:policy PostPolicy --model=Post
 </code></pre>
+<p><strong>Exempel på utdata:</strong></p>
+<pre><code>  INFO  Policy [app/Policies/PostPolicy.php] created successfully.
+</code></pre>
 <p>Öppna <code>app/Policies/PostPolicy.php</code> och uppdatera metoderna <code>update</code> och <code>delete</code>:</p>
 <pre><code class="language-php">public function update(User $user, Post $post): bool
 {
@@ -219,6 +222,7 @@ public function delete(User $user, Post $post): bool
 </code></pre>
 <p><strong>OBS:</strong> <code>@method('PUT')</code> – HTML-formulär stödjer bara GET och POST. Laravel använder detta dolda fält för att simulera PUT, så routen <code>Route::put(...)</code> matchar.</p>
 <p><strong>Kontrollera att det fungerar:</strong> Gå till <code>/admin</code> och klicka "Redigera" på ett inlägg. Du ska se formuläret med befintlig titel och innehåll. Om du försöker redigera ett inlägg som tillhör en annan användare (skapa en annan användare först) ska du få 403 Forbidden.</p>
+<p><img src="./assets/laravel-crud/del-5/del-5-edit-formular.png" alt="Redigeringsformuläret" /></p>
 <hr />
 <h2 id="steg-3-update-metoden"><a class="header" href="#steg-3-update-metoden">Steg 3: update()-metoden</a></h2>
 <p>Lägg till <code>update()</code> i PostController så att ändringar sparas:</p>
@@ -276,6 +280,7 @@ public function delete(User $user, Post $post): bool
 </code></pre>
 <p>Radering ska ske via <strong>POST</strong> (med <code>@method('DELETE')</code>), inte GET – samma princip som i CRUD-appen. GET ska inte ha sidoeffekter som radering.</p>
 <p><strong>Kontrollera att det fungerar:</strong> Klicka "Radera" på ett inlägg. Du ska få en bekräftelsedialog. Bekräfta – inlägget ska försvinna från listan. Om inlägget hade en bild ska filen också tas bort från <code>storage/app/public/posts/</code>.</p>
+<p><img src="./assets/laravel-crud/del-5/del-5-delete-bekraftelse.png" alt="Bekräftelsedialog innan radering av inlägg" /></p>
 <hr />
 <h2 id="jämförelse-plain-php-vs-laravel"><a class="header" href="#jämförelse-plain-php-vs-laravel">Jämförelse: Plain PHP vs. Laravel</a></h2>
 <div class="table-wrapper"><table><thead><tr><th>Uppgift</th><th>CRUD-app (plain PHP)</th><th>Laravel</th></tr></thead><tbody>
@@ -329,6 +334,22 @@ public function delete(User $user, Post $post): bool
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

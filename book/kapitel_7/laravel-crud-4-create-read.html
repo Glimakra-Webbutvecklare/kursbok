@@ -161,6 +161,9 @@
 <p>Skapa controllern:</p>
 <pre><code class="language-bash">php artisan make:controller PostController
 </code></pre>
+<p><strong>Exempel på utdata:</strong></p>
+<pre><code>  INFO  Controller [app/Http/Controllers/PostController.php] created successfully.
+</code></pre>
 <p>Lägg till i <code>routes/web.php</code> (under de routes Breeze skapat, men <strong>före</strong> Breeze:s route för <code>/</code> om den finns). Om Breeze har satt <code>/</code> som dashboard behöver vi ändra det – se avsnittet "Uppdatera startsidan" längst ned.</p>
 <pre><code class="language-php">use App\Http\Controllers\PostController;
 
@@ -291,6 +294,7 @@ class PostController extends Controller
 @endsection
 </code></pre>
 <p><strong>Blade-tips:</strong> <code>@error('title')</code> visar valideringsfel för fältet. <code>old('title')</code> återställer värdet om formuläret skickas tillbaka med fel – så användaren inte behöver skriva om allt.</p>
+<p><img src="./assets/laravel-crud/del-4/del-4-create-formular.png" alt="Formulär för att skapa nytt inlägg" /></p>
 <p><strong>Kontrollera att det fungerar:</strong> Logga in och gå till <code>/admin/posts/create</code>. Skapa ett inlägg med titel och innehåll. Du ska omdirigeras till admin-panelen och se ditt nya inlägg. Testa att skicka formuläret tomt – du ska se valideringsfel.</p>
 <hr />
 <h2 id="steg-3-admin-panel-och-lista"><a class="header" href="#steg-3-admin-panel-och-lista">Steg 3: Admin-panel och lista</a></h2>
@@ -363,6 +367,8 @@ class PostController extends Controller
 </code></pre>
 <p><strong>OBS:</strong> <code>{!! nl2br(e($post-&gt;body)) !!}</code> – vi använder <code>e()</code> för att escap:a (skydda mot XSS) och <code>nl2br()</code> för radbrytningar. <code>{!! !!}</code> skriver ut utan extra escaping eftersom vi redan escap:at med <code>e()</code>.</p>
 <p><strong>Kontrollera att det fungerar:</strong> Gå till <code>/</code>. Klicka "Läs mer" på ett inlägg – du ska se hela inlägget. Klicka "Tillbaka" – du ska tillbaka till listan.</p>
+<p><img src="./assets/laravel-crud/del-4/del-4-index-med-inlagg.png" alt="Startsidan med listan över blogginlägg" /></p>
+<p><img src="./assets/laravel-crud/del-4/del-4-post-enskilt.png" alt="Enskilt blogginlägg med bild" /></p>
 <hr />
 <h2 id="steg-5-bilduppladdning"><a class="header" href="#steg-5-bilduppladdning">Steg 5: Bilduppladdning</a></h2>
 <p>Lägg till stöd för att ladda upp en bild när man skapar inlägg.</p>
@@ -425,6 +431,9 @@ class PostController extends Controller
 <h2 id="steg-6-symbolisk-länk-för-uppladdningar"><a class="header" href="#steg-6-symbolisk-länk-för-uppladdningar">Steg 6: Symbolisk länk för uppladdningar</a></h2>
 <p>För att bilder ska vara tillgängliga via webbläsaren måste du skapa en symbolisk länk:</p>
 <pre><code class="language-bash">php artisan storage:link
+</code></pre>
+<p><strong>Exempel på utdata:</strong></p>
+<pre><code>  INFO  The [public/storage] link has been connected to [storage/app/public].
 </code></pre>
 <p>Detta skapar en länk från <code>public/storage</code> till <code>storage/app/public</code>. Uppladdade bilder hamnar i <code>storage/app/public/posts/</code>.</p>
 <p><strong>Kontrollera att det fungerar:</strong> Skapa ett nytt inlägg med en bild. Du ska se bilden på startsidan och på inläggets sida. Om bilden inte visas, se "Vanliga problem" nedan.</p>
@@ -490,6 +499,22 @@ class PostController extends Controller
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

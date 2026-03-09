@@ -15681,6 +15681,17 @@ require 'templates/partials/footer.php';
 <pre><code class="language-bash">composer create-project laravel/laravel blogg
 cd blogg
 </code></pre>
+<p><strong>Exempel på utdata</strong> (installationen tar några minuter):</p>
+<pre><code>Creating a "laravel/laravel" project at "./blogg"
+...
+&gt; @php artisan key:generate --ansi
+  INFO  Application key set successfully.
+&gt; @php artisan migrate --graceful --ansi
+  INFO  Running migrations.
+  0001_01_01_000000_create_users_table ........ DONE
+  0001_01_01_000001_create_cache_table ........ DONE
+  0001_01_01_000002_create_jobs_table .......... DONE
+</code></pre>
 <p>Alternativt kan du installera Laravel Installer globalt och använda:</p>
 <pre><code class="language-bash">laravel new blogg
 </code></pre>
@@ -15717,12 +15728,23 @@ DB_PASSWORD=db_password
 <p>Laravel levereras med <strong>Artisan</strong>, ett verktyg för vanliga uppgifter:</p>
 <pre><code class="language-bash">php artisan serve
 </code></pre>
+<p><strong>Exempel på utdata:</strong></p>
+<pre><code>  INFO  Server running on [http://127.0.0.1:8000].
+
+  Press Ctrl+C to stop the server
+</code></pre>
 <p>Startar en utvecklingsserver på <code>http://localhost:8000</code>. Öppna adressen i webbläsaren – du ska se Laravels välkomstsida.</p>
 <p>Andra användbara kommandon:</p>
 <pre><code class="language-bash">php artisan migrate          # Kör migrations (skapar/uppdaterar tabeller)
 php artisan make:controller  # Skapa en ny controller
 php artisan make:model       # Skapa en ny model
 php artisan route:list       # Lista alla definierade routes
+</code></pre>
+<p><strong>Exempel på utdata</strong> för <code>php artisan route:list</code> (visar alla URL:er och vilka controllers som hanterar dem):</p>
+<pre><code>  GET|HEAD  / ......... HejController@index
+  GET|HEAD  login ..... Auth\AuthenticatedSessionController@create
+  POST     login ..... Auth\AuthenticatedSessionController@store
+  ...
 </code></pre>
 <hr />
 <h2 id="enkel-testroute"><a class="header" href="#enkel-testroute">Enkel testroute</a></h2>
@@ -15740,6 +15762,9 @@ php artisan route:list       # Lista alla definierade routes
 <h3 id="via-en-controller"><a class="header" href="#via-en-controller">Via en controller</a></h3>
 <p>I stället för att skriva logik direkt i route-filen använder man ofta en controller. Skapa en:</p>
 <pre><code class="language-bash">php artisan make:controller HejController
+</code></pre>
+<p><strong>Exempel på utdata:</strong></p>
+<pre><code>  INFO  Controller [app/Http/Controllers/HejController.php] created successfully.
 </code></pre>
 <p>Öppna <code>app/Http/Controllers/HejController.php</code> och lägg till en metod:</p>
 <pre><code class="language-php">public function index()
@@ -15816,11 +15841,25 @@ Route::get('/', [HejController::class, 'index']);
 <pre><code class="language-bash">composer require laravel/breeze --dev
 php artisan breeze:install
 </code></pre>
-<p>Välj <strong>"Blade"</strong> när du tillfrågas om vilken stack du vill använda. Breeze skapar routes, controllers och vyer för auth. Kör sedan:</p>
+<p><strong>Exempel på utdata</strong> för <code>composer require</code>:</p>
+<pre><code>  INFO  Running composer update laravel/breeze
+  ...
+  - Installing laravel/breeze (v2.x): Extracting archive
+</code></pre>
+<p>För <code>breeze:install</code> – välj <strong>"Blade"</strong> när du tillfrågas om vilken stack du vill använda. Breeze bygger sedan frontend-assets (npm, vite). Breeze skapar routes, controllers och vyer för auth. Kör sedan:</p>
 <pre><code class="language-bash">php artisan migrate
+</code></pre>
+<p><strong>Exempel på utdata:</strong></p>
+<pre><code>  INFO  Running migrations.
+  0001_01_01_000000_create_users_table ........ DONE
+  0001_01_01_000001_create_cache_table ........ DONE
+  0001_01_01_000002_create_jobs_table .......... DONE
 </code></pre>
 <p>Nu finns <code>users</code>-tabellen (med <code>name</code>, <code>email</code>, <code>password</code> m.m.).</p>
 <p><strong>Kontrollera att det fungerar:</strong> Starta servern med <code>php artisan serve</code> och gå till <code>http://localhost:8000/register</code>. Registrera en användare med e-post och lösenord. Du ska sedan vara inloggad och se dashboard. Testa att logga ut och logga in igen på <code>/login</code>.</p>
+<p><img src="kapitel_7/./assets/laravel-crud/del-3/del-3-register-formular.png" alt="Registreringsformuläret (Breeze)" /></p>
+<p><img src="kapitel_7/./assets/laravel-crud/del-3/del-3-login-formular.png" alt="Inloggningsformuläret (Breeze)" /></p>
+<p><img src="kapitel_7/./assets/laravel-crud/del-3/del-3-admin-dashboard.png" alt="Dashboard efter inloggning" /></p>
 <hr />
 <h2 id="steg-2-skapa-posts-tabellen-med-migration"><a class="header" href="#steg-2-skapa-posts-tabellen-med-migration">Steg 2: Skapa posts-tabellen med migration</a></h2>
 <p>Skapa en migration för blogginlägg:</p>
@@ -15843,6 +15882,11 @@ php artisan breeze:install
 <p>Kör migrationen:</p>
 <pre><code class="language-bash">php artisan migrate
 </code></pre>
+<p><strong>Exempel på utdata:</strong></p>
+<pre><code>  INFO  Running migrations.
+  2026_03_09_140608_create_posts_table ........ DONE
+</code></pre>
+<p>(Migrationsfilens namn kan variera – ditt datum/tid visas i stället.)</p>
 <p><strong>Kontrollera att det fungerar:</strong> Öppna din databas (t.ex. phpMyAdmin eller <code>mysql</code>-klienten) och verifiera att tabellen <code>posts</code> finns med kolumnerna <code>id</code>, <code>user_id</code>, <code>title</code>, <code>body</code>, <code>image_path</code>, <code>created_at</code>, <code>updated_at</code>.</p>
 <hr />
 <h2 id="steg-3-konfigurera-post-modellen-och-relationer"><a class="header" href="#steg-3-konfigurera-post-modellen-och-relationer">Steg 3: Konfigurera Post-modellen och relationer</a></h2>
@@ -15866,12 +15910,29 @@ public function user()
 <p>Verifiera att Post-modellen fungerar genom att skapa ett inlägg manuellt:</p>
 <pre><code class="language-bash">php artisan tinker
 </code></pre>
+<p><strong>Exempel på utdata</strong> (Tinker startar en interaktiv PHP-prompt):</p>
+<pre><code>  Psy Shell v0.12.x (PHP 8.x.x — cli)
+  &gt;&gt;&gt; 
+</code></pre>
 <p>I Tinker-prompten:</p>
 <pre><code class="language-php">$user = \App\Models\User::first();
 $user-&gt;posts()-&gt;create(['title' =&gt; 'Testinlägg', 'body' =&gt; 'Detta är ett test.']);
 exit
 </code></pre>
 <p><strong>Kontrollera att det fungerar:</strong> Kör <code>$user-&gt;posts</code> i Tinker – du ska se ditt testinlägg. Du kan också köra <code>\App\Models\Post::with('user')-&gt;first()</code> för att se att relationen fungerar.</p>
+<p><strong>Exempel på utdata</strong> när du kör <code>$user-&gt;posts</code>:</p>
+<pre><code>=&gt; Illuminate\Database\Eloquent\Collection {
+     all: [
+       App\Models\Post {
+         id: 1,
+         user_id: 1,
+         title: "Testinlägg",
+         body: "Detta är ett test.",
+         ...
+       },
+     ],
+   }
+</code></pre>
 <hr />
 <h2 id="i-denna-del-har-du-lärt-dig-2"><a class="header" href="#i-denna-del-har-du-lärt-dig-2">I denna del har du lärt dig</a></h2>
 <ul>
@@ -15890,6 +15951,9 @@ exit
 <p>Börja med att definiera alla routes och en controller som returnerar enkel output. Vi bygger vyer stegvis.</p>
 <p>Skapa controllern:</p>
 <pre><code class="language-bash">php artisan make:controller PostController
+</code></pre>
+<p><strong>Exempel på utdata:</strong></p>
+<pre><code>  INFO  Controller [app/Http/Controllers/PostController.php] created successfully.
 </code></pre>
 <p>Lägg till i <code>routes/web.php</code> (under de routes Breeze skapat, men <strong>före</strong> Breeze:s route för <code>/</code> om den finns). Om Breeze har satt <code>/</code> som dashboard behöver vi ändra det – se avsnittet "Uppdatera startsidan" längst ned.</p>
 <pre><code class="language-php">use App\Http\Controllers\PostController;
@@ -16021,6 +16085,7 @@ class PostController extends Controller
 @endsection
 </code></pre>
 <p><strong>Blade-tips:</strong> <code>@error('title')</code> visar valideringsfel för fältet. <code>old('title')</code> återställer värdet om formuläret skickas tillbaka med fel – så användaren inte behöver skriva om allt.</p>
+<p><img src="kapitel_7/./assets/laravel-crud/del-4/del-4-create-formular.png" alt="Formulär för att skapa nytt inlägg" /></p>
 <p><strong>Kontrollera att det fungerar:</strong> Logga in och gå till <code>/admin/posts/create</code>. Skapa ett inlägg med titel och innehåll. Du ska omdirigeras till admin-panelen och se ditt nya inlägg. Testa att skicka formuläret tomt – du ska se valideringsfel.</p>
 <hr />
 <h2 id="steg-3-admin-panel-och-lista"><a class="header" href="#steg-3-admin-panel-och-lista">Steg 3: Admin-panel och lista</a></h2>
@@ -16093,6 +16158,8 @@ class PostController extends Controller
 </code></pre>
 <p><strong>OBS:</strong> <code>{!! nl2br(e($post-&gt;body)) !!}</code> – vi använder <code>e()</code> för att escap:a (skydda mot XSS) och <code>nl2br()</code> för radbrytningar. <code>{!! !!}</code> skriver ut utan extra escaping eftersom vi redan escap:at med <code>e()</code>.</p>
 <p><strong>Kontrollera att det fungerar:</strong> Gå till <code>/</code>. Klicka "Läs mer" på ett inlägg – du ska se hela inlägget. Klicka "Tillbaka" – du ska tillbaka till listan.</p>
+<p><img src="kapitel_7/./assets/laravel-crud/del-4/del-4-index-med-inlagg.png" alt="Startsidan med listan över blogginlägg" /></p>
+<p><img src="kapitel_7/./assets/laravel-crud/del-4/del-4-post-enskilt.png" alt="Enskilt blogginlägg med bild" /></p>
 <hr />
 <h2 id="steg-5-bilduppladdning"><a class="header" href="#steg-5-bilduppladdning">Steg 5: Bilduppladdning</a></h2>
 <p>Lägg till stöd för att ladda upp en bild när man skapar inlägg.</p>
@@ -16156,6 +16223,9 @@ class PostController extends Controller
 <p>För att bilder ska vara tillgängliga via webbläsaren måste du skapa en symbolisk länk:</p>
 <pre><code class="language-bash">php artisan storage:link
 </code></pre>
+<p><strong>Exempel på utdata:</strong></p>
+<pre><code>  INFO  The [public/storage] link has been connected to [storage/app/public].
+</code></pre>
 <p>Detta skapar en länk från <code>public/storage</code> till <code>storage/app/public</code>. Uppladdade bilder hamnar i <code>storage/app/public/posts/</code>.</p>
 <p><strong>Kontrollera att det fungerar:</strong> Skapa ett nytt inlägg med en bild. Du ska se bilden på startsidan och på inläggets sida. Om bilden inte visas, se "Vanliga problem" nedan.</p>
 <hr />
@@ -16198,6 +16268,9 @@ class PostController extends Controller
 <p>I CRUD-appen kollade du <code>$post['user_id'] != $logged_in_user_id</code> i edit och delete. I Laravel använder vi en <strong>Policy</strong> – en klass som centraliserar behörighetslogik. Användaren får bara redigera och radera sina egna inlägg.</p>
 <p>Skapa policyn:</p>
 <pre><code class="language-bash">php artisan make:policy PostPolicy --model=Post
+</code></pre>
+<p><strong>Exempel på utdata:</strong></p>
+<pre><code>  INFO  Policy [app/Policies/PostPolicy.php] created successfully.
 </code></pre>
 <p>Öppna <code>app/Policies/PostPolicy.php</code> och uppdatera metoderna <code>update</code> och <code>delete</code>:</p>
 <pre><code class="language-php">public function update(User $user, Post $post): bool
@@ -16257,6 +16330,7 @@ public function delete(User $user, Post $post): bool
 </code></pre>
 <p><strong>OBS:</strong> <code>@method('PUT')</code> – HTML-formulär stödjer bara GET och POST. Laravel använder detta dolda fält för att simulera PUT, så routen <code>Route::put(...)</code> matchar.</p>
 <p><strong>Kontrollera att det fungerar:</strong> Gå till <code>/admin</code> och klicka "Redigera" på ett inlägg. Du ska se formuläret med befintlig titel och innehåll. Om du försöker redigera ett inlägg som tillhör en annan användare (skapa en annan användare först) ska du få 403 Forbidden.</p>
+<p><img src="kapitel_7/./assets/laravel-crud/del-5/del-5-edit-formular.png" alt="Redigeringsformuläret" /></p>
 <hr />
 <h2 id="steg-3-update-metoden"><a class="header" href="#steg-3-update-metoden">Steg 3: update()-metoden</a></h2>
 <p>Lägg till <code>update()</code> i PostController så att ändringar sparas:</p>
@@ -16314,6 +16388,7 @@ public function delete(User $user, Post $post): bool
 </code></pre>
 <p>Radering ska ske via <strong>POST</strong> (med <code>@method('DELETE')</code>), inte GET – samma princip som i CRUD-appen. GET ska inte ha sidoeffekter som radering.</p>
 <p><strong>Kontrollera att det fungerar:</strong> Klicka "Radera" på ett inlägg. Du ska få en bekräftelsedialog. Bekräfta – inlägget ska försvinna från listan. Om inlägget hade en bild ska filen också tas bort från <code>storage/app/public/posts/</code>.</p>
+<p><img src="kapitel_7/./assets/laravel-crud/del-5/del-5-delete-bekraftelse.png" alt="Bekräftelsedialog innan radering av inlägg" /></p>
 <hr />
 <h2 id="jämförelse-plain-php-vs-laravel"><a class="header" href="#jämförelse-plain-php-vs-laravel">Jämförelse: Plain PHP vs. Laravel</a></h2>
 <div class="table-wrapper"><table><thead><tr><th>Uppgift</th><th>CRUD-app (plain PHP)</th><th>Laravel</th></tr></thead><tbody>
@@ -39273,6 +39348,22 @@ Den här sammanfattningen fungerar bra som referens i ett GitHub-projekt, underv
 
         </div>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
 

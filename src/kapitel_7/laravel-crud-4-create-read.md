@@ -16,6 +16,12 @@ Skapa controllern:
 php artisan make:controller PostController
 ```
 
+**Exempel på utdata:**
+
+```
+  INFO  Controller [app/Http/Controllers/PostController.php] created successfully.
+```
+
 Lägg till i `routes/web.php` (under de routes Breeze skapat, men **före** Breeze:s route för `/` om den finns). Om Breeze har satt `/` som dashboard behöver vi ändra det – se avsnittet "Uppdatera startsidan" längst ned.
 
 ```php
@@ -172,6 +178,8 @@ Skapa `resources/views/posts/create.blade.php`:
 
 **Blade-tips:** `@error('title')` visar valideringsfel för fältet. `old('title')` återställer värdet om formuläret skickas tillbaka med fel – så användaren inte behöver skriva om allt.
 
+![Formulär för att skapa nytt inlägg](./assets/laravel-crud/del-4/del-4-create-formular.png)
+
 **Kontrollera att det fungerar:** Logga in och gå till `/admin/posts/create`. Skapa ett inlägg med titel och innehåll. Du ska omdirigeras till admin-panelen och se ditt nya inlägg. Testa att skicka formuläret tomt – du ska se valideringsfel.
 
 ---
@@ -262,6 +270,10 @@ Skapa `resources/views/posts/show.blade.php`:
 
 **Kontrollera att det fungerar:** Gå till `/`. Klicka "Läs mer" på ett inlägg – du ska se hela inlägget. Klicka "Tillbaka" – du ska tillbaka till listan.
 
+![Startsidan med listan över blogginlägg](./assets/laravel-crud/del-4/del-4-index-med-inlagg.png)
+
+![Enskilt blogginlägg med bild](./assets/laravel-crud/del-4/del-4-post-enskilt.png)
+
 ---
 
 ## Steg 5: Bilduppladdning
@@ -344,6 +356,12 @@ För att bilder ska vara tillgängliga via webbläsaren måste du skapa en symbo
 
 ```bash
 php artisan storage:link
+```
+
+**Exempel på utdata:**
+
+```
+  INFO  The [public/storage] link has been connected to [storage/app/public].
 ```
 
 Detta skapar en länk från `public/storage` till `storage/app/public`. Uppladdade bilder hamnar i `storage/app/public/posts/`.
