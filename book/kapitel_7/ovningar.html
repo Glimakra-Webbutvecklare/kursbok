@@ -154,99 +154,67 @@
                     <main>
                         <h1 id="kapitel-7-praktiska-Övningar"><a class="header" href="#kapitel-7-praktiska-Övningar">Kapitel 7: Praktiska Övningar</a></h1>
 <p>Dessa övningar är tänkta att hjälpa dig att befästa kunskaperna från kapitel 7. Försök att lösa dem själv först innan du tittar på lösningsförslagen.</p>
-<h2 id="Övningar"><a class="header" href="#Övningar">Övningar</a></h2>
-<h3 id="php-syntax-och-grundläggande"><a class="header" href="#php-syntax-och-grundläggande">PHP Syntax och Grundläggande</a></h3>
-<ol>
-<li><strong>Hej Världen:</strong> Skriv ett PHP-skript som skriver ut texten "Hej Världen!" till webbläsaren.</li>
-<li><strong>Variabler och Utskrift:</strong> Deklarera en variabel <code>$productName</code> med värdet "Laptop" och en variabel <code>$productPrice</code> med värdet <code>999.90</code>. Skriv ut en mening som "Produkten Laptop kostar 999.9 kr." med hjälp av dessa variabler och strängkonkatenering (<code>.</code>).</li>
-<li><strong><code>if/else</code>:</strong> Skriv en <code>if/else</code>-sats som kollar om variabeln <code>$productPrice</code> (från övning 2) är större än 500. Om den är det, skriv ut "Dyr produkt.", annars skriv ut "Billig produkt.".</li>
-<li><strong>Funktion:</strong> Skapa en funktion <code>calculateDiscount($price, $percentage)</code> som tar ett pris och en procentsats (som heltal, t.ex. 10 för 10%) och returnerar det nya priset efter rabatten. Använd type hinting för parametrarna (<code>float</code> för pris, <code>int</code> för procent) och returvärdet (<code>float</code>).</li>
-<li><strong>Anropa Funktion:</strong> Anropa funktionen <code>calculateDiscount</code> med priset <code>250.0</code> och procentsatsen <code>20</code>. Skriv ut resultatet.</li>
-<li><strong><code>match</code>-uttryck:</strong> Skriv ett <code>match</code>-uttryck som tar en variabel <code>$statusCode</code> (anta att den innehåller ett heltal som 200, 404, eller 500) och returnerar en beskrivande sträng ("OK", "Not Found", "Server Error", eller "Unknown" för andra värden). Skriv ut den returnerade strängen.</li>
-<li><strong>Strikta Typer:</strong> Hur aktiverar du strikt typläge i en PHP-fil, och varför är det rekommenderat?</li>
-</ol>
-<h3 id="arrayer-och-loopar"><a class="header" href="#arrayer-och-loopar">Arrayer och Loopar</a></h3>
-<ol start="8">
-<li><strong>Indexerad Array:</strong> Skapa en indexerad array <code>$cities</code> som innehåller strängarna "Stockholm", "Göteborg", "Malmö".</li>
-<li><strong>Åtkomst:</strong> Skriv ut den första staden ("Stockholm") från arrayen <code>$cities</code>.</li>
-<li><strong>Lägg till:</strong> Lägg till staden "Uppsala" i slutet av <code>$cities</code>-arrayen.</li>
-<li><strong><code>count()</code>:</strong> Skriv ut hur många städer som finns i <code>$cities</code>-arrayen.</li>
-<li><strong>Associativ Array:</strong> Skapa en associativ array <code>$car</code> med nycklarna <code>brand</code> (värde "Volvo") och <code>model</code> (värde "XC60").</li>
-<li><strong>Åtkomst (Associativ):</strong> Skriv ut bilens modell från <code>$car</code>-arrayen.</li>
-<li><strong><code>foreach</code> (Värden):</strong> Använd en <code>foreach</code>-loop för att skriva ut varje stad från <code>$cities</code>-arrayen på en ny rad.</li>
-<li><strong><code>foreach</code> (Nyckel &amp; Värde):</strong> Använd en <code>foreach</code>-loop för att skriva ut både nyckel och värde från <code>$car</code>-arrayen, t.ex. "brand: Volvo".</li>
-<li><strong><code>in_array()</code>:</strong> Kontrollera om staden "Malmö" finns i <code>$cities</code>-arrayen och skriv ut "Ja" eller "Nej".</li>
-<li><strong><code>implode()</code>:</strong> Skapa en sträng från <code>$cities</code>-arrayen där städerna är separerade med kommatecken och mellanslag (", "). Skriv ut strängen.</li>
-</ol>
-<h3 id="sql-syntax"><a class="header" href="#sql-syntax">SQL (Syntax)</a></h3>
-<p>Anta att du har en tabell <code>customers</code> med kolumnerna <code>id</code> (INT, PK), <code>name</code> (VARCHAR), <code>email</code> (VARCHAR), <code>city</code> (VARCHAR) och en tabell <code>orders</code> med kolumnerna <code>order_id</code> (INT, PK), <code>customer_id</code> (INT, FK till customers.id), <code>order_date</code> (DATE), <code>amount</code> (DECIMAL).</p>
-<ol start="18">
-<li><strong>SELECT Alla:</strong> Skriv SQL för att hämta alla kolumner för alla kunder.</li>
-<li><strong>SELECT Specifika Kolumner &amp; WHERE:</strong> Skriv SQL för att hämta <code>name</code> och <code>email</code> för kunder som bor i "Göteborg".</li>
-<li><strong>ORDER BY &amp; LIMIT:</strong> Skriv SQL för att hämta namnen på de 10 första kunderna sorterade i bokstavsordning (A-Ö).</li>
-<li><strong>INSERT:</strong> Skriv SQL för att lägga till en ny kund med namn "Lisa Berg" och e-post "lisa@example.com" som bor i "Malmö".</li>
-<li><strong>UPDATE:</strong> Skriv SQL för att ändra staden till "Lund" för kunden med <code>id</code> 15.</li>
-<li><strong>DELETE:</strong> Skriv SQL för att ta bort kunden med <code>id</code> 20.</li>
-<li><strong>INNER JOIN:</strong> Skriv SQL för att hämta order-ID (<code>orders.order_id</code>) och kundens namn (<code>customers.name</code>) för alla ordrar.</li>
-</ol>
-<h3 id="sessioner-och-säkerhet-konceptphp"><a class="header" href="#sessioner-och-säkerhet-konceptphp">Sessioner och Säkerhet (Koncept/PHP)</a></h3>
-<ol start="25">
-<li><strong>Starta Session:</strong> Vilken PHP-funktion används för att starta eller återuppta en session, och var i skriptet bör den placeras?</li>
-<li><strong>Lagra i Session:</strong> Skriv PHP-koden för att lagra värdet "dark" i sessionsvariabeln <code>theme</code>.</li>
-<li><strong>Kontrollera Session:</strong> Skriv en <code>if</code>-sats i PHP som kontrollerar om sessionsvariabeln <code>user_id</code> är satt.</li>
-<li><strong>Förhindra XSS:</strong> Vilken PHP-funktion bör du <em>alltid</em> använda när du skriver ut data som kan ha kommit från en användare i ett HTML-sammanhang? Ge ett exempel.</li>
-<li><strong>Förhindra SQL Injection:</strong> Vilken teknik bör du <em>alltid</em> använda när du bygger SQL-frågor som innehåller värden från användarinput? Nämn den PHP-funktion (i PDO) som initierar denna teknik.</li>
-<li><strong>Lösenordshantering:</strong> Vilka två PHP-funktioner (introducerade i PHP 5.5) är standard för att hantera lösenord säkert, och vad gör de?</li>
-<li><strong>CSRF-skydd:</strong> Vad är en vanlig metod för att skydda formulär mot Cross-Site Request Forgery (CSRF)-attacker?</li>
-</ol>
-<h3 id="mini-crud-phppdo"><a class="header" href="#mini-crud-phppdo">Mini-CRUD (PHP/PDO)</a></h3>
-<p>Anta att du har en PDO-anslutning i variabeln <code>$pdo</code> och en <code>tasks</code>-tabell med kolumnerna <code>id</code> (INT, PK, AUTO_INCREMENT) och <code>description</code> (TEXT).</p>
-<ol start="32">
-<li><strong>Hämta Input:</strong> Skriv PHP-koden för att säkert hämta värdet från ett formulärfält med <code>name="task_description"</code> som skickats via POST.</li>
-<li><strong>INSERT (PDO):</strong> Skriv PHP-koden som använder <code>$pdo</code> och Prepared Statements för att infoga värdet från föregående uppgift (lagrat i en variabel <code>$description</code>) i <code>tasks</code>-tabellens <code>description</code>-kolumn.</li>
-<li><strong>SELECT Alla (PDO):</strong> Skriv PHP-koden som använder <code>$pdo</code> för att hämta alla rader från <code>tasks</code>-tabellen (endast <code>id</code> och <code>description</code>) och lagra resultatet i en array <code>$allTasks</code>.</li>
-</ol>
-<h3 id="klasser-oop-grunderna"><a class="header" href="#klasser-oop-grunderna">Klasser (OOP Grunderna)</a></h3>
-<ol start="35">
-<li><strong>Definiera Klass:</strong> Skapa en klass <code>Book</code> med två <em>publika</em> egenskaper: <code>$title</code> (string) och <code>$author</code> (string). Lägg till en <em>publik</em> metod <code>displayInfo()</code> som skriver ut "Title: [titel], Author: [författare]".</li>
-<li><strong>Skapa Objekt:</strong> Skapa två olika <code>Book</code>-objekt från klassen ovan. Sätt olika värden för <code>title</code> och <code>author</code> för varje objekt. Anropa <code>displayInfo()</code>-metoden på båda objekten.</li>
-<li><strong>Konstruktor:</strong> Modifiera <code>Book</code>-klassen så att den har en konstruktor (<code>__construct</code>) som tar emot titel och författare som argument och sätter egenskaperna direkt när objektet skapas. Skapa ett nytt <code>Book</code>-objekt med hjälp av konstruktorn och anropa <code>displayInfo()</code>.</li>
-<li><strong>Synlighet &amp; Getters:</strong> Modifiera <code>Book</code>-klassen igen:
-<ul>
-<li>Gör egenskaperna <code>$title</code> och <code>$author</code> <em>privata</em> (<code>private</code>).</li>
-<li>Lägg till en ny <em>publik</em> egenskap <code>$pages</code> (int).</li>
-<li>Uppdatera konstruktorn så att den även tar emot antal sidor (<code>$pages</code>) och sätter alla tre egenskaperna.</li>
-<li>Skapa <em>publika</em> "getter"-metoder: <code>getTitle()</code>, <code>getAuthor()</code>, och <code>getPages()</code> som returnerar värdet på respektive privat egenskap.</li>
-</ul>
-</li>
-<li><strong>Använda Getters:</strong> Skapa ett <code>Book</code>-objekt från den modifierade klassen i föregående uppgift. Använd getter-metoderna för att hämta och skriva ut bokens titel, författare och antal sidor.</li>
-</ol>
 <hr />
-<h2 id="lösningsförslag"><a class="header" href="#lösningsförslag">Lösningsförslag</a></h2>
-<h3 id="php-syntax-och-grundläggande-1"><a class="header" href="#php-syntax-och-grundläggande-1">PHP Syntax och Grundläggande</a></h3>
+<h2 id="php-introduktion-och-utvecklingsmiljö"><a class="header" href="#php-introduktion-och-utvecklingsmiljö">PHP Introduktion och Utvecklingsmiljö</a></h2>
+<h3 id="Övning-1-php-vs-javascript--var-körs-koden"><a class="header" href="#Övning-1-php-vs-javascript--var-körs-koden">Övning 1: PHP vs JavaScript – var körs koden?</a></h3>
+<p>Beskriv kort: Var körs PHP-kod respektive JavaScript-kod (i webbläsaren) när en användare besöker en webbplats? Vilken typ av data är lämplig att hantera i PHP jämfört med JavaScript?</p>
+<details>
+<summary>Lösningsförslag</summary>
+<p><strong>PHP</strong> körs på <strong>webbservern</strong>. Den används för att hantera data, interagera med databaser, hantera sessioner och generera HTML innan det skickas till webbläsaren. Användaren ser aldrig PHP-koden.</p>
+<p><strong>JavaScript</strong> (i webbläsaren) körs på <strong>klienten</strong> (användarens dator). Den används för att göra sidor interaktiva, manipulera DOM, validera formulär och göra asynkrona anrop.</p>
+<p><strong>Lämplig data:</strong> PHP hanterar känslig data (lösenord, databasfrågor, sessionsdata). JavaScript hanterar användarinteraktioner och presentation på klientsidan.</p>
+<p><strong>Förklaring:</strong> Detta är grundläggande för att förstå fullstack-utveckling. PHP är ett serverspråk – all kod exekveras innan HTML skickas till användaren. JavaScript kan köras både på klienten (traditionellt) och på servern (Node.js).</p>
+</details>
+<hr />
+<h3 id="Övning-2-docker-compose--php-och-mysql"><a class="header" href="#Övning-2-docker-compose--php-och-mysql">Övning 2: Docker Compose – PHP och MySQL</a></h3>
+<p>Vilka tjänster (services) behövs typiskt i en <code>docker-compose.yml</code> för att köra en PHP-webbapplikation med databas? Nämn minst tre och beskriv kort vad varje tjänst gör.</p>
+<details>
+<summary>Lösningsförslag</summary>
 <ol>
-<li>
+<li><strong>php</strong> (eller webbserver + PHP): Kör PHP-tolken och webbservern (t.ex. Apache). Bearbetar <code>.php</code>-filer och serverar statiska filer.</li>
+<li><strong>mysql</strong> (eller mariadb): Databasservern som lagrar applikationens data.</li>
+<li><strong>phpmyadmin</strong> (valfritt): Webbgränssnitt för att administrera databasen under utveckling.</li>
+</ol>
+<p><strong>Förklaring:</strong> En typisk LAMP/LEMP-stack för PHP består av webbserver, PHP-tolk och databas. Docker Compose låter dig definiera dessa som separata tjänster som kan kommunicera med varandra.</p>
+</details>
+<hr />
+<h2 id="php-syntax-och-grundläggande"><a class="header" href="#php-syntax-och-grundläggande">PHP Syntax och Grundläggande</a></h2>
+<h3 id="Övning-3-hej-världen"><a class="header" href="#Övning-3-hej-världen">Övning 3: Hej Världen</a></h3>
+<p>Skriv ett PHP-skript som skriver ut texten "Hej Världen!" till webbläsaren.</p>
+<details>
+<summary>Lösningsförslag</summary>
 <pre><code class="language-php">&lt;?php
 echo "Hej Världen!";
 ?&gt;
 </code></pre>
-<p>eller</p>
+<p>eller med kort echo-tagg:</p>
 <pre><code class="language-php">&lt;?= "Hej Världen!"; ?&gt;
 </code></pre>
-</li>
-<li>
+<p><strong>Förklaring:</strong> <code>echo</code> är den vanligaste funktionen för att skriva ut data. Den korta taggen <code>&lt;?=</code> är en genväg för <code>&lt;?php echo ... ?&gt;</code> och används ofta för att skriva ut enstaka variabler eller uttryck i HTML.</p>
+</details>
+<hr />
+<h3 id="Övning-4-variabler-och-utskrift"><a class="header" href="#Övning-4-variabler-och-utskrift">Övning 4: Variabler och Utskrift</a></h3>
+<p>Deklarera en variabel <code>$productName</code> med värdet "Laptop" och en variabel <code>$productPrice</code> med värdet <code>999.90</code>. Skriv ut en mening som "Produkten Laptop kostar 999.9 kr." med hjälp av dessa variabler och strängkonkatenering (<code>.</code>).</p>
+<details>
+<summary>Lösningsförslag</summary>
 <pre><code class="language-php">&lt;?php
 $productName = "Laptop";
 $productPrice = 999.90;
 echo "Produkten " . $productName . " kostar " . $productPrice . " kr.";
-// Alternativt med dubbla citationstecken för interpolering:
-// echo "Produkten $productName kostar $productPrice kr.";
 ?&gt;
 </code></pre>
-</li>
-<li>
+<p>Alternativt med variabelinterpolering i dubbla citationstecken:</p>
+<pre><code class="language-php">echo "Produkten $productName kostar $productPrice kr.";
+</code></pre>
+<p><strong>Förklaring:</strong> I PHP används <code>.</code> (punkt) för strängkonkatenering, till skillnad från JavaScript som använder <code>+</code>. Dubbla citationstecken tillåter variabelinterpolering – variablerna ersätts med sina värden direkt i strängen.</p>
+</details>
+<hr />
+<h3 id="Övning-5-ifelse"><a class="header" href="#Övning-5-ifelse">Övning 5: if/else</a></h3>
+<p>Skriv en <code>if/else</code>-sats som kollar om variabeln <code>$productPrice</code> (från övning 4) är större än 500. Om den är det, skriv ut "Dyr produkt.", annars skriv ut "Billig produkt.".</p>
+<details>
+<summary>Lösningsförslag</summary>
 <pre><code class="language-php">&lt;?php
-$productPrice = 999.90; // Från övning 2
+$productPrice = 999.90;
 if ($productPrice &gt; 500) {
     echo "Dyr produkt.";
 } else {
@@ -254,30 +222,43 @@ if ($productPrice &gt; 500) {
 }
 ?&gt;
 </code></pre>
-</li>
-<li>
+<p><strong>Förklaring:</strong> PHP:s <code>if/else</code> fungerar som i de flesta språk. Jämförelseoperatorn <code>&gt;</code> returnerar <code>true</code> eller <code>false</code>. Använd <code>===</code> för strikt jämförelse när du jämför värden som kan ha olika typer.</p>
+</details>
+<hr />
+<h3 id="Övning-6-funktion-med-type-hinting"><a class="header" href="#Övning-6-funktion-med-type-hinting">Övning 6: Funktion med Type Hinting</a></h3>
+<p>Skapa en funktion <code>calculateDiscount($price, $percentage)</code> som tar ett pris och en procentsats (som heltal, t.ex. 10 för 10%) och returnerar det nya priset efter rabatten. Använd type hinting för parametrarna (<code>float</code> för pris, <code>int</code> för procent) och returvärdet (<code>float</code>).</p>
+<details>
+<summary>Lösningsförslag</summary>
 <pre><code class="language-php">&lt;?php
 declare(strict_types=1);
 function calculateDiscount(float $price, int $percentage): float {
     if ($percentage &lt; 0 || $percentage &gt; 100) {
-        // Ohanterad procentsats, returnera ursprungspris eller kasta fel?
-        throw new InvalidArugmentException('$percentage måste vara mellan 0-100')
+        throw new InvalidArgumentException('$percentage måste vara mellan 0-100');
     }
     $discountFactor = 1 - ($percentage / 100.0);
     return $price * $discountFactor;
 }
 ?&gt;
 </code></pre>
-</li>
-<li>
+<p><strong>Förklaring:</strong> Type hinting gör koden tydligare och fångar fel tidigare. <code>declare(strict_types=1)</code> aktiverar strikt typläge. Rabatten beräknas genom att multiplicera priset med <code>(1 - procent/100)</code> – t.ex. 20% rabatt ger faktor 0.8.</p>
+</details>
+<hr />
+<h3 id="Övning-7-anropa-funktion"><a class="header" href="#Övning-7-anropa-funktion">Övning 7: Anropa Funktion</a></h3>
+<p>Anropa funktionen <code>calculateDiscount</code> med priset <code>250.0</code> och procentsatsen <code>20</code>. Skriv ut resultatet.</p>
+<details>
+<summary>Lösningsförslag</summary>
 <pre><code class="language-php">&lt;?php
-// Antag att funktionen från övning 4 finns
 $discountedPrice = calculateDiscount(250.0, 20);
 echo "Pris efter 20% rabatt: " . $discountedPrice; // Output: Pris efter 20% rabatt: 200
 ?&gt;
 </code></pre>
-</li>
-<li>
+<p><strong>Förklaring:</strong> 250 * 0.8 = 200. Funktionen returnerar ett värde som kan lagras i en variabel eller skrivas ut direkt.</p>
+</details>
+<hr />
+<h3 id="Övning-8-match-uttryck"><a class="header" href="#Övning-8-match-uttryck">Övning 8: match-uttryck</a></h3>
+<p>Skriv ett <code>match</code>-uttryck som tar en variabel <code>$statusCode</code> (anta att den innehåller ett heltal som 200, 404, eller 500) och returnerar en beskrivande sträng ("OK", "Not Found", "Server Error", eller "Unknown" för andra värden). Skriv ut den returnerade strängen.</p>
+<details>
+<summary>Lösningsförslag</summary>
 <pre><code class="language-php">&lt;?php
 $statusCode = 404;
 $message = match ($statusCode) {
@@ -289,78 +270,96 @@ $message = match ($statusCode) {
 echo "Status: " . $message; // Output: Status: Not Found
 ?&gt;
 </code></pre>
-</li>
-<li>
-<p>Strikt typläge aktiveras med <code>declare(strict_types=1);</code> överst i PHP-filen (efter <code>&lt;?php</code>-taggen). Det rekommenderas för att PHP inte ska försöka tvångsomvandla datatyper mellan inkompatibla typer vid funktionsanrop, vilket fångar fel tidigare och gör koden mer förutsägbar och robust.</p>
-</li>
-</ol>
-<h3 id="arrayer-och-loopar-1"><a class="header" href="#arrayer-och-loopar-1">Arrayer och Loopar</a></h3>
-<ol start="8">
-<li>
+<p><strong>Förklaring:</strong> <code>match</code> (PHP 8+) är ett uttryck som returnerar ett värde, till skillnad från <code>switch</code> som är en sats. Det använder strikt jämförelse (<code>===</code>) och kräver ett <code>default</code>-fall. Inga <code>break</code> behövs – det "faller inte igenom".</p>
+</details>
+<hr />
+<h3 id="Övning-9-strikta-typer"><a class="header" href="#Övning-9-strikta-typer">Övning 9: Strikta Typer</a></h3>
+<p>Hur aktiverar du strikt typläge i en PHP-fil, och varför är det rekommenderat?</p>
+<details>
+<summary>Lösningsförslag</summary>
+<p>Strikt typläge aktiveras med <code>declare(strict_types=1);</code> överst i PHP-filen (efter <code>&lt;?php</code>-taggen).</p>
+<p><strong>Varför rekommenderas det:</strong> PHP försöker annars tvångsomvandla (coerce) datatyper vid funktionsanrop – t.ex. acceptera strängen <code>"10"</code> för en <code>int</code>-parameter. Detta kan dölja fel. Med strikta typer fångas typfel tidigt, koden blir mer förutsägbar och robust.</p>
+<p><strong>Förklaring:</strong> Strikta typer är särskilt viktigt när du använder type hinting. Utan det kan oväntade värden passera igenom och orsaka svårupptäckta buggar.</p>
+</details>
+<hr />
+<h3 id="Övning-10-konstanter-och-null-coalescing"><a class="header" href="#Övning-10-konstanter-och-null-coalescing">Övning 10: Konstanter och Null Coalescing</a></h3>
+<p>Skapa en konstant <code>MAX_LOGIN_ATTEMPTS</code> med värdet 5. Skriv sedan kod som hämtar värdet från <code>$_GET['page']</code> – om det inte finns eller är null, använd defaultvärdet <code>"hem"</code>. Använd null coalescing-operatorn (<code>??</code>).</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-php">&lt;?php
+const MAX_LOGIN_ATTEMPTS = 5;
+
+$page = $_GET['page'] ?? 'hem';
+echo "Aktuell sida: " . $page;
+?&gt;
+</code></pre>
+<p><strong>Förklaring:</strong> <code>const</code> definierar en konstant (utan <code>$</code>). Operatorn <code>??</code> returnerar vänster operand om den existerar och inte är <code>null</code>, annars höger operand. Det är säkrare än <code>isset() ? ... : ...</code> för att hantera superglobala variabler som kanske inte är satta.</p>
+</details>
+<hr />
+<h2 id="arrayer-och-loopar"><a class="header" href="#arrayer-och-loopar">Arrayer och Loopar</a></h2>
+<h3 id="Övning-11-indexerad-array"><a class="header" href="#Övning-11-indexerad-array">Övning 11: Indexerad Array</a></h3>
+<p>Skapa en indexerad array <code>$cities</code> som innehåller strängarna "Stockholm", "Göteborg", "Malmö".</p>
+<details>
+<summary>Lösningsförslag</summary>
 <pre><code class="language-php">&lt;?php
 $cities = ["Stockholm", "Göteborg", "Malmö"];
 // Eller äldre syntax: $cities = array("Stockholm", "Göteborg", "Malmö");
 ?&gt;
 </code></pre>
-</li>
-<li>
+<p><strong>Förklaring:</strong> Den korta array-syntaxen <code>[]</code> har varit standard sedan PHP 5.4. Indexerade arrayer har numeriska nycklar som börjar på 0.</p>
+</details>
+<hr />
+<h3 id="Övning-12-Åtkomst-och-lägg-till"><a class="header" href="#Övning-12-Åtkomst-och-lägg-till">Övning 12: Åtkomst och Lägg till</a></h3>
+<p>Skriv ut den första staden från <code>$cities</code>. Lägg sedan till staden "Uppsala" i slutet av arrayen.</p>
+<details>
+<summary>Lösningsförslag</summary>
 <pre><code class="language-php">&lt;?php
 $cities = ["Stockholm", "Göteborg", "Malmö"];
 echo $cities[0]; // Output: Stockholm
-?&gt;
-</code></pre>
-</li>
-<li>
-<pre><code class="language-php">&lt;?php
-$cities = ["Stockholm", "Göteborg", "Malmö"];
 $cities[] = "Uppsala"; // Lägger till i slutet
-// Alternativt: array_push($cities, "Uppsala");
-print_r($cities); // Visar hela arrayen för kontroll
 ?&gt;
 </code></pre>
-</li>
-<li>
-<pre><code class="language-php">&lt;?php
-$cities = ["Stockholm", "Göteborg", "Malmö", "Uppsala"];
-echo count($cities); // Output: 4
-?&gt;
-</code></pre>
-</li>
-<li>
+<p><strong>Förklaring:</strong> <code>$array[0]</code> ger första elementet. <code>$array[] = value</code> lägger till ett nytt element i slutet – PHP tilldelar automatiskt nästa tillgängliga index.</p>
+</details>
+<hr />
+<h3 id="Övning-13-associativ-array"><a class="header" href="#Övning-13-associativ-array">Övning 13: Associativ Array</a></h3>
+<p>Skapa en associativ array <code>$car</code> med nycklarna <code>brand</code> (värde "Volvo") och <code>model</code> (värde "XC60"). Skriv ut bilens modell.</p>
+<details>
+<summary>Lösningsförslag</summary>
 <pre><code class="language-php">&lt;?php
 $car = [
     'brand' =&gt; 'Volvo',
     'model' =&gt; 'XC60'
 ];
-?&gt;
-</code></pre>
-</li>
-<li>
-<pre><code class="language-php">&lt;?php
-$car = ['brand' =&gt; 'Volvo', 'model' =&gt; 'XC60'];
 echo $car['model']; // Output: XC60
 ?&gt;
 </code></pre>
-</li>
-<li>
+<p><strong>Förklaring:</strong> Associativa arrayer använder strängnycklar istället för numeriska index. Syntaxen <code>nyckel =&gt; värde</code> kopplar ihop dem. De liknar JavaScript-objekt men är fortfarande av typen <code>array</code> i PHP.</p>
+</details>
+<hr />
+<h3 id="Övning-14-foreach--värden-och-nyckel--värde"><a class="header" href="#Övning-14-foreach--värden-och-nyckel--värde">Övning 14: foreach – Värden och Nyckel &amp; Värde</a></h3>
+<p>Använd <code>foreach</code> för att skriva ut varje stad från <code>$cities</code> på en ny rad. Använd sedan <code>foreach</code> för att skriva ut både nyckel och värde från <code>$car</code>-arrayen, t.ex. "brand: Volvo".</p>
+<details>
+<summary>Lösningsförslag</summary>
 <pre><code class="language-php">&lt;?php
 $cities = ["Stockholm", "Göteborg", "Malmö", "Uppsala"];
 foreach ($cities as $city) {
-    echo $city . "\n"; // \n för ny rad om det körs i terminalen, &lt;br&gt; för webbläsare
+    echo $city . "\n";
 }
-?&gt;
-</code></pre>
-</li>
-<li>
-<pre><code class="language-php">&lt;?php
+
 $car = ['brand' =&gt; 'Volvo', 'model' =&gt; 'XC60'];
 foreach ($car as $key =&gt; $value) {
     echo $key . ": " . $value . "\n";
 }
 ?&gt;
 </code></pre>
-</li>
-<li>
+<p><strong>Förklaring:</strong> <code>foreach ($array as $value)</code> itererar över värdena. <code>foreach ($array as $key =&gt; $value)</code> ger tillgång till både nyckel och värde. Använd <code>&lt;br&gt;</code> istället för <code>\n</code> om output visas i webbläsaren.</p>
+</details>
+<hr />
+<h3 id="Övning-15-in_array-och-implode"><a class="header" href="#Övning-15-in_array-och-implode">Övning 15: in_array och implode</a></h3>
+<p>Kontrollera om staden "Malmö" finns i <code>$cities</code> och skriv ut "Ja" eller "Nej". Skapa sedan en sträng från <code>$cities</code> där städerna är separerade med kommatecken och mellanslag.</p>
+<details>
+<summary>Lösningsförslag</summary>
 <pre><code class="language-php">&lt;?php
 $cities = ["Stockholm", "Göteborg", "Malmö", "Uppsala"];
 if (in_array("Malmö", $cities)) {
@@ -368,234 +367,614 @@ if (in_array("Malmö", $cities)) {
 } else {
     echo "Nej";
 }
-?&gt;
-</code></pre>
-</li>
-<li>
-<pre><code class="language-php">&lt;?php
-$cities = ["Stockholm", "Göteborg", "Malmö", "Uppsala"];
+
 $cityString = implode(", ", $cities);
-echo $cityString; // Output: Stockholm, Göteborg, Malmö, Uppsala
+echo "\n" . $cityString; // Stockholm, Göteborg, Malmö, Uppsala
 ?&gt;
 </code></pre>
-</li>
-</ol>
-<h3 id="sql-syntax-1"><a class="header" href="#sql-syntax-1">SQL (Syntax)</a></h3>
-<ol start="18">
-<li><code>SELECT * FROM customers;</code></li>
-<li><code>SELECT name, email FROM customers WHERE city = 'Göteborg';</code></li>
-<li><code>SELECT name FROM customers ORDER BY name ASC LIMIT 10;</code></li>
-<li><code>INSERT INTO customers (name, email, city) VALUES ('Lisa Berg', 'lisa@example.com', 'Malmö');</code></li>
-<li><code>UPDATE customers SET city = 'Lund' WHERE id = 15;</code></li>
-<li><code>DELETE FROM customers WHERE id = 20;</code></li>
-<li><code>SELECT orders.order_id, customers.name FROM orders INNER JOIN customers ON orders.customer_id = customers.id;</code></li>
-</ol>
-<h3 id="sessioner-och-säkerhet-konceptphp-1"><a class="header" href="#sessioner-och-säkerhet-konceptphp-1">Sessioner och Säkerhet (Koncept/PHP)</a></h3>
-<ol start="25">
-<li>Funktionen är <code>session_start()</code>. Den bör placeras allra högst upp i PHP-skriptet, före <em>all</em> annan output (HTML, mellanslag, echo etc.).</li>
-<li>
+<p><strong>Förklaring:</strong> <code>in_array($needle, $haystack)</code> returnerar <code>true</code> om värdet finns. <code>implode($glue, $array)</code> fogar ihop arrayelement till en sträng med angiven avgränsare – motsvarar <code>join()</code> i JavaScript.</p>
+</details>
+<hr />
+<h3 id="Övning-16-explode-och-array-funktioner"><a class="header" href="#Övning-16-explode-och-array-funktioner">Övning 16: explode och array-funktioner</a></h3>
+<p>Skapa en sträng <code>"äpple,banan,päron"</code> och använd <code>explode()</code> för att dela upp den till en array. Sortera sedan arrayen med <code>sort()</code> och skriv ut den med <code>implode()</code>.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-php">&lt;?php
+$fruitString = "äpple,banan,päron";
+$fruits = explode(",", $fruitString);
+sort($fruits);
+echo implode(", ", $fruits); // äpple, banan, päron
+?&gt;
+</code></pre>
+<p><strong>Förklaring:</strong> <code>explode($delimiter, $string)</code> delar en sträng till en array – motsvarar <code>split()</code> i JavaScript. <code>sort()</code> modifierar arrayen på plats och sorterar i stigande ordning. Observera att <code>sort()</code> återställer numeriska nycklar (0, 1, 2...).</p>
+</details>
+<hr />
+<h3 id="Övning-17-array_keys-och-array_values"><a class="header" href="#Övning-17-array_keys-och-array_values">Övning 17: array_keys och array_values</a></h3>
+<p>Skapa en associativ array <code>$user</code> med <code>name</code>, <code>email</code> och <code>city</code>. Använd <code>array_keys()</code> och <code>array_values()</code> för att hämta respektive nycklar och värden som separata arrayer. Skriv ut dem med <code>print_r()</code>.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-php">&lt;?php
+$user = ['name' =&gt; 'Anna', 'email' =&gt; 'anna@example.com', 'city' =&gt; 'Stockholm'];
+$keys = array_keys($user);
+$values = array_values($user);
+print_r($keys);   // Array ( [0] =&gt; name [1] =&gt; email [2] =&gt; city )
+print_r($values); // Array ( [0] =&gt; Anna [1] =&gt; anna@example.com [2] =&gt; Stockholm )
+?&gt;
+</code></pre>
+<p><strong>Förklaring:</strong> <code>array_keys()</code> returnerar alla nycklar som en indexerad array. <code>array_values()</code> returnerar alla värden och skapar nya numeriska index. Användbart när du behöver iterera över endast nycklar eller värden, eller konvertera till indexerad array.</p>
+</details>
+<hr />
+<h2 id="funktionell-php"><a class="header" href="#funktionell-php">Funktionell PHP</a></h2>
+<h3 id="Övning-18-array_map"><a class="header" href="#Övning-18-array_map">Övning 18: array_map</a></h3>
+<p>Använd <code>array_map</code> för att transformera arrayen <code>$prices = [100, 200, 300]</code> till en ny array där varje pris har lagts till med 25% moms. Använd en anonym funktion eller arrow-funktion.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-php">&lt;?php
+$prices = [100, 200, 300];
+$withTax = array_map(fn($price) =&gt; $price * 1.25, $prices);
+// [125, 250, 375]
+
+// Eller med anonym funktion:
+$withTax = array_map(function($price) {
+    return $price * 1.25;
+}, $prices);
+?&gt;
+</code></pre>
+<p><strong>Förklaring:</strong> <code>array_map</code> applicerar en callback på varje element och returnerar en ny array. Arrow-funktionen <code>fn($x) =&gt; uttryck</code> är koncis för enkla transformationer. Originalarrayen förändras inte.</p>
+</details>
+<hr />
+<h3 id="Övning-19-array_filter"><a class="header" href="#Övning-19-array_filter">Övning 19: array_filter</a></h3>
+<p>Använd <code>array_filter</code> för att från arrayen <code>$numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</code> plocka ut endast de jämna talen.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-php">&lt;?php
+$numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+$evens = array_filter($numbers, fn($n) =&gt; $n % 2 === 0);
+// [2, 4, 6, 8, 10] – nycklarna 1, 3, 5, 7, 9 behålls
+
+// Om du vill ha indexerade nycklar:
+$evens = array_values(array_filter($numbers, fn($n) =&gt; $n % 2 === 0));
+?&gt;
+</code></pre>
+<p><strong>Förklaring:</strong> <code>array_filter</code> behåller element där callback returnerar <code>true</code>. <code>array_values()</code> återställer numeriska index om du behöver en "ren" indexerad array.</p>
+</details>
+<hr />
+<h3 id="Övning-20-array_reduce"><a class="header" href="#Övning-20-array_reduce">Övning 20: array_reduce</a></h3>
+<p>Använd <code>array_reduce</code> för att beräkna summan av alla tal i <code>$numbers = [10, 20, 30, 40]</code>. Använd sedan <code>array_reduce</code> för att bygga en sträng av alla tal separerade med " + " (t.ex. "10 + 20 + 30 + 40").</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-php">&lt;?php
+$numbers = [10, 20, 30, 40];
+
+$sum = array_reduce($numbers, fn($carry, $n) =&gt; $carry + $n, 0);
+// 100
+
+$expression = array_reduce($numbers, fn($carry, $n) =&gt; $carry === '' ? $n : $carry . ' + ' . $n, '');
+// "10 + 20 + 30 + 40"
+?&gt;
+</code></pre>
+<p><strong>Förklaring:</strong> <code>array_reduce</code> tar en callback med två argument: <code>$carry</code> (ackumulatorn) och <code>$item</code> (aktuellt element). Det tredje argumentet är startvärdet. För strängen används tom sträng som start och första elementet läggs till direkt, sedan " + " + nästa.</p>
+</details>
+<hr />
+<h3 id="Övning-21-closure-och-use"><a class="header" href="#Övning-21-closure-och-use">Övning 21: Closure och use</a></h3>
+<p>Skapa en funktion <code>makeMultiplier($factor)</code> som returnerar en anonym funktion. Den returnerade funktionen ska ta ett tal och returnera det multiplicerat med <code>$factor</code>. Använd <code>use</code> för att fånga <code>$factor</code>. Testa med <code>$double = makeMultiplier(2)</code> och <code>$triple = makeMultiplier(3)</code>.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-php">&lt;?php
+function makeMultiplier(int $factor): callable {
+    return function($x) use ($factor) {
+        return $x * $factor;
+    };
+}
+
+$double = makeMultiplier(2);
+$triple = makeMultiplier(3);
+
+echo $double(5);  // 10
+echo $triple(5);  // 15
+?&gt;
+</code></pre>
+<p><strong>Förklaring:</strong> <code>use ($factor)</code> fångar variabeln från den omgivande scope:n när den anonyma funktionen skapas. Varje anrop till <code>makeMultiplier</code> skapar en ny closure med sitt eget "minne" av <code>$factor</code>. Detta kallas en "factory"-funktion.</p>
+</details>
+<hr />
+<h3 id="Övning-22-pipeline--filter-map-reduce"><a class="header" href="#Övning-22-pipeline--filter-map-reduce">Övning 22: Pipeline – filter, map, reduce</a></h3>
+<p>Du har en array med produkter: <code>$products = [['name' =&gt; 'A', 'price' =&gt; 100], ['name' =&gt; 'B', 'price' =&gt; 50], ['name' =&gt; 'C', 'price' =&gt; 200]]</code>. Skriv en pipeline som: (1) filtrerar bort produkter med pris under 75, (2) plockar ut endast namnen, (3) reducerar till en kommaseparerad sträng. Resultatet ska bli <code>"A, C"</code>.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-php">&lt;?php
+$products = [
+    ['name' =&gt; 'A', 'price' =&gt; 100],
+    ['name' =&gt; 'B', 'price' =&gt; 50],
+    ['name' =&gt; 'C', 'price' =&gt; 200],
+];
+
+$filtered = array_filter($products, fn($p) =&gt; $p['price'] &gt;= 75);
+$names = array_map(fn($p) =&gt; $p['name'], $filtered);
+$result = array_reduce($names, fn($c, $n) =&gt; $c === '' ? $n : $c . ', ' . $n, '');
+
+echo $result; // "A, C"
+?&gt;
+</code></pre>
+<p><strong>Förklaring:</strong> Varje steg returnerar en ny array (eller sträng) – originalet förändras inte. Detta är typiskt funktionell programmering: små, fokuserade operationer kedjade ihop. B (pris 50) filtreras bort, kvar blir A och C.</p>
+</details>
+<hr />
+<h2 id="sql-syntax"><a class="header" href="#sql-syntax">SQL (Syntax)</a></h2>
+<p>Anta att du har en tabell <code>customers</code> med kolumnerna <code>id</code> (INT, PK), <code>name</code> (VARCHAR), <code>email</code> (VARCHAR), <code>city</code> (VARCHAR) och en tabell <code>orders</code> med kolumnerna <code>order_id</code> (INT, PK), <code>customer_id</code> (INT, FK till customers.id), <code>order_date</code> (DATE), <code>amount</code> (DECIMAL).</p>
+<h3 id="Övning-23-select-och-where"><a class="header" href="#Övning-23-select-och-where">Övning 23: SELECT och WHERE</a></h3>
+<p>Skriv SQL för att hämta alla kolumner för alla kunder. Skriv sedan SQL för att hämta <code>name</code> och <code>email</code> för kunder som bor i "Göteborg".</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-sql">SELECT * FROM customers;
+</code></pre>
+<pre><code class="language-sql">SELECT name, email FROM customers WHERE city = 'Göteborg';
+</code></pre>
+<p><strong>Förklaring:</strong> <code>SELECT *</code> hämtar alla kolumner. <code>WHERE</code> filtrerar rader – endast de som uppfyller villkoret inkluderas. Strängvärden omges av enkla citationstecken.</p>
+</details>
+<hr />
+<h3 id="Övning-24-order-by-och-limit"><a class="header" href="#Övning-24-order-by-och-limit">Övning 24: ORDER BY och LIMIT</a></h3>
+<p>Skriv SQL för att hämta namnen på de 10 första kunderna sorterade i bokstavsordning (A-Ö).</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-sql">SELECT name FROM customers ORDER BY name ASC LIMIT 10;
+</code></pre>
+<p><strong>Förklaring:</strong> <code>ORDER BY name ASC</code> sorterar stigande (A-Ö). <code>ASC</code> kan utelämnas då det är default. <code>LIMIT 10</code> begränsar resultatet till 10 rader – användbart för paginering.</p>
+</details>
+<hr />
+<h3 id="Övning-25-insert-update-delete"><a class="header" href="#Övning-25-insert-update-delete">Övning 25: INSERT, UPDATE, DELETE</a></h3>
+<p>Skriv SQL för att: (a) lägga till en ny kund med namn "Lisa Berg" och e-post "lisa@example.com" som bor i "Malmö", (b) ändra staden till "Lund" för kunden med <code>id</code> 15, (c) ta bort kunden med <code>id</code> 20.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-sql">INSERT INTO customers (name, email, city) VALUES ('Lisa Berg', 'lisa@example.com', 'Malmö');
+</code></pre>
+<pre><code class="language-sql">UPDATE customers SET city = 'Lund' WHERE id = 15;
+</code></pre>
+<pre><code class="language-sql">DELETE FROM customers WHERE id = 20;
+</code></pre>
+<p><strong>Förklaring:</strong> <code>INSERT</code> anger kolumner och värden. <code>UPDATE</code> och <code>DELETE</code> <strong>måste</strong> ha en <code>WHERE</code>-klausul – annars påverkas alla rader! <code>WHERE id = 15</code> säkerställer att endast en specifik rad ändras.</p>
+</details>
+<hr />
+<h3 id="Övning-26-inner-join"><a class="header" href="#Övning-26-inner-join">Övning 26: INNER JOIN</a></h3>
+<p>Skriv SQL för att hämta order-ID (<code>orders.order_id</code>) och kundens namn (<code>customers.name</code>) för alla ordrar.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-sql">SELECT orders.order_id, customers.name
+FROM orders
+INNER JOIN customers ON orders.customer_id = customers.id;
+</code></pre>
+<p><strong>Förklaring:</strong> <code>INNER JOIN</code> kopplar ihop tabeller baserat på ett villkor. Endast rader med matchande värden i båda tabellerna inkluderas. <code>ON</code> anger vilka kolumner som ska matchas – här kopplar vi <code>customer_id</code> i orders till <code>id</code> i customers.</p>
+</details>
+<hr />
+<h3 id="Övning-27-create-table-och-alter-table"><a class="header" href="#Övning-27-create-table-och-alter-table">Övning 27: CREATE TABLE och ALTER TABLE</a></h3>
+<p>Skriv SQL för att skapa en tabell <code>products</code> med kolumnerna <code>id</code> (INT, AUTO_INCREMENT, PRIMARY KEY), <code>name</code> (VARCHAR 100, NOT NULL) och <code>price</code> (DECIMAL 10,2). Lägg sedan till en kolumn <code>stock</code> (INT) till tabellen.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-sql">CREATE TABLE products (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    price DECIMAL(10,2)
+);
+</code></pre>
+<pre><code class="language-sql">ALTER TABLE products ADD COLUMN stock INT;
+</code></pre>
+<p><strong>Förklaring:</strong> <code>CREATE TABLE</code> definierar tabellstrukturen. <code>AUTO_INCREMENT</code> låter databasen generera unika ID automatiskt. <code>ALTER TABLE ADD COLUMN</code> lägger till en ny kolumn i en befintlig tabell.</p>
+</details>
+<hr />
+<h3 id="Övning-28-like-och-null"><a class="header" href="#Övning-28-like-och-null">Övning 28: LIKE och NULL</a></h3>
+<p>Skriv SQL för att hämta kunder vars namn börjar med "Anders". Skriv sedan SQL för att hämta kunder där <code>city</code> inte är angiven (är NULL).</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-sql">SELECT * FROM customers WHERE name LIKE 'Anders%';
+</code></pre>
+<pre><code class="language-sql">SELECT * FROM customers WHERE city IS NULL;
+</code></pre>
+<p><strong>Förklaring:</strong> <code>LIKE</code> används för mönstermatchning. <code>%</code> matchar noll eller flera tecken. <code>Anders%</code> matchar "Andersson", "Anders" etc. För NULL använd <code>IS NULL</code> eller <code>IS NOT NULL</code> – inte <code>= NULL</code>.</p>
+</details>
+<hr />
+<h2 id="sessioner-och-säkerhet"><a class="header" href="#sessioner-och-säkerhet">Sessioner och Säkerhet</a></h2>
+<h3 id="Övning-29-starta-session-och-lagra-data"><a class="header" href="#Övning-29-starta-session-och-lagra-data">Övning 29: Starta Session och Lagra Data</a></h3>
+<p>Vilken PHP-funktion används för att starta en session, och var bör den placeras? Skriv sedan kod för att lagra värdet "dark" i sessionsvariabeln <code>theme</code>.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<p>Funktionen är <code>session_start()</code>. Den måste anropas <strong>innan</strong> någon output (HTML, echo, mellanslag) skickas – typiskt allra högst upp i skriptet.</p>
 <pre><code class="language-php">&lt;?php
 session_start();
 $_SESSION['theme'] = 'dark';
 ?&gt;
 </code></pre>
-</li>
-<li>
+<p><strong>Förklaring:</strong> <code>session_start()</code> återupptar en befintlig session eller skapar en ny. Den måste anropas först eftersom den skickar HTTP-headers. <code>$_SESSION</code> är en superglobal array där sessionsdata lagras.</p>
+</details>
+<hr />
+<h3 id="Övning-30-kontrollera-session"><a class="header" href="#Övning-30-kontrollera-session">Övning 30: Kontrollera Session</a></h3>
+<p>Skriv en <code>if</code>-sats i PHP som kontrollerar om sessionsvariabeln <code>user_id</code> är satt. Om den är satt, skriv "Inloggad", annars skriv "Ej inloggad".</p>
+<details>
+<summary>Lösningsförslag</summary>
 <pre><code class="language-php">&lt;?php
 session_start();
 if (isset($_SESSION['user_id'])) {
-    echo "Användaren är inloggad.";
+    echo "Inloggad";
 } else {
-    echo "Användaren är inte inloggad.";
+    echo "Ej inloggad";
 }
 ?&gt;
 </code></pre>
-</li>
-<li>Funktionen är <code>htmlspecialchars()</code>. Exempel:
-<pre><code class="language-php">&lt;?php 
-$userInput = "&lt;script&gt;alert('hack');&lt;/script&gt;"; 
-echo htmlspecialchars($userInput, ENT_QUOTES, 'UTF-8'); 
-// Output blir ofarlig text: &amp;lt;script&amp;gt;alert(&amp;#039;hack&amp;#039;);&amp;lt;/script&amp;gt;
+<p><strong>Förklaring:</strong> <code>isset()</code> returnerar <code>true</code> om variabeln existerar och inte är <code>null</code>. Det är standardmetoden för att kontrollera om en sessionsvariabel är satt innan man använder den.</p>
+</details>
+<hr />
+<h3 id="Övning-31-cookies--sätt-och-läs"><a class="header" href="#Övning-31-cookies--sätt-och-läs">Övning 31: Cookies – Sätt och Läs</a></h3>
+<p>Skriv PHP-kod för att sätta en cookie <code>language</code> med värdet <code>sv</code> som är giltig i 7 dagar. Skriv sedan kod för att läsa cookien och skriva ut värdet (om den finns).</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-php">&lt;?php
+// Sätt cookie – måste vara innan output!
+$expiry = time() + (86400 * 7); // 7 dagar
+setcookie('language', 'sv', $expiry, '/');
+
+// Läsa cookie
+if (isset($_COOKIE['language'])) {
+    echo "Språk: " . htmlspecialchars($_COOKIE['language']);
+} else {
+    echo "Ingen språkpreferens sparad.";
+}
 ?&gt;
 </code></pre>
+<p><strong>Förklaring:</strong> <code>setcookie()</code> tar namn, värde och utgångstid (Unix timestamp). <code>time() + 86400*7</code> = nu + 7 dagar. <code>$_COOKIE</code> innehåller cookies som webbläsaren skickat. <code>setcookie()</code> måste anropas före all output.</p>
+</details>
+<hr />
+<h3 id="Övning-32-xss-skydd"><a class="header" href="#Övning-32-xss-skydd">Övning 32: XSS-skydd</a></h3>
+<p>Vilken PHP-funktion bör du alltid använda när du skriver ut data som kan ha kommit från en användare i HTML? Ge ett exempel.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<p>Funktionen är <code>htmlspecialchars()</code>. Exempel:</p>
+<pre><code class="language-php">&lt;?php
+$userInput = "&lt;script&gt;alert('hack');&lt;/script&gt;";
+echo htmlspecialchars($userInput, ENT_QUOTES, 'UTF-8');
+// Output: &amp;lt;script&amp;gt;alert(&amp;#039;hack&amp;#039;);&amp;lt;/script&amp;gt;
+?&gt;
+</code></pre>
+<p><strong>Förklaring:</strong> <code>htmlspecialchars()</code> konverterar <code>&lt;</code>, <code>&gt;</code>, <code>"</code>, <code>'</code> och <code>&amp;</code> till HTML-entiteter så att de visas som text istället för att tolkas som HTML/JavaScript. <code>ENT_QUOTES</code> hanterar citationstecken. Detta skyddar mot XSS-attacker.</p>
+</details>
+<hr />
+<h3 id="Övning-33-sql-injection-skydd"><a class="header" href="#Övning-33-sql-injection-skydd">Övning 33: SQL Injection-skydd</a></h3>
+<p>Vilken teknik ska du alltid använda när du bygger SQL-frågor med användarinput? Nämn den PHP/PDO-metod som initierar denna teknik.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<p>Tekniken är <strong>Prepared Statements</strong>. I PDO används <code>$pdo-&gt;prepare("SQL med :placeholders")</code> för att förbereda frågan. Parametrar bindas sedan med <code>bindParam()</code> eller skickas till <code>execute()</code>.</p>
+<p><strong>Förklaring:</strong> Prepared statements separerar SQL-strukturen från data. Databasen behandlar parametervärden som data, inte som SQL-kod – vilket förhindrar att angripare kan injicera skadlig SQL via formulärfält eller URL-parametrar.</p>
+</details>
+<hr />
+<h3 id="Övning-34-lösenordshantering"><a class="header" href="#Övning-34-lösenordshantering">Övning 34: Lösenordshantering</a></h3>
+<p>Vilka två PHP-funktioner är standard för säker lösenordshantering? Vad gör var och en?</p>
+<details>
+<summary>Lösningsförslag</summary>
+<ul>
+<li>
+<p><strong><code>password_hash($password, PASSWORD_DEFAULT)</code></strong>: Skapar en stark, saltad hash av lösenordet. Använd vid registrering – spara hashen i databasen, aldrig lösenordet i klartext.</p>
 </li>
-<li>Tekniken är <strong>Prepared Statements</strong>. I PDO initieras detta med <code>$pdo-&gt;prepare("SQL med :placeholders...")</code>.</li>
-<li><code>password_hash()</code>: Skapar en stark, saltad hash av ett lösenord. <code>password_verify()</code>: Jämför ett inskickat lösenord mot en lagrad hash på ett säkert sätt.</li>
-<li><strong>Anti-CSRF Tokens (Synchronizer Token Pattern):</strong> Generera en unik token, lagra den i sessionen, inkludera den i formuläret, och verifiera att den inskickade token matchar sessionens token på serversidan innan åtgärden utförs.</li>
+<li>
+<p><strong><code>password_verify($password, $hash)</code></strong>: Jämför ett inskickat lösenord med en lagrad hash på ett säkert sätt. Använd vid inloggning – returnerar <code>true</code> om lösenordet matchar.</p>
+</li>
+</ul>
+<p><strong>Förklaring:</strong> <code>password_hash()</code> genererar automatiskt ett unikt salt och använder Bcrypt (eller bästa tillgängliga algoritm). <code>password_verify()</code> extraherar saltet från hashen och jämför säkert. Använd aldrig MD5 eller SHA1 för lösenord!</p>
+</details>
+<hr />
+<h3 id="Övning-35-csrf-skydd"><a class="header" href="#Övning-35-csrf-skydd">Övning 35: CSRF-skydd</a></h3>
+<p>Beskriv kort hur anti-CSRF tokens (Synchronizer Token Pattern) fungerar för att skydda formulär.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<ol>
+<li><strong>Generera token</strong>: Servern skapar en unik, slumpmässig token (t.ex. med <code>bin2hex(random_bytes(32))</code>).</li>
+<li><strong>Lagra i session</strong>: <code>$_SESSION['csrf_token'] = $token</code></li>
+<li><strong>Inkludera i formulär</strong>: Ett dolt fält <code>&lt;input type="hidden" name="csrf_token" value="..."&gt;</code></li>
+<li><strong>Vid POST</strong>: Jämför <code>$_POST['csrf_token']</code> med <code>$_SESSION['csrf_token']</code> innan åtgärden utförs.</li>
+<li><strong>Verifiera</strong>: Använd <code>hash_equals($session_token, $submitted_token)</code> för säker jämförelse.</li>
 </ol>
-<h3 id="mini-crud-phppdo-1"><a class="header" href="#mini-crud-phppdo-1">Mini-CRUD (PHP/PDO)</a></h3>
-<ol start="32">
-<li>
+<p><strong>Förklaring:</strong> En angripare på en annan webbplats kan inte läsa eller gissa token eftersom den finns i användarens session. Därför kan de inte skicka en giltig token med en förfalskad förfrågan.</p>
+</details>
+<hr />
+<h3 id="Övning-36-utloggning"><a class="header" href="#Övning-36-utloggning">Övning 36: Utloggning</a></h3>
+<p>Skriv PHP-kod för att logga ut en användare: töm sessionsvariablerna, ta bort session-cookien och förstör sessionen. Inkludera nödvändiga steg.</p>
+<details>
+<summary>Lösningsförslag</summary>
 <pre><code class="language-php">&lt;?php
-// Antag att formuläret skickats via POST
-$description = trim($_POST['task_description'] ?? '');
-// Ytterligare validering kan behövas (t.ex. kolla om tom)
+session_start();
+
+// 1. Töm sessionsvariabler
+$_SESSION = [];
+
+// 2. Ta bort session-cookien
+if (ini_get("session.use_cookies")) {
+    $params = session_get_cookie_params();
+    setcookie(session_name(), '', time() - 42000,
+        $params["path"], $params["domain"],
+        $params["secure"], $params["httponly"]
+    );
+}
+
+// 3. Förstör sessionen på servern
+session_destroy();
+
+header('Location: login.php');
+exit;
 ?&gt;
 </code></pre>
-</li>
-<li>
+<p><strong>Förklaring:</strong> Alla tre steg behövs för fullständig utloggning. <code>session_destroy()</code> tar bort sessionfilen på servern men påverkar inte <code>$_SESSION</code> eller cookien – därför måste vi tömma och ta bort cookien manuellt. Omdirigering förhindrar att användaren stannar på utloggningssidan.</p>
+</details>
+<hr />
+<h2 id="pdo-och-mini-crud"><a class="header" href="#pdo-och-mini-crud">PDO och Mini-CRUD</a></h2>
+<p>Anta att du har en PDO-anslutning i variabeln <code>$pdo</code> och en <code>tasks</code>-tabell med kolumnerna <code>id</code> (INT, PK, AUTO_INCREMENT) och <code>description</code> (TEXT).</p>
+<h3 id="Övning-37-hämta-input-och-insert"><a class="header" href="#Övning-37-hämta-input-och-insert">Övning 37: Hämta Input och INSERT</a></h3>
+<p>Skriv PHP-koden för att säkert hämta värdet från ett formulärfält med <code>name="task_description"</code> som skickats via POST. Skriv sedan kod som använder prepared statements för att infoga värdet i <code>tasks</code>-tabellens <code>description</code>-kolumn.</p>
+<details>
+<summary>Lösningsförslag</summary>
 <pre><code class="language-php">&lt;?php
-// Antag att $pdo är en giltig PDO-anslutning och $description har ett värde
-try {
-    $sql = "INSERT INTO tasks (description) VALUES (:desc)";
-    $stmt = $pdo-&gt;prepare($sql);
-    $stmt-&gt;bindParam(':desc', $description, PDO::PARAM_STR);
-    $stmt-&gt;execute();
-    echo "Uppgift tillagd!";
-} catch (PDOException $e) {
-    error_log("Insert Task Error: " . $e-&gt;getMessage());
-    echo "Kunde inte lägga till uppgift.";
+$description = trim($_POST['task_description'] ?? '');
+
+if (!empty($description)) {
+    try {
+        $sql = "INSERT INTO tasks (description) VALUES (:desc)";
+        $stmt = $pdo-&gt;prepare($sql);
+        $stmt-&gt;bindParam(':desc', $description, PDO::PARAM_STR);
+        $stmt-&gt;execute();
+        echo "Uppgift tillagd!";
+    } catch (PDOException $e) {
+        error_log("Insert Error: " . $e-&gt;getMessage());
+        echo "Kunde inte lägga till uppgift.";
+    }
 }
 ?&gt;
 </code></pre>
-</li>
-<li>
+<p><strong>Förklaring:</strong> <code>$_POST['task_description'] ?? ''</code> använder null coalescing för att undvika "undefined index"-varningar. <code>trim()</code> tar bort onödiga mellanslag. Prepared statements med <code>:desc</code>-platshållare skyddar mot SQL injection.</p>
+</details>
+<hr />
+<h3 id="Övning-38-select-och-fetchall"><a class="header" href="#Övning-38-select-och-fetchall">Övning 38: SELECT och fetchAll</a></h3>
+<p>Skriv PHP-koden som använder <code>$pdo</code> för att hämta alla rader från <code>tasks</code>-tabellen (endast <code>id</code> och <code>description</code>) och lagra resultatet i en array <code>$allTasks</code>.</p>
+<details>
+<summary>Lösningsförslag</summary>
 <pre><code class="language-php">&lt;?php
-// Antag att $pdo är en giltig PDO-anslutning
 $allTasks = [];
 try {
     $sql = "SELECT id, description FROM tasks ORDER BY id";
-    $stmt = $pdo-&gt;query($sql); // Enkel query går bra här då ingen input finns
-    $allTasks = $stmt-&gt;fetchAll(); 
+    $stmt = $pdo-&gt;query($sql);
+    $allTasks = $stmt-&gt;fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    error_log("Fetch Tasks Error: " . $e-&gt;getMessage());
-    echo "Kunde inte hämta uppgifter.";
+    error_log("Fetch Error: " . $e-&gt;getMessage());
 }
-// Nu innehåller $allTasks en array med alla uppgifter (eller är tom om fel)
-// print_r($allTasks);
 ?&gt;
 </code></pre>
-</li>
-</ol>
-<h3 id="klasser-oop-grunderna-1"><a class="header" href="#klasser-oop-grunderna-1">Klasser (OOP Grunderna)</a></h3>
-<ol start="35">
-<li>
+<p><strong>Förklaring:</strong> <code>query()</code> används för frågor utan användarinput – prepared statements behövs inte här. <code>fetchAll()</code> hämtar alla rader som en array av associativa arrayer. <code>PDO::FETCH_ASSOC</code> ger nycklar som kolumnnamn.</p>
+</details>
+<hr />
+<h3 id="Övning-39-update-och-delete-med-pdo"><a class="header" href="#Övning-39-update-och-delete-med-pdo">Övning 39: UPDATE och DELETE med PDO</a></h3>
+<p>Skriv PHP-kod som uppdaterar <code>description</code> för uppgiften med <code>id</code> som kommer från <code>$_GET['id']</code>. Validera ID:t först. Skriv sedan kod för att radera uppgiften med det validerade ID:t.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-php">&lt;?php
+$id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+if (!$id) {
+    die("Ogiltigt ID");
+}
+
+// UPDATE
+$description = "Ny beskrivning";
+$stmt = $pdo-&gt;prepare("UPDATE tasks SET description = :desc WHERE id = :id");
+$stmt-&gt;bindParam(':desc', $description, PDO::PARAM_STR);
+$stmt-&gt;bindParam(':id', $id, PDO::PARAM_INT);
+$stmt-&gt;execute();
+
+// DELETE
+$stmt = $pdo-&gt;prepare("DELETE FROM tasks WHERE id = :id");
+$stmt-&gt;bindParam(':id', $id, PDO::PARAM_INT);
+$stmt-&gt;execute();
+?&gt;
+</code></pre>
+<p><strong>Förklaring:</strong> <code>filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT)</code> validerar att ID är ett heltal – returnerar <code>false</code> för ogiltig input. Både UPDATE och DELETE använder prepared statements med namngivna platshållare. <code>WHERE id = :id</code> säkerställer att endast en specifik rad påverkas.</p>
+</details>
+<hr />
+<h3 id="Övning-40-pdo-anslutning"><a class="header" href="#Övning-40-pdo-anslutning">Övning 40: PDO-anslutning</a></h3>
+<p>Skriv en funktion <code>connect_db()</code> som returnerar en PDO-anslutning till databasen <code>db_fullstack</code> på <code>mysql</code> med användare <code>db_user</code> och lösenord <code>db_password</code>. Sätt <code>ERRMODE_EXCEPTION</code> och <code>FETCH_ASSOC</code> som default. Hantera fel med try/catch.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-php">&lt;?php
+function connect_db(): PDO {
+    $dsn = "mysql:host=mysql;dbname=db_fullstack;charset=utf8mb4";
+    $options = [
+        PDO::ATTR_ERRMODE =&gt; PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE =&gt; PDO::FETCH_ASSOC,
+    ];
+    try {
+        return new PDO($dsn, 'db_user', 'db_password', $options);
+    } catch (PDOException $e) {
+        throw new PDOException("Kunde inte ansluta: " . $e-&gt;getMessage(), (int) $e-&gt;getCode());
+    }
+}
+?&gt;
+</code></pre>
+<p><strong>Förklaring:</strong> DSN (Data Source Name) anger värd, databas och teckenkodning. <code>ERRMODE_EXCEPTION</code> gör att PDO kastar undantag vid fel. <code>FETCH_ASSOC</code> ger associativa arrayer som standard vid fetch. <code>charset=utf8mb4</code> stödjer alla Unicode-tecken inklusive emojis.</p>
+</details>
+<hr />
+<h2 id="klasser-oop"><a class="header" href="#klasser-oop">Klasser (OOP)</a></h2>
+<h3 id="Övning-41-definiera-klass"><a class="header" href="#Övning-41-definiera-klass">Övning 41: Definiera Klass</a></h3>
+<p>Skapa en klass <code>Book</code> med två publika egenskaper: <code>$title</code> (string) och <code>$author</code> (string). Lägg till en publik metod <code>displayInfo()</code> som skriver ut "Title: [titel], Author: [författare]".</p>
+<details>
+<summary>Lösningsförslag</summary>
 <pre><code class="language-php">&lt;?php
 declare(strict_types=1);
 
-class Book 
-{
+class Book {
     public string $title;
     public string $author;
 
-    public function displayInfo(): void 
-    {
+    public function displayInfo(): void {
         echo "Title: " . $this-&gt;title . ", Author: " . $this-&gt;author . "\n";
     }
 }
 ?&gt;
 </code></pre>
-</li>
-<li>
+<p><strong>Förklaring:</strong> <code>$this</code> refererar till det aktuella objektet inuti en metod. <code>-&gt;</code> används för att nå egenskaper och metoder på ett objekt. <code>public</code> gör egenskaperna och metoden åtkomliga utifrån klassen.</p>
+</details>
+<hr />
+<h3 id="Övning-42-konstruktor"><a class="header" href="#Övning-42-konstruktor">Övning 42: Konstruktor</a></h3>
+<p>Modifiera <code>Book</code>-klassen så att den har en konstruktor som tar emot titel och författare som argument och sätter egenskaperna. Skapa ett <code>Book</code>-objekt med konstruktorn och anropa <code>displayInfo()</code>.</p>
+<details>
+<summary>Lösningsförslag</summary>
 <pre><code class="language-php">&lt;?php
-// Antag att Book-klassen från övning 35 finns
-
-$book1 = new Book();
-$book1-&gt;title = "Ronja Rövardotter";
-$book1-&gt;author = "Astrid Lindgren";
-
-$book2 = new Book();
-$book2-&gt;title = "Sagan om Ringen";
-$book2-&gt;author = "J.R.R. Tolkien";
-
-$book1-&gt;displayInfo(); // Output: Title: Ronja Rövardotter, Author: Astrid Lindgren
-$book2-&gt;displayInfo(); // Output: Title: Sagan om Ringen, Author: J.R.R. Tolkien
-?&gt;
-</code></pre>
-</li>
-<li>
-<pre><code class="language-php">&lt;?php
-declare(strict_types=1);
-
-class Book 
-{
+class Book {
     public string $title;
     public string $author;
 
-    // Konstruktor
-    public function __construct(string $bookTitle, string $bookAuthor)
-    {
+    public function __construct(string $bookTitle, string $bookAuthor) {
         $this-&gt;title = $bookTitle;
         $this-&gt;author = $bookAuthor;
     }
 
-    public function displayInfo(): void 
-    {
+    public function displayInfo(): void {
         echo "Title: " . $this-&gt;title . ", Author: " . $this-&gt;author . "\n";
     }
 }
 
-// Skapa objekt med konstruktor
-$book3 = new Book("Liftarens Guide till Galaxen", "Douglas Adams");
-$book3-&gt;displayInfo(); // Output: Title: Liftarens Guide till Galaxen, Author: Douglas Adams
+$book = new Book("Liftarens Guide till Galaxen", "Douglas Adams");
+$book-&gt;displayInfo();
 ?&gt;
 </code></pre>
-</li>
-<li>
+<p><strong>Förklaring:</strong> <code>__construct</code> anropas automatiskt när <code>new Book(...)</code> körs. Konstruktorn gör det enkelt att skapa objekt med initiala värden i ett steg, istället för att sätta egenskaperna manuellt efteråt.</p>
+</details>
+<hr />
+<h3 id="Övning-43-privata-egenskaper-och-getters"><a class="header" href="#Övning-43-privata-egenskaper-och-getters">Övning 43: Privata Egenskaper och Getters</a></h3>
+<p>Modifiera <code>Book</code>-klassen: gör <code>$title</code> och <code>$author</code> privata, lägg till <code>$pages</code> (int), uppdatera konstruktorn, och skapa getter-metoder <code>getTitle()</code>, <code>getAuthor()</code> och <code>getPages()</code>.</p>
+<details>
+<summary>Lösningsförslag</summary>
 <pre><code class="language-php">&lt;?php
 declare(strict_types=1);
 
-class Book 
-{
+class Book {
     private string $title;
     private string $author;
-    public int $pages; // Lämnar denna publik som exempel
+    private int $pages;
 
-    public function __construct(string $bookTitle, string $bookAuthor, int $numPages)
-    {
+    public function __construct(string $bookTitle, string $bookAuthor, int $numPages) {
         $this-&gt;title = $bookTitle;
         $this-&gt;author = $bookAuthor;
-        $this-&gt;pages = $numPages; // Sätter den publika egenskapen
+        $this-&gt;pages = $numPages;
     }
 
-    // Getter för titel
-    public function getTitle(): string 
-    {
+    public function getTitle(): string {
         return $this-&gt;title;
     }
 
-    // Getter för författare
-    public function getAuthor(): string 
-    {
+    public function getAuthor(): string {
         return $this-&gt;author;
     }
 
-    // Getter för sidantal (tekniskt sett inte nödvändig då pages är publik, men bra för konsekvens)
-    public function getPages(): int 
-    {
+    public function getPages(): int {
         return $this-&gt;pages;
     }
 
-    // Vi kan behålla displayInfo om vi vill, men den behöver använda getters nu
-    public function displayInfo(): void 
-    {
+    public function displayInfo(): void {
         echo "Title: " . $this-&gt;getTitle() . ", Author: " . $this-&gt;getAuthor() . ", Pages: " . $this-&gt;getPages() . "\n";
     }
 }
 ?&gt;
 </code></pre>
-</li>
-<li>
+<p><strong>Förklaring:</strong> <code>private</code> döljer egenskaperna från utsidan – de kan endast nås inifrån klassen. Getters ger kontrollerad åtkomst och möjliggör inkapsling. Metoder inuti klassen använder getters för konsekvens.</p>
+</details>
+<hr />
+<h3 id="Övning-44-klass-med-beteende-setter-med-validering"><a class="header" href="#Övning-44-klass-med-beteende-setter-med-validering">Övning 44: Klass med Beteende (Setter med Validering)</a></h3>
+<p>Skapa en klass <code>BankAccount</code> med privat egenskap <code>$balance</code> (float). Konstruktorn tar initialt saldo. Lägg till metoder <code>deposit($amount)</code> och <code>withdraw($amount)</code> som validerar att beloppen är positiva och att uttag inte överstiger saldot. Lägg till <code>getBalance()</code>.</p>
+<details>
+<summary>Lösningsförslag</summary>
 <pre><code class="language-php">&lt;?php
-// Antag att den modifierade Book-klassen från övning 38 finns
+declare(strict_types=1);
 
-$book4 = new Book("Mio min Mio", "Astrid Lindgren", 180);
+class BankAccount {
+    private float $balance;
 
-// Hämta värden med getters
-$title = $book4-&gt;getTitle();
-$author = $book4-&gt;getAuthor();
-$pages = $book4-&gt;getPages(); // Kan också nås direkt: $book4-&gt;pages
+    public function __construct(float $initialBalance = 0.0) {
+        $this-&gt;balance = max(0.0, $initialBalance);
+    }
 
-echo "Bok: " . $title . "\n";
-echo "Författare: " . $author . "\n";
-echo "Antal sidor: " . $pages . "\n";
+    public function deposit(float $amount): bool {
+        if ($amount &lt;= 0) return false;
+        $this-&gt;balance += $amount;
+        return true;
+    }
 
-// Anropa displayInfo som nu använder getters internt
-$book4-&gt;displayInfo();
+    public function withdraw(float $amount): bool {
+        if ($amount &lt;= 0 || $amount &gt; $this-&gt;balance) return false;
+        $this-&gt;balance -= $amount;
+        return true;
+    }
+
+    public function getBalance(): float {
+        return $this-&gt;balance;
+    }
+}
 ?&gt;
 </code></pre>
-</li>
+<p><strong>Förklaring:</strong> Inkapsling låter klassen kontrollera hur <code>$balance</code> ändras. <code>deposit</code> och <code>withdraw</code> validerar input och returnerar <code>true</code>/<code>false</code> för att indikera lyckad operation. <code>max(0.0, $initialBalance)</code> förhindrar negativt startsaldo.</p>
+</details>
+<hr />
+<h2 id="crud-applikation-och-projektstruktur"><a class="header" href="#crud-applikation-och-projektstruktur">CRUD-applikation och Projektstruktur</a></h2>
+<h3 id="Övning-45-projektstruktur"><a class="header" href="#Övning-45-projektstruktur">Övning 45: Projektstruktur</a></h3>
+<p>Vilka filer/mappar behövs typiskt i en enkel PHP CRUD-applikation (t.ex. blogg) för att separera konfiguration, databaslogik, admin-funktioner och uppladdade filer? Nämn minst fem.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<ol>
+<li><strong>includes/config.php</strong> – Konfiguration, databasuppgifter, <code>session_start()</code></li>
+<li><strong>includes/database.php</strong> – PDO-anslutning, <code>connect_db()</code></li>
+<li><strong>includes/functions.php</strong> – Hjälpfunktioner (t.ex. sanering, CSRF)</li>
+<li><strong>admin/</strong> – Skyddade sidor för inloggade användare (create, edit, delete)</li>
+<li><strong>uploads/</strong> – Mapp för uppladdade filer (bilder etc.)</li>
+<li><strong>index.php</strong> – Hemsida/listning</li>
+<li><strong>login.php</strong>, <strong>register.php</strong> – Autentisering</li>
 </ol>
+<p><strong>Förklaring:</strong> Separation av concerns gör koden underhållbar. <code>includes/</code> återanvänds på flera sidor. <code>admin/</code> grupperar skyddade resurser. <code>uploads/</code> ska vara skrivbar för webbservern och bortom document root om möjligt av säkerhetsskäl.</p>
+</details>
+<hr />
+<h3 id="Övning-46-filuppladdning--säkerhetskontroller"><a class="header" href="#Övning-46-filuppladdning--säkerhetskontroller">Övning 46: Filuppladdning – Säkerhetskontroller</a></h3>
+<p>Nämn minst fyra säkerhetsåtgärder du bör implementera när användare laddar upp filer (t.ex. bilder) till din webbapplikation.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<ol>
+<li><strong>Validera filtyp</strong> – Kontrollera MIME-typ eller filinnehåll (<code>finfo_file</code>) mot en vitlista. Lita inte på <code>$_FILES['x']['name']</code> eller klientens angivna typ.</li>
+<li><strong>Validera filstorlek</strong> – Begränsa till rimlig maxstorlek (<code>$_FILES['x']['size']</code>).</li>
+<li><strong>Byt filnamn</strong> – Spara aldrig med användarens filnamn. Använd <code>uniqid()</code> eller liknande för unikt, slumpmässigt namn.</li>
+<li><strong>Använd <code>move_uploaded_file()</code></strong> – Den enda säkra funktionen för att flytta uppladdad fil från temp till destination.</li>
+<li><strong>Begränsa mapprättigheter</strong> – Säkerställ att uploads-mappen inte tillåter exekvering av skript.</li>
+</ol>
+<p><strong>Förklaring:</strong> Filuppladdning är en vanlig attackvektor. Angripare kan försöka ladda upp PHP-filer som exekveras på servern, eller extremt stora filer. Alltid validera på serversidan – klientvalidering kan kringgås.</p>
+</details>
+<hr />
+<h3 id="Övning-47-skydda-admin-sida"><a class="header" href="#Övning-47-skydda-admin-sida">Övning 47: Skydda Admin-sida</a></h3>
+<p>Skriv PHP-kod som ska placeras högst upp i en admin-sida. Koden ska kontrollera om användaren är inloggad (sessionsvariabeln <code>user_id</code> är satt). Om inte, omdirigera till <code>login.php</code> och avbryt.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-php">&lt;?php
+require_once __DIR__ . '/../includes/config.php'; // Innehåller session_start()
+
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit;
+}
+?&gt;
+</code></pre>
+<p><strong>Förklaring:</strong> Denna "guard"-kod måste köras före all annan output. <code>header('Location: ...')</code> skickar en redirect. <code>exit</code> förhindrar att resten av skriptet körs efter redirect. <code>__DIR__</code> ger aktuell mapps sökväg för relativ inkludering.</p>
+</details>
+<hr />
+<h2 id="sammanfattning"><a class="header" href="#sammanfattning">Sammanfattning</a></h2>
+<p>Dessa övningar täcker:</p>
+<ul>
+<li><strong>PHP intro</strong>: Server vs klient, Docker-miljö</li>
+<li><strong>Syntax</strong>: Variabler, funktioner, type hinting, match, konstanter</li>
+<li><strong>Arrayer</strong>: Indexerade/associativa, foreach, in_array, implode, explode, sort, array_keys/values</li>
+<li><strong>Funktionell PHP</strong>: array_map, array_filter, array_reduce, anonyma funktioner, closures, use, pipelines</li>
+<li><strong>SQL</strong>: SELECT, WHERE, ORDER BY, LIMIT, INSERT, UPDATE, DELETE, JOIN, CREATE/ALTER TABLE, LIKE, NULL</li>
+<li><strong>Sessioner &amp; Cookies</strong>: session_start, $_SESSION, setcookie, $_COOKIE, utloggning</li>
+<li><strong>Säkerhet</strong>: XSS (htmlspecialchars), SQL injection (prepared statements), lösenord (password_hash/verify), CSRF, filuppladdning</li>
+<li><strong>PDO</strong>: Anslutning, prepare, bindParam, execute, fetch, fetchAll, INSERT, UPDATE, DELETE</li>
+<li><strong>OOP</strong>: Klasser, egenskaper, metoder, konstruktor, private, getters</li>
+<li><strong>CRUD-app</strong>: Projektstruktur, skydd av admin-sidor, filuppladdning</li>
+</ul>
+<p>Fortsätt med <a href="crud-app.html">CRUD-applikationen</a> för att sätta allt i praktik!</p>
 
                     </main>
 

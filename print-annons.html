@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hundkrets – Hitta hundpassningsutbyte</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Printvänlig design – vit bakgrund, minimal färg för att spara bläck */
+    :root {
+      --radius-dog: 1rem;
+    }
+
+    @page {
+      size: A4;
+      margin: 15mm;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Nunito", system-ui, -apple-system, sans-serif;
+      background: white;
+      color: #1a1a1a;
+      line-height: 1.6;
+    }
+
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      padding: 15mm;
+      margin: 0 auto;
+      background: white;
+    }
+
+    @media print {
+      body, .page {
+        background: white !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .page {
+        width: 100%;
+        min-height: 100vh;
+        margin: 0;
+        padding: 15mm;
+        box-shadow: none;
+      }
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #333;
+    }
+
+    .logo-brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-bottom: 8px;
+    }
+
+    .logo-brand img {
+      width: 56px;
+      height: 56px;
+      border-radius: 10px;
+    }
+
+    .logo-brand span {
+      font-size: 36px;
+      font-weight: 700;
+      color: #1a1a1a;
+    }
+
+    .tagline {
+      font-size: 18px;
+      color: #444;
+      margin-top: 5px;
+    }
+
+    .main-content {
+      text-align: center;
+      padding: 25px 0;
+    }
+
+    .headline {
+      font-size: 28px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 15px;
+      line-height: 1.3;
+    }
+
+    .description {
+      font-size: 16px;
+      color: #444;
+      max-width: 500px;
+      margin: 0 auto 25px;
+    }
+
+    .url-box {
+      background: transparent;
+      border: 2px solid #333;
+      padding: 15px 30px;
+      display: inline-block;
+      margin: 20px 0;
+      border-radius: var(--radius-dog);
+    }
+
+    .url {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1a1a1a;
+      letter-spacing: 1px;
+    }
+
+    .benefits {
+      text-align: left;
+      max-width: 400px;
+      margin: 30px auto;
+      padding: 20px;
+      background: transparent;
+      border-radius: var(--radius-dog);
+      border: 1px solid #999;
+    }
+
+    .benefits h3 {
+      font-size: 16px;
+      color: #1a1a1a;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .benefits ul {
+      list-style: none;
+    }
+
+    .benefits li {
+      padding: 8px 0;
+      padding-left: 28px;
+      position: relative;
+      font-size: 15px;
+      color: #333;
+    }
+
+    .benefits li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      font-weight: bold;
+    }
+
+    .footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 13px;
+      color: #666;
+    }
+
+    .qr-code {
+      width: 160px;
+      height: 160px;
+      margin: 15px auto;
+      display: block;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <div class="logo-brand">
+        <img src="logo-icon.png" alt="">
+        <span>Hundkrets</span>
+      </div>
+      <p class="tagline">Hundpassningsutbyte mellan hundägare</p>
+    </header>
+
+    <main class="main-content">
+      <h2 class="headline">Hitta någon som passar din hund – gratis!</h2>
+      <p class="description">
+        Byta hundpassning med andra hundägare i ditt område. Ingen kostnad – bara hjälp åt varandra.
+      </p>
+
+      <div class="url-box">
+        <p class="url">hundkrets.se</p>
+      </div>
+
+      <div class="benefits">
+        <h3>Varför Hundkrets?</h3>
+        <ul>
+          <li>Helt gratis – byt hundpassning med grannar</li>
+          <li>Hitta pålitliga hundägare nära dig</li>
+          <li>Perfekt när du behöver hjälp med din hund</li>
+          <li>Skapa kontakter med andra hundälskare</li>
+        </ul>
+      </div>
+
+      <img class="qr-code" src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=https%3A%2F%2Fhundkrets.se" alt="QR-kod till hundkrets.se">
+      <p class="footer">Skanna eller besök hundkrets.se</p>
+    </main>
+  </div>
+</body>
+</html>

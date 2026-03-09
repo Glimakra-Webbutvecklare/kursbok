@@ -399,7 +399,7 @@ graph LR
 *   `RIGHT JOIN`: Motsatsen till `LEFT JOIN`. Returnerar alla rader från den *högra* tabellen och matchande från vänstra. (Order 104 skulle komma med, men med `NULL` i namnkolumnen).
 *   `FULL OUTER JOIN`: Returnerar alla rader från båda tabellerna. Om matchning saknas fylls kolumnerna från den andra tabellen ut med `NULL`. (Stöds inte direkt av MySQL/MariaDB, men kan simuleras).
 
-## SQL och PHP (Förhandstitt)
+## SQL och PHP med PDO
 
 Nu när du har en grundläggande förståelse för SQL-satser är nästa steg att se hur vi kan exekvera dessa från vår PHP-kod. PHP erbjuder olika sätt att ansluta till och interagera med databaser som MariaDB/MySQL:
 
@@ -408,12 +408,88 @@ Nu när du har en grundläggande förståelse för SQL-satser är nästa steg at
 
 _Vi kommer jobba främst med PDO._
 
-I de kommande avsnittet `crud-app.md` kommer vi att dyka djupare in i hur man använder PDO för att:
+### Ansluta till databasen
 
-*   Ansluta till databasen från PHP.
-*   Skicka SQL-frågor (`SELECT`, `INSERT`, `UPDATE`, `DELETE`) till databasen.
-*   Hantera resultaten från `SELECT`-frågor.
-*   Skydda sig mot **SQL Injection** (SQL-injektion), en allvarlig säkerhetsrisk, med hjälp av **Prepared Statements** (förberedda uttryck).
+Först skapar vi en anslutning med PDO. Du behöver värd, databasnamn, användarnamn och lösenord (samma uppgifter som i `php-intro.md` Docker-exemplet):
+
+```php
+<?php
+$host = 'mysql';      // eller 'localhost' utan Docker
+$dbname = 'db_fullstack';
+$username = 'db_user';
+$password = 'db_password';
+$charset = 'utf8mb4';
+
+$dsn = "mysql:host=$host;dbname=$dbname;charset=$charset";
+$options = [
+    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+];
+
+try {
+    $pdo = new PDO($dsn, $username, $password, $options);
+} catch (PDOException $e) {
+    throw new PDOException("Kunde inte ansluta till databasen.", (int)$e->getCode());
+}
+?>
+```
+
+### SELECT med Prepared Statement
+
+När du hämtar data baserat på användarinput (t.ex. från en URL eller ett formulär) **måste** du använda **prepared statements** för att skydda mot SQL injection. Här är ett exempel som hämtar en användare med ett specifikt ID:
+
+```php
+<?php
+$user_id = 5; // I praktiken kommer detta från t.ex. $_GET['id'] – validera alltid!
+
+$stmt = $pdo->prepare("SELECT id, username, email FROM users WHERE id = :id");
+$stmt->bindParam(':id', $user_id, PDO::PARAM_INT);
+$stmt->execute();
+
+$user = $stmt->fetch(); // En rad, eller false om ingen hittas
+
+if ($user) {
+    echo "Användare: " . htmlspecialchars($user['username']);
+} else {
+    echo "Användaren hittades inte.";
+}
+?>
+```
+
+*   `prepare()` – Förbereder SQL-frågan med platshållare (`:id`).
+*   `bindParam()` – Binder värdet till platshållaren. Databasen behandlar det som data, inte som SQL-kod.
+*   `execute()` – Kör frågan.
+*   `fetch()` – Hämtar en rad som associativ array (`PDO::FETCH_ASSOC`).
+
+### INSERT med Prepared Statement
+
+För att lägga till data använder du samma mönster:
+
+```php
+<?php
+$username = 'nyanvändare';
+$email = 'ny@example.com';
+$password_hash = password_hash('hemligt', PASSWORD_DEFAULT);
+
+$stmt = $pdo->prepare("INSERT INTO users (username, email, password_hash) VALUES (:username, :email, :password_hash)");
+$stmt->bindParam(':username', $username);
+$stmt->bindParam(':email', $email);
+$stmt->bindParam(':password_hash', $password_hash);
+$stmt->execute();
+
+$new_id = $pdo->lastInsertId(); // ID för den nyligen infogade raden
+echo "Ny användare skapad med ID: " . $new_id;
+?>
+```
+
+### Nästa steg: CRUD-applikationen
+
+I avsnittet `crud-app.md` bygger vi en komplett bloggapplikation som använder dessa tekniker:
+
+*   Anslutning via en återanvändbar `connect_db()`-funktion.
+*   SELECT, INSERT, UPDATE och DELETE med prepared statements.
+*   Hantering av resultat med `fetch()` och `fetchAll()`.
+*   Integration med formulär, sessioner och filuppladdning.
 
 Att kunna SQL är en grundläggande färdighet för fullstack-utveckling, eftersom det låter dig interagera med den data som driver din applikation.
 

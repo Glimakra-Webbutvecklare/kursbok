@@ -378,3 +378,5 @@ echo $fruit_string; // äpple, banan, päron, apelsin
 ```
 
 Arrayer och loopar är centrala delar av PHP-programmering, särskilt vid hantering av data från databaser eller formulär. Att förstå både indexerade och associativa arrayer samt hur `foreach`-loopen fungerar är avgörande.
+
+Nästa steg: [Funktionell PHP](funktionell-php.md) – anonyma funktioner, closures och array-funktioner som `array_map`, `array_filter` och `array_reduce` för att skriva mer deklarativ kod.

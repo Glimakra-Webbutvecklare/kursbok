@@ -154,6 +154,49 @@
                     <main>
                         <h1 id="fullstack-utveckling-med-php-och-mysql"><a class="header" href="#fullstack-utveckling-med-php-och-mysql">Fullstack-utveckling med PHP och MySQL</a></h1>
 <p>Detta kapitel introducerar fullstack-utveckling med PHP och MySQL för att bygga kompletta webbapplikationer.</p>
+<h2 id="lärandemål"><a class="header" href="#lärandemål">Lärandemål</a></h2>
+<p>Efter detta kapitel ska du kunna:</p>
+<ul>
+<li>Skriva PHP-kod med korrekt syntax, variabler, datatyper och kontrollstrukturer.</li>
+<li>Använda arrayer och loopar för att hantera data.</li>
+<li>Tillämpa funktionella tekniker: anonyma funktioner, closures och array-funktioner som <code>array_map</code>, <code>array_filter</code>, <code>array_reduce</code>.</li>
+<li>Skapa och använda klasser och objekt (OOP-grunder).</li>
+<li>Skriva SQL-frågor för att hämta, infoga, uppdatera och radera data.</li>
+<li>Ansluta PHP till MariaDB/MySQL med PDO och prepared statements.</li>
+<li>Hantera sessioner och cookies för användarautentisering.</li>
+<li>Tillämpa grundläggande säkerhetsprinciper (XSS, SQL injection, lösenordshantering).</li>
+<li>Bygga en enkel CRUD-applikation (blogg) från grunden.</li>
+</ul>
+<h2 id="förkunskaper"><a class="header" href="#förkunskaper">Förkunskaper</a></h2>
+<p>Innan du börjar rekommenderas att du har genomgått:</p>
+<ul>
+<li><strong>Kapitel 1–5:</strong> HTML, CSS, JavaScript och grundläggande webbkoncept.</li>
+<li><strong>Kapitel 6:</strong> Docker-introduktion (för att köra PHP och MySQL lokalt).</li>
+</ul>
+<h2 id="läsordning"><a class="header" href="#läsordning">Läsordning</a></h2>
+<p>Följande ordning ger en logisk progression:</p>
+<pre class="mermaid">flowchart LR
+    A[PHP Intro] --&gt; B[Syntax]
+    B --&gt; C[Arrayer &amp; Loopar]
+    C --&gt; D[Funktionell PHP]
+    D --&gt; E[Klasser]
+    E --&gt; F[SQL + PDO]
+    F --&gt; G[CRUD-app]
+    G --&gt; H[Sessioner]
+    H --&gt; I[Säkerhet]
+</pre>
+<ol>
+<li><strong>Introduktion till PHP</strong> – Vad är PHP, varför använda det, server vs. klient, utvecklingsmiljö.</li>
+<li><strong>PHP Syntax och funktioner</strong> – Taggar, variabler, datatyper, operatorer, kontrollstrukturer, funktioner.</li>
+<li><strong>PHP arrayer och loopar</strong> – Indexerade och associativa arrayer, <code>foreach</code>, vanliga array-funktioner.</li>
+<li><strong>Funktionell PHP</strong> – Anonyma funktioner, closures, scope, <code>array_map</code>, <code>array_filter</code>, <code>array_reduce</code>.</li>
+<li><strong>PHP klasser</strong> – OOP-grunder, egenskaper, metoder, konstruktorer, inkapsling.</li>
+<li><strong>MySQL och databaser</strong> – SQL-syntax, tabeller, SELECT, INSERT, UPDATE, DELETE, JOIN. Avslutas med PHP + PDO för att ansluta till databasen.</li>
+<li><strong>CRUD-applikationer</strong> – Bygga en blogg steg för steg (databas, registrering, inloggning, inlägg).</li>
+<li><strong>Sessioner och cookies</strong> – Tillståndshantering, inloggningsstatus.</li>
+<li><strong>Säkerhet</strong> – SQL injection, XSS, lösenordshantering, CSRF, filuppladdning.</li>
+</ol>
+<p><em>Not:</em> Sessioner och säkerhet introduceras också i CRUD-appen under bygget. Du kan läsa <code>sessions.md</code> och <code>security.md</code> parallellt eller efteråt för att fördjupa dig.</p>
 
                     </main>
 

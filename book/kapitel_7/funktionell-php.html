@@ -1,0 +1,455 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Funktionell PHP - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="funktionell-php"><a class="header" href="#funktionell-php">Funktionell PHP</a></h1>
+<p>PHP är ett <strong>multi-paradigm-språk</strong> – det stödjer både objektorienterad programmering (OOP) och funktionell programmering. I detta avsnitt utforskar vi PHP:s funktionella sida: anonyma funktioner, closures, scope och de kraftfulla array-funktionerna som låter dig skriva renare och mer uttrycksfull kod.</p>
+<h2 id="varför-funktionell-programmering"><a class="header" href="#varför-funktionell-programmering">Varför funktionell programmering?</a></h2>
+<p>Funktionell programmering betonar att använda <strong>funktioner</strong> som första klassens medborgare – de kan skickas som argument, returneras från andra funktioner och lagras i variabler. Detta leder till flera fördelar:</p>
+<ul>
+<li><strong>Läsbarhet:</strong> Kod som använder <code>array_map</code>, <code>array_filter</code> och <code>array_reduce</code> uttrycker ofta <em>vad</em> som ska göras, inte <em>hur</em> steg för steg. "Filtrera de som är aktiva, mappa till namn" är tydligare än en lång <code>foreach</code>-loop med flera <code>if</code>-satser.</li>
+<li><strong>Oföränderlighet (Immutability):</strong> Funktionella array-metoder returnerar nya arrayer istället för att modifiera originalet. Det minskar risken för oväntade sidoeffekter och gör koden lättare att felsöka.</li>
+<li><strong>Testbarhet:</strong> Rena funktioner – som bara beror på sina argument och inte på globalt tillstånd – är enkla att testa i isolering.</li>
+<li><strong>Komposabilitet:</strong> Små funktioner kan kombineras till större beteenden. Du bygger komplex logik av enkla byggblock.</li>
+<li><strong>Mindre buggar:</strong> Färre variabler som muteras, färre loopar med räknare – mindre yta för fel.</li>
+</ul>
+<p>PHP är inte ett rent funktionellt språk (som Haskell), men du kan tillämpa funktionella principer för att skriva bättre PHP-kod.</p>
+<h2 id="anonyma-funktioner"><a class="header" href="#anonyma-funktioner">Anonyma funktioner</a></h2>
+<p>En <strong>anonym funktion</strong> (även kallad lambda eller closure) är en funktion utan namn. Du skapar den med <code>function</code>-nyckelordet och kan tilldela den till en variabel eller skicka den direkt som argument.</p>
+<pre><code class="language-php">&lt;?php
+// Tilldela till variabel
+$double = function($x) {
+    return $x * 2;
+};
+echo $double(5); // 10
+
+// Skicka som argument
+$numbers = [1, 2, 3, 4, 5];
+$squared = array_map(function($n) {
+    return $n * $n;
+}, $numbers);
+print_r($squared); // [1, 4, 9, 16, 25]
+?&gt;
+</code></pre>
+<p>Anonyma funktioner är särskilt användbara som <strong>callbacks</strong> – funktioner som skickas till andra funktioner för att anropas vid ett senare tillfälle.</p>
+<h2 id="scope-och-use"><a class="header" href="#scope-och-use">Scope och <code>use</code></a></h2>
+<p>En anonym funktion har sin egen <strong>scope</strong>. Variabler från den omgivande scope:n (t.ex. från den funktion där den definieras) är <em>inte</em> automatiskt tillgängliga inuti den anonyma funktionen. För att "fånga" variabler från omgivningen använder du <code>use</code>:</p>
+<pre><code class="language-php">&lt;?php
+$factor = 10;
+
+// Utan use – $factor är inte definierad inuti!
+// $multiply = function($x) { return $x * $factor; }; // Undefined variable!
+
+// Med use – $factor fångas vid skapandet
+$multiply = function($x) use ($factor) {
+    return $x * $factor;
+};
+echo $multiply(3); // 30
+
+// use fångar värdet vid skapandet (by value)
+$counter = 0;
+$increment = function() use ($counter) {
+    return $counter + 1; // $counter är alltid 0 här – en kopia!
+};
+echo $increment(); // 1
+echo $increment(); // 1 (inte 2 – $counter i closure är fortfarande 0)
+
+// För att modifiera: använd referens med &amp;
+$counter2 = 0;
+$incrementRef = function() use (&amp;$counter2) {
+    $counter2++;
+    return $counter2;
+};
+echo $incrementRef(); // 1
+echo $incrementRef(); // 2
+?&gt;
+</code></pre>
+<p><strong>Sammanfattning:</strong> <code>use ($var)</code> fångar variabelns <em>värde</em> vid skapandet. <code>use (&amp;$var)</code> fångar en <em>referens</em>, så ändringar inuti closure:n påverkar originalet.</p>
+<h2 id="arrow-funktioner-php-74"><a class="header" href="#arrow-funktioner-php-74">Arrow-funktioner (PHP 7.4+)</a></h2>
+<p>Arrow-funktioner (<code>fn</code>) är en kortare syntax för enkla anonyma funktioner. De fångar automatiskt variabler från omgivande scope – ingen <code>use</code> behövs. De är begränsade till ett enda uttryck som returneras.</p>
+<pre><code class="language-php">&lt;?php
+$numbers = [1, 2, 3, 4, 5];
+$factor = 2;
+
+// Arrow-funktion – $factor fångas automatiskt
+$doubled = array_map(fn($n) =&gt; $n * $factor, $numbers);
+
+// Motsvarar:
+// array_map(function($n) use ($factor) { return $n * $factor; }, $numbers);
+?&gt;
+</code></pre>
+<p>Samma princip gäller för <code>array_filter</code> och <code>array_reduce</code> – arrow-funktioner gör koden mer koncis.</p>
+<h2 id="array-funktioner-map-filter-reduce"><a class="header" href="#array-funktioner-map-filter-reduce">Array-funktioner: map, filter, reduce</a></h2>
+<p>Dessa tre funktioner är ryggraden i funktionell array-bearbetning. De är direkt jämförbara med <code>map</code>, <code>filter</code> och <code>reduce</code> i JavaScript.</p>
+<h3 id="array_map--transformera-varje-element"><a class="header" href="#array_map--transformera-varje-element"><code>array_map</code> – Transformera varje element</a></h3>
+<p><code>array_map(callback, array)</code> applicerar en callback på varje element och returnerar en ny array med resultaten.</p>
+<pre><code class="language-php">&lt;?php
+$prices = [100, 200, 300];
+$withTax = array_map(function($price) {
+    return $price * 1.25; // 25% moms
+}, $prices);
+// [125, 250, 375]
+
+$names = ["anna", "bertil", "cecilia"];
+$capitalized = array_map(fn($name) =&gt; ucfirst($name), $names);
+// ["Anna", "Bertil", "Cecilia"]
+
+// Med flera arrayer – callback får ett argument från varje array
+$first = [1, 2, 3];
+$second = [10, 20, 30];
+$sums = array_map(fn($a, $b) =&gt; $a + $b, $first, $second);
+// [11, 22, 33]
+?&gt;
+</code></pre>
+<h3 id="array_filter--filtrera-element"><a class="header" href="#array_filter--filtrera-element"><code>array_filter</code> – Filtrera element</a></h3>
+<p><code>array_filter(array, callback)</code> behåller endast element där callback returnerar <code>true</code>. Utan callback tas "falsy"-värden bort (<code>null</code>, <code>0</code>, <code>""</code>, <code>false</code>).</p>
+<pre><code class="language-php">&lt;?php
+$numbers = [1, 2, 3, 4, 5, 6];
+$evens = array_filter($numbers, fn($n) =&gt; $n % 2 === 0);
+// [2, 4, 6]
+
+$users = [
+    ['name' =&gt; 'Anna', 'active' =&gt; true],
+    ['name' =&gt; 'Bertil', 'active' =&gt; false],
+    ['name' =&gt; 'Cecilia', 'active' =&gt; true],
+];
+$activeUsers = array_filter($users, fn($u) =&gt; $u['active']);
+
+// Utan callback – tar bort "tomma" värden
+$mixed = [0, 1, "", "hej", null, false, 42];
+$truthy = array_filter($mixed);
+// [1, "hej", 42]
+?&gt;
+</code></pre>
+<p><strong>OBS:</strong> <code>array_filter</code> behåller nycklarna. Använd <code>array_values()</code> om du vill återställa numeriska index.</p>
+<h3 id="array_reduce--reducera-till-ett-värde"><a class="header" href="#array_reduce--reducera-till-ett-värde"><code>array_reduce</code> – Reducera till ett värde</a></h3>
+<p><code>array_reduce(array, callback, initial)</code> applicerar callback på varje element och ackumulerar till ett enda värde. Callback tar två argument: <em>carry</em> (ackumulatorn) och <em>item</em> (aktuellt element).</p>
+<pre><code class="language-php">&lt;?php
+$numbers = [1, 2, 3, 4, 5];
+$sum = array_reduce($numbers, fn($carry, $n) =&gt; $carry + $n, 0);
+// 15
+
+$product = array_reduce($numbers, fn($carry, $n) =&gt; $carry * $n, 1);
+// 120
+
+$words = ["Hej", " ", "världen", "!"];
+$sentence = array_reduce($words, fn($carry, $w) =&gt; $carry . $w, "");
+// "Hej världen!"
+?&gt;
+</code></pre>
+<h3 id="fler-användbara-funktioner"><a class="header" href="#fler-användbara-funktioner">Fler användbara funktioner</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Funktion</th><th>Beskrivning</th><th>JavaScript-motsvarighet</th></tr></thead><tbody>
+<tr><td><code>array_map($callback, $array)</code></td><td>Transformera varje element</td><td><code>array.map()</code></td></tr>
+<tr><td><code>array_filter($array, $callback)</code></td><td>Filtrera element</td><td><code>array.filter()</code></td></tr>
+<tr><td><code>array_reduce($array, $callback, $initial)</code></td><td>Reducera till ett värde</td><td><code>array.reduce()</code></td></tr>
+<tr><td><code>array_walk($array, $callback)</code></td><td>Iterera och modifiera på plats (referens)</td><td>–</td></tr>
+<tr><td><code>array_column($array, $column)</code></td><td>Hämta en kolumn från array av arrayer</td><td>–</td></tr>
+<tr><td><code>array_unique($array)</code></td><td>Ta bort dubbletter</td><td>–</td></tr>
+<tr><td><code>usort($array, $callback)</code></td><td>Sortera med anpassad jämförelse</td><td><code>array.sort()</code> med compare-funktion</td></tr>
+</tbody></table>
+</div>
+<h2 id="exempel-databearbetning"><a class="header" href="#exempel-databearbetning">Exempel: Databearbetning</a></h2>
+<p>Anta att du har en lista med produkter från en databas eller API:</p>
+<pre><code class="language-php">&lt;?php
+$products = [
+    ['name' =&gt; 'Laptop', 'price' =&gt; 9999, 'in_stock' =&gt; true],
+    ['name' =&gt; 'Mus', 'price' =&gt; 299, 'in_stock' =&gt; false],
+    ['name' =&gt; 'Tangentbord', 'price' =&gt; 799, 'in_stock' =&gt; true],
+    ['name' =&gt; 'Skärm', 'price' =&gt; 2499, 'in_stock' =&gt; true],
+];
+
+// Filtrera produkter i lager, extrahera namn, sortera (steg för steg)
+$inStock = array_filter($products, fn($p) =&gt; $p['in_stock']);
+$names = array_map(fn($p) =&gt; $p['name'], $inStock);
+sort($names);
+
+// Beräkna totalpris för produkter i lager
+$total = array_reduce(
+    array_filter($products, fn($p) =&gt; $p['in_stock']),
+    fn($sum, $p) =&gt; $sum + $p['price'],
+    0
+);
+echo "Totalt: $total kr"; // 13297
+?&gt;
+</code></pre>
+<h2 id="ett-coolt-exempel-valideringspipeline"><a class="header" href="#ett-coolt-exempel-valideringspipeline">Ett coolt exempel: Valideringspipeline</a></h2>
+<p>En vanlig uppgift är att validera användarinput. Istället för en lång rad <code>if</code>-satser kan du bygga en <strong>pipeline av validerare</strong> – varje validerare är en closure som returnerar felmeddelanden eller <code>null</code>:</p>
+<pre><code class="language-php">&lt;?php
+// Varje validerare tar $value och returnerar felmeddelande eller null
+$validators = [
+    fn($v) =&gt; empty(trim($v)) ? "Fältet får inte vara tomt" : null,
+    fn($v) =&gt; strlen($v) &lt; 3 ? "Måste vara minst 3 tecken" : null,
+    fn($v) =&gt; !preg_match('/^[a-zA-ZåäöÅÄÖ\s]+$/', $v) ? "Endast bokstäver tillåtna" : null,
+];
+
+function validate(string $value, array $validators): array {
+    $errors = [];
+    foreach ($validators as $validator) {
+        $error = $validator($value);
+        if ($error !== null) {
+            $errors[] = $error;
+        }
+    }
+    return $errors;
+}
+
+$result = validate("An", $validators);
+print_r($result); // ["Måste vara minst 3 tecken"]
+
+$result2 = validate("Anna Andersson", $validators);
+print_r($result2); // [] – giltig!
+?&gt;
+</code></pre>
+<p>Här är varje validerare en liten, återanvändbar funktion. Du kan enkelt lägga till eller ta bort validerare utan att röra resten av koden.</p>
+<h2 id="ett-coolt-exempel-pipeline-för-datatransformering"><a class="header" href="#ett-coolt-exempel-pipeline-för-datatransformering">Ett coolt exempel: Pipeline för datatransformering</a></h2>
+<p>Tänk dig att du hämtar en lista med evenemang från en API. Du vill: filtrera bort passerade, sortera efter datum, plocka ut titel och datum, och formatera för visning. Med funktionella byggblock blir det en tydlig kedja:</p>
+<pre><code class="language-php">&lt;?php
+$events = [
+    ['title' =&gt; 'PHP-konferens', 'date' =&gt; '2025-06-15', 'cancelled' =&gt; false],
+    ['title' =&gt; 'Gammalt möte', 'date' =&gt; '2024-01-10', 'cancelled' =&gt; false],
+    ['title' =&gt; 'Workshop', 'date' =&gt; '2025-03-20', 'cancelled' =&gt; true],
+    ['title' =&gt; 'Meetup', 'date' =&gt; '2025-04-05', 'cancelled' =&gt; false],
+];
+
+$today = '2025-03-01';
+
+// 1. Filtrera: endast framtida, ej inställda
+$upcoming = array_filter($events, function($e) use ($today) {
+    return $e['date'] &gt;= $today &amp;&amp; !$e['cancelled'];
+});
+
+// 2. Sortera efter datum
+usort($upcoming, fn($a, $b) =&gt; $a['date'] &lt;=&gt; $b['date']);
+
+// 3. Mappa till enkel struktur för visning
+$display = array_map(function($e) {
+    return [
+        'label' =&gt; $e['title'] . ' – ' . $e['date'],
+        'date' =&gt; $e['date'],
+    ];
+}, $upcoming);
+
+// 4. Reducera till en HTML-lista
+$html = array_reduce($display, function($acc, $item) {
+    return $acc . "&lt;li&gt;" . htmlspecialchars($item['label']) . "&lt;/li&gt;\n";
+}, "&lt;ul&gt;\n") . "&lt;/ul&gt;";
+
+echo $html;
+/* Output (Workshop filtreras bort eftersom cancelled=true):
+&lt;ul&gt;
+&lt;li&gt;Meetup – 2025-04-05&lt;/li&gt;
+&lt;li&gt;PHP-konferens – 2025-06-15&lt;/li&gt;
+&lt;/ul&gt;
+*/
+?&gt;
+</code></pre>
+<p>Workshop är markerad som inställd (<code>cancelled =&gt; true</code>) och filtreras därför bort. Resultatet blir endast Meetup och PHP-konferens. Du kan enkelt lägga till fler filter eller ändra sorteringen – varje steg är en tydlig, återanvändbar operation.</p>
+<p>Nästa steg: <a href="class.html">PHP klasser</a> – objektorienterad programmering med egenskaper, metoder och inkapsling.
+</think>
+Kontrollerar om pipe-operatorn finns i PHP:
+&lt;｜tool▁calls▁begin｜&gt;&lt;｜tool▁call▁begin｜&gt;
+WebSearch</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_7/array-loop.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_7/class.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_7/array-loop.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_7/class.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

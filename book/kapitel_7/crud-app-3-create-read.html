@@ -1,0 +1,631 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Del 3: Skapa och läsa inlägg - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="del-3-skapa-och-läsa-inlägg"><a class="header" href="#del-3-skapa-och-läsa-inlägg">Del 3: Skapa och läsa inlägg</a></h1>
+<p>I denna del skapar vi formuläret för att skapa blogginlägg och sidorna för att visa dem – steg för steg. <strong>Förutsättning:</strong> Du har genomfört <a href="crud-app-2-autentisering.html">Del 2: Autentisering</a>.</p>
+<p>Vi börjar med att skapa inlägg <em>utan</em> bild, så att grundlogiken fungerar. Sedan lägger vi till bilduppladdning.</p>
+<hr />
+<h2 id="steg-7a-skapa-inlägg--utan-bild"><a class="header" href="#steg-7a-skapa-inlägg--utan-bild">Steg 7a: Skapa inlägg – utan bild</a></h2>
+<h3 id="steg-1-grundläggande-formulär"><a class="header" href="#steg-1-grundläggande-formulär">Steg 1: Grundläggande formulär</a></h3>
+<p>Skapa <code>admin/create_post.php</code> med session-skydd (som i Del 2) och ett enkelt formulär för titel och innehåll:</p>
+<pre><code class="language-php">&lt;?php
+require_once '../includes/config.php';
+
+if (!isset($_SESSION['user_id'])) {
+    header('Location: ../login.php?redirect=' . urlencode($_SERVER['REQUEST_URI']));
+    exit;
+}
+$logged_in_user_id = $_SESSION['user_id'];
+
+require_once '../includes/database.php';
+
+$errors = [];
+$title = '';
+$body = '';
+
+// POST-hantering kommer i nästa steg
+?&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html lang="sv"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Skapa nytt inlägg - Admin&lt;/title&gt;
+    &lt;style&gt;
+        body { font-family: sans-serif; line-height: 1.6; padding: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; }
+        input[type="text"], textarea {
+            width: 100%; padding: 8px; border: 1px solid #ccc; box-sizing: border-box;
+        }
+        textarea { min-height: 150px; }
+        button { padding: 10px 15px; background-color: #28a745; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #218838; }
+        .error-messages { color: red; margin-bottom: 15px; }
+        .error-messages ul { list-style: none; padding: 0; }
+        a { color: #007bff; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Skapa nytt blogginlägg&lt;/h1&gt;
+    &lt;p&gt;&lt;a href="index.php"&gt;&amp;laquo; Tillbaka till Admin Dashboard&lt;/a&gt;&lt;/p&gt;
+
+    &lt;form action="create_post.php" method="post"&gt;
+        &lt;div class="form-group"&gt;
+            &lt;label for="title"&gt;Titel:&lt;/label&gt;
+            &lt;input type="text" id="title" name="title" value="&lt;?php echo htmlspecialchars($title); ?&gt;" required&gt;
+        &lt;/div&gt;
+        &lt;div class="form-group"&gt;
+            &lt;label for="body"&gt;Innehåll:&lt;/label&gt;
+            &lt;textarea id="body" name="body" required&gt;&lt;?php echo htmlspecialchars($body); ?&gt;&lt;/textarea&gt;
+        &lt;/div&gt;
+        &lt;button type="submit"&gt;Spara inlägg&lt;/button&gt;
+    &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p><strong>OBS:</strong> Länken "Tillbaka till Admin Dashboard" pekar på <code>admin/index.php</code>. Se till att du har en <code>admin/index.php</code> som visar något (t.ex. en rubrik "Admin Dashboard" och en länk till create_post.php).</p>
+<h3 id="steg-2-lägg-till-post-hantering-och-spara-i-databasen"><a class="header" href="#steg-2-lägg-till-post-hantering-och-spara-i-databasen">Steg 2: Lägg till POST-hantering och spara i databasen</a></h3>
+<p><strong>Nytt i detta steg:</strong> INSERT till <code>posts</code>-tabellen med <code>user_id</code> från sessionen.</p>
+<p>Lägg till följande <em>efter</em> <code>$body = '';</code> och <em>före</em> <code>?&gt;</code>:</p>
+<pre><code class="language-php">if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $title = trim($_POST['title'] ?? '');
+    $body = trim($_POST['body'] ?? '');
+
+    if (empty($title)) {
+        $errors[] = 'Titel är obligatoriskt.';
+    }
+    if (empty($body)) {
+        $errors[] = 'Innehåll är obligatoriskt.';
+    }
+
+    if (empty($errors)) {
+        try {
+            $pdo = connect_db();
+            $stmt = $pdo-&gt;prepare("INSERT INTO posts (user_id, title, body, image_path) VALUES (:user_id, :title, :body, :image_path)");
+            $stmt-&gt;bindParam(':user_id', $logged_in_user_id);
+            $stmt-&gt;bindParam(':title', $title);
+            $stmt-&gt;bindParam(':body', $body);
+            $stmt-&gt;bindValue(':image_path', null, PDO::PARAM_NULL);  // Ingen bild ännu
+
+            if ($stmt-&gt;execute()) {
+                header('Location: index.php?created=success');
+                exit;
+            } else {
+                $errors[] = 'Ett fel uppstod när inlägget skulle sparas.';
+            }
+        } catch (PDOException $e) {
+            error_log("Create Post Error: " . $e-&gt;getMessage());
+            $errors[] = 'Databasfel. Kan inte spara inlägg just nu.';
+        }
+    }
+}
+</code></pre>
+<p>Lägg också till felvisning <em>ovanför</em> formuläret:</p>
+<pre><code class="language-php">&lt;?php if (!empty($errors)): ?&gt;
+    &lt;div class="error-messages"&gt;
+        &lt;strong&gt;Inlägget kunde inte sparas:&lt;/strong&gt;
+        &lt;ul&gt;
+            &lt;?php foreach ($errors as $error): ?&gt;
+                &lt;li&gt;&lt;?php echo htmlspecialchars($error); ?&gt;&lt;/li&gt;
+            &lt;?php endforeach; ?&gt;
+        &lt;/ul&gt;
+    &lt;/div&gt;
+&lt;?php endif; ?&gt;
+</code></pre>
+<p>Testa att skapa ett inlägg. Du ska omdirigeras till admin/index.php (som ännu inte visar inläggen – det kommer i steg 8a).</p>
+<p><strong>Du har nu lärt dig:</strong> Att spara data till en tabell med foreign key (<code>user_id</code>), och att använda <code>PDO::PARAM_NULL</code> för NULL-värden.</p>
+<hr />
+<h2 id="mini-exempel-vad-finns-i-_files"><a class="header" href="#mini-exempel-vad-finns-i-_files">Mini-exempel: Vad finns i $_FILES?</a></h2>
+<p>Innan vi lägger till bilduppladdning – se vad PHP faktiskt får. Skapa tillfälligt <code>test_upload.php</code>:</p>
+<pre><code class="language-php">&lt;!DOCTYPE html&gt;
+&lt;html&gt;&lt;body&gt;
+&lt;form method="post" enctype="multipart/form-data"&gt;
+    &lt;input type="file" name="image" accept="image/*"&gt;
+    &lt;button type="submit"&gt;Skicka&lt;/button&gt;
+&lt;/form&gt;
+&lt;?php
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    echo "&lt;pre&gt;";
+    print_r($_FILES['image'] ?? 'Ingen fil');
+    echo "&lt;/pre&gt;";
+}
+?&gt;
+&lt;/body&gt;&lt;/html&gt;
+</code></pre>
+<p>Ladda upp en bild och klicka Skicka. Du ser: <code>name</code> (originalfilnamn), <code>type</code> (t.ex. image/jpeg), <code>size</code> (bytes), <code>tmp_name</code> (temporär sökväg) och <code>error</code> (0 = OK). <code>tmp_name</code> är den temporära filen – den försvinner när skriptet slutar. Därför använder vi <code>move_uploaded_file()</code> för att flytta den till <code>uploads/</code> innan vi sparar sökvägen i databasen.</p>
+<hr />
+<h2 id="steg-7b-lägg-till-bilduppladdning"><a class="header" href="#steg-7b-lägg-till-bilduppladdning">Steg 7b: Lägg till bilduppladdning</a></h2>
+<p>Nu när grundfunktionen fungerar lägger vi till möjlighet att ladda upp en bild till varje inlägg.</p>
+<h3 id="vad-behövs-för-filuppladdning"><a class="header" href="#vad-behövs-för-filuppladdning">Vad behövs för filuppladdning?</a></h3>
+<ol>
+<li><strong><code>enctype="multipart/form-data"</code></strong> i formuläret – annars skickas inte filer.</li>
+<li><strong><code>$_FILES</code></strong> – innehåller information om uppladdade filer (du såg strukturen i mini-exemplet ovan).</li>
+<li><strong><code>move_uploaded_file()</code></strong> – flyttar filen från temporär mapp till din <code>uploads/</code>-mapp.</li>
+</ol>
+<h3 id="steg-1-uppdatera-formuläret"><a class="header" href="#steg-1-uppdatera-formuläret">Steg 1: Uppdatera formuläret</a></h3>
+<p>Ändra <code>&lt;form&gt;</code>-taggen till:</p>
+<pre><code class="language-html">&lt;form action="create_post.php" method="post" enctype="multipart/form-data"&gt;
+</code></pre>
+<p>Lägg till bildfältet <em>före</em> submit-knappen:</p>
+<pre><code class="language-html">&lt;div class="form-group"&gt;
+    &lt;label for="image"&gt;Bild (valfritt, max 7 MB, JPG/PNG/GIF):&lt;/label&gt;
+    &lt;input type="file" id="image" name="image" accept="image/jpeg, image/png, image/gif"&gt;
+&lt;/div&gt;
+</code></pre>
+<h3 id="steg-2-hantera-uppladdad-bild-i-post-blocket"><a class="header" href="#steg-2-hantera-uppladdad-bild-i-post-blocket">Steg 2: Hantera uppladdad bild i POST-blocket</a></h3>
+<p><strong>Försök själv:</strong> Vad finns i <code>$_FILES['image']</code> när en fil laddas upp? Tänk på: <code>error</code>, <code>tmp_name</code>, <code>name</code>, <code>type</code>, <code>size</code>.</p>
+<p>Lägg till bildhanteringen <em>inne i</em> POST-blocket, efter valideringen av titel och body men <em>före</em> <code>if (empty($errors))</code>. Ersätt också INSERT-delen så att <code>image_path</code> används:</p>
+<pre><code class="language-php">if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $title = trim($_POST['title'] ?? '');
+    $body = trim($_POST['body'] ?? '');
+    $image = $_FILES['image'] ?? null;
+    $image_path = null;
+
+    if (empty($title)) {
+        $errors[] = 'Titel är obligatoriskt.';
+    }
+    if (empty($body)) {
+        $errors[] = 'Innehåll är obligatoriskt.';
+    }
+
+    // Bildhantering
+    if ($image &amp;&amp; $image['error'] === UPLOAD_ERR_OK) {
+        $allowed_types = ['image/jpeg', 'image/png', 'image/gif'];
+        $max_size = 7 * 1024 * 1024;  // 7 MB
+
+        if (!in_array($image['type'], $allowed_types)) {
+            $errors[] = 'Ogiltig filtyp. Endast JPG, PNG och GIF är tillåtna.';
+        } elseif ($image['size'] &gt; $max_size) {
+            $errors[] = 'Filen är för stor. Maxstorlek är 7 MB.';
+        } else {
+            $file_extension = pathinfo($image['name'], PATHINFO_EXTENSION);
+            $unique_filename = uniqid('post_img_', true) . '.' . $file_extension;
+            $destination = UPLOAD_PATH . $unique_filename;
+
+            if (move_uploaded_file($image['tmp_name'], $destination)) {
+                $image_path = 'uploads/' . $unique_filename;
+            } else {
+                $errors[] = 'Kunde inte ladda upp bilden. Kontrollera mapprättigheter.';
+            }
+        }
+    } elseif ($image &amp;&amp; $image['error'] !== UPLOAD_ERR_NO_FILE) {
+        $errors[] = 'Ett fel uppstod vid bilduppladdning. Felkod: ' . $image['error'];
+    }
+
+    if (empty($errors)) {
+        try {
+            $pdo = connect_db();
+            $stmt = $pdo-&gt;prepare("INSERT INTO posts (user_id, title, body, image_path) VALUES (:user_id, :title, :body, :image_path)");
+            $stmt-&gt;bindParam(':user_id', $logged_in_user_id);
+            $stmt-&gt;bindParam(':title', $title);
+            $stmt-&gt;bindParam(':body', $body);
+            $stmt-&gt;bindParam(':image_path', $image_path, $image_path === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+
+            if ($stmt-&gt;execute()) {
+                header('Location: index.php?created=success');
+                exit;
+            } else {
+                $errors[] = 'Ett fel uppstod när inlägget skulle sparas.';
+                if ($image_path &amp;&amp; file_exists(UPLOAD_PATH . basename($image_path))) {
+                    unlink(UPLOAD_PATH . basename($image_path));
+                }
+            }
+        } catch (PDOException $e) {
+            error_log("Create Post Error: " . $e-&gt;getMessage());
+            $errors[] = 'Databasfel. Kan inte spara inlägg just nu.';
+            if ($image_path &amp;&amp; file_exists(UPLOAD_PATH . basename($image_path))) {
+                unlink(UPLOAD_PATH . basename($image_path));
+            }
+        }
+    }
+}
+</code></pre>
+<p><strong>Förklaring:</strong> <code>UPLOAD_PATH</code> definieras i <code>config.php</code> (Del 1). <code>uniqid()</code> ger unika filnamn så att filer inte skriver över varandra. Om databasen misslyckas efter att bilden sparats tar vi bort bilden med <code>unlink()</code>.</p>
+<p><strong>Du har nu lärt dig:</strong> Filuppladdning med <code>$_FILES</code>, <code>move_uploaded_file()</code>, validering av filtyp och storlek, och att spara relativ sökväg i databasen.</p>
+<hr />
+<h2 id="mini-exempel-varför-join"><a class="header" href="#mini-exempel-varför-join">Mini-exempel: Varför JOIN?</a></h2>
+<p><code>posts</code> har <code>user_id</code>, men inte användarnamnet. Du kan antingen:</p>
+<ol>
+<li><strong>Många frågor:</strong> Hämta alla posts, loopa och göra <code>SELECT username FROM users WHERE id = ?</code> för varje inlägg – N+1 frågor.</li>
+<li><strong>JOIN:</strong> En fråga som säger "Ge mig posts <em>och</em> användarnamnet från users där posts.user_id = users.id".</li>
+</ol>
+<p>En fråga istället för många – snabbare och enklare. Vi använder JOIN i både index och post-sidan.</p>
+<hr />
+<h2 id="steg-8a-lista-alla-inlägg-indexphp"><a class="header" href="#steg-8a-lista-alla-inlägg-indexphp">Steg 8a: Lista alla inlägg (<code>index.php</code>)</a></h2>
+<p>Startsidan ska visa alla blogginlägg. Vi skapar den i roten av projektet (samma nivå som <code>login.php</code>).</p>
+<h3 id="steg-1-hämta-data-från-databasen"><a class="header" href="#steg-1-hämta-data-från-databasen">Steg 1: Hämta data från databasen</a></h3>
+<p>Skapa eller uppdatera <code>index.php</code> i projektroten:</p>
+<pre><code class="language-php">&lt;?php
+require_once 'includes/config.php';
+require_once 'includes/database.php';
+
+$posts = [];
+$fetch_error = null;
+
+try {
+    $pdo = connect_db();
+    $stmt = $pdo-&gt;query("SELECT posts.*, users.username
+                         FROM posts
+                         JOIN users ON posts.user_id = users.id
+                         ORDER BY posts.created_at DESC");
+    $posts = $stmt-&gt;fetchAll();
+} catch (PDOException $e) {
+    error_log("Index Page Error: " . $e-&gt;getMessage());
+    $fetch_error = "Kunde inte hämta blogginlägg just nu. Försök igen senare.";
+}
+?&gt;
+</code></pre>
+<p><strong>Nytt i detta steg:</strong> <code>JOIN</code> för att hämta författarens användarnamn tillsammans med inlägget. <code>ORDER BY created_at DESC</code> visar senaste först.</p>
+<h3 id="steg-2-visa-inläggen-i-html"><a class="header" href="#steg-2-visa-inläggen-i-html">Steg 2: Visa inläggen i HTML</a></h3>
+<p>Lägg till HTML-delen med navigering och listan:</p>
+<pre><code class="language-php">&lt;!DOCTYPE html&gt;
+&lt;html lang="sv"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Enkel Blogg&lt;/title&gt;
+    &lt;style&gt;
+        body { font-family: sans-serif; line-height: 1.6; padding: 20px; }
+        .post-summary { border: 1px solid #eee; padding: 15px; margin-bottom: 20px; }
+        .post-summary h2 { margin-top: 0; }
+        .post-meta { font-size: 0.9em; color: #666; margin-bottom: 10px; }
+        .post-image-list { max-width: 150px; max-height: 100px; float: right; margin-left: 15px; }
+        nav { margin-bottom: 20px; background-color: #f8f9fa; padding: 10px; border-radius: 5px; }
+        nav a { margin-right: 15px; text-decoration: none; color: #007bff; }
+        nav a:hover { text-decoration: underline; }
+        .error-message { color: red; border: 1px solid red; padding: 10px; margin-bottom: 20px; }
+        .success-message { color: green; border: 1px solid green; padding: 10px; margin-bottom: 20px; }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;nav&gt;
+        &lt;a href="index.php"&gt;Hem&lt;/a&gt;
+        &lt;?php if (isset($_SESSION['user_id'])): ?&gt;
+            &lt;a href="admin/index.php"&gt;Admin Dashboard&lt;/a&gt;
+            &lt;a href="logout.php"&gt;Logga ut (&lt;?php echo htmlspecialchars($_SESSION['username']); ?&gt;)&lt;/a&gt;
+        &lt;?php else: ?&gt;
+            &lt;a href="login.php"&gt;Logga in&lt;/a&gt;
+            &lt;a href="register.php"&gt;Registrera dig&lt;/a&gt;
+        &lt;?php endif; ?&gt;
+    &lt;/nav&gt;
+
+    &lt;h1&gt;Välkommen till Bloggen!&lt;/h1&gt;
+
+    &lt;?php if (isset($_GET['logged_out']) &amp;&amp; $_GET['logged_out'] === 'success'): ?&gt;
+        &lt;p class="success-message"&gt;Du har loggats ut.&lt;/p&gt;
+    &lt;?php endif; ?&gt;
+
+    &lt;?php if ($fetch_error): ?&gt;
+        &lt;p class="error-message"&gt;&lt;?php echo htmlspecialchars($fetch_error); ?&gt;&lt;/p&gt;
+    &lt;?php elseif (empty($posts)): ?&gt;
+        &lt;p&gt;Det finns inga blogginlägg ännu.&lt;/p&gt;
+    &lt;?php else: ?&gt;
+        &lt;?php foreach ($posts as $post): ?&gt;
+            &lt;article class="post-summary"&gt;
+                &lt;?php if (!empty($post['image_path'])): ?&gt;
+                    &lt;img src="&lt;?php echo htmlspecialchars(BASE_URL . '/' . $post['image_path']); ?&gt;"
+                         alt="Inläggsbild" class="post-image-list"&gt;
+                &lt;?php endif; ?&gt;
+                &lt;h2&gt;&lt;?php echo htmlspecialchars($post['title']); ?&gt;&lt;/h2&gt;
+                &lt;div class="post-meta"&gt;
+                    Publicerad: &lt;?php echo date('Y-m-d H:i', strtotime($post['created_at'])); ?&gt;
+                    av &lt;?php echo htmlspecialchars($post['username']); ?&gt;
+                &lt;/div&gt;
+                &lt;p&gt;
+                    &lt;?php
+                    $summary = htmlspecialchars($post['body']);
+                    if (strlen($summary) &gt; 200) {
+                        $summary = substr($summary, 0, 200) . '...';
+                    }
+                    echo nl2br($summary);
+                    ?&gt;
+                &lt;/p&gt;
+                &lt;a href="post.php?id=&lt;?php echo $post['id']; ?&gt;"&gt;Läs mer &amp;raquo;&lt;/a&gt;
+                &lt;div style="clear: both;"&gt;&lt;/div&gt;
+            &lt;/article&gt;
+        &lt;?php endforeach; ?&gt;
+    &lt;?php endif; ?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p><strong>Du har nu lärt dig:</strong> JOIN för att hämta relaterad data, <code>fetchAll()</code> för flera rader, <code>substr()</code> och <code>nl2br()</code> för textvisning.</p>
+<hr />
+<h2 id="steg-8b-visa-enskilt-inlägg-postphp"><a class="header" href="#steg-8b-visa-enskilt-inlägg-postphp">Steg 8b: Visa enskilt inlägg (<code>post.php</code>)</a></h2>
+<p>När användaren klickar "Läs mer" ska de se hela inlägget. Sidan tar emot <code>id</code> via URL:en (<code>post.php?id=3</code>).</p>
+<h3 id="steg-1-hämta-id-och-validera"><a class="header" href="#steg-1-hämta-id-och-validera">Steg 1: Hämta ID och validera</a></h3>
+<p><strong>Försök själv:</strong> Varför är det farligt att använda <code>$_GET['id']</code> direkt i en SQL-fråga? Hur kan <code>filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT)</code> hjälpa?</p>
+<p>Skapa <code>post.php</code>:</p>
+<pre><code class="language-php">&lt;?php
+require_once 'includes/config.php';
+require_once 'includes/database.php';
+
+$post_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+$post = null;
+$fetch_error = null;
+
+if ($post_id === false || $post_id &lt;= 0) {
+    $fetch_error = "Ogiltigt inläggs-ID.";
+} else {
+    try {
+        $pdo = connect_db();
+        $stmt = $pdo-&gt;prepare("SELECT posts.*, users.username
+                               FROM posts
+                               JOIN users ON posts.user_id = users.id
+                               WHERE posts.id = :id");
+        $stmt-&gt;bindParam(':id', $post_id, PDO::PARAM_INT);
+        $stmt-&gt;execute();
+        $post = $stmt-&gt;fetch();
+        if (!$post) {
+            $fetch_error = "Inlägget hittades inte.";
+        }
+    } catch (PDOException $e) {
+        error_log("View Post Error (ID: $post_id): " . $e-&gt;getMessage());
+        $fetch_error = "Kunde inte hämta blogginlägget just nu.";
+    }
+}
+?&gt;
+</code></pre>
+<h3 id="steg-2-visa-inlägget"><a class="header" href="#steg-2-visa-inlägget">Steg 2: Visa inlägget</a></h3>
+<p>Lägg till HTML-delen (med samma <code>&lt;nav&gt;</code> som index.php):</p>
+<pre><code class="language-php">&lt;!DOCTYPE html&gt;
+&lt;html lang="sv"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;&lt;?php echo $post ? htmlspecialchars($post['title']) : 'Inlägg'; ?&gt; - Enkel Blogg&lt;/title&gt;
+    &lt;style&gt;
+        body { font-family: sans-serif; line-height: 1.6; padding: 20px; }
+        .post-content { margin-top: 20px; }
+        .post-meta { font-size: 0.9em; color: #666; margin-bottom: 10px; }
+        .post-image-full { max-width: 100%; height: auto; margin-bottom: 20px; }
+        nav { margin-bottom: 20px; background-color: #f8f9fa; padding: 10px; border-radius: 5px; }
+        nav a { margin-right: 15px; text-decoration: none; color: #007bff; }
+        nav a:hover { text-decoration: underline; }
+        .error-message { color: red; border: 1px solid red; padding: 10px; margin-bottom: 20px; }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;nav&gt;
+        &lt;a href="index.php"&gt;Hem&lt;/a&gt;
+        &lt;?php if (isset($_SESSION['user_id'])): ?&gt;
+            &lt;a href="admin/index.php"&gt;Admin Dashboard&lt;/a&gt;
+            &lt;a href="logout.php"&gt;Logga ut (&lt;?php echo htmlspecialchars($_SESSION['username']); ?&gt;)&lt;/a&gt;
+        &lt;?php else: ?&gt;
+            &lt;a href="login.php"&gt;Logga in&lt;/a&gt;
+            &lt;a href="register.php"&gt;Registrera dig&lt;/a&gt;
+        &lt;?php endif; ?&gt;
+    &lt;/nav&gt;
+
+    &lt;?php if ($fetch_error): ?&gt;
+        &lt;p class="error-message"&gt;&lt;?php echo htmlspecialchars($fetch_error); ?&gt;&lt;/p&gt;
+    &lt;?php elseif ($post): ?&gt;
+        &lt;article class="post-content"&gt;
+            &lt;h1&gt;&lt;?php echo htmlspecialchars($post['title']); ?&gt;&lt;/h1&gt;
+            &lt;div class="post-meta"&gt;
+                Publicerad: &lt;?php echo date('Y-m-d H:i', strtotime($post['created_at'])); ?&gt;
+                av &lt;?php echo htmlspecialchars($post['username']); ?&gt;
+                &lt;?php if ($post['created_at'] !== $post['updated_at']): ?&gt;
+                    (Senast ändrad: &lt;?php echo date('Y-m-d H:i', strtotime($post['updated_at'])); ?&gt;)
+                &lt;?php endif; ?&gt;
+            &lt;/div&gt;
+            &lt;?php if (!empty($post['image_path'])): ?&gt;
+                &lt;img src="&lt;?php echo htmlspecialchars(BASE_URL . '/' . $post['image_path']); ?&gt;"
+                     alt="&lt;?php echo htmlspecialchars($post['title']); ?&gt;" class="post-image-full"&gt;
+            &lt;?php endif; ?&gt;
+            &lt;div&gt;&lt;?php echo nl2br(htmlspecialchars($post['body'])); ?&gt;&lt;/div&gt;
+        &lt;/article&gt;
+        &lt;p&gt;&lt;a href="index.php"&gt;&amp;laquo; Tillbaka till alla inlägg&lt;/a&gt;&lt;/p&gt;
+    &lt;?php endif; ?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p><strong>Du har nu lärt dig:</strong> <code>filter_input()</code> för säker validering av GET-parametrar, prepared statements med <code>bindParam</code> för SELECT, och att hantera fall där inlägget inte hittas.</p>
+<hr />
+<p><strong>Föregående:</strong> <a href="crud-app-2-autentisering.html">Del 2: Autentisering</a> | <strong>Nästa:</strong> <a href="crud-app-4-update-delete.html">Del 4: Uppdatera och radera</a></p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_7/crud-app-2-autentisering.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_7/crud-app-4-update-delete.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_7/crud-app-2-autentisering.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_7/crud-app-4-update-delete.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

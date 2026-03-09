@@ -495,19 +495,83 @@ ON
 <li><code>RIGHT JOIN</code>: Motsatsen till <code>LEFT JOIN</code>. Returnerar alla rader från den <em>högra</em> tabellen och matchande från vänstra. (Order 104 skulle komma med, men med <code>NULL</code> i namnkolumnen).</li>
 <li><code>FULL OUTER JOIN</code>: Returnerar alla rader från båda tabellerna. Om matchning saknas fylls kolumnerna från den andra tabellen ut med <code>NULL</code>. (Stöds inte direkt av MySQL/MariaDB, men kan simuleras).</li>
 </ul>
-<h2 id="sql-och-php-förhandstitt"><a class="header" href="#sql-och-php-förhandstitt">SQL och PHP (Förhandstitt)</a></h2>
+<h2 id="sql-och-php-med-pdo"><a class="header" href="#sql-och-php-med-pdo">SQL och PHP med PDO</a></h2>
 <p>Nu när du har en grundläggande förståelse för SQL-satser är nästa steg att se hur vi kan exekvera dessa från vår PHP-kod. PHP erbjuder olika sätt att ansluta till och interagera med databaser som MariaDB/MySQL:</p>
 <ol>
 <li><strong>PDO (PHP Data Objects):</strong> Ett databasabstraktionslager som ger ett konsekvent gränssnitt för att arbeta med olika databastyper.</li>
 <li><strong>MySQLi (MySQL Improved Extension):</strong> En specifik extension för att arbeta med MySQL och MariaDB.</li>
 </ol>
 <p><em>Vi kommer jobba främst med PDO.</em></p>
-<p>I de kommande avsnittet <code>crud-app.md</code> kommer vi att dyka djupare in i hur man använder PDO för att:</p>
+<h3 id="ansluta-till-databasen"><a class="header" href="#ansluta-till-databasen">Ansluta till databasen</a></h3>
+<p>Först skapar vi en anslutning med PDO. Du behöver värd, databasnamn, användarnamn och lösenord (samma uppgifter som i <code>php-intro.md</code> Docker-exemplet):</p>
+<pre><code class="language-php">&lt;?php
+$host = 'mysql';      // eller 'localhost' utan Docker
+$dbname = 'db_fullstack';
+$username = 'db_user';
+$password = 'db_password';
+$charset = 'utf8mb4';
+
+$dsn = "mysql:host=$host;dbname=$dbname;charset=$charset";
+$options = [
+    PDO::ATTR_ERRMODE            =&gt; PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE =&gt; PDO::FETCH_ASSOC,
+];
+
+try {
+    $pdo = new PDO($dsn, $username, $password, $options);
+} catch (PDOException $e) {
+    throw new PDOException("Kunde inte ansluta till databasen.", (int)$e-&gt;getCode());
+}
+?&gt;
+</code></pre>
+<h3 id="select-med-prepared-statement"><a class="header" href="#select-med-prepared-statement">SELECT med Prepared Statement</a></h3>
+<p>När du hämtar data baserat på användarinput (t.ex. från en URL eller ett formulär) <strong>måste</strong> du använda <strong>prepared statements</strong> för att skydda mot SQL injection. Här är ett exempel som hämtar en användare med ett specifikt ID:</p>
+<pre><code class="language-php">&lt;?php
+$user_id = 5; // I praktiken kommer detta från t.ex. $_GET['id'] – validera alltid!
+
+$stmt = $pdo-&gt;prepare("SELECT id, username, email FROM users WHERE id = :id");
+$stmt-&gt;bindParam(':id', $user_id, PDO::PARAM_INT);
+$stmt-&gt;execute();
+
+$user = $stmt-&gt;fetch(); // En rad, eller false om ingen hittas
+
+if ($user) {
+    echo "Användare: " . htmlspecialchars($user['username']);
+} else {
+    echo "Användaren hittades inte.";
+}
+?&gt;
+</code></pre>
 <ul>
-<li>Ansluta till databasen från PHP.</li>
-<li>Skicka SQL-frågor (<code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>) till databasen.</li>
-<li>Hantera resultaten från <code>SELECT</code>-frågor.</li>
-<li>Skydda sig mot <strong>SQL Injection</strong> (SQL-injektion), en allvarlig säkerhetsrisk, med hjälp av <strong>Prepared Statements</strong> (förberedda uttryck).</li>
+<li><code>prepare()</code> – Förbereder SQL-frågan med platshållare (<code>:id</code>).</li>
+<li><code>bindParam()</code> – Binder värdet till platshållaren. Databasen behandlar det som data, inte som SQL-kod.</li>
+<li><code>execute()</code> – Kör frågan.</li>
+<li><code>fetch()</code> – Hämtar en rad som associativ array (<code>PDO::FETCH_ASSOC</code>).</li>
+</ul>
+<h3 id="insert-med-prepared-statement"><a class="header" href="#insert-med-prepared-statement">INSERT med Prepared Statement</a></h3>
+<p>För att lägga till data använder du samma mönster:</p>
+<pre><code class="language-php">&lt;?php
+$username = 'nyanvändare';
+$email = 'ny@example.com';
+$password_hash = password_hash('hemligt', PASSWORD_DEFAULT);
+
+$stmt = $pdo-&gt;prepare("INSERT INTO users (username, email, password_hash) VALUES (:username, :email, :password_hash)");
+$stmt-&gt;bindParam(':username', $username);
+$stmt-&gt;bindParam(':email', $email);
+$stmt-&gt;bindParam(':password_hash', $password_hash);
+$stmt-&gt;execute();
+
+$new_id = $pdo-&gt;lastInsertId(); // ID för den nyligen infogade raden
+echo "Ny användare skapad med ID: " . $new_id;
+?&gt;
+</code></pre>
+<h3 id="nästa-steg-crud-applikationen"><a class="header" href="#nästa-steg-crud-applikationen">Nästa steg: CRUD-applikationen</a></h3>
+<p>I avsnittet <code>crud-app.md</code> bygger vi en komplett bloggapplikation som använder dessa tekniker:</p>
+<ul>
+<li>Anslutning via en återanvändbar <code>connect_db()</code>-funktion.</li>
+<li>SELECT, INSERT, UPDATE och DELETE med prepared statements.</li>
+<li>Hantering av resultat med <code>fetch()</code> och <code>fetchAll()</code>.</li>
+<li>Integration med formulär, sessioner och filuppladdning.</li>
 </ul>
 <p>Att kunna SQL är en grundläggande färdighet för fullstack-utveckling, eftersom det låter dig interagera med den data som driver din applikation.</p>
 

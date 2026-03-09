@@ -1,0 +1,388 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Del 1: Setup och databas - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="bygga-en-crud-applikation-enkel-blogg"><a class="header" href="#bygga-en-crud-applikation-enkel-blogg">Bygga en CRUD-applikation: Enkel Blogg</a></h1>
+<p>I detta avsnitt bygger vi en komplett men enkel bloggapplikation från grunden med PHP och MariaDB/MySQL. Målet är att praktiskt demonstrera <strong>CRUD</strong>-operationerna (Create, Read, Update, Delete) och integrera andra viktiga webbkoncept som databasinteraktion med PDO, användarautentisering, sessionshantering och filuppladdning.</p>
+<p>Vi börjar med en mycket grundläggande struktur och kodstil för att sedan i slutet refaktorera och förbättra koden, bland annat genom att introducera type hinting.</p>
+<p><strong>Applikationens Funktioner:</strong></p>
+<ul>
+<li>Användare kan registrera sig och logga in.</li>
+<li>Inloggade användare kan skapa, redigera och ta bort sina egna blogginlägg.</li>
+<li>Användare kan ladda upp en bild till varje blogginlägg.</li>
+<li>Alla besökare kan se listan över blogginlägg och läsa enskilda inlägg.</li>
+<li>En enkel "admin"-sektion för inloggade användare att hantera sina inlägg.</li>
+</ul>
+<h2 id="1-databasdesign"><a class="header" href="#1-databasdesign">1. Databasdesign</a></h2>
+<p>Vi behöver två huvudtabeller: en för användare (<code>users</code>) och en för blogginlägg (<code>posts</code>).</p>
+<p><strong><code>users</code> tabell:</strong></p>
+<pre><code class="language-sql">CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL, -- Lagrar hashat lösenord
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+</code></pre>
+<ul>
+<li><code>id</code>: Unik identifierare för användaren.</li>
+<li><code>username</code>: Användarnamn för inloggning (unikt).</li>
+<li><code>email</code>: Användarens e-post (unik).</li>
+<li><code>password_hash</code>: Lagrar det säkert hashade lösenordet (inte lösenordet i klartext!).</li>
+<li><code>created_at</code>: När användarkontot skapades.</li>
+</ul>
+<p><strong><code>posts</code> tabell:</strong></p>
+<pre><code class="language-sql">CREATE TABLE posts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,             -- Vem som skrev inlägget
+    title VARCHAR(255) NOT NULL,      -- Inläggets titel
+    body TEXT NOT NULL,               -- Innehållet i inlägget
+    image_path VARCHAR(255) NULL,     -- Sökväg till uppladdad bild (valfritt)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- När inlägget senast ändrades
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE -- Koppling till users. Om användaren raderas, raderas även hens inlägg.
+);
+</code></pre>
+<ul>
+<li><code>id</code>: Unik identifierare för inlägget.</li>
+<li><code>user_id</code>: Referens till <code>id</code> i <code>users</code>-tabellen. Visar vem som äger inlägget.</li>
+<li><code>title</code>: Inläggets rubrik.</li>
+<li><code>body</code>: Brödtexten i inlägget.</li>
+<li><code>image_path</code>: Sökvägen till den associerade bilden (om någon laddats upp). <code>NULL</code> om ingen bild finns.</li>
+<li><code>created_at</code>: När inlägget skapades.</li>
+<li><code>updated_at</code>: Uppdateras automatiskt när inlägget ändras.</li>
+<li><code>FOREIGN KEY ...</code>: Definierar en relation mellan <code>posts.user_id</code> och <code>users.id</code>. <code>ON DELETE CASCADE</code> betyder att om en användare tas bort, tas alla dennes inlägg också bort automatiskt.</li>
+</ul>
+<p>Skapa dessa tabeller i din MariaDB/MySQL-databas (t.ex. via phpMyAdmin eller kommandoraden). Vi antar att databasen heter <code>db_fullstack</code> som i tidigare exempel.</p>
+<h2 id="2-projektstruktur-initial"><a class="header" href="#2-projektstruktur-initial">2. Projektstruktur (Initial)</a></h2>
+<p>Vi börjar med en väldigt platt och enkel filstruktur. Skapa följande filer och mappar i roten av ditt projekt (t.ex. i <code>app/public</code> om du följer <code>docker-compose</code>-exemplet):</p>
+<pre><code>.
+├── admin/
+│   ├── index.php         # Admin dashboard (lista inlägg, länkar till create/edit/delete)
+│   ├── create_post.php   # Formulär &amp; logik för att skapa inlägg
+│   ├── edit_post.php     # Formulär &amp; logik för att redigera inlägg
+│   └── delete_post.php   # Logik för att ta bort inlägg
+├── includes/
+│   ├── config.php        # Databasuppgifter och annan konfiguration
+│   ├── database.php      # Funktion för att ansluta till databasen (PDO)
+│   └── functions.php     # Hjälpfunktioner (vi lägger till här senare)
+├── uploads/              # Mapp där uppladdade bilder sparas (måste vara skrivbar för webbservern!)
+├── index.php             # Hemsida, listar blogginlägg
+├── login.php             # Inloggningsformulär &amp; logik
+├── logout.php            # Logik för att logga ut
+├── post.php              # Visar ett enskilt blogginlägg
+└── register.php          # Registreringsformulär &amp; logik
+</code></pre>
+<ul>
+<li><code>admin/</code>: Innehåller sidor som endast inloggade användare ska kunna nå.</li>
+<li><code>includes/</code>: Innehåller återanvändbar kod som konfiguration och databasanslutning.</li>
+<li><code>uploads/</code>: Här hamnar bilder som användare laddar upp. <strong>VIKTIGT:</strong> Se till att webbservern (Apache i vårt Docker-exempel) har skrivrättigheter till denna mapp!</li>
+</ul>
+<h2 id="3-grundläggande-setup"><a class="header" href="#3-grundläggande-setup">3. Grundläggande Setup</a></h2>
+<h3 id="konfiguration-includesconfigphp"><a class="header" href="#konfiguration-includesconfigphp">Konfiguration (<code>includes/config.php</code>)</a></h3>
+<p>Skapa filen <code>includes/config.php</code> och lägg in dina databasuppgifter.</p>
+<pre><code class="language-php">&lt;?php
+// includes/config.php
+
+// Databasuppgifter (anpassa efter din miljö)
+define('DB_HOST', 'mysql'); // Matchar service-namnet i docker-compose.yml
+define('DB_NAME', 'db_fullstack');
+define('DB_USER', 'db_user');
+define('DB_PASS', 'db_password');
+
+// Teckenkodning för PDO-anslutningen
+define('DB_CHARSET', 'utf8mb4');
+
+// Starta sessioner (viktigt för login!)
+// Görs en gång här så det gäller alla sidor som inkluderar config.php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Base URL (valfritt, men kan vara praktiskt för länkar)
+// Anpassa port om du använder en annan än 8060
+define('BASE_URL', 'http://localhost:8060');
+
+// Sökväg till uppladdningsmappen
+define('UPLOAD_PATH', __DIR__ . '/../uploads/'); // __DIR__ ger sökvägen till includes/
+
+// Aktivera felrapportering under utveckling
+// Stäng av på en produktionsserver!
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+?&gt;
+</code></pre>
+<h3 id="mini-exempel-vad-gör-pdo-options"><a class="header" href="#mini-exempel-vad-gör-pdo-options">Mini-exempel: Vad gör PDO-options?</a></h3>
+<p>Innan vi bygger <code>connect_db()</code> – ett snabbtest för att förstå varför vi sätter vissa options. Skapa tillfälligt en fil <code>test_pdo.php</code> (du kan ta bort den efteråt):</p>
+<pre><code class="language-php">&lt;?php
+require_once 'includes/config.php';
+$pdo = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=" . DB_CHARSET, DB_USER, DB_PASS);
+$result = $pdo-&gt;query("SELECT 1 as test")-&gt;fetch();
+var_dump($result);  // Vad får du? Både numeriska index (0 =&gt; "1") OCH kolumnnamn ("test" =&gt; "1")
+?&gt;
+</code></pre>
+<p>Lägg sedan till denna rad <em>före</em> <code>$result</code>:</p>
+<pre><code class="language-php">$pdo-&gt;setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+</code></pre>
+<p>Kör igen. Nu får du bara associativa nycklar (<code>["test" =&gt; "1"]</code>) – lättare att använda med <code>$result['test']</code> istället för att hålla reda på index. Detta är vad <code>ATTR_DEFAULT_FETCH_MODE</code> gör.</p>
+<h3 id="databasanslutning-includesdatabasephp"><a class="header" href="#databasanslutning-includesdatabasephp">Databasanslutning (<code>includes/database.php</code>)</a></h3>
+<p>Skapa filen <code>includes/database.php</code>. Vi använder <strong>PDO (PHP Data Objects)</strong> för att ansluta. PDO ger ett konsekvent sätt att interagera med olika databaser och hjälper till att skydda mot SQL-injektion genom "prepared statements".</p>
+<pre><code class="language-php">&lt;?php
+// includes/database.php
+require_once 'config.php'; // Inkludera konfigurationen
+
+/**
+ * Skapar och returnerar en PDO-databasanslutning.
+ *
+ * @return PDO PDO-anslutningsobjektet.
+ * @throws PDOException Om anslutningen misslyckas.
+ */
+function connect_db(): PDO {
+    // Data Source Name (DSN)
+    $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=" . DB_CHARSET;
+
+    // Alternativ för PDO-anslutningen
+    $options = [
+        PDO::ATTR_ERRMODE            =&gt; PDO::ERRMODE_EXCEPTION, // Kasta exceptions vid fel
+        PDO::ATTR_DEFAULT_FETCH_MODE =&gt; PDO::FETCH_ASSOC,       // Hämta resultat som associativa arrayer
+        PDO::ATTR_EMULATE_PREPARES   =&gt; false,                  // Använd prepared statements
+    ];
+
+    try {
+        $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
+        return $pdo;
+    } catch (PDOException $e) {
+        // Logga felet istället för att skriva ut känslig info
+        error_log("Database Connection Error: " . $e-&gt;getMessage());
+        // Visa ett generellt felmeddelande till användaren
+        throw new PDOException("Kunde inte ansluta till databasen. Försök igen senare.", (int)$e-&gt;getCode());
+        // Eller: die("Kunde inte ansluta till databasen. Kontakta administratör.");
+    }
+}
+
+// För att använda anslutningen på en sida:
+// $pdo = connect_db();
+
+?&gt;
+</code></pre>
+<p><strong>Förklaring:</strong></p>
+<ul>
+<li>Vi inkluderar <code>config.php</code> för att få databasuppgifterna.</li>
+<li><code>$dsn</code>: En sträng som specificerar databastyp, värd, databasnamn och teckenkodning.</li>
+<li><code>$options</code>: Viktiga inställningar för PDO:
+<ul>
+<li><code>PDO::ATTR_ERRMODE =&gt; PDO::ERRMODE_EXCEPTION</code>: Gör att PDO kastar ett undantag (<code>PDOException</code>) om ett databasfel inträffar. Detta är att föredra framför att bara få <code>false</code> eller varningar, då det ger tydligare felhantering.</li>
+<li><code>PDO::ATTR_DEFAULT_FETCH_MODE =&gt; PDO::FETCH_ASSOC</code>: Gör att när vi hämtar data (<code>fetch()</code>, <code>fetchAll()</code>) får vi resultatet som en associativ array (kolumnnamn =&gt; värde) istället för både numeriska index och kolumnnamn (vilket är default <code>PDO::FETCH_BOTH</code>).</li>
+<li><code>PDO::ATTR_EMULATE_PREPARES =&gt; false</code>: Tvingar PDO att använda databasserverns inbyggda "prepared statements" istället för att emulera dem i PHP. Detta är generellt säkrare och ibland mer effektivt.</li>
+</ul>
+</li>
+<li><code>try...catch</code>: Vi försöker skapa ett nytt <code>PDO</code>-objekt. Om det misslyckas (fel lösenord, databasen nere etc.) kastas en <code>PDOException</code>. Vi fångar den, loggar det tekniska felet (för utvecklaren) och kastar sedan ett nytt, mer användarvänligt, undantag eller avslutar skriptet med <code>die()</code>. <strong>Skriv aldrig ut det detaljerade felet <code>$e-&gt;getMessage()</code> direkt till användaren i produktion!</strong></li>
+</ul>
+<hr />
+<p><strong>Nästa:</strong> <a href="crud-app-2-autentisering.html">Del 2: Autentisering</a> – Registrering, inloggning, sessioner och logout</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_7/crud-app.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_7/crud-app-2-autentisering.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_7/crud-app.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_7/crud-app-2-autentisering.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

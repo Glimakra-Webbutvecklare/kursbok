@@ -1,13 +1,6 @@
-# Introduktion till PHP
-
-- PHP i modern webbutveckling
-- Utvecklingsmiljö setup
-- PHP och webbservrar
-- Grundläggande koncept
-
 # PHP Syntax och grundläggande funktioner
 
-Detta avsnitt dyker djupare in i den grundläggande syntaxen för PHP. Om du har erfarenhet av JavaScript kommer mycket att kännas bekant, men det finns viktiga skillnader i hur du skriver variabler, hanterar datatyper, och strukturerar din kod. Vi kommer att fokusera på dessa skillnader och även introducera några moderna PHP-funktioner.
+Detta avsnitt dyker djupare in i den grundläggande syntaxen för PHP. Om du har läst [Introduktion till PHP](php-intro.md) vet du redan vad PHP är och hur det skiljer sig från JavaScript. Här fokuserar vi på hur du skriver koden: variabler, datatyper, operatorer, kontrollstrukturer och funktioner. Mycket kommer att kännas bekant om du har erfarenhet av JavaScript, men det finns viktiga skillnader – särskilt i variabeldeklaration (`$`), strängkonkatenering (`.`), och typdeklarationer.
 
 ## PHP-taggar och kommentarer
 
