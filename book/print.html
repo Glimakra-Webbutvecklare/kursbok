@@ -10882,9 +10882,1021 @@ add_action( 'wp_footer', 'school_site_notice' );
 <li>Hur undviker du att plugin-miljön blir svår att underhålla?</li>
 <li>Vilka risker finns med att uppdatera plugins utan testmiljö?</li>
 </ol>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="skapa-eget-wordpress-plugin-content-slider"><a class="header" href="#skapa-eget-wordpress-plugin-content-slider">Skapa eget WordPress-plugin: Content Slider</a></h1>
+<p>I den här lektionen bygger vi ett eget plugin från grunden. Målet är en content slider som går att lägga in på valfri sida med en shortcode (kortkod).</p>
+<p>Du får både <strong>kod</strong> och <strong>förklaring av varför varje del finns</strong>, så att du kan förstå flödet även om du aldrig byggt plugin tidigare.</p>
+<p>Varje slide ska kunna ha:</p>
+<ul>
+<li>bild som bakgrund</li>
+<li>rubrik</li>
+<li>underrubrik</li>
+<li>knapp</li>
+</ul>
+<h2 id="så-fungerar-hela-lösningen-innan-vi-kodar"><a class="header" href="#så-fungerar-hela-lösningen-innan-vi-kodar">Så fungerar hela lösningen (innan vi kodar)</a></h2>
+<ol>
+<li>Vi registrerar ett plugin så WordPress kan aktivera det.</li>
+<li>Vi skapar en egen post type <code>school_slide</code> där redaktören lägger slides.</li>
+<li>Vi lägger till extra fält (underrubrik, knapptext, knapp-länk).</li>
+<li>Vi skapar shortcoden <code>[school_slider]</code> som bygger HTML för sliden.</li>
+<li>Vi laddar CSS och JavaScript som ger layout, auto-play och navigering.</li>
+</ol>
+<p>Det här är ett vanligt WordPress-mönster: <strong>lagra data i adminpanelen</strong>, och <strong>presentera data med shortcode i frontend</strong>.</p>
+<h2 id="förkunskaper-7"><a class="header" href="#förkunskaper-7">Förkunskaper</a></h2>
+<p>Innan du börjar är det bra om du har läst:</p>
+<ul>
+<li><a href="kapitel_6/./wordpress.html">WordPress</a></li>
+<li><a href="kapitel_6/./wordpress-plugins.html">WordPress plugins</a></li>
+<li><a href="kapitel_6/./wordpress-teman.html">WordPress teman</a></li>
+<li><a href="kapitel_6/./wordpress-shortcodes.html">WordPress shortcodes</a></li>
+</ul>
+<h2 id="plugin-struktur"><a class="header" href="#plugin-struktur">Plugin-struktur</a></h2>
+<p>Skapa en mapp i <code>wp-content/plugins</code>:</p>
+<pre><code class="language-text">school-content-slider/
+├─ school-content-slider.php
+├─ assets/
+│  ├─ slider.css
+│  └─ slider.js
+</code></pre>
+<ul>
+<li><code>school-content-slider.php</code> innehåller pluginets PHP-logik.</li>
+<li><code>slider.css</code> styr hur sliden ser ut.</li>
+<li><code>slider.js</code> styr beteendet (byte av slide, klick på navigering).</li>
+</ul>
+<h2 id="1-skapa-pluginets-huvudfil"><a class="header" href="#1-skapa-pluginets-huvudfil">1) Skapa pluginets huvudfil</a></h2>
+<p>Skapa filen <code>school-content-slider.php</code>:</p>
+<pre><code class="language-php">&lt;?php
+/**
+ * Plugin Name: School Content Slider
+ * Description: Enkel content slider med shortcode.
+ * Version: 1.0.0
+ * Author: Glimakra Webbutvecklare
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+function school_slider_register_post_type() {
+	register_post_type(
+		'school_slide',
+		array(
+			'labels' =&gt; array(
+				'name'          =&gt; __( 'Slides', 'school-slider' ),
+				'singular_name' =&gt; __( 'Slide', 'school-slider' ),
+			),
+			'public'       =&gt; true,
+			'show_in_rest' =&gt; true,
+			'menu_icon'    =&gt; 'dashicons-images-alt2',
+			'supports'     =&gt; array( 'title', 'thumbnail' ),
+			'has_archive'  =&gt; false,
+		)
+	);
+}
+add_action( 'init', 'school_slider_register_post_type' );
+</code></pre>
+<p>Här används en egen post type: <code>school_slide</code>. Rubriken hämtas från postens titel och bilden hanteras via Featured Image (utvald bild).</p>
+<h3 id="vad-händer-i-den-här-koden"><a class="header" href="#vad-händer-i-den-här-koden">Vad händer i den här koden?</a></h3>
+<ul>
+<li>Plugin-huvudet (<code>Plugin Name</code>, <code>Version</code> ...) gör att WordPress känner igen pluginet i listan under <strong>Tillägg</strong>.</li>
+<li><code>if ( ! defined( 'ABSPATH' ) ) { exit; }</code> skyddar filen mot direkt anrop.</li>
+<li><code>register_post_type( 'school_slide', ... )</code> skapar en ny innehållstyp i adminpanelen.</li>
+<li><code>supports =&gt; array( 'title', 'thumbnail' )</code> betyder att varje slide får titel och Featured Image.</li>
+<li>Eftersom <code>editor</code> inte finns i <code>supports</code> visas inget textfält (classic editor/Gutenberg content) för denna post type.</li>
+<li><code>add_action( 'init', ... )</code> kör registreringen när WordPress startar.</li>
+</ul>
+<p>När pluginet aktiveras ska du se en ny meny i adminpanelen: <strong>Slides</strong>.</p>
+<h2 id="2-lägg-till-fält-för-underrubrik-och-knapp"><a class="header" href="#2-lägg-till-fält-för-underrubrik-och-knapp">2) Lägg till fält för underrubrik och knapp</a></h2>
+<p>Lägg till i samma fil:</p>
+<pre><code class="language-php">function school_slider_add_meta_box() {
+	add_meta_box(
+		'school_slider_fields',
+		__( 'Slide-innehåll', 'school-slider' ),
+		'school_slider_render_meta_box',
+		'school_slide',
+		'normal',
+		'default'
+	);
+}
+add_action( 'add_meta_boxes', 'school_slider_add_meta_box' );
+
+function school_slider_render_meta_box( $post ) {
+	wp_nonce_field( 'school_slider_save_fields', 'school_slider_nonce' );
+
+	$subtitle   = get_post_meta( $post-&gt;ID, '_school_slide_subtitle', true );
+	$button_txt = get_post_meta( $post-&gt;ID, '_school_slide_button_text', true );
+	$button_url = get_post_meta( $post-&gt;ID, '_school_slide_button_url', true );
+
+	echo '&lt;p&gt;&lt;label for="school_slide_subtitle"&gt;Underrubrik&lt;/label&gt;&lt;/p&gt;';
+	echo '&lt;input type="text" id="school_slide_subtitle" name="school_slide_subtitle" value="' . esc_attr( $subtitle ) . '" style="width:100%;" /&gt;';
+
+	echo '&lt;p&gt;&lt;label for="school_slide_button_text"&gt;Knapptext&lt;/label&gt;&lt;/p&gt;';
+	echo '&lt;input type="text" id="school_slide_button_text" name="school_slide_button_text" value="' . esc_attr( $button_txt ) . '" style="width:100%;" /&gt;';
+
+	echo '&lt;p&gt;&lt;label for="school_slide_button_url"&gt;Knapp-länk&lt;/label&gt;&lt;/p&gt;';
+	echo '&lt;input type="url" id="school_slide_button_url" name="school_slide_button_url" value="' . esc_attr( $button_url ) . '" style="width:100%;" /&gt;';
+}
+
+function school_slider_save_meta_box( $post_id ) {
+	if ( ! isset( $_POST['school_slider_nonce'] ) ) {
+		return;
+	}
+
+	if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['school_slider_nonce'] ) ), 'school_slider_save_fields' ) ) {
+		return;
+	}
+
+	if ( defined( 'DOING_AUTOSAVE' ) &amp;&amp; DOING_AUTOSAVE ) {
+		return;
+	}
+
+	if ( ! current_user_can( 'edit_post', $post_id ) ) {
+		return;
+	}
+
+	if ( isset( $_POST['school_slide_subtitle'] ) ) {
+		update_post_meta( $post_id, '_school_slide_subtitle', sanitize_text_field( wp_unslash( $_POST['school_slide_subtitle'] ) ) );
+	}
+
+	if ( isset( $_POST['school_slide_button_text'] ) ) {
+		update_post_meta( $post_id, '_school_slide_button_text', sanitize_text_field( wp_unslash( $_POST['school_slide_button_text'] ) ) );
+	}
+
+	if ( isset( $_POST['school_slide_button_url'] ) ) {
+		update_post_meta( $post_id, '_school_slide_button_url', esc_url_raw( wp_unslash( $_POST['school_slide_button_url'] ) ) );
+	}
+}
+add_action( 'save_post_school_slide', 'school_slider_save_meta_box' );
+</code></pre>
+<p>Nu kan varje slide få en underrubrik samt knappens text och länk.</p>
+<h3 id="vad-gör-meta-box-delen"><a class="header" href="#vad-gör-meta-box-delen">Vad gör meta box-delen?</a></h3>
+<ul>
+<li><code>add_meta_box(...)</code> lägger till en extra panel under editorn för <code>school_slide</code>.</li>
+<li><code>school_slider_render_meta_box()</code> visar formulärfälten i admin.</li>
+<li><code>get_post_meta(...)</code> läser tidigare sparade värden.</li>
+<li><code>school_slider_save_meta_box()</code> körs vid sparning av slide.</li>
+</ul>
+<p>Säkerhetsflödet vid sparning:</p>
+<ol>
+<li>Kontrollera att nonce-fält finns.</li>
+<li>Verifiera nonce (skydd mot CSRF).</li>
+<li>Stoppa autosave-fall.</li>
+<li>Kontrollera behörighet med <code>current_user_can()</code>.</li>
+<li>Sanera data och spara med <code>update_post_meta()</code>.</li>
+</ol>
+<p>Det här är standardmönstret i WordPress när du sparar egna fält.</p>
+<h2 id="3-registrera-shortcode"><a class="header" href="#3-registrera-shortcode">3) Registrera shortcode</a></h2>
+<p>Lägg till i plugin-filen:</p>
+<pre><code class="language-php">function school_slider_shortcode( $atts ) {
+	$atts = shortcode_atts(
+		array(
+			'count' =&gt; 5,
+		),
+		$atts,
+		'school_slider'
+	);
+
+	$slides = new WP_Query(
+		array(
+			'post_type'      =&gt; 'school_slide',
+			'posts_per_page' =&gt; (int) $atts['count'],
+			'orderby'        =&gt; 'date',
+			'order'          =&gt; 'DESC',
+		)
+	);
+
+	if ( ! $slides-&gt;have_posts() ) {
+		return '&lt;p&gt;Inga slides hittades.&lt;/p&gt;';
+	}
+
+	$slider_id = 'school-slider-' . wp_rand( 1000, 9999 );
+
+	ob_start();
+	echo '&lt;div class="school-slider" id="' . esc_attr( $slider_id ) . '" data-slider&gt;';
+	echo '&lt;div class="school-slider__track"&gt;';
+
+	$dot_index = 0;
+
+	while ( $slides-&gt;have_posts() ) {
+		$slides-&gt;the_post();
+
+		$subtitle   = get_post_meta( get_the_ID(), '_school_slide_subtitle', true );
+		$button_txt = get_post_meta( get_the_ID(), '_school_slide_button_text', true );
+		$button_url = get_post_meta( get_the_ID(), '_school_slide_button_url', true );
+		$image_url  = get_the_post_thumbnail_url( get_the_ID(), 'full' );
+
+		echo '&lt;article class="school-slide" style="background-image:url(' . esc_url( $image_url ) . ');"&gt;';
+		echo '&lt;div class="school-slide__overlay"&gt;';
+		echo '&lt;h2 class="school-slide__title"&gt;' . esc_html( get_the_title() ) . '&lt;/h2&gt;';
+
+		if ( ! empty( $subtitle ) ) {
+			echo '&lt;p class="school-slide__subtitle"&gt;' . esc_html( $subtitle ) . '&lt;/p&gt;';
+		}
+
+		if ( ! empty( $button_txt ) &amp;&amp; ! empty( $button_url ) ) {
+			echo '&lt;a class="school-slide__button" href="' . esc_url( $button_url ) . '"&gt;' . esc_html( $button_txt ) . '&lt;/a&gt;';
+		}
+
+		echo '&lt;/div&gt;';
+		echo '&lt;/article&gt;';
+
+		$dot_index++;
+	}
+
+	echo '&lt;/div&gt;';
+	echo '&lt;button class="school-slider__nav school-slider__nav--prev" type="button" data-slider-prev aria-label="Föregående slide"&gt;&amp;#10094;&lt;/button&gt;';
+	echo '&lt;button class="school-slider__nav school-slider__nav--next" type="button" data-slider-next aria-label="Nästa slide"&gt;&amp;#10095;&lt;/button&gt;';
+
+	echo '&lt;div class="school-slider__dots" role="tablist" aria-label="Slide navigation"&gt;';
+	for ( $i = 0; $i &lt; $dot_index; $i++ ) {
+		echo '&lt;button class="school-slider__dot" type="button" data-slide-to="' . esc_attr( $i ) . '" aria-label="Gå till slide ' . esc_attr( (string) ( $i + 1 ) ) . '"&gt;&lt;/button&gt;';
+	}
+	echo '&lt;/div&gt;';
+
+	echo '&lt;/div&gt;';
+
+	wp_reset_postdata();
+	return ob_get_clean();
+}
+add_shortcode( 'school_slider', 'school_slider_shortcode' );
+</code></pre>
+<h3 id="hur-shortcoden-jobbar"><a class="header" href="#hur-shortcoden-jobbar">Hur shortcoden jobbar</a></h3>
+<ul>
+<li><code>add_shortcode( 'school_slider', ... )</code> kopplar <code>[school_slider]</code> till funktionen.</li>
+<li><code>shortcode_atts(...)</code> sätter standardvärde för <code>count</code>.</li>
+<li><code>WP_Query</code> hämtar slides från databasen.</li>
+<li><code>ob_start()</code> används för att bygga HTML och returnera den som en sträng.</li>
+<li>Loopen skriver ut varje slide:
+<ul>
+<li>bakgrundsbild från <code>get_the_post_thumbnail_url()</code></li>
+<li>rubrik från post title</li>
+<li>underrubrik + knapp från post meta</li>
+</ul>
+</li>
+<li>Efter loopen skapas navigering:
+<ul>
+<li>två knappar (föregående/nästa)</li>
+<li>en dot-knapp per slide</li>
+</ul>
+</li>
+<li><code>wp_reset_postdata()</code> återställer global query.</li>
+</ul>
+<p>Varför både <code>esc_html()</code> och <code>esc_url()</code>?</p>
+<ul>
+<li>För att skydda output mot skadligt innehåll och trasig HTML.</li>
+</ul>
+<p>Shortcoden blir:</p>
+<pre><code class="language-text">[school_slider]
+</code></pre>
+<p>Du kan styra antal slides:</p>
+<pre><code class="language-text">[school_slider count="3"]
+</code></pre>
+<p>Om en sida innehåller flera sliders fungerar det också, eftersom JavaScript-koden loopar över alla element med <code>data-slider</code>.</p>
+<h2 id="4-ladda-css-och-javascript"><a class="header" href="#4-ladda-css-och-javascript">4) Ladda CSS och JavaScript</a></h2>
+<p>Lägg till i plugin-filen:</p>
+<pre><code class="language-php">function school_slider_enqueue_assets() {
+	wp_enqueue_style(
+		'school-slider-style',
+		plugin_dir_url( __FILE__ ) . 'assets/slider.css',
+		array(),
+		'1.0.0'
+	);
+
+	wp_enqueue_script(
+		'school-slider-script',
+		plugin_dir_url( __FILE__ ) . 'assets/slider.js',
+		array(),
+		'1.0.0',
+		true
+	);
+}
+add_action( 'wp_enqueue_scripts', 'school_slider_enqueue_assets' );
+</code></pre>
+<h3 id="vad-betyder-enqueue"><a class="header" href="#vad-betyder-enqueue">Vad betyder enqueue?</a></h3>
+<p><code>wp_enqueue_style()</code> och <code>wp_enqueue_script()</code> är WordPress sätt att ladda filer på rätt sätt.</p>
+<p>Fördelar:</p>
+<ul>
+<li>undviker dubbel inladdning</li>
+<li>bättre kompatibilitet med andra teman/plugins</li>
+<li>WordPress kan hantera ordning och beroenden</li>
+</ul>
+<p>Skapa <code>assets/slider.css</code>:</p>
+<pre><code class="language-css">.school-slider {
+	position: relative;
+	overflow: hidden;
+	min-height: 380px;
+}
+
+.school-slider__track {
+	position: relative;
+}
+
+.school-slide {
+	display: none;
+	min-height: 380px;
+	background-size: cover;
+	background-position: center;
+}
+
+.school-slide.is-active {
+	display: block;
+}
+
+.school-slide__overlay {
+	background: rgba(0, 0, 0, 0.45);
+	color: #fff;
+	padding: 64px 40px;
+	min-height: 380px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 12px;
+}
+
+.school-slide__title {
+	margin: 0;
+	font-size: 2rem;
+}
+
+.school-slide__subtitle {
+	margin: 0;
+	font-size: 1.1rem;
+}
+
+.school-slide__button {
+	align-self: flex-start;
+	padding: 10px 18px;
+	background: #ffffff;
+	color: #111111;
+	text-decoration: none;
+	border-radius: 6px;
+}
+
+.school-slider__nav {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	background: rgba(0, 0, 0, 0.55);
+	color: #ffffff;
+	border: 0;
+	width: 42px;
+	height: 42px;
+	border-radius: 50%;
+	cursor: pointer;
+	font-size: 1.2rem;
+	z-index: 10;
+}
+
+.school-slider__nav--prev {
+	left: 16px;
+}
+
+.school-slider__nav--next {
+	right: 16px;
+}
+
+.school-slider__dots {
+	position: absolute;
+	left: 50%;
+	bottom: 18px;
+	transform: translateX(-50%);
+	display: flex;
+	gap: 8px;
+	z-index: 10;
+}
+
+.school-slider__dot {
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	border: 0;
+	background: rgba(255, 255, 255, 0.5);
+	cursor: pointer;
+}
+
+.school-slider__dot.is-active {
+	background: #ffffff;
+}
+</code></pre>
+<p>Skapa <code>assets/slider.js</code>:</p>
+<pre><code class="language-javascript">document.addEventListener('DOMContentLoaded', () =&gt; {
+	const sliders = document.querySelectorAll('[data-slider]');
+
+	if (!sliders.length) {
+		return;
+	}
+
+	sliders.forEach((slider) =&gt; {
+		const slides = Array.from(slider.querySelectorAll('.school-slide'));
+		const dots = Array.from(slider.querySelectorAll('.school-slider__dot'));
+		const prevButton = slider.querySelector('[data-slider-prev]');
+		const nextButton = slider.querySelector('[data-slider-next]');
+
+		if (!slides.length) {
+			return;
+		}
+
+		let activeIndex = 0;
+
+		const render = () =&gt; {
+			slides.forEach((slide, index) =&gt; {
+				slide.classList.toggle('is-active', index === activeIndex);
+			});
+
+			dots.forEach((dot, index) =&gt; {
+				dot.classList.toggle('is-active', index === activeIndex);
+			});
+		};
+
+		const goToNext = () =&gt; {
+			activeIndex = (activeIndex + 1) % slides.length;
+			render();
+		};
+
+		const goToPrev = () =&gt; {
+			activeIndex = (activeIndex - 1 + slides.length) % slides.length;
+			render();
+		};
+
+		if (nextButton) {
+			nextButton.addEventListener('click', goToNext);
+		}
+
+		if (prevButton) {
+			prevButton.addEventListener('click', goToPrev);
+		}
+
+		dots.forEach((dot) =&gt; {
+			dot.addEventListener('click', () =&gt; {
+				activeIndex = Number(dot.dataset.slideTo);
+				render();
+			});
+		});
+
+		render();
+
+		setInterval(goToNext, 5000);
+	});
+});
+</code></pre>
+<h3 id="hur-javascript-navigeringen-fungerar"><a class="header" href="#hur-javascript-navigeringen-fungerar">Hur JavaScript-navigeringen fungerar</a></h3>
+<ol>
+<li>Hitta alla sliders på sidan.</li>
+<li>För varje slider:
+<ul>
+<li>hämta slides, dots och pilknappar</li>
+<li>sätt <code>activeIndex = 0</code></li>
+<li>kör <code>render()</code> för att markera aktiv slide/dot</li>
+</ul>
+</li>
+<li>Lägg event listeners:
+<ul>
+<li>nästa-knapp -&gt; <code>goToNext()</code></li>
+<li>föregående-knapp -&gt; <code>goToPrev()</code></li>
+<li>dot -&gt; hoppa till vald index</li>
+</ul>
+</li>
+<li>Starta auto-play med <code>setInterval(goToNext, 5000)</code>.</li>
+</ol>
+<p>Det betyder att användaren kan både klicka manuellt och låta sliden rotera automatiskt.</p>
+<h2 id="5-aktivera-och-testa"><a class="header" href="#5-aktivera-och-testa">5) Aktivera och testa</a></h2>
+<ol>
+<li>Gå till <strong>Tillägg &gt; Installerade tillägg</strong> och aktivera <code>School Content Slider</code>.</li>
+<li>Gå till <strong>Slides</strong> i adminpanelen och skapa några slides.</li>
+<li>Ange titel, underrubrik, knapptext och knapp-länk.</li>
+<li>Sätt en Featured Image (utvald bild) för varje slide.</li>
+<li>Lägg in <code>[school_slider]</code> på en sida.</li>
+<li>Testa navigeringen med pilarna och dots under sliden.</li>
+</ol>
+<h2 id="felsökning-för-nybörjare"><a class="header" href="#felsökning-för-nybörjare">Felsökning för nybörjare</a></h2>
+<h3 id="jag-ser-inte-menyn-slides-i-admin"><a class="header" href="#jag-ser-inte-menyn-slides-i-admin">Jag ser inte menyn Slides i admin</a></h3>
+<ul>
+<li>Kontrollera att pluginet är aktiverat.</li>
+<li>Kontrollera att filnamnet är rätt och att plugin-huvudet finns kvar.</li>
+</ul>
+<h3 id="shortcoden-visar-bara-inga-slides-hittades"><a class="header" href="#shortcoden-visar-bara-inga-slides-hittades">Shortcoden visar bara "Inga slides hittades"</a></h3>
+<ul>
+<li>Kontrollera att du har publicerat slides (inte utkast).</li>
+<li>Kontrollera att post typen heter exakt <code>school_slide</code> i queryn.</li>
+</ul>
+<h3 id="bakgrundsbild-syns-inte"><a class="header" href="#bakgrundsbild-syns-inte">Bakgrundsbild syns inte</a></h3>
+<ul>
+<li>Kontrollera att varje slide har en Featured Image.</li>
+<li>Kontrollera att temat visar featured images korrekt i admin.</li>
+</ul>
+<h3 id="navigering-klickar-men-inget-händer"><a class="header" href="#navigering-klickar-men-inget-händer">Navigering klickar men inget händer</a></h3>
+<ul>
+<li>Kontrollera att <code>slider.js</code> laddas (t.ex. i webbläsarens DevTools).</li>
+<li>Kontrollera att klassnamn i HTML, CSS och JS matchar exakt.</li>
+</ul>
+<h2 id="säkerhet-i-plugin-kod"><a class="header" href="#säkerhet-i-plugin-kod">Säkerhet i plugin-kod</a></h2>
+<p>I exemplet används flera viktiga säkerhetsdelar:</p>
+<ul>
+<li><code>wp_nonce_field()</code> och <code>wp_verify_nonce()</code></li>
+<li><code>current_user_can()</code></li>
+<li><code>sanitize_text_field()</code> och <code>esc_url_raw()</code> vid sparning</li>
+<li><code>esc_html()</code> och <code>esc_url()</code> vid utskrift</li>
+</ul>
+<p>Detta minskar risk för XSS (cross-site scripting) och felaktig indata.</p>
+<h2 id="sammanfattning-32"><a class="header" href="#sammanfattning-32">Sammanfattning</a></h2>
+<p>Du har byggt ett komplett plugin med egen datamodell (post type), egna fält, shortcode, styling och JavaScript-navigering. Det är en bra mall för många andra plugin-idéer, till exempel testimonials, teamkort eller kundcase.</p>
+<h2 id="reflektionsfrågor-7"><a class="header" href="#reflektionsfrågor-7">Reflektionsfrågor</a></h2>
+<ol>
+<li>Varför är det bättre att lägga den här funktionen i ett plugin istället för i temat?</li>
+<li>Hur påverkas sliden om en post saknar Featured Image?</li>
+<li>Hur skulle du lägga till swipe-stöd för mobil (touch events)?</li>
+</ol>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="wordpress-shortcodes"><a class="header" href="#wordpress-shortcodes">WordPress shortcodes</a></h1>
+<p>Shortcodes (kortkoder) är ett sätt att köra PHP-funktioner direkt från innehåll i WordPress, till exempel i en sida eller ett inlägg.</p>
+<p>Exempel:</p>
+<pre><code class="language-text">[my_shortcode]
+</code></pre>
+<p>När WordPress ser shortcoden ersätts den med HTML från din funktion.</p>
+<h2 id="förkunskaper-8"><a class="header" href="#förkunskaper-8">Förkunskaper</a></h2>
+<p>Innan du börjar är det bra om du har läst:</p>
+<ul>
+<li><a href="kapitel_6/./wordpress.html">WordPress</a></li>
+<li><a href="kapitel_6/./wordpress-admin.html">WordPress adminpanel</a></li>
+<li><a href="kapitel_6/./wordpress-teman.html">WordPress teman</a></li>
+</ul>
+<h2 id="varför-shortcodes"><a class="header" href="#varför-shortcodes">Varför shortcodes?</a></h2>
+<p>Shortcodes är användbara när du vill att redaktören ska kunna lägga in dynamiskt innehåll utan att skriva kod.</p>
+<p>Vanliga exempel:</p>
+<ul>
+<li>kontaktkort</li>
+<li>listor med senaste inlägg</li>
+<li>custom post type-listor</li>
+<li>sliders och gallerier</li>
+</ul>
+<h2 id="hur-fungerar-det"><a class="header" href="#hur-fungerar-det">Hur fungerar det?</a></h2>
+<p>Du kopplar ett shortcode-namn till en PHP-funktion:</p>
+<ol>
+<li><code>add_shortcode()</code> registrerar namnet</li>
+<li>WordPress hittar <code>[namn]</code> i innehållet</li>
+<li>Din funktion körs</li>
+<li>Funktionen returnerar HTML som visas på sidan</li>
+</ol>
+<pre class="mermaid">flowchart LR
+	A[Innehåll med shortcode] --&gt; B[WordPress parser shortcode]
+	B --&gt; C[PHP-funktion körs]
+	C --&gt; D[HTML returneras]
+	D --&gt; E[Visas för besökaren]
+</pre>
+<h2 id="1-en-första-shortcode-utan-parametrar"><a class="header" href="#1-en-första-shortcode-utan-parametrar">1) En första shortcode (utan parametrar)</a></h2>
+<p>Lägg i <code>functions.php</code> eller i ett plugin:</p>
+<pre><code class="language-php">function school_hello_shortcode() {
+	return '&lt;p&gt;Hej från min första shortcode!&lt;/p&gt;';
+}
+add_shortcode( 'school_hello', 'school_hello_shortcode' );
+</code></pre>
+<p>Använd i en sida:</p>
+<pre><code class="language-text">[school_hello]
+</code></pre>
+<h3 id="vad-händer-i-koden"><a class="header" href="#vad-händer-i-koden">Vad händer i koden?</a></h3>
+<ul>
+<li><code>school_hello_shortcode()</code> skapar innehållet</li>
+<li><code>add_shortcode( 'school_hello', ... )</code> registrerar namnet</li>
+<li>WordPress ersätter <code>[school_hello]</code> med texten från funktionen</li>
+</ul>
+<h2 id="2-shortcode-med-parametrar-attributes-attribut"><a class="header" href="#2-shortcode-med-parametrar-attributes-attribut">2) Shortcode med parametrar (attributes, attribut)</a></h2>
+<p>Nu gör vi en mer flexibel shortcode.</p>
+<pre><code class="language-php">function school_box_shortcode( $atts ) {
+	$atts = shortcode_atts(
+		array(
+			'title' =&gt; 'Standardrubrik',
+			'text'  =&gt; 'Standardtext',
+		),
+		$atts,
+		'school_box'
+	);
+
+	return '&lt;div class="school-box"&gt;&lt;h3&gt;' . esc_html( $atts['title'] ) . '&lt;/h3&gt;&lt;p&gt;' . esc_html( $atts['text'] ) . '&lt;/p&gt;&lt;/div&gt;';
+}
+add_shortcode( 'school_box', 'school_box_shortcode' );
+</code></pre>
+<p>Användning:</p>
+<pre><code class="language-text">[school_box title="Välkommen" text="Detta innehåll kommer från en shortcode."]
+</code></pre>
+<h3 id="varför-shortcode_atts"><a class="header" href="#varför-shortcode_atts">Varför <code>shortcode_atts()</code>?</a></h3>
+<p>Funktionen sätter standardvärden. Om redaktören inte skickar in <code>title</code> eller <code>text</code> så fungerar shortcoden ändå.</p>
+<h2 id="viktig-regel-returnera-inte-echo"><a class="header" href="#viktig-regel-returnera-inte-echo">Viktig regel: returnera, inte echo</a></h2>
+<p>I en shortcode-funktion ska du nästan alltid använda <code>return</code>, inte <code>echo</code>.</p>
+<ul>
+<li><code>return</code> skickar tillbaka innehållet till rätt plats i sidan</li>
+<li><code>echo</code> kan skriva ut innehåll på fel ställe i renderingen</li>
+</ul>
+<h2 id="säkerhet-i-shortcodes"><a class="header" href="#säkerhet-i-shortcodes">Säkerhet i shortcodes</a></h2>
+<p>Använd alltid escaping (escapning) när du skriver ut data:</p>
+<ul>
+<li><code>esc_html()</code> för text</li>
+<li><code>esc_url()</code> för länkar</li>
+<li><code>sanitize_text_field()</code> för indata du vill rensa</li>
+</ul>
+<p>Det minskar risk för XSS (cross-site scripting).</p>
+<h2 id="vanliga-nybörjarfel"><a class="header" href="#vanliga-nybörjarfel">Vanliga nybörjarfel</a></h2>
+<ol>
+<li>Shortcoden syns som text i sidan
+<ul>
+<li>Kontrollera att du skrev <code>[school_hello]</code> och inte glömde hakparenteser.</li>
+</ul>
+</li>
+<li>Inget händer alls
+<ul>
+<li>Kontrollera att funktionen laddas (rätt fil, aktivt tema/plugin).</li>
+</ul>
+</li>
+<li>Fel namn i <code>add_shortcode</code>
+<ul>
+<li>Kontrollera att shortcode-namn och funktionsnamn stämmer.</li>
+</ul>
+</li>
+<li>Trasig HTML
+<ul>
+<li>Kontrollera att alla taggar öppnas/stängs korrekt.</li>
+</ul>
+</li>
+</ol>
+<h2 id="när-passar-shortcodes-bäst"><a class="header" href="#när-passar-shortcodes-bäst">När passar shortcodes bäst?</a></h2>
+<p>Shortcodes passar bra när:</p>
+<ul>
+<li>redaktörer ska kunna placera funktioner var som helst</li>
+<li>du vill återanvända samma funktion på flera sidor</li>
+<li>innehållet är dynamiskt (hämtas från databas)</li>
+</ul>
+<p>Om du bygger nyare block-baserat innehåll i Gutenberg kan ett block ibland vara bättre på sikt, men shortcodes är fortfarande vanliga i många projekt.</p>
+<h2 id="praktisk-övning"><a class="header" href="#praktisk-övning">Praktisk övning</a></h2>
+<ol>
+<li>Skapa shortcoden <code>school_hello</code> och testa den på en sida.</li>
+<li>Skapa shortcoden <code>school_box</code> och testa två olika varianter med olika <code>title</code> och <code>text</code>.</li>
+<li>Lägg till egen CSS-klass i HTML-strängen och styla boxen i temat.</li>
+<li>Förklara varför <code>esc_html()</code> är viktig i båda exemplen.</li>
+</ol>
+<h2 id="nästa-steg-1"><a class="header" href="#nästa-steg-1">Nästa steg</a></h2>
+<p>När du kan shortcodes är nästa naturliga steg att:</p>
+<ul>
+<li>skapa en egen post type som visas med shortcode</li>
+<li>bygga plugin som använder shortcode för mer avancerat innehåll</li>
+</ul>
+<p>Fortsätt med:</p>
+<ul>
+<li><a href="kapitel_6/./wordpress-custom-post-type.html">Egen post type i WordPress (Portfolio)</a></li>
+<li><a href="kapitel_6/./wordpress-plugins.html">WordPress plugins</a></li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="egen-post-type-i-wordpress-portfolio"><a class="header" href="#egen-post-type-i-wordpress-portfolio">Egen post type i WordPress (Portfolio)</a></h1>
+<p>I den här lektionen skapar vi en egen post type (innehållstyp) med namnet <strong>Portfolio</strong>. Vi lägger också till stöd för kategorier och bygger en shortcode (kortkod) så innehållet kan visas på valfri sida.</p>
+<p>Målet är att du ska förstå <strong>vad koden gör</strong>, inte bara kopiera den.</p>
+<h2 id="förkunskaper-9"><a class="header" href="#förkunskaper-9">Förkunskaper</a></h2>
+<p>Innan du börjar är det bra om du har läst:</p>
+<ul>
+<li><a href="kapitel_6/./wordpress.html">WordPress</a></li>
+<li><a href="kapitel_6/./wordpress-teman.html">WordPress teman</a></li>
+<li><a href="kapitel_6/./wordpress-plugins.html">WordPress plugins</a></li>
+<li><a href="kapitel_6/./wordpress-shortcodes.html">WordPress shortcodes</a></li>
+</ul>
+<h2 id="varför-använda-en-egen-post-type"><a class="header" href="#varför-använda-en-egen-post-type">Varför använda en egen post type?</a></h2>
+<p>Standardtyperna i WordPress är <strong>Inlägg</strong> och <strong>Sidor</strong>. För innehåll som inte riktigt passar där, till exempel projekt, case eller kundjobb, blir en egen post type tydligare.</p>
+<p>Exempel:</p>
+<ul>
+<li>Inlägg = nyheter och blogg</li>
+<li>Sidor = statiska undersidor</li>
+<li>Portfolio = projekt och referenser</li>
+</ul>
+<p>Det gör adminpanelen enklare för redaktören och minskar risken att innehåll blandas ihop.</p>
+<h2 id="Översikt-vad-vi-bygger"><a class="header" href="#Översikt-vad-vi-bygger">Översikt: vad vi bygger</a></h2>
+<p>Vi bygger i tre steg:</p>
+<ol>
+<li>Registrerar en ny post type: <code>portfolio</code></li>
+<li>Registrerar en egen taxonomy för portfolio-kategorier</li>
+<li>Skapar en shortcode som hämtar och visar Portfolio-inlägg</li>
+</ol>
+<p>Tänk så här:</p>
+<ul>
+<li>WordPress har ett "register" med innehållstyper</li>
+<li>Du lägger till en ny typ i registret med <code>register_post_type()</code></li>
+<li>Shortcoden läser data från databasen och skriver ut HTML</li>
+</ul>
+<h2 id="1-registrera-post-typen-portfolio"><a class="header" href="#1-registrera-post-typen-portfolio">1) Registrera post typen Portfolio</a></h2>
+<p>Lägg koden i <code>functions.php</code> i ditt tema eller i ett eget plugin.</p>
+<pre><code class="language-php">function school_register_portfolio_post_type() {
+	$labels = array(
+		'name'                  =&gt; __( 'Portfolio', 'school-theme' ),
+		'singular_name'         =&gt; __( 'Portfolio Item', 'school-theme' ),
+		'add_new'               =&gt; __( 'Add New', 'school-theme' ),
+		'add_new_item'          =&gt; __( 'Add New Portfolio Item', 'school-theme' ),
+		'edit_item'             =&gt; __( 'Edit Portfolio Item', 'school-theme' ),
+		'new_item'              =&gt; __( 'New Portfolio Item', 'school-theme' ),
+		'view_item'             =&gt; __( 'View Portfolio Item', 'school-theme' ),
+		'search_items'          =&gt; __( 'Search Portfolio', 'school-theme' ),
+		'not_found'             =&gt; __( 'No portfolio items found', 'school-theme' ),
+		'not_found_in_trash'    =&gt; __( 'No portfolio items found in Trash', 'school-theme' ),
+		'menu_name'             =&gt; __( 'Portfolio', 'school-theme' ),
+	);
+
+	$args = array(
+		'labels'                =&gt; $labels,
+		'public'                =&gt; true,
+		'show_in_rest'          =&gt; true,
+		'menu_position'         =&gt; 20,
+		'menu_icon'             =&gt; 'dashicons-portfolio',
+		'supports'              =&gt; array( 'title', 'editor', 'thumbnail', 'excerpt' ),
+		'has_archive'           =&gt; true,
+		'rewrite'               =&gt; array( 'slug' =&gt; 'portfolio' ),
+	);
+
+	register_post_type( 'portfolio', $args );
+}
+add_action( 'init', 'school_register_portfolio_post_type' );
+
+function school_register_portfolio_taxonomy() {
+	$labels = array(
+		'name'              =&gt; __( 'Portfolio Categories', 'school-theme' ),
+		'singular_name'     =&gt; __( 'Portfolio Category', 'school-theme' ),
+		'search_items'      =&gt; __( 'Search Portfolio Categories', 'school-theme' ),
+		'all_items'         =&gt; __( 'All Portfolio Categories', 'school-theme' ),
+		'edit_item'         =&gt; __( 'Edit Portfolio Category', 'school-theme' ),
+		'update_item'       =&gt; __( 'Update Portfolio Category', 'school-theme' ),
+		'add_new_item'      =&gt; __( 'Add New Portfolio Category', 'school-theme' ),
+		'new_item_name'     =&gt; __( 'New Portfolio Category Name', 'school-theme' ),
+		'menu_name'         =&gt; __( 'Portfolio Categories', 'school-theme' ),
+	);
+
+	$args = array(
+		'hierarchical'      =&gt; true,
+		'labels'            =&gt; $labels,
+		'show_ui'           =&gt; true,
+		'show_admin_column' =&gt; true,
+		'query_var'         =&gt; true,
+		'show_in_rest'      =&gt; true,
+		'rewrite'           =&gt; array( 'slug' =&gt; 'portfolio-category' ),
+	);
+
+	register_taxonomy( 'portfolio_category', array( 'portfolio' ), $args );
+}
+add_action( 'init', 'school_register_portfolio_taxonomy' );
+</code></pre>
+<p>Nu får Portfolio en egen taxonomy: <code>portfolio_category</code>. Det betyder att portfolio inte delar kategorier med vanliga inlägg.</p>
+<h3 id="förklaring-av-koden-viktigaste-delarna"><a class="header" href="#förklaring-av-koden-viktigaste-delarna">Förklaring av koden (viktigaste delarna)</a></h3>
+<ul>
+<li><code>school_register_portfolio_post_type()</code> är vår funktion som beskriver hur post typen ska fungera.</li>
+<li><code>$labels</code> styr texter i adminpanelen, till exempel "Add New Portfolio Item".</li>
+<li><code>$args</code> styr beteendet:
+<ul>
+<li><code>public =&gt; true</code> gör typen synlig i admin och på frontend.</li>
+<li><code>show_in_rest =&gt; true</code> gör att Gutenberg-editorn och REST API fungerar.</li>
+<li><code>supports</code> talar om vilka fält som finns (titel, editor, utvald bild, utdrag).</li>
+<li><code>editor</code> gör att du kan skriva innehållstext för varje portfolio-item.</li>
+<li><code>rewrite</code> bestämmer URL-struktur, här <code>/portfolio/...</code>.</li>
+</ul>
+</li>
+<li><code>register_post_type( 'portfolio', $args )</code> registrerar själva typen i WordPress.</li>
+<li><code>add_action( 'init', ... )</code> betyder: kör funktionen när WordPress startar upp (hook/action, krok/händelse).</li>
+<li><code>register_taxonomy( 'portfolio_category', array( 'portfolio' ), $args )</code> skapar egna portfolio-kategorier.</li>
+</ul>
+<h3 id="hur-ser-du-att-det-fungerar"><a class="header" href="#hur-ser-du-att-det-fungerar">Hur ser du att det fungerar?</a></h3>
+<p>Efter att koden laddats ska du se en ny meny i adminpanelen: <strong>Portfolio</strong>.</p>
+<p>Om du inte ser den:</p>
+<ol>
+<li>kontrollera att funktionen ligger i fil som verkligen laddas</li>
+<li>uppdatera sidan i adminpanelen</li>
+<li>gå till <strong>Inställningar &gt; Permalänkar</strong> och klicka "Spara" en gång</li>
+</ol>
+<h2 id="2-skapa-shortcode-för-att-visa-portfolio"><a class="header" href="#2-skapa-shortcode-för-att-visa-portfolio">2) Skapa shortcode för att visa Portfolio</a></h2>
+<p>Nu skapar vi en shortcode som hämtar Portfolio-inlägg och skriver ut dem som en <strong>grid</strong>.</p>
+<p>Varje ruta i griden ska:</p>
+<ul>
+<li>använda Featured Image som bakgrund</li>
+<li>visa titel</li>
+<li>länka till portfolio-itemets sida</li>
+<li>visa kategorier</li>
+</ul>
+<pre><code class="language-php">function school_portfolio_shortcode( $atts ) {
+	$atts = shortcode_atts(
+		array(
+			'count'    =&gt; 6,
+			'category' =&gt; '',
+		),
+		$atts,
+		'portfolio_grid'
+	);
+
+	$query_args = array(
+		'post_type'      =&gt; 'portfolio',
+		'posts_per_page' =&gt; (int) $atts['count'],
+	);
+
+	if ( ! empty( $atts['category'] ) ) {
+		$query_args['tax_query'] = array(
+			array(
+				'taxonomy' =&gt; 'portfolio_category',
+				'field'    =&gt; 'slug',
+				'terms'    =&gt; sanitize_text_field( $atts['category'] ),
+			),
+		);
+	}
+
+	$portfolio_query = new WP_Query( $query_args );
+
+	if ( ! $portfolio_query-&gt;have_posts() ) {
+		return '&lt;p&gt;Inga portfolio-inlägg hittades.&lt;/p&gt;';
+	}
+
+	ob_start();
+	echo '&lt;div class="portfolio-grid"&gt;';
+
+	while ( $portfolio_query-&gt;have_posts() ) {
+		$portfolio_query-&gt;the_post();
+
+		$item_id    = get_the_ID();
+		$item_url   = get_permalink( $item_id );
+		$item_title = get_the_title( $item_id );
+		$image_url  = get_the_post_thumbnail_url( $item_id, 'large' );
+		$terms      = get_the_terms( $item_id, 'portfolio_category' );
+
+		echo '&lt;article class="portfolio-grid__item" style="background-image:url(' . esc_url( $image_url ) . ');"&gt;';
+		echo '&lt;div class="portfolio-grid__overlay"&gt;';
+		echo '&lt;h3 class="portfolio-grid__title"&gt;';
+		echo '&lt;a href="' . esc_url( $item_url ) . '"&gt;' . esc_html( $item_title ) . '&lt;/a&gt;';
+		echo '&lt;/h3&gt;';
+
+		if ( ! empty( $terms ) &amp;&amp; ! is_wp_error( $terms ) ) {
+			echo '&lt;p class="portfolio-grid__categories"&gt;';
+			foreach ( $terms as $term ) {
+				echo '&lt;span&gt;' . esc_html( $term-&gt;name ) . '&lt;/span&gt; ';
+			}
+			echo '&lt;/p&gt;';
+		}
+
+		echo '&lt;/div&gt;';
+		echo '&lt;/article&gt;';
+	}
+
+	echo '&lt;/div&gt;';
+
+	wp_reset_postdata();
+	return ob_get_clean();
+}
+add_shortcode( 'portfolio_grid', 'school_portfolio_shortcode' );
+</code></pre>
+<h3 id="förklaring-av-koden-steg-för-steg"><a class="header" href="#förklaring-av-koden-steg-för-steg">Förklaring av koden (steg för steg)</a></h3>
+<ul>
+<li><code>add_shortcode( 'portfolio_grid', ... )</code> kopplar texten <code>[portfolio_grid]</code> till vår PHP-funktion.</li>
+<li><code>$atts = shortcode_atts(...)</code> sätter standardvärden:
+<ul>
+<li><code>count</code> = hur många poster som visas</li>
+<li><code>category</code> = valfritt filter på kategori</li>
+</ul>
+</li>
+<li><code>new WP_Query(...)</code> gör en databasfråga och hämtar rätt Portfolio-poster.</li>
+<li><code>if ( ! $portfolio_query-&gt;have_posts() )</code> hanterar fallet där inget hittas.</li>
+<li><code>ob_start()</code> startar output buffering (utmatningsbuffert): vi bygger HTML som en sträng och returnerar den.</li>
+<li>Loopen <code>while ( $portfolio_query-&gt;have_posts() )</code> går igenom varje träff och skriver ut en grid-ruta.</li>
+<li><code>get_the_post_thumbnail_url()</code> hämtar bild-URL för bakgrunden.</li>
+<li><code>get_the_terms( $item_id, 'portfolio_category' )</code> hämtar portfolio-kategorier för just den posten.</li>
+<li><code>esc_url()</code> och <code>esc_html()</code> skyddar output.</li>
+<li><code>wp_reset_postdata()</code> återställer WordPress globala loop så annan kod inte påverkas.</li>
+</ul>
+<h3 id="css-för-griden-lägg-i-ditt-tema"><a class="header" href="#css-för-griden-lägg-i-ditt-tema">CSS för griden (lägg i ditt tema)</a></h3>
+<pre><code class="language-css">.portfolio-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+	gap: 20px;
+}
+
+.portfolio-grid__item {
+	min-height: 260px;
+	background-size: cover;
+	background-position: center;
+	border-radius: 10px;
+	overflow: hidden;
+}
+
+.portfolio-grid__overlay {
+	min-height: 260px;
+	background: rgba(0, 0, 0, 0.45);
+	color: #ffffff;
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	gap: 8px;
+}
+
+.portfolio-grid__title {
+	margin: 0;
+}
+
+.portfolio-grid__title a {
+	color: #ffffff;
+	text-decoration: none;
+}
+
+.portfolio-grid__categories {
+	margin: 0;
+	font-size: 0.9rem;
+}
+</code></pre>
+<h2 id="3-använd-shortcoden-på-en-sida"><a class="header" href="#3-använd-shortcoden-på-en-sida">3) Använd shortcoden på en sida</a></h2>
+<p>Grundexempel:</p>
+<pre><code class="language-text">[portfolio_grid]
+</code></pre>
+<p>Med parametrar:</p>
+<pre><code class="language-text">[portfolio_grid count="3" category="webbdesign"]
+</code></pre>
+<ul>
+<li><code>count</code> styr antal inlägg</li>
+<li><code>category</code> filtrerar på portfolio-kategorins slug</li>
+</ul>
+<p>Tips: <code>category</code> ska vara slug för <strong>portfolio category</strong>, inte visningsnamn. Om kategorin heter "Webbdesign" kan slug vara <code>webbdesign</code>.</p>
+<h2 id="4-egen-template-för-portfolio-item"><a class="header" href="#4-egen-template-för-portfolio-item">4) Egen template för portfolio item</a></h2>
+<p>För att styra hur en enskild Portfolio-post visas skapar du en template-fil i temat:</p>
+<pre><code class="language-text">wp-content/themes/ditt-tema/single-portfolio.php
+</code></pre>
+<p>WordPress template hierarchy (mall-hierarki) gör att <code>single-portfolio.php</code> används automatiskt för post typen <code>portfolio</code>.</p>
+<p>Exempel:</p>
+<pre><code class="language-php">&lt;?php
+get_header();
+
+if ( have_posts() ) :
+	while ( have_posts() ) :
+		the_post();
+		$terms = get_the_terms( get_the_ID(), 'portfolio_category' );
+		?&gt;
+		&lt;main class="portfolio-single"&gt;
+			&lt;h1&gt;&lt;?php the_title(); ?&gt;&lt;/h1&gt;
+
+			&lt;?php if ( has_post_thumbnail() ) : ?&gt;
+				&lt;div class="portfolio-single__image"&gt;
+					&lt;?php the_post_thumbnail( 'large' ); ?&gt;
+				&lt;/div&gt;
+			&lt;?php endif; ?&gt;
+
+			&lt;div class="portfolio-single__content"&gt;
+				&lt;?php the_content(); ?&gt;
+			&lt;/div&gt;
+
+			&lt;?php if ( ! empty( $terms ) &amp;&amp; ! is_wp_error( $terms ) ) : ?&gt;
+				&lt;p class="portfolio-single__categories"&gt;
+					&lt;?php foreach ( $terms as $term ) : ?&gt;
+						&lt;span&gt;&lt;?php echo esc_html( $term-&gt;name ); ?&gt;&lt;/span&gt;
+					&lt;?php endforeach; ?&gt;
+				&lt;/p&gt;
+			&lt;?php endif; ?&gt;
+		&lt;/main&gt;
+		&lt;?php
+	endwhile;
+endif;
+
+get_footer();
+</code></pre>
+<p>Nu får varje portfolio-item en egen visning med titel, bild, innehåll och kategorier.</p>
+<h2 id="säkerhet-och-kvalitet"><a class="header" href="#säkerhet-och-kvalitet">Säkerhet och kvalitet</a></h2>
+<p>I koden ovan används:</p>
+<ul>
+<li><code>sanitize_text_field()</code> för indata från shortcode-attribut</li>
+<li><code>esc_url()</code> och <code>esc_html()</code> vid utskrift</li>
+<li><code>wp_reset_postdata()</code> för att återställa global loop</li>
+</ul>
+<p>Detta minskar risk för fel och gör koden säkrare i praktisk användning.</p>
+<h2 id="vanliga-nybörjarfel-och-lösning"><a class="header" href="#vanliga-nybörjarfel-och-lösning">Vanliga nybörjarfel (och lösning)</a></h2>
+<ol>
+<li><strong>Shortcoden visar inget</strong>
+<ul>
+<li>Kontrollera att det finns publicerade Portfolio-inlägg.</li>
+</ul>
+</li>
+<li><strong>Kategorifilter fungerar inte</strong>
+<ul>
+<li>Kontrollera att du använder slug från <code>portfolio_category</code> i <code>category</code>.</li>
+</ul>
+</li>
+<li><strong>Portfolio syns inte i admin</strong>
+<ul>
+<li>Kontrollera stavning på <code>register_post_type</code> och hooken <code>init</code>.</li>
+</ul>
+</li>
+<li><strong>Konstig visning efter egen query</strong>
+<ul>
+<li>Kontrollera att <code>wp_reset_postdata()</code> finns kvar.</li>
+</ul>
+</li>
+<li><strong>Template-filen används inte</strong>
+<ul>
+<li>Kontrollera att filen heter exakt <code>single-portfolio.php</code>.</li>
+</ul>
+</li>
+</ol>
+<h2 id="sammanfattning-33"><a class="header" href="#sammanfattning-33">Sammanfattning</a></h2>
+<p>Du har nu byggt en egen innehållstyp och en återanvändbar shortcode. Det är en vanlig och viktig grund i WordPress-utveckling: först modellera innehållet (post type), sedan visa det där redaktören behöver det (shortcode).</p>
+<h2 id="praktisk-övning-1"><a class="header" href="#praktisk-övning-1">Praktisk övning</a></h2>
+<ol>
+<li>Skapa tre Portfolio-inlägg.</li>
+<li>Skapa minst två <code>Portfolio Categories</code> och koppla dem till inläggen.</li>
+<li>Skapa en sida med <code>[portfolio_grid]</code>.</li>
+<li>Skapa en till sida med <code>[portfolio_grid count="2" category="webbdesign"]</code>.</li>
+<li>Skapa <code>single-portfolio.php</code> i ditt tema och testa en enskild portfolio-post.</li>
+</ol>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="wordpress-page-builders"><a class="header" href="#wordpress-page-builders">WordPress page builders</a></h1>
 <p>Page builders är verktyg som gör att du kan bygga sidlayout visuellt i WordPress utan att skriva all kod själv. De används ofta för landningssidor, kampanjsidor och projekt där redaktörer snabbt behöver skapa egna layouter.</p>
-<h2 id="förkunskaper-7"><a class="header" href="#förkunskaper-7">Förkunskaper</a></h2>
+<h2 id="förkunskaper-10"><a class="header" href="#förkunskaper-10">Förkunskaper</a></h2>
 <p>Innan du börjar bör du ha läst:</p>
 <ul>
 <li><a href="kapitel_6/./wordpress.html">WordPress</a></li>
@@ -10959,9 +11971,9 @@ add_action( 'wp_footer', 'school_site_notice' );
 <li>Blandning av flera page builders i samma projekt.</li>
 <li>Ingen plan för hur innehåll ska flyttas om builder byts.</li>
 </ol>
-<h2 id="sammanfattning-32"><a class="header" href="#sammanfattning-32">Sammanfattning</a></h2>
+<h2 id="sammanfattning-34"><a class="header" href="#sammanfattning-34">Sammanfattning</a></h2>
 <p>Page builders kan vara ett effektivt verktyg för snabb visuell produktion i WordPress. Med tydliga riktlinjer för prestanda, struktur och uppdateringar kan de fungera bra i både små och medelstora projekt.</p>
-<h2 id="reflektionsfrågor-7"><a class="header" href="#reflektionsfrågor-7">Reflektionsfrågor</a></h2>
+<h2 id="reflektionsfrågor-8"><a class="header" href="#reflektionsfrågor-8">Reflektionsfrågor</a></h2>
 <ol>
 <li>När skulle du välja Gutenberg framför en extern page builder?</li>
 <li>Vilka risker ser du med att bygga hela sajten i en enda builder?</li>
@@ -10970,7 +11982,7 @@ add_action( 'wp_footer', 'school_site_notice' );
 <div style="break-before: page; page-break-before: always;"></div><h1 id="skillnaden-mellan-posts-och-pages-i-wordpress"><a class="header" href="#skillnaden-mellan-posts-och-pages-i-wordpress">Skillnaden mellan Posts och Pages i WordPress</a></h1>
 <p>När du bygger en webbplats i WordPress är en av de första frågorna: ska innehållet vara ett <strong>Post (inlägg)</strong> eller en <strong>Page (sida)</strong>?</p>
 <p>Det här valet påverkar hur innehållet visas, hur lätt det blir att navigera på sajten och hur redaktörer arbetar i adminpanelen.</p>
-<h2 id="förkunskaper-8"><a class="header" href="#förkunskaper-8">Förkunskaper</a></h2>
+<h2 id="förkunskaper-11"><a class="header" href="#förkunskaper-11">Förkunskaper</a></h2>
 <p>Innan du börjar bör du ha läst:</p>
 <ul>
 <li><a href="kapitel_6/./wordpress.html">WordPress</a></li>
@@ -11049,13 +12061,13 @@ add_action( 'wp_footer', 'school_site_notice' );
 <li>Sakna tydlig kategori-struktur för inlägg.</li>
 <li>Otydlig meny där viktiga sidor är svåra att hitta.</li>
 </ol>
-<h2 id="sammanfattning-33"><a class="header" href="#sammanfattning-33">Sammanfattning</a></h2>
+<h2 id="sammanfattning-35"><a class="header" href="#sammanfattning-35">Sammanfattning</a></h2>
 <ul>
 <li><strong>Post (inlägg)</strong> passar för löpande, datumstyrt innehåll.</li>
 <li><strong>Page (sida)</strong> passar för stabilt innehåll i webbplatsens grundstruktur.</li>
 <li>Rätt val från början gör sajten enklare att underhålla, navigera och skala.</li>
 </ul>
-<h2 id="reflektionsfrågor-8"><a class="header" href="#reflektionsfrågor-8">Reflektionsfrågor</a></h2>
+<h2 id="reflektionsfrågor-9"><a class="header" href="#reflektionsfrågor-9">Reflektionsfrågor</a></h2>
 <ol>
 <li>Vilket innehåll på din tänkta webbplats ska vara inlägg respektive sidor?</li>
 <li>Hur skulle du strukturera kategorier för inlägg så att det blir lätt att hitta rätt?</li>
@@ -11282,7 +12294,7 @@ Hur andra kan bidra (om öppen källkod).
 <li><strong>Konsekvent terminologi</strong> – minskar missförstånd</li>
 <li><strong>Exempel i kod</strong> – AI kan bättre förstå och generera liknande kod</li>
 </ul>
-<h3 id="sammanfattning-34"><a class="header" href="#sammanfattning-34">Sammanfattning</a></h3>
+<h3 id="sammanfattning-36"><a class="header" href="#sammanfattning-36">Sammanfattning</a></h3>
 <p>En bra dokumentationsstruktur gör projektet lättare att förstå, bidra till och underhålla – både för människor och för AI-verktyg som används i utvecklingsprocessen.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="static-site-generators-med-jekyll"><a class="header" href="#static-site-generators-med-jekyll">Static Site Generators med Jekyll</a></h1>
 <h2 id="1-introduktion----vad-är-en-static-site-generator"><a class="header" href="#1-introduktion----vad-är-en-static-site-generator">1. Introduktion -- Vad är en Static Site Generator?</a></h2>
@@ -11293,7 +12305,7 @@ HTML-filer från mallar och innehåll (ofta Markdown). Tänk på en SSG som en <
 <p><a href="https://jekyllrb.com/" target="_blank">https://jekyllrb.com/</a></p>
 <p>Andra exempel på SSG är <strong>Hugo</strong> (Go), <strong>Gatsby</strong> (React/Node.js) och <strong>Next.js</strong> (JavaScript).</p>
 <hr />
-<h2 id="hur-fungerar-det"><a class="header" href="#hur-fungerar-det">Hur fungerar det?</a></h2>
+<h2 id="hur-fungerar-det-1"><a class="header" href="#hur-fungerar-det-1">Hur fungerar det?</a></h2>
 <pre class="mermaid">%%{init: {'theme': 'default'}}%%
 flowchart LR
     A[Markdown Files] --&gt; B[Jekyll Build]
@@ -11651,7 +12663,7 @@ flowchart LR
     D --&gt; E[Public Website]
 </pre>
 <hr />
-<h2 id="sammanfattning-35"><a class="header" href="#sammanfattning-35">Sammanfattning</a></h2>
+<h2 id="sammanfattning-37"><a class="header" href="#sammanfattning-37">Sammanfattning</a></h2>
 <ul>
 <li>Static Site Generators är snabba och säkra</li>
 <li>Jekyll är enkelt och kraftfullt</li>
@@ -12004,7 +13016,7 @@ console.log("Hej!");
 <li>Tillämpa grundläggande säkerhetsprinciper (XSS, SQL injection, lösenordshantering).</li>
 <li>Bygga en enkel CRUD-applikation (blogg) från grunden.</li>
 </ul>
-<h2 id="förkunskaper-9"><a class="header" href="#förkunskaper-9">Förkunskaper</a></h2>
+<h2 id="förkunskaper-12"><a class="header" href="#förkunskaper-12">Förkunskaper</a></h2>
 <p>Innan du börjar rekommenderas att du har genomgått:</p>
 <ul>
 <li><strong>Kapitel 1–5:</strong> HTML, CSS, JavaScript och grundläggande webbkoncept.</li>
@@ -16706,7 +17718,7 @@ session.cookie_samesite = "Lax"
 ; session.sid_entropy_length = 32 (eller högre)
 ; session.sid_bits_per_character = 5 (eller 6)
 </code></pre>
-<h2 id="sammanfattning-36"><a class="header" href="#sammanfattning-36">Sammanfattning</a></h2>
+<h2 id="sammanfattning-38"><a class="header" href="#sammanfattning-38">Sammanfattning</a></h2>
 <p>Cookies och sessioner är avgörande verktyg för att skapa dynamiska och användarvänliga webbapplikationer genom att överbrygga HTTP:s tillståndslösa natur. Cookies lagrar data på klienten och är bra för icke-känsliga preferenser, medan sessioner lagrar data på servern och är standardmetoden för att hantera inloggningsstatus och annan känslig temporär data. Att förstå hur man använder dem säkert, särskilt genom att skydda session-ID:t och konfigurera cookie-attribut korrekt, är fundamentalt för säker webbutveckling med PHP.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="webbsäkerhet-i-php-vanliga-hot-och-skydd"><a class="header" href="#webbsäkerhet-i-php-vanliga-hot-och-skydd">Webbsäkerhet i PHP: Vanliga Hot och Skydd</a></h1>
 <p>Att bygga en fungerande webbapplikation är en sak, men att göra den säker är en helt annan och minst lika viktig uppgift. En osäker applikation kan leda till att användardata läcker, att obehöriga får kontroll över systemet, eller att webbplatsen används för att sprida skadlig kod. Detta avsnitt täcker några av de mest kritiska säkerhetsriskerna och hur du skyddar din PHP-applikation mot dem.</p>
@@ -17933,7 +18945,7 @@ if (!isset($_SESSION['user_id'])) {
 <p><strong>Förklaring:</strong> Denna "guard"-kod måste köras före all annan output. <code>header('Location: ...')</code> skickar en redirect. <code>exit</code> förhindrar att resten av skriptet körs efter redirect. <code>__DIR__</code> ger aktuell mapps sökväg för relativ inkludering.</p>
 </details>
 <hr />
-<h2 id="sammanfattning-37"><a class="header" href="#sammanfattning-37">Sammanfattning</a></h2>
+<h2 id="sammanfattning-39"><a class="header" href="#sammanfattning-39">Sammanfattning</a></h2>
 <p>Dessa övningar täcker:</p>
 <ul>
 <li><strong>PHP intro</strong>: Server vs klient, Docker-miljö</li>
@@ -18676,7 +19688,7 @@ ob_end_flush();
 </ul>
 <p><strong>Intervjutips:</strong> Diskutera olika nivåer av optimering - från kod-nivå till infrastruktur (load balancers, database replicas etc.).</p>
 <hr />
-<h2 id="sammanfattning-38"><a class="header" href="#sammanfattning-38">Sammanfattning</a></h2>
+<h2 id="sammanfattning-40"><a class="header" href="#sammanfattning-40">Sammanfattning</a></h2>
 <p>Dessa frågor täcker de viktigaste aspekterna av fullstack-utveckling med PHP:</p>
 <ul>
 <li><strong>Grundläggande PHP:</strong> Syntax, variabler, funktioner</li>
@@ -19757,7 +20769,7 @@ const isLoading = true;
 function LoadingSpinner() { }  // Bättre än Spinner()
 function ErrorMessage() { }   // Bättre än Error()
 </code></pre>
-<h2 id="sammanfattning-39"><a class="header" href="#sammanfattning-39">Sammanfattning</a></h2>
+<h2 id="sammanfattning-41"><a class="header" href="#sammanfattning-41">Sammanfattning</a></h2>
 <p>Komponenter är byggstenen i React-applikationer:</p>
 <ul>
 <li><strong>Komponenter</strong> är JavaScript-funktioner som returnerar JSX</li>
@@ -20532,7 +21544,7 @@ const [state, setState] = useState({
   comments: { 1: { id: 1, text: 'Bra inlägg!', authorId: 2 } }
 });
 </code></pre>
-<h2 id="sammanfattning-40"><a class="header" href="#sammanfattning-40">Sammanfattning</a></h2>
+<h2 id="sammanfattning-42"><a class="header" href="#sammanfattning-42">Sammanfattning</a></h2>
 <p>Nu kan du skapa interaktiva React-komponenter:</p>
 <ul>
 <li><strong>Props</strong> skickar data från föräldra- till barnkomponenter</li>
@@ -21074,7 +22086,7 @@ function ProductDetail() {
   // ...
 }
 </code></pre>
-<h2 id="sammanfattning-41"><a class="header" href="#sammanfattning-41">Sammanfattning</a></h2>
+<h2 id="sammanfattning-43"><a class="header" href="#sammanfattning-43">Sammanfattning</a></h2>
 <p>React Router är kraftfullt verktyg för navigation i React-applikationer:</p>
 <ul>
 <li><strong>BrowserRouter</strong> ger rena URLs och är bästa valet för de flesta applikationer</li>
@@ -22196,7 +23208,7 @@ const API_KEY = import.meta.env.VITE_API_KEY;
 <li>Testa ändringar lokalt innan deployment</li>
 <li>Använd versionshantering (Git tags) för viktiga releases</li>
 </ul>
-<h2 id="sammanfattning-42"><a class="header" href="#sammanfattning-42">Sammanfattning</a></h2>
+<h2 id="sammanfattning-44"><a class="header" href="#sammanfattning-44">Sammanfattning</a></h2>
 <p>Deployment med Dokploy gör det enkelt att få din React-applikation live på internet:</p>
 <ol>
 <li><strong>Förbered</strong> din kod och pusha till GitHub</li>
@@ -22207,7 +23219,7 @@ const API_KEY = import.meta.env.VITE_API_KEY;
 <li><strong>Uppdatera</strong> genom att pusha ändringar</li>
 </ol>
 <p>Med Dokploy kan du fokusera på att utveckla fantastiska applikationer medan plattformen hanterar infrastrukturen åt dig!</p>
-<h2 id="nästa-steg-1"><a class="header" href="#nästa-steg-1">Nästa steg</a></h2>
+<h2 id="nästa-steg-2"><a class="header" href="#nästa-steg-2">Nästa steg</a></h2>
 <p>Nu när du kan deploya React-applikationer, utforska:</p>
 <ul>
 <li><strong>Databaser</strong>: Lägg till PostgreSQL eller MongoDB</li>
@@ -22810,7 +23822,7 @@ class ErrorTracker {
 
 export default ErrorTracker;
 </code></pre>
-<h2 id="sammanfattning-43"><a class="header" href="#sammanfattning-43">Sammanfattning</a></h2>
+<h2 id="sammanfattning-45"><a class="header" href="#sammanfattning-45">Sammanfattning</a></h2>
 <p>Single Page Applications erbjuder många fördelar för moderna webbapplikationer:</p>
 <ul>
 <li><strong>Smidig användarupplevelse</strong> med snabb navigering</li>
@@ -23823,7 +24835,7 @@ function App() {
 <li>Ha fallback UI för kritiska komponenter</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-44"><a class="header" href="#sammanfattning-44">Sammanfattning</a></h2>
+<h2 id="sammanfattning-46"><a class="header" href="#sammanfattning-46">Sammanfattning</a></h2>
 <p>Dessa frågor täcker de viktigaste aspekterna av React-utveckling:</p>
 <ul>
 <li><strong>React Fundamentals:</strong> JSX, Virtual DOM, komponenter</li>
@@ -25392,7 +26404,7 @@ async function processMultipleFiles() {
   }
 }
 </code></pre>
-<h2 id="sammanfattning-45"><a class="header" href="#sammanfattning-45">Sammanfattning</a></h2>
+<h2 id="sammanfattning-47"><a class="header" href="#sammanfattning-47">Sammanfattning</a></h2>
 <p>I denna introduktion har vi gått igenom grunderna i Node.js och fokuserat på moderna utvecklingsmetoder:</p>
 <p><strong>Vad vi har lärt oss:</strong></p>
 <ul>
@@ -25884,7 +26896,7 @@ document.getElementById('userForm').addEventListener('submit', async (e) =&gt; {
 <li><strong>Säkerhetsfeatures</strong> och best practices</li>
 <li><strong>Plugin-ekosystem</strong> för utökad funktionalitet</li>
 </ul>
-<h2 id="nästa-steg-2"><a class="header" href="#nästa-steg-2">Nästa steg</a></h2>
+<h2 id="nästa-steg-3"><a class="header" href="#nästa-steg-3">Nästa steg</a></h2>
 <p>Nu förstår du hur HTTP-servrar fungerar under huven! Detta ger dig en solid grund för att:</p>
 <ol>
 <li><strong>Uppskatta Express.js</strong> - Du vet nu vad det abstraherar bort</li>
@@ -27649,7 +28661,7 @@ app.use(express.json({ limit: '10mb' })); // Begränsa request size
 <li><strong>Glömma validering:</strong> Validera alltid användarinput</li>
 <li><strong>Sakna rate limiting:</strong> Låt inte en användare överbelasta ditt API</li>
 </ol>
-<h2 id="sammanfattning-46"><a class="header" href="#sammanfattning-46">Sammanfattning</a></h2>
+<h2 id="sammanfattning-48"><a class="header" href="#sammanfattning-48">Sammanfattning</a></h2>
 <p>RESTful API:er ger dig en solid grund för att bygga skalbara och underhållbara backend-tjänster. Genom att följa REST-principerna skapar du API:er som är intuitiva för utvecklare att använda och enkla att underhålla över tid.</p>
 <h3 id="viktiga-takeaways-1"><a class="header" href="#viktiga-takeaways-1">Viktiga takeaways:</a></h3>
 <ul>
@@ -27659,7 +28671,7 @@ app.use(express.json({ limit: '10mb' })); // Begränsa request size
 <li><strong>Validering och felhantering</strong> är kritiskt för robusthet</li>
 <li><strong>Best practices</strong> (rate limiting, CORS, säkerhet) gör API:et produktionsklart</li>
 </ul>
-<h3 id="nästa-steg-3"><a class="header" href="#nästa-steg-3">Nästa steg:</a></h3>
+<h3 id="nästa-steg-4"><a class="header" href="#nästa-steg-4">Nästa steg:</a></h3>
 <ul>
 <li>Lär dig om <strong>autentisering och säkerhet</strong> för att skydda dina API:er</li>
 <li>Implementera <strong>testning</strong> för dina API-endpoints</li>
@@ -29318,7 +30330,7 @@ import { add } from './math';
   // Standard timeout är 5000ms, öka om nödvändigt
 }, 10000); // 10 sekunder
 </code></pre>
-<h2 id="sammanfattning-47"><a class="header" href="#sammanfattning-47">Sammanfattning</a></h2>
+<h2 id="sammanfattning-49"><a class="header" href="#sammanfattning-49">Sammanfattning</a></h2>
 <p>I denna lektion har du lärt dig:</p>
 <p>✅ <strong>Varför testa</strong>: Säkerhet vid ändringar, dokumentation, snabbare utveckling<br />
 ✅ <strong>Jest setup</strong>: Installera och konfigurera Jest med ES6-moduler<br />
@@ -29327,7 +30339,7 @@ import { add } from './math';
 ✅ <strong>Setup/Teardown</strong>: Använda <code>beforeEach</code>, <code>afterEach</code>, <code>beforeAll</code>, <code>afterAll</code><br />
 ✅ <strong>API-testning</strong>: Testa Express-routes med Supertest<br />
 ✅ <strong>Best practices</strong>: Hur du skriver bra test</p>
-<h3 id="nästa-steg-4"><a class="header" href="#nästa-steg-4">Nästa steg</a></h3>
+<h3 id="nästa-steg-5"><a class="header" href="#nästa-steg-5">Nästa steg</a></h3>
 <ul>
 <li>Öva på att skriva test för dina egna funktioner</li>
 <li>Lär dig om mocks (låtsaskod) för att isolera test</li>
@@ -33194,7 +34206,7 @@ class InventoryService {
 module.exports = InventoryService;
 </code></pre>
 <hr />
-<h2 id="sammanfattning-48"><a class="header" href="#sammanfattning-48">Sammanfattning</a></h2>
+<h2 id="sammanfattning-50"><a class="header" href="#sammanfattning-50">Sammanfattning</a></h2>
 <p>Dessa fyra övningar tar dig från grundläggande Express-applikationer till avancerade real-time system. Varje projekt bygger på kunskaperna från föregående och introducerar nya koncept:</p>
 <ol>
 <li><strong>Todo API</strong>: Grundläggande CRUD, MongoDB, felhantering</li>
@@ -33202,7 +34214,7 @@ module.exports = InventoryService;
 <li><strong>E-handel API</strong>: Komplex datamodellering, transaktioner, inventoriehantering</li>
 </ol>
 <p>Efter att ha genomfört dessa projekt har du en solid grund i modern backend-utveckling med Node.js!</p>
-<h2 id="nästa-steg-5"><a class="header" href="#nästa-steg-5">Nästa steg</a></h2>
+<h2 id="nästa-steg-6"><a class="header" href="#nästa-steg-6">Nästa steg</a></h2>
 <ul>
 <li><strong>Deploiera till produktion</strong> med Docker och cloud services</li>
 <li><strong>Implementera CI/CD</strong> för automatisk testning och deployment</li>
@@ -35951,7 +36963,7 @@ class BulletManager {
   }
 }
 </code></pre>
-<h2 id="sammanfattning-49"><a class="header" href="#sammanfattning-49">Sammanfattning</a></h2>
+<h2 id="sammanfattning-51"><a class="header" href="#sammanfattning-51">Sammanfattning</a></h2>
 <p>OOP i spelutveckling handlar om att:</p>
 <p><strong>Strukturera kod effektivt</strong>:</p>
 <ul>
@@ -36427,7 +37439,7 @@ this.socket.onopen = () =&gt; {
 <li>Servern köar kommandona och kör dem i turordning</li>
 <li><strong>Uppgift</strong>: Skapa ett enkelt commands-system där spelare kan skicka kommandon som servern kör asynkront</li>
 </ul>
-<h2 id="sammanfattning-50"><a class="header" href="#sammanfattning-50">Sammanfattning</a></h2>
+<h2 id="sammanfattning-52"><a class="header" href="#sammanfattning-52">Sammanfattning</a></h2>
 <p>I detta kapitel har vi byggt en enkel multiplayer-server steg för steg:</p>
 <ol>
 <li><strong>Grundstruktur</strong>: Servern är auktoritativ - den validerar och uppdaterar allt spelstatus</li>
@@ -38132,7 +39144,7 @@ module.exports = {
 <li>Gör kortet klickbart genom att lägga till en länk runt hela kortet.</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-51"><a class="header" href="#sammanfattning-51">Sammanfattning</a></h2>
+<h2 id="sammanfattning-53"><a class="header" href="#sammanfattning-53">Sammanfattning</a></h2>
 <ul>
 <li><strong>Färger</strong>: Använd fördefinierade eller anpassade färger för att skapa en konsekvent design.</li>
 <li><strong>Typografi</strong>: Hantera textstorlekar, typsnitt och andra textrelaterade egenskaper med utility-klasser.</li>
@@ -38237,7 +39249,7 @@ module.exports = {
 <li>Lägg till en responsiv grid-layout som visar flera produktkort bredvid varandra på större skärmar.</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-52"><a class="header" href="#sammanfattning-52">Sammanfattning</a></h2>
+<h2 id="sammanfattning-54"><a class="header" href="#sammanfattning-54">Sammanfattning</a></h2>
 <ul>
 <li><strong>Breakpoints</strong>: Använd Tailwinds inbyggda breakpoints för att skapa responsiva layouter.</li>
 <li><strong>Responsivitet</strong>: Anpassa layout, typografi och andra stilar för olika skärmstorlekar.</li>
@@ -38376,7 +39388,7 @@ module.exports = {
 <li>Gör menyn sticky så att den alltid är synlig högst upp på sidan.</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-53"><a class="header" href="#sammanfattning-53">Sammanfattning</a></h2>
+<h2 id="sammanfattning-55"><a class="header" href="#sammanfattning-55">Sammanfattning</a></h2>
 <ul>
 <li><strong>Pseudo-klasser</strong>: Använd <code>hover:</code>, <code>focus:</code>, <code>active:</code>, och <code>disabled:</code> för att hantera olika tillstånd.</li>
 <li><strong>Gruppbaserade effekter</strong>: Använd <code>group</code> och <code>group-hover:</code> för att skapa interaktivitet mellan element.</li>
@@ -38558,7 +39570,7 @@ export default {
 <li>Lägg till en animation som gör att hover-effekten övergångar mjukt.</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-54"><a class="header" href="#sammanfattning-54">Sammanfattning</a></h2>
+<h2 id="sammanfattning-56"><a class="header" href="#sammanfattning-56">Sammanfattning</a></h2>
 <ul>
 <li><strong>Konfiguration</strong>: Använd <code>tailwind.config.js</code> för att anpassa Tailwind CSS.</li>
 <li><strong>Anpassningar</strong>: Lägg till egna färger, typsnitt, spacing och breakpoints.</li>
@@ -38754,7 +39766,7 @@ export default {
 <li>Lägg till en hover-effekt på sidomenyns länkar.</li>
 </ul>
 <hr />
-<h2 id="sammanfattning-55"><a class="header" href="#sammanfattning-55">Sammanfattning</a></h2>
+<h2 id="sammanfattning-57"><a class="header" href="#sammanfattning-57">Sammanfattning</a></h2>
 <ul>
 <li><strong>Planering</strong>: Definiera syftet och prioritera innehållet.</li>
 <li><strong>Element</strong>: Inkludera sidhuvud, sidomeny, KPI-kort, tabeller och grafer.</li>
@@ -38921,7 +39933,7 @@ export default {
 }
 </code></pre>
 <hr />
-<h2 id="sammanfattning-56"><a class="header" href="#sammanfattning-56">Sammanfattning</a></h2>
+<h2 id="sammanfattning-58"><a class="header" href="#sammanfattning-58">Sammanfattning</a></h2>
 <ul>
 <li><strong>Best Practices</strong>: Använd återanvändbara komponenter, håll HTML-strukturen ren och dra nytta av Tailwinds konfigurationsfil.</li>
 <li><strong>Komponentbibliotek</strong>: Utforska bibliotek som Tailwind UI, Flowbite och DaisyUI för att snabba upp utvecklingen.</li>
@@ -39124,7 +40136,7 @@ function App() {
 export default App;
 </code></pre>
 <hr />
-<h2 id="sammanfattning-57"><a class="header" href="#sammanfattning-57">Sammanfattning</a></h2>
+<h2 id="sammanfattning-59"><a class="header" href="#sammanfattning-59">Sammanfattning</a></h2>
 <ul>
 <li><strong>Installation</strong>: Installera och konfigurera Tailwind CSS i ditt React-projekt med Vite.</li>
 <li><strong>Komponenter</strong>: Använd Tailwind CSS för att snabbt styla React-komponenter.</li>
@@ -39348,22 +40360,6 @@ Den här sammanfattningen fungerar bra som referens i ett GitHub-projekt, underv
 
         </div>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
 

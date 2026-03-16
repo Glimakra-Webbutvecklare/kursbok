@@ -1,0 +1,731 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Skapa eget plugin: Content Slider - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="skapa-eget-wordpress-plugin-content-slider"><a class="header" href="#skapa-eget-wordpress-plugin-content-slider">Skapa eget WordPress-plugin: Content Slider</a></h1>
+<p>I den här lektionen bygger vi ett eget plugin från grunden. Målet är en content slider som går att lägga in på valfri sida med en shortcode (kortkod).</p>
+<p>Du får både <strong>kod</strong> och <strong>förklaring av varför varje del finns</strong>, så att du kan förstå flödet även om du aldrig byggt plugin tidigare.</p>
+<p>Varje slide ska kunna ha:</p>
+<ul>
+<li>bild som bakgrund</li>
+<li>rubrik</li>
+<li>underrubrik</li>
+<li>knapp</li>
+</ul>
+<h2 id="så-fungerar-hela-lösningen-innan-vi-kodar"><a class="header" href="#så-fungerar-hela-lösningen-innan-vi-kodar">Så fungerar hela lösningen (innan vi kodar)</a></h2>
+<ol>
+<li>Vi registrerar ett plugin så WordPress kan aktivera det.</li>
+<li>Vi skapar en egen post type <code>school_slide</code> där redaktören lägger slides.</li>
+<li>Vi lägger till extra fält (underrubrik, knapptext, knapp-länk).</li>
+<li>Vi skapar shortcoden <code>[school_slider]</code> som bygger HTML för sliden.</li>
+<li>Vi laddar CSS och JavaScript som ger layout, auto-play och navigering.</li>
+</ol>
+<p>Det här är ett vanligt WordPress-mönster: <strong>lagra data i adminpanelen</strong>, och <strong>presentera data med shortcode i frontend</strong>.</p>
+<h2 id="förkunskaper"><a class="header" href="#förkunskaper">Förkunskaper</a></h2>
+<p>Innan du börjar är det bra om du har läst:</p>
+<ul>
+<li><a href="./wordpress.html">WordPress</a></li>
+<li><a href="./wordpress-plugins.html">WordPress plugins</a></li>
+<li><a href="./wordpress-teman.html">WordPress teman</a></li>
+<li><a href="./wordpress-shortcodes.html">WordPress shortcodes</a></li>
+</ul>
+<h2 id="plugin-struktur"><a class="header" href="#plugin-struktur">Plugin-struktur</a></h2>
+<p>Skapa en mapp i <code>wp-content/plugins</code>:</p>
+<pre><code class="language-text">school-content-slider/
+├─ school-content-slider.php
+├─ assets/
+│  ├─ slider.css
+│  └─ slider.js
+</code></pre>
+<ul>
+<li><code>school-content-slider.php</code> innehåller pluginets PHP-logik.</li>
+<li><code>slider.css</code> styr hur sliden ser ut.</li>
+<li><code>slider.js</code> styr beteendet (byte av slide, klick på navigering).</li>
+</ul>
+<h2 id="1-skapa-pluginets-huvudfil"><a class="header" href="#1-skapa-pluginets-huvudfil">1) Skapa pluginets huvudfil</a></h2>
+<p>Skapa filen <code>school-content-slider.php</code>:</p>
+<pre><code class="language-php">&lt;?php
+/**
+ * Plugin Name: School Content Slider
+ * Description: Enkel content slider med shortcode.
+ * Version: 1.0.0
+ * Author: Glimakra Webbutvecklare
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+function school_slider_register_post_type() {
+	register_post_type(
+		'school_slide',
+		array(
+			'labels' =&gt; array(
+				'name'          =&gt; __( 'Slides', 'school-slider' ),
+				'singular_name' =&gt; __( 'Slide', 'school-slider' ),
+			),
+			'public'       =&gt; true,
+			'show_in_rest' =&gt; true,
+			'menu_icon'    =&gt; 'dashicons-images-alt2',
+			'supports'     =&gt; array( 'title', 'thumbnail' ),
+			'has_archive'  =&gt; false,
+		)
+	);
+}
+add_action( 'init', 'school_slider_register_post_type' );
+</code></pre>
+<p>Här används en egen post type: <code>school_slide</code>. Rubriken hämtas från postens titel och bilden hanteras via Featured Image (utvald bild).</p>
+<h3 id="vad-händer-i-den-här-koden"><a class="header" href="#vad-händer-i-den-här-koden">Vad händer i den här koden?</a></h3>
+<ul>
+<li>Plugin-huvudet (<code>Plugin Name</code>, <code>Version</code> ...) gör att WordPress känner igen pluginet i listan under <strong>Tillägg</strong>.</li>
+<li><code>if ( ! defined( 'ABSPATH' ) ) { exit; }</code> skyddar filen mot direkt anrop.</li>
+<li><code>register_post_type( 'school_slide', ... )</code> skapar en ny innehållstyp i adminpanelen.</li>
+<li><code>supports =&gt; array( 'title', 'thumbnail' )</code> betyder att varje slide får titel och Featured Image.</li>
+<li>Eftersom <code>editor</code> inte finns i <code>supports</code> visas inget textfält (classic editor/Gutenberg content) för denna post type.</li>
+<li><code>add_action( 'init', ... )</code> kör registreringen när WordPress startar.</li>
+</ul>
+<p>När pluginet aktiveras ska du se en ny meny i adminpanelen: <strong>Slides</strong>.</p>
+<h2 id="2-lägg-till-fält-för-underrubrik-och-knapp"><a class="header" href="#2-lägg-till-fält-för-underrubrik-och-knapp">2) Lägg till fält för underrubrik och knapp</a></h2>
+<p>Lägg till i samma fil:</p>
+<pre><code class="language-php">function school_slider_add_meta_box() {
+	add_meta_box(
+		'school_slider_fields',
+		__( 'Slide-innehåll', 'school-slider' ),
+		'school_slider_render_meta_box',
+		'school_slide',
+		'normal',
+		'default'
+	);
+}
+add_action( 'add_meta_boxes', 'school_slider_add_meta_box' );
+
+function school_slider_render_meta_box( $post ) {
+	wp_nonce_field( 'school_slider_save_fields', 'school_slider_nonce' );
+
+	$subtitle   = get_post_meta( $post-&gt;ID, '_school_slide_subtitle', true );
+	$button_txt = get_post_meta( $post-&gt;ID, '_school_slide_button_text', true );
+	$button_url = get_post_meta( $post-&gt;ID, '_school_slide_button_url', true );
+
+	echo '&lt;p&gt;&lt;label for="school_slide_subtitle"&gt;Underrubrik&lt;/label&gt;&lt;/p&gt;';
+	echo '&lt;input type="text" id="school_slide_subtitle" name="school_slide_subtitle" value="' . esc_attr( $subtitle ) . '" style="width:100%;" /&gt;';
+
+	echo '&lt;p&gt;&lt;label for="school_slide_button_text"&gt;Knapptext&lt;/label&gt;&lt;/p&gt;';
+	echo '&lt;input type="text" id="school_slide_button_text" name="school_slide_button_text" value="' . esc_attr( $button_txt ) . '" style="width:100%;" /&gt;';
+
+	echo '&lt;p&gt;&lt;label for="school_slide_button_url"&gt;Knapp-länk&lt;/label&gt;&lt;/p&gt;';
+	echo '&lt;input type="url" id="school_slide_button_url" name="school_slide_button_url" value="' . esc_attr( $button_url ) . '" style="width:100%;" /&gt;';
+}
+
+function school_slider_save_meta_box( $post_id ) {
+	if ( ! isset( $_POST['school_slider_nonce'] ) ) {
+		return;
+	}
+
+	if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['school_slider_nonce'] ) ), 'school_slider_save_fields' ) ) {
+		return;
+	}
+
+	if ( defined( 'DOING_AUTOSAVE' ) &amp;&amp; DOING_AUTOSAVE ) {
+		return;
+	}
+
+	if ( ! current_user_can( 'edit_post', $post_id ) ) {
+		return;
+	}
+
+	if ( isset( $_POST['school_slide_subtitle'] ) ) {
+		update_post_meta( $post_id, '_school_slide_subtitle', sanitize_text_field( wp_unslash( $_POST['school_slide_subtitle'] ) ) );
+	}
+
+	if ( isset( $_POST['school_slide_button_text'] ) ) {
+		update_post_meta( $post_id, '_school_slide_button_text', sanitize_text_field( wp_unslash( $_POST['school_slide_button_text'] ) ) );
+	}
+
+	if ( isset( $_POST['school_slide_button_url'] ) ) {
+		update_post_meta( $post_id, '_school_slide_button_url', esc_url_raw( wp_unslash( $_POST['school_slide_button_url'] ) ) );
+	}
+}
+add_action( 'save_post_school_slide', 'school_slider_save_meta_box' );
+</code></pre>
+<p>Nu kan varje slide få en underrubrik samt knappens text och länk.</p>
+<h3 id="vad-gör-meta-box-delen"><a class="header" href="#vad-gör-meta-box-delen">Vad gör meta box-delen?</a></h3>
+<ul>
+<li><code>add_meta_box(...)</code> lägger till en extra panel under editorn för <code>school_slide</code>.</li>
+<li><code>school_slider_render_meta_box()</code> visar formulärfälten i admin.</li>
+<li><code>get_post_meta(...)</code> läser tidigare sparade värden.</li>
+<li><code>school_slider_save_meta_box()</code> körs vid sparning av slide.</li>
+</ul>
+<p>Säkerhetsflödet vid sparning:</p>
+<ol>
+<li>Kontrollera att nonce-fält finns.</li>
+<li>Verifiera nonce (skydd mot CSRF).</li>
+<li>Stoppa autosave-fall.</li>
+<li>Kontrollera behörighet med <code>current_user_can()</code>.</li>
+<li>Sanera data och spara med <code>update_post_meta()</code>.</li>
+</ol>
+<p>Det här är standardmönstret i WordPress när du sparar egna fält.</p>
+<h2 id="3-registrera-shortcode"><a class="header" href="#3-registrera-shortcode">3) Registrera shortcode</a></h2>
+<p>Lägg till i plugin-filen:</p>
+<pre><code class="language-php">function school_slider_shortcode( $atts ) {
+	$atts = shortcode_atts(
+		array(
+			'count' =&gt; 5,
+		),
+		$atts,
+		'school_slider'
+	);
+
+	$slides = new WP_Query(
+		array(
+			'post_type'      =&gt; 'school_slide',
+			'posts_per_page' =&gt; (int) $atts['count'],
+			'orderby'        =&gt; 'date',
+			'order'          =&gt; 'DESC',
+		)
+	);
+
+	if ( ! $slides-&gt;have_posts() ) {
+		return '&lt;p&gt;Inga slides hittades.&lt;/p&gt;';
+	}
+
+	$slider_id = 'school-slider-' . wp_rand( 1000, 9999 );
+
+	ob_start();
+	echo '&lt;div class="school-slider" id="' . esc_attr( $slider_id ) . '" data-slider&gt;';
+	echo '&lt;div class="school-slider__track"&gt;';
+
+	$dot_index = 0;
+
+	while ( $slides-&gt;have_posts() ) {
+		$slides-&gt;the_post();
+
+		$subtitle   = get_post_meta( get_the_ID(), '_school_slide_subtitle', true );
+		$button_txt = get_post_meta( get_the_ID(), '_school_slide_button_text', true );
+		$button_url = get_post_meta( get_the_ID(), '_school_slide_button_url', true );
+		$image_url  = get_the_post_thumbnail_url( get_the_ID(), 'full' );
+
+		echo '&lt;article class="school-slide" style="background-image:url(' . esc_url( $image_url ) . ');"&gt;';
+		echo '&lt;div class="school-slide__overlay"&gt;';
+		echo '&lt;h2 class="school-slide__title"&gt;' . esc_html( get_the_title() ) . '&lt;/h2&gt;';
+
+		if ( ! empty( $subtitle ) ) {
+			echo '&lt;p class="school-slide__subtitle"&gt;' . esc_html( $subtitle ) . '&lt;/p&gt;';
+		}
+
+		if ( ! empty( $button_txt ) &amp;&amp; ! empty( $button_url ) ) {
+			echo '&lt;a class="school-slide__button" href="' . esc_url( $button_url ) . '"&gt;' . esc_html( $button_txt ) . '&lt;/a&gt;';
+		}
+
+		echo '&lt;/div&gt;';
+		echo '&lt;/article&gt;';
+
+		$dot_index++;
+	}
+
+	echo '&lt;/div&gt;';
+	echo '&lt;button class="school-slider__nav school-slider__nav--prev" type="button" data-slider-prev aria-label="Föregående slide"&gt;&amp;#10094;&lt;/button&gt;';
+	echo '&lt;button class="school-slider__nav school-slider__nav--next" type="button" data-slider-next aria-label="Nästa slide"&gt;&amp;#10095;&lt;/button&gt;';
+
+	echo '&lt;div class="school-slider__dots" role="tablist" aria-label="Slide navigation"&gt;';
+	for ( $i = 0; $i &lt; $dot_index; $i++ ) {
+		echo '&lt;button class="school-slider__dot" type="button" data-slide-to="' . esc_attr( $i ) . '" aria-label="Gå till slide ' . esc_attr( (string) ( $i + 1 ) ) . '"&gt;&lt;/button&gt;';
+	}
+	echo '&lt;/div&gt;';
+
+	echo '&lt;/div&gt;';
+
+	wp_reset_postdata();
+	return ob_get_clean();
+}
+add_shortcode( 'school_slider', 'school_slider_shortcode' );
+</code></pre>
+<h3 id="hur-shortcoden-jobbar"><a class="header" href="#hur-shortcoden-jobbar">Hur shortcoden jobbar</a></h3>
+<ul>
+<li><code>add_shortcode( 'school_slider', ... )</code> kopplar <code>[school_slider]</code> till funktionen.</li>
+<li><code>shortcode_atts(...)</code> sätter standardvärde för <code>count</code>.</li>
+<li><code>WP_Query</code> hämtar slides från databasen.</li>
+<li><code>ob_start()</code> används för att bygga HTML och returnera den som en sträng.</li>
+<li>Loopen skriver ut varje slide:
+<ul>
+<li>bakgrundsbild från <code>get_the_post_thumbnail_url()</code></li>
+<li>rubrik från post title</li>
+<li>underrubrik + knapp från post meta</li>
+</ul>
+</li>
+<li>Efter loopen skapas navigering:
+<ul>
+<li>två knappar (föregående/nästa)</li>
+<li>en dot-knapp per slide</li>
+</ul>
+</li>
+<li><code>wp_reset_postdata()</code> återställer global query.</li>
+</ul>
+<p>Varför både <code>esc_html()</code> och <code>esc_url()</code>?</p>
+<ul>
+<li>För att skydda output mot skadligt innehåll och trasig HTML.</li>
+</ul>
+<p>Shortcoden blir:</p>
+<pre><code class="language-text">[school_slider]
+</code></pre>
+<p>Du kan styra antal slides:</p>
+<pre><code class="language-text">[school_slider count="3"]
+</code></pre>
+<p>Om en sida innehåller flera sliders fungerar det också, eftersom JavaScript-koden loopar över alla element med <code>data-slider</code>.</p>
+<h2 id="4-ladda-css-och-javascript"><a class="header" href="#4-ladda-css-och-javascript">4) Ladda CSS och JavaScript</a></h2>
+<p>Lägg till i plugin-filen:</p>
+<pre><code class="language-php">function school_slider_enqueue_assets() {
+	wp_enqueue_style(
+		'school-slider-style',
+		plugin_dir_url( __FILE__ ) . 'assets/slider.css',
+		array(),
+		'1.0.0'
+	);
+
+	wp_enqueue_script(
+		'school-slider-script',
+		plugin_dir_url( __FILE__ ) . 'assets/slider.js',
+		array(),
+		'1.0.0',
+		true
+	);
+}
+add_action( 'wp_enqueue_scripts', 'school_slider_enqueue_assets' );
+</code></pre>
+<h3 id="vad-betyder-enqueue"><a class="header" href="#vad-betyder-enqueue">Vad betyder enqueue?</a></h3>
+<p><code>wp_enqueue_style()</code> och <code>wp_enqueue_script()</code> är WordPress sätt att ladda filer på rätt sätt.</p>
+<p>Fördelar:</p>
+<ul>
+<li>undviker dubbel inladdning</li>
+<li>bättre kompatibilitet med andra teman/plugins</li>
+<li>WordPress kan hantera ordning och beroenden</li>
+</ul>
+<p>Skapa <code>assets/slider.css</code>:</p>
+<pre><code class="language-css">.school-slider {
+	position: relative;
+	overflow: hidden;
+	min-height: 380px;
+}
+
+.school-slider__track {
+	position: relative;
+}
+
+.school-slide {
+	display: none;
+	min-height: 380px;
+	background-size: cover;
+	background-position: center;
+}
+
+.school-slide.is-active {
+	display: block;
+}
+
+.school-slide__overlay {
+	background: rgba(0, 0, 0, 0.45);
+	color: #fff;
+	padding: 64px 40px;
+	min-height: 380px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 12px;
+}
+
+.school-slide__title {
+	margin: 0;
+	font-size: 2rem;
+}
+
+.school-slide__subtitle {
+	margin: 0;
+	font-size: 1.1rem;
+}
+
+.school-slide__button {
+	align-self: flex-start;
+	padding: 10px 18px;
+	background: #ffffff;
+	color: #111111;
+	text-decoration: none;
+	border-radius: 6px;
+}
+
+.school-slider__nav {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	background: rgba(0, 0, 0, 0.55);
+	color: #ffffff;
+	border: 0;
+	width: 42px;
+	height: 42px;
+	border-radius: 50%;
+	cursor: pointer;
+	font-size: 1.2rem;
+	z-index: 10;
+}
+
+.school-slider__nav--prev {
+	left: 16px;
+}
+
+.school-slider__nav--next {
+	right: 16px;
+}
+
+.school-slider__dots {
+	position: absolute;
+	left: 50%;
+	bottom: 18px;
+	transform: translateX(-50%);
+	display: flex;
+	gap: 8px;
+	z-index: 10;
+}
+
+.school-slider__dot {
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	border: 0;
+	background: rgba(255, 255, 255, 0.5);
+	cursor: pointer;
+}
+
+.school-slider__dot.is-active {
+	background: #ffffff;
+}
+</code></pre>
+<p>Skapa <code>assets/slider.js</code>:</p>
+<pre><code class="language-javascript">document.addEventListener('DOMContentLoaded', () =&gt; {
+	const sliders = document.querySelectorAll('[data-slider]');
+
+	if (!sliders.length) {
+		return;
+	}
+
+	sliders.forEach((slider) =&gt; {
+		const slides = Array.from(slider.querySelectorAll('.school-slide'));
+		const dots = Array.from(slider.querySelectorAll('.school-slider__dot'));
+		const prevButton = slider.querySelector('[data-slider-prev]');
+		const nextButton = slider.querySelector('[data-slider-next]');
+
+		if (!slides.length) {
+			return;
+		}
+
+		let activeIndex = 0;
+
+		const render = () =&gt; {
+			slides.forEach((slide, index) =&gt; {
+				slide.classList.toggle('is-active', index === activeIndex);
+			});
+
+			dots.forEach((dot, index) =&gt; {
+				dot.classList.toggle('is-active', index === activeIndex);
+			});
+		};
+
+		const goToNext = () =&gt; {
+			activeIndex = (activeIndex + 1) % slides.length;
+			render();
+		};
+
+		const goToPrev = () =&gt; {
+			activeIndex = (activeIndex - 1 + slides.length) % slides.length;
+			render();
+		};
+
+		if (nextButton) {
+			nextButton.addEventListener('click', goToNext);
+		}
+
+		if (prevButton) {
+			prevButton.addEventListener('click', goToPrev);
+		}
+
+		dots.forEach((dot) =&gt; {
+			dot.addEventListener('click', () =&gt; {
+				activeIndex = Number(dot.dataset.slideTo);
+				render();
+			});
+		});
+
+		render();
+
+		setInterval(goToNext, 5000);
+	});
+});
+</code></pre>
+<h3 id="hur-javascript-navigeringen-fungerar"><a class="header" href="#hur-javascript-navigeringen-fungerar">Hur JavaScript-navigeringen fungerar</a></h3>
+<ol>
+<li>Hitta alla sliders på sidan.</li>
+<li>För varje slider:
+<ul>
+<li>hämta slides, dots och pilknappar</li>
+<li>sätt <code>activeIndex = 0</code></li>
+<li>kör <code>render()</code> för att markera aktiv slide/dot</li>
+</ul>
+</li>
+<li>Lägg event listeners:
+<ul>
+<li>nästa-knapp -&gt; <code>goToNext()</code></li>
+<li>föregående-knapp -&gt; <code>goToPrev()</code></li>
+<li>dot -&gt; hoppa till vald index</li>
+</ul>
+</li>
+<li>Starta auto-play med <code>setInterval(goToNext, 5000)</code>.</li>
+</ol>
+<p>Det betyder att användaren kan både klicka manuellt och låta sliden rotera automatiskt.</p>
+<h2 id="5-aktivera-och-testa"><a class="header" href="#5-aktivera-och-testa">5) Aktivera och testa</a></h2>
+<ol>
+<li>Gå till <strong>Tillägg &gt; Installerade tillägg</strong> och aktivera <code>School Content Slider</code>.</li>
+<li>Gå till <strong>Slides</strong> i adminpanelen och skapa några slides.</li>
+<li>Ange titel, underrubrik, knapptext och knapp-länk.</li>
+<li>Sätt en Featured Image (utvald bild) för varje slide.</li>
+<li>Lägg in <code>[school_slider]</code> på en sida.</li>
+<li>Testa navigeringen med pilarna och dots under sliden.</li>
+</ol>
+<h2 id="felsökning-för-nybörjare"><a class="header" href="#felsökning-för-nybörjare">Felsökning för nybörjare</a></h2>
+<h3 id="jag-ser-inte-menyn-slides-i-admin"><a class="header" href="#jag-ser-inte-menyn-slides-i-admin">Jag ser inte menyn Slides i admin</a></h3>
+<ul>
+<li>Kontrollera att pluginet är aktiverat.</li>
+<li>Kontrollera att filnamnet är rätt och att plugin-huvudet finns kvar.</li>
+</ul>
+<h3 id="shortcoden-visar-bara-inga-slides-hittades"><a class="header" href="#shortcoden-visar-bara-inga-slides-hittades">Shortcoden visar bara "Inga slides hittades"</a></h3>
+<ul>
+<li>Kontrollera att du har publicerat slides (inte utkast).</li>
+<li>Kontrollera att post typen heter exakt <code>school_slide</code> i queryn.</li>
+</ul>
+<h3 id="bakgrundsbild-syns-inte"><a class="header" href="#bakgrundsbild-syns-inte">Bakgrundsbild syns inte</a></h3>
+<ul>
+<li>Kontrollera att varje slide har en Featured Image.</li>
+<li>Kontrollera att temat visar featured images korrekt i admin.</li>
+</ul>
+<h3 id="navigering-klickar-men-inget-händer"><a class="header" href="#navigering-klickar-men-inget-händer">Navigering klickar men inget händer</a></h3>
+<ul>
+<li>Kontrollera att <code>slider.js</code> laddas (t.ex. i webbläsarens DevTools).</li>
+<li>Kontrollera att klassnamn i HTML, CSS och JS matchar exakt.</li>
+</ul>
+<h2 id="säkerhet-i-plugin-kod"><a class="header" href="#säkerhet-i-plugin-kod">Säkerhet i plugin-kod</a></h2>
+<p>I exemplet används flera viktiga säkerhetsdelar:</p>
+<ul>
+<li><code>wp_nonce_field()</code> och <code>wp_verify_nonce()</code></li>
+<li><code>current_user_can()</code></li>
+<li><code>sanitize_text_field()</code> och <code>esc_url_raw()</code> vid sparning</li>
+<li><code>esc_html()</code> och <code>esc_url()</code> vid utskrift</li>
+</ul>
+<p>Detta minskar risk för XSS (cross-site scripting) och felaktig indata.</p>
+<h2 id="sammanfattning"><a class="header" href="#sammanfattning">Sammanfattning</a></h2>
+<p>Du har byggt ett komplett plugin med egen datamodell (post type), egna fält, shortcode, styling och JavaScript-navigering. Det är en bra mall för många andra plugin-idéer, till exempel testimonials, teamkort eller kundcase.</p>
+<h2 id="reflektionsfrågor"><a class="header" href="#reflektionsfrågor">Reflektionsfrågor</a></h2>
+<ol>
+<li>Varför är det bättre att lägga den här funktionen i ett plugin istället för i temat?</li>
+<li>Hur påverkas sliden om en post saknar Featured Image?</li>
+<li>Hur skulle du lägga till swipe-stöd för mobil (touch events)?</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../kapitel_6/wordpress-plugins.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../kapitel_6/wordpress-shortcodes.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../kapitel_6/wordpress-plugins.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../kapitel_6/wordpress-shortcodes.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>
