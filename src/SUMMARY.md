@@ -152,6 +152,9 @@
 
 # SCSS
 - [Introduktion till SCSS](./SCSS/index.md)
+  - [Variabler och Maps](./SCSS/variabler-maps.md)
+  - [7-1 Struktur med importer](./SCSS/sju-ett-struktur.md)
+  - [Mixins](./SCSS/mixins.md)
 
 <!--
 # Design

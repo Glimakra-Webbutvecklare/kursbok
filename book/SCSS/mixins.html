@@ -1,0 +1,423 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Mixins - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="mixins-i-scss"><a class="header" href="#mixins-i-scss">Mixins i SCSS</a></h1>
+<p>Precis som variabler låter oss återanvända <em>värden</em>, låter <strong>mixins</strong> oss återanvända hela <em>CSS-regler</em>. Om du märker att du skriver samma uppsättning CSS-deklarationer om och om igen – till exempel för flexbox-centrering eller mediafrågor – är det ett tecken på att ett mixin kan förenkla koden.</p>
+<h2 id="vad-är-ett-mixin"><a class="header" href="#vad-är-ett-mixin">Vad är ett Mixin?</a></h2>
+<p>Ett <strong>mixin</strong> är ett namngivet block av CSS-regler som kan inkluderas var som helst i din SCSS-kod. Tänk på det som en funktion som istället för att returnera ett värde "klistrar in" ett kodblock.</p>
+<pre><code class="language-scss">@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+</code></pre>
+<p>Inkludera mixinet med <code>@include</code>:</p>
+<pre><code class="language-scss">.hero {
+  @include flex-center;
+  height: 100vh;
+}
+
+.modal {
+  @include flex-center;
+}
+</code></pre>
+<p>Det kompileras till:</p>
+<pre><code class="language-css">.hero {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+</code></pre>
+<h2 id="mixins-med-parametrar"><a class="header" href="#mixins-med-parametrar">Mixins med parametrar</a></h2>
+<p>Mixins blir riktigt kraftfulla när de tar <strong>parametrar</strong> (parameters) – argument som styr vad mixinet genererar. Parametrar deklareras med <code>$</code>-tecken, precis som vanliga variabler.</p>
+<pre><code class="language-scss">@mixin flex($justify-content: center, $align-items: center) {
+  display: flex;
+  justify-content: $justify-content;
+  align-items: $align-items;
+}
+
+.header {
+  @include flex(space-between, center);
+}
+
+.card-grid {
+  @include flex(flex-start, stretch);
+}
+
+.hero {
+  @include flex; // Använder standardvärden: center, center
+}
+</code></pre>
+<p>Värdet efter <code>:</code> är ett <strong>standardvärde</strong> (default value). Om du inte skickar in ett argument används standardvärdet automatiskt.</p>
+<h3 id="namngivna-argument"><a class="header" href="#namngivna-argument">Namngivna argument</a></h3>
+<p>Du kan skicka in argument med namn för att göra anrop tydligare och kunna hoppa över argument du inte vill ändra:</p>
+<pre><code class="language-scss">.footer {
+  @include flex($justify-content: space-between);
+  // $align-items får sitt standardvärde: center
+}
+</code></pre>
+<h2 id="praktiska-exempel"><a class="header" href="#praktiska-exempel">Praktiska exempel</a></h2>
+<h3 id="breakpoint-mixin"><a class="header" href="#breakpoint-mixin">Breakpoint-mixin</a></h3>
+<p>Mediafrågor (media queries) är ett vanligt tillfälle för mixins. Istället för att skriva <code>@media (min-width: 768px)</code> varje gång skapar vi ett mixin:</p>
+<pre><code class="language-scss">$breakpoints: (
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+);
+
+@use 'sass:map';
+
+@mixin breakpoint($size) {
+  $value: map.get($breakpoints, $size);
+  @media (min-width: $value) {
+    @content;
+  }
+}
+</code></pre>
+<p><code>@content</code> är en platshållare (placeholder) för allt du skriver inuti <code>@include</code>-blocket – ungefär som <code>children</code> i React. Användningen ser ut så här:</p>
+<pre><code class="language-scss">.container {
+  padding: 1rem;
+
+  @include breakpoint(md) {
+    padding: 2rem;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+}
+</code></pre>
+<p>Det kompileras till:</p>
+<pre><code class="language-css">.container {
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: 2rem;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+}
+</code></pre>
+<h3 id="knappstilar-med-tema"><a class="header" href="#knappstilar-med-tema">Knappstilar med tema</a></h3>
+<pre><code class="language-scss">@mixin button-variant($bg-color, $text-color: white) {
+  background-color: $bg-color;
+  color: $text-color;
+  border: none;
+  padding: 0.5rem 1.25rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+
+  &amp;:hover {
+    opacity: 0.85;
+  }
+
+  &amp;:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.btn-primary {
+  @include button-variant(#007aff);
+}
+
+.btn-danger {
+  @include button-variant(#f44336);
+}
+
+.btn-light {
+  @include button-variant(#f8f9fa, #333);
+}
+</code></pre>
+<h3 id="trunkering-av-text"><a class="header" href="#trunkering-av-text">Trunkering av text</a></h3>
+<pre><code class="language-scss">@mixin truncate($max-width: 100%) {
+  max-width: $max-width;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-title {
+  @include truncate(200px);
+}
+
+.nav-link {
+  @include truncate;
+}
+</code></pre>
+<h2 id="mixin-vs-extend"><a class="header" href="#mixin-vs-extend">Mixin vs <code>@extend</code></a></h2>
+<p>SCSS erbjuder också <code>@extend</code> som ett sätt att dela stilar mellan selektorer. Det är lätt att blanda ihop dessa – här är skillnaden:</p>
+<div class="table-wrapper"><table><thead><tr><th></th><th><code>@mixin</code> + <code>@include</code></th><th><code>@extend</code></th></tr></thead><tbody>
+<tr><td>Kan ta parametrar</td><td>Ja</td><td>Nej</td></tr>
+<tr><td>Kopierar CSS-regler</td><td>Ja (duplicerar output)</td><td>Nej (grupperar selektorer)</td></tr>
+<tr><td>Flexibel</td><td>Hög</td><td>Låg</td></tr>
+<tr><td>Rekommenderas</td><td>Ja, i de flesta fall</td><td>Sällan</td></tr>
+</tbody></table>
+</div>
+<pre><code class="language-scss">// Med @extend – selektorer grupperas
+%button-base {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+}
+
+.btn-primary {
+  @extend %button-base;
+  background: blue;
+}
+
+.btn-danger {
+  @extend %button-base;
+  background: red;
+}
+
+// Kompileras till:
+// .btn-primary, .btn-danger { padding: 0.5rem 1rem; border-radius: 4px; }
+// .btn-primary { background: blue; }
+// .btn-danger  { background: red; }
+</code></pre>
+<p><code>@extend</code> kan orsaka oväntade sidoeffekter i komplexa projekt. Som tumregel: <strong>använd mixins</strong>.</p>
+<h2 id="mixin-vs-funktion"><a class="header" href="#mixin-vs-funktion">Mixin vs funktion</a></h2>
+<p>Mixins och SCSS-funktioner kan verka lika – båda tar parametrar och är återanvändbara. Skillnaden är:</p>
+<ul>
+<li>En <strong>funktion</strong> <em>returnerar ett värde</em>: <code>font-size: rem(24)</code></li>
+<li>Ett <strong>mixin</strong> <em>genererar CSS-regler</em>: <code>@include flex-center</code></li>
+</ul>
+<pre><code class="language-scss">// Funktion – returnerar ett värde
+@function rem($px) {
+  @return $px / 16 * 1rem;
+}
+
+.title {
+  font-size: rem(24); // 1.5rem
+}
+
+// Mixin – genererar regler
+@mixin visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+.screen-reader-text {
+  @include visually-hidden;
+}
+</code></pre>
+<h2 id="sammanfattning"><a class="header" href="#sammanfattning">Sammanfattning</a></h2>
+<ul>
+<li>Mixins definieras med <code>@mixin namn { }</code> och inkluderas med <code>@include namn</code>.</li>
+<li>Parametrar med standardvärden gör mixins flexibla och återanvändbara.</li>
+<li><code>@content</code> gör att mixins kan ta in ett block – perfekt för mediafrågor och liknande mönster.</li>
+<li>Mixins är oftast att föredra framför <code>@extend</code> tack vare sin flexibilitet.</li>
+<li>Använd mixins för regler, funktioner för beräknade värden.</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../SCSS/sju-ett-struktur.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../SCSS/sju-ett-struktur.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>

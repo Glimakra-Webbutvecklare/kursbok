@@ -40693,6 +40693,552 @@ Skapa en knappkomponent med:</p>
 </code></pre>
 <p>✅ <strong>Tips:</strong><br />
 Den här sammanfattningen fungerar bra som referens i ett GitHub-projekt, undervisningsmaterial eller som snabbguide inför lektioner.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="variabler-och-maps-i-scss"><a class="header" href="#variabler-och-maps-i-scss">Variabler och Maps i SCSS</a></h1>
+<p>En av de mest grundläggande anledningarna till att använda SCSS är möjligheten att definiera <strong>variabler</strong> (variables). I vanlig CSS upprepar man ofta samma värden på dussintals ställen – samma blåa färg, samma typsnittsstorlek, samma avstånd. Ska du sedan byta en enda färg kan det innebära hundratals manuella ändringar.</p>
+<p>SCSS löser detta med variabler: definiera ett värde en gång, använd det hur många gånger som helst.</p>
+<h2 id="variabler-i-scss"><a class="header" href="#variabler-i-scss">Variabler i SCSS</a></h2>
+<p>En SCSS-variabel deklareras med ett <code>$</code>-tecken följt av ett namn och ett värde.</p>
+<pre><code class="language-scss">$primary-color: #007aff;
+$font-size-base: 1rem;
+$spacing-md: 1.5rem;
+</code></pre>
+<p>Värdena kan sedan användas var som helst i din SCSS-kod:</p>
+<pre><code class="language-scss">$primary-color: #007aff;
+$spacing-md: 1.5rem;
+
+.button {
+  background-color: $primary-color;
+  padding: $spacing-md;
+}
+
+a {
+  color: $primary-color;
+}
+</code></pre>
+<p>När SCSS kompileras till CSS ersätts alla variabelreferenser med deras konkreta värden. Om du senare behöver byta <code>$primary-color</code> räcker det att ändra på ett enda ställe.</p>
+<h3 id="skillnaden-mot-css-custom-properties"><a class="header" href="#skillnaden-mot-css-custom-properties">Skillnaden mot CSS custom properties</a></h3>
+<p>CSS har sina egna variabler, så kallade <strong>custom properties</strong> (anpassade egenskaper):</p>
+<pre><code class="language-css">:root {
+  --primary-color: #007aff;
+}
+
+.button {
+  background-color: var(--primary-color);
+}
+</code></pre>
+<p>SCSS-variabler och CSS custom properties löser liknande problem men på olika sätt:</p>
+<div class="table-wrapper"><table><thead><tr><th></th><th>SCSS-variabler</th><th>CSS custom properties</th></tr></thead><tbody>
+<tr><td>Syntax</td><td><code>$variabel: värde</code></td><td><code>--variabel: värde</code></td></tr>
+<tr><td>Tillgänglig i webbläsaren</td><td>Nej (kompileras bort)</td><td>Ja (lever i CSS)</td></tr>
+<tr><td>Kan ändras med JavaScript</td><td>Nej</td><td>Ja</td></tr>
+<tr><td>Stöd för logik och beräkningar</td><td>Ja</td><td>Begränsat</td></tr>
+</tbody></table>
+</div>
+<p>I moderna projekt kombineras ofta SCSS-variabler (för logik under kompilering) med CSS custom properties (för dynamik i webbläsaren).</p>
+<h3 id="scope-räckvidd"><a class="header" href="#scope-räckvidd">Scope (räckvidd)</a></h3>
+<p>SCSS-variabler följer en <strong>scope</strong> (räckvidd) liknande variabler i andra programmeringsspråk. En variabel deklarerad utanför alla selektorer är <strong>global</strong> och kan användas överallt. En variabel deklarerad inuti en selektor är <strong>lokal</strong> och finns bara där.</p>
+<pre><code class="language-scss">$global-color: #007aff; // Global variabel
+
+.card {
+  $local-spacing: 2rem; // Lokal variabel – finns bara i .card
+
+  padding: $local-spacing;
+  color: $global-color; // Funkar – global räckvidd
+}
+
+.button {
+  color: $global-color;    // Funkar
+  // padding: $local-spacing; // Fel! $local-spacing finns inte här
+}
+</code></pre>
+<h2 id="maps-i-scss"><a class="header" href="#maps-i-scss">Maps i SCSS</a></h2>
+<p>En <strong>map</strong> (karta) är en SCSS-datastruktur som lagrar par av nycklar och värden – ungefär som ett objekt i JavaScript eller en associativ array i PHP. Maps är perfekta för att gruppera relaterade värden, till exempel alla projektets färger eller spacing-steg.</p>
+<h3 id="syntax"><a class="header" href="#syntax">Syntax</a></h3>
+<p>En map deklareras med parenteser och komma-separerade nyckel-värde-par:</p>
+<pre><code class="language-scss">$colors: (
+  primary: #007aff,
+  secondary: #ff4081,
+  success: #4caf50,
+  danger: #f44336,
+);
+</code></pre>
+<h3 id="hämta-ett-värde-ur-en-map"><a class="header" href="#hämta-ett-värde-ur-en-map">Hämta ett värde ur en map</a></h3>
+<p>För att hämta ett enskilt värde ur en map används <code>map.get()</code> från SCSS inbyggda <code>sass:map</code>-modul:</p>
+<pre><code class="language-scss">@use 'sass:map';
+
+$colors: (
+  primary: #007aff,
+  secondary: #ff4081,
+);
+
+.button-primary {
+  background-color: map.get($colors, primary);
+}
+
+.button-secondary {
+  background-color: map.get($colors, secondary);
+}
+</code></pre>
+<h3 id="iterera-med-each"><a class="header" href="#iterera-med-each">Iterera med <code>@each</code></a></h3>
+<p>Den riktiga kraften hos maps framträder när man kombinerar dem med <code>@each</code>-loopar. Istället för att skriva liknande CSS-regler för hand för varje variant kan SCSS generera dem automatiskt:</p>
+<pre><code class="language-scss">@use 'sass:map';
+
+$colors: (
+  primary: #007aff,
+  secondary: #ff4081,
+  success: #4caf50,
+  danger: #f44336,
+);
+
+@each $name, $color in $colors {
+  .btn-#{$name} {
+    background-color: $color;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+  }
+}
+</code></pre>
+<p><code>#{}</code> kallas för <strong>interpolation</strong> (interpolering) och används för att sätta in variabelns värde direkt i ett klassnamn eller en selektor. Koden ovan genererar fyra CSS-klasser: <code>.btn-primary</code>, <code>.btn-secondary</code>, <code>.btn-success</code> och <code>.btn-danger</code> – utan att du behöver skriva varje regel för hand.</p>
+<h3 id="praktiskt-exempel-ett-designsystem-med-maps"><a class="header" href="#praktiskt-exempel-ett-designsystem-med-maps">Praktiskt exempel: ett designsystem med maps</a></h3>
+<p>Maps lämpar sig väl för att bygga ett konsekvent <strong>design system</strong> (designsystem). Här är ett exempel med en spacing-skala:</p>
+<pre><code class="language-scss">@use 'sass:map';
+
+$spacing: (
+  xs: 0.25rem,
+  sm: 0.5rem,
+  md: 1rem,
+  lg: 1.5rem,
+  xl: 2rem,
+  xxl: 3rem,
+);
+
+$font-sizes: (
+  sm: 0.875rem,
+  md: 1rem,
+  lg: 1.25rem,
+  xl: 1.5rem,
+  xxl: 2rem,
+);
+
+// Generera hjälpklasser för margin-bottom
+@each $name, $value in $spacing {
+  .mb-#{$name} {
+    margin-bottom: $value;
+  }
+}
+
+// Generera hjälpklasser för font-size
+@each $name, $value in $font-sizes {
+  .text-#{$name} {
+    font-size: $value;
+  }
+}
+</code></pre>
+<p>Resultatet blir ett komplett bibliotek av hjälpklasser – samma princip som ramverk som Bootstrap och Tailwind CSS bygger på.</p>
+<h2 id="sammanfattning-60"><a class="header" href="#sammanfattning-60">Sammanfattning</a></h2>
+<ul>
+<li>SCSS-variabler deklareras med <code>$namn: värde</code> och gör koden lätt att underhålla.</li>
+<li>Variabler har scope: globala variabler kan användas överallt, lokala bara inom sin selektor.</li>
+<li>Maps är nyckel-värde-strukturer som grupperar relaterade värden.</li>
+<li><code>map.get($map, nyckel)</code> hämtar ett enskilt värde.</li>
+<li><code>@each $nyckel, $värde in $map</code> loopar igenom alla par i en map och kan automatgenerera CSS-regler.</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="7-1-struktur-med-importer"><a class="header" href="#7-1-struktur-med-importer">7-1 Struktur med importer</a></h1>
+<p>När ett projekt växer räcker det inte längre att ha all SCSS i en enda fil. Hundratals rader CSS för knappar, navigering, formulär, typografi och färger sammanblandade i samma dokument blir snabbt en mardröm att underhålla.</p>
+<p>Lösningen är att dela upp koden i <strong>partiala filer</strong> (partials) och samla dem med en <strong>importstruktur</strong>. Det populäraste sättet att organisera detta kallas <strong>7-1-mönstret</strong> (the 7-1 pattern) och används som standard i tunga frontend-projekt.</p>
+<h2 id="partiala-filer-partials"><a class="header" href="#partiala-filer-partials">Partiala filer (Partials)</a></h2>
+<p>En <strong>partial</strong> är en SCSS-fil vars namn börjar med ett understreck, till exempel <code>_variables.scss</code> eller <code>_buttons.scss</code>. Understreket signalerar till SCSS-kompilatorn att filen inte ska kompileras till en egen CSS-fil – den är avsedd att importeras i en annan fil.</p>
+<pre><code class="language-text">_variables.scss   ← partial, kompileras inte ensam
+_buttons.scss     ← partial, kompileras inte ensam
+main.scss         ← huvudfil, kompileras till main.css
+</code></pre>
+<h2 id="importera-med-use"><a class="header" href="#importera-med-use">Importera med <code>@use</code></a></h2>
+<p>SCSS erbjuder två sätt att importera filer: <code>@import</code> och <code>@use</code>. <code>@import</code> är det äldre sättet och är numera <strong>deprecated</strong> (inte längre rekommenderat) och kommer att fasas ut. Den moderna lösningen är <code>@use</code>.</p>
+<pre><code class="language-scss">// main.scss
+@use 'abstracts/variables';
+@use 'abstracts/mixins';
+@use 'base/reset';
+@use 'base/typography';
+@use 'components/buttons';
+@use 'layout/header';
+</code></pre>
+<p>En viktig skillnad mot <code>@import</code> är att <code>@use</code> skapar ett <strong>namespace</strong> (namnrymd). Om du importerar <code>_variables.scss</code> med <code>@use</code> kommer dess variabler att vara tillgängliga som <code>variables.$primary-color</code> istället för direkt som <code>$primary-color</code>.</p>
+<pre><code class="language-scss">// abstracts/_variables.scss
+$primary-color: #007aff;
+$font-size-base: 1rem;
+</code></pre>
+<pre><code class="language-scss">// components/_buttons.scss
+@use '../abstracts/variables';
+
+.button {
+  background-color: variables.$primary-color;
+  font-size: variables.$font-size-base;
+}
+</code></pre>
+<p>Du kan förkorta namespace med <code>as</code>:</p>
+<pre><code class="language-scss">@use '../abstracts/variables' as v;
+
+.button {
+  background-color: v.$primary-color;
+}
+</code></pre>
+<p>Eller ta bort namespace helt med <code>as *</code> (används sparsamt, gör koden svårare att följa):</p>
+<pre><code class="language-scss">@use '../abstracts/variables' as *;
+
+.button {
+  background-color: $primary-color; // Fungerar, men oklart varifrån
+}
+</code></pre>
+<h2 id="7-1-mönstret"><a class="header" href="#7-1-mönstret">7-1-mönstret</a></h2>
+<p>7-1-mönstret innebär <strong>7 mappar</strong> med partiala filer och <strong>1 huvudfil</strong> (<code>main.scss</code>) som importerar allt.</p>
+<pre><code class="language-text">scss/
+|
+├── abstracts/
+│   ├── _variables.scss    # Variabler (färger, spacing, typsnitt)
+│   ├── _functions.scss    # SCSS-funktioner
+│   └── _mixins.scss       # Mixins
+|
+├── base/
+│   ├── _reset.scss        # Reset / normalize
+│   └── _typography.scss   # Typografiregler
+|
+├── components/
+│   ├── _buttons.scss      # Knappar
+│   ├── _cards.scss        # Kort
+│   └── _forms.scss        # Formulär
+|
+├── layout/
+│   ├── _header.scss       # Header
+│   ├── _footer.scss       # Footer
+│   ├── _navigation.scss   # Navigation
+│   └── _grid.scss         # Grid
+|
+├── pages/
+│   ├── _home.scss         # Startsidan
+│   └── _contact.scss      # Kontaktsidan
+|
+├── themes/
+│   ├── _light.scss        # Ljust tema
+│   └── _dark.scss         # Mörkt tema
+|
+├── vendors/
+│   └── _normalize.scss    # Externa bibliotek
+|
+└── main.scss              # Importerar allt
+</code></pre>
+<h3 id="de-7-mapparna"><a class="header" href="#de-7-mapparna">De 7 mapparna</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Mapp</th><th>Innehåll</th></tr></thead><tbody>
+<tr><td><code>abstracts/</code></td><td>Variabler, mixins och funktioner – inget som genererar CSS direkt</td></tr>
+<tr><td><code>base/</code></td><td>Grundregler: reset, typsnitt, generella HTML-element</td></tr>
+<tr><td><code>components/</code></td><td>Återanvändbara UI-komponenter: knappar, kort, formulär</td></tr>
+<tr><td><code>layout/</code></td><td>Strukturella delar av sidan: header, footer, grid</td></tr>
+<tr><td><code>pages/</code></td><td>Sidspecifika stilar som inte passar i components</td></tr>
+<tr><td><code>themes/</code></td><td>Stilar för olika teman, t.ex. mörkt läge</td></tr>
+<tr><td><code>vendors/</code></td><td>Tredjepartsstilar som importeras från externa bibliotek</td></tr>
+</tbody></table>
+</div>
+<h3 id="huvudfilen-mainscss"><a class="header" href="#huvudfilen-mainscss">Huvudfilen: <code>main.scss</code></a></h3>
+<p>Huvudfilen importerar partials i rätt ordning. Ordningen är viktig – <code>abstracts/</code> måste komma före allt annat eftersom de andra filerna är beroende av variablerna och mixins som definieras där.</p>
+<pre><code class="language-scss">// main.scss
+
+// 1. Abstracts – inga CSS-regler, bara definitioner
+@use 'abstracts/variables';
+@use 'abstracts/functions';
+@use 'abstracts/mixins';
+
+// 2. Vendors – externa stilar
+@use 'vendors/normalize';
+
+// 3. Base – grundregler
+@use 'base/reset';
+@use 'base/typography';
+
+// 4. Layout – sidans struktur
+@use 'layout/grid';
+@use 'layout/header';
+@use 'layout/footer';
+@use 'layout/navigation';
+
+// 5. Components – återanvändbara delar
+@use 'components/buttons';
+@use 'components/cards';
+@use 'components/forms';
+
+// 6. Pages – sidspecifika stilar
+@use 'pages/home';
+@use 'pages/contact';
+
+// 7. Themes – teman
+@use 'themes/dark';
+</code></pre>
+<h2 id="ett-praktiskt-miniexempel"><a class="header" href="#ett-praktiskt-miniexempel">Ett praktiskt miniexempel</a></h2>
+<p>Så här kan ett litet projekt se ut med 7-1-strukturen:</p>
+<pre><code class="language-scss">// abstracts/_variables.scss
+$primary-color: #007aff;
+$spacing-md: 1rem;
+$font-size-base: 1rem;
+</code></pre>
+<pre><code class="language-scss">// base/_typography.scss
+@use '../abstracts/variables' as v;
+
+body {
+  font-size: v.$font-size-base;
+  font-family: 'Inter', sans-serif;
+  line-height: 1.6;
+}
+</code></pre>
+<pre><code class="language-scss">// components/_buttons.scss
+@use '../abstracts/variables' as v;
+
+.button {
+  background-color: v.$primary-color;
+  color: white;
+  padding: v.$spacing-md 2rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+
+  &amp;:hover {
+    opacity: 0.9;
+  }
+}
+</code></pre>
+<pre><code class="language-scss">// main.scss
+@use 'abstracts/variables';
+@use 'base/typography';
+@use 'components/buttons';
+</code></pre>
+<p>SCSS-kompilatorn slår ihop alla dessa filer till ett enda CSS-dokument – men under utvecklingen har du en tydlig och välorganiserad källkod.</p>
+<h2 id="varför-spelar-strukturen-roll"><a class="header" href="#varför-spelar-strukturen-roll">Varför spelar strukturen roll?</a></h2>
+<p>I ett verkligt projekt jobbar ofta flera personer med samma kodbas. En förutsägbar mappstruktur gör det enkelt att svara på frågor som:</p>
+<ul>
+<li><em>"Var lägger jag stilar för navigeringen?"</em> → <code>layout/_navigation.scss</code></li>
+<li><em>"Var lägger jag knappens stil?"</em> → <code>components/_buttons.scss</code></li>
+<li><em>"Var definierar jag projektets primärfärg?"</em> → <code>abstracts/_variables.scss</code></li>
+</ul>
+<p>7-1-mönstret är ett <strong>konvent</strong> (convention), inte en absolut regel. Smaller projekt behöver kanske bara <code>abstracts/</code>, <code>base/</code> och <code>components/</code>. Det viktiga är att strukturen är konsekvent och logisk för hela teamet.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="mixins-i-scss"><a class="header" href="#mixins-i-scss">Mixins i SCSS</a></h1>
+<p>Precis som variabler låter oss återanvända <em>värden</em>, låter <strong>mixins</strong> oss återanvända hela <em>CSS-regler</em>. Om du märker att du skriver samma uppsättning CSS-deklarationer om och om igen – till exempel för flexbox-centrering eller mediafrågor – är det ett tecken på att ett mixin kan förenkla koden.</p>
+<h2 id="vad-är-ett-mixin"><a class="header" href="#vad-är-ett-mixin">Vad är ett Mixin?</a></h2>
+<p>Ett <strong>mixin</strong> är ett namngivet block av CSS-regler som kan inkluderas var som helst i din SCSS-kod. Tänk på det som en funktion som istället för att returnera ett värde "klistrar in" ett kodblock.</p>
+<pre><code class="language-scss">@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+</code></pre>
+<p>Inkludera mixinet med <code>@include</code>:</p>
+<pre><code class="language-scss">.hero {
+  @include flex-center;
+  height: 100vh;
+}
+
+.modal {
+  @include flex-center;
+}
+</code></pre>
+<p>Det kompileras till:</p>
+<pre><code class="language-css">.hero {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+</code></pre>
+<h2 id="mixins-med-parametrar"><a class="header" href="#mixins-med-parametrar">Mixins med parametrar</a></h2>
+<p>Mixins blir riktigt kraftfulla när de tar <strong>parametrar</strong> (parameters) – argument som styr vad mixinet genererar. Parametrar deklareras med <code>$</code>-tecken, precis som vanliga variabler.</p>
+<pre><code class="language-scss">@mixin flex($justify-content: center, $align-items: center) {
+  display: flex;
+  justify-content: $justify-content;
+  align-items: $align-items;
+}
+
+.header {
+  @include flex(space-between, center);
+}
+
+.card-grid {
+  @include flex(flex-start, stretch);
+}
+
+.hero {
+  @include flex; // Använder standardvärden: center, center
+}
+</code></pre>
+<p>Värdet efter <code>:</code> är ett <strong>standardvärde</strong> (default value). Om du inte skickar in ett argument används standardvärdet automatiskt.</p>
+<h3 id="namngivna-argument"><a class="header" href="#namngivna-argument">Namngivna argument</a></h3>
+<p>Du kan skicka in argument med namn för att göra anrop tydligare och kunna hoppa över argument du inte vill ändra:</p>
+<pre><code class="language-scss">.footer {
+  @include flex($justify-content: space-between);
+  // $align-items får sitt standardvärde: center
+}
+</code></pre>
+<h2 id="praktiska-exempel-2"><a class="header" href="#praktiska-exempel-2">Praktiska exempel</a></h2>
+<h3 id="breakpoint-mixin"><a class="header" href="#breakpoint-mixin">Breakpoint-mixin</a></h3>
+<p>Mediafrågor (media queries) är ett vanligt tillfälle för mixins. Istället för att skriva <code>@media (min-width: 768px)</code> varje gång skapar vi ett mixin:</p>
+<pre><code class="language-scss">$breakpoints: (
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+);
+
+@use 'sass:map';
+
+@mixin breakpoint($size) {
+  $value: map.get($breakpoints, $size);
+  @media (min-width: $value) {
+    @content;
+  }
+}
+</code></pre>
+<p><code>@content</code> är en platshållare (placeholder) för allt du skriver inuti <code>@include</code>-blocket – ungefär som <code>children</code> i React. Användningen ser ut så här:</p>
+<pre><code class="language-scss">.container {
+  padding: 1rem;
+
+  @include breakpoint(md) {
+    padding: 2rem;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+}
+</code></pre>
+<p>Det kompileras till:</p>
+<pre><code class="language-css">.container {
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: 2rem;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+}
+</code></pre>
+<h3 id="knappstilar-med-tema"><a class="header" href="#knappstilar-med-tema">Knappstilar med tema</a></h3>
+<pre><code class="language-scss">@mixin button-variant($bg-color, $text-color: white) {
+  background-color: $bg-color;
+  color: $text-color;
+  border: none;
+  padding: 0.5rem 1.25rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+
+  &amp;:hover {
+    opacity: 0.85;
+  }
+
+  &amp;:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.btn-primary {
+  @include button-variant(#007aff);
+}
+
+.btn-danger {
+  @include button-variant(#f44336);
+}
+
+.btn-light {
+  @include button-variant(#f8f9fa, #333);
+}
+</code></pre>
+<h3 id="trunkering-av-text"><a class="header" href="#trunkering-av-text">Trunkering av text</a></h3>
+<pre><code class="language-scss">@mixin truncate($max-width: 100%) {
+  max-width: $max-width;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-title {
+  @include truncate(200px);
+}
+
+.nav-link {
+  @include truncate;
+}
+</code></pre>
+<h2 id="mixin-vs-extend"><a class="header" href="#mixin-vs-extend">Mixin vs <code>@extend</code></a></h2>
+<p>SCSS erbjuder också <code>@extend</code> som ett sätt att dela stilar mellan selektorer. Det är lätt att blanda ihop dessa – här är skillnaden:</p>
+<div class="table-wrapper"><table><thead><tr><th></th><th><code>@mixin</code> + <code>@include</code></th><th><code>@extend</code></th></tr></thead><tbody>
+<tr><td>Kan ta parametrar</td><td>Ja</td><td>Nej</td></tr>
+<tr><td>Kopierar CSS-regler</td><td>Ja (duplicerar output)</td><td>Nej (grupperar selektorer)</td></tr>
+<tr><td>Flexibel</td><td>Hög</td><td>Låg</td></tr>
+<tr><td>Rekommenderas</td><td>Ja, i de flesta fall</td><td>Sällan</td></tr>
+</tbody></table>
+</div>
+<pre><code class="language-scss">// Med @extend – selektorer grupperas
+%button-base {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+}
+
+.btn-primary {
+  @extend %button-base;
+  background: blue;
+}
+
+.btn-danger {
+  @extend %button-base;
+  background: red;
+}
+
+// Kompileras till:
+// .btn-primary, .btn-danger { padding: 0.5rem 1rem; border-radius: 4px; }
+// .btn-primary { background: blue; }
+// .btn-danger  { background: red; }
+</code></pre>
+<p><code>@extend</code> kan orsaka oväntade sidoeffekter i komplexa projekt. Som tumregel: <strong>använd mixins</strong>.</p>
+<h2 id="mixin-vs-funktion"><a class="header" href="#mixin-vs-funktion">Mixin vs funktion</a></h2>
+<p>Mixins och SCSS-funktioner kan verka lika – båda tar parametrar och är återanvändbara. Skillnaden är:</p>
+<ul>
+<li>En <strong>funktion</strong> <em>returnerar ett värde</em>: <code>font-size: rem(24)</code></li>
+<li>Ett <strong>mixin</strong> <em>genererar CSS-regler</em>: <code>@include flex-center</code></li>
+</ul>
+<pre><code class="language-scss">// Funktion – returnerar ett värde
+@function rem($px) {
+  @return $px / 16 * 1rem;
+}
+
+.title {
+  font-size: rem(24); // 1.5rem
+}
+
+// Mixin – genererar regler
+@mixin visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+.screen-reader-text {
+  @include visually-hidden;
+}
+</code></pre>
+<h2 id="sammanfattning-61"><a class="header" href="#sammanfattning-61">Sammanfattning</a></h2>
+<ul>
+<li>Mixins definieras med <code>@mixin namn { }</code> och inkluderas med <code>@include namn</code>.</li>
+<li>Parametrar med standardvärden gör mixins flexibla och återanvändbara.</li>
+<li><code>@content</code> gör att mixins kan ta in ett block – perfekt för mediafrågor och liknande mönster.</li>
+<li>Mixins är oftast att föredra framför <code>@extend</code> tack vare sin flexibilitet.</li>
+<li>Använd mixins för regler, funktioner för beräknade värden.</li>
+</ul>
 
                     </main>
 
