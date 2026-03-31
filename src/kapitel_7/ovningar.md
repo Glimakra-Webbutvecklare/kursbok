@@ -92,9 +92,41 @@ echo "Produkten $productName kostar $productPrice kr.";
 
 ---
 
-### Övning 5: if/else
+### Övning 5: Aritmetiska Operatorer
 
-Skriv en `if/else`-sats som kollar om variabeln `$productPrice` (från övning 4) är större än 500. Om den är det, skriv ut "Dyr produkt.", annars skriv ut "Billig produkt.".
+Skapa variabler `$a = 17` och `$b = 5`. Beräkna och skriv ut: (1) summan, (2) skillnaden, (3) produkten, (4) kvoten, (5) resten vid heltalsdivision (modulo), och (6) `$a` upphöjt till 2 (exponent).
+
+<details>
+<summary>Lösningsförslag</summary>
+
+```php
+<?php
+$a = 17;
+$b = 5;
+
+echo "Summa: " . ($a + $b) . "\n";           // 22
+echo "Skillnad: " . ($a - $b) . "\n";        // 12
+echo "Produkt: " . ($a * $b) . "\n";         // 85
+echo "Kvot: " . ($a / $b) . "\n";            // 3.4
+echo "Rest (modulo): " . ($a % $b) . "\n";   // 2
+echo "Upphöjt: " . ($a ** 2) . "\n";         // 289
+?>
+```
+
+**Förklaring:**
+- `+` (addition), `-` (subtraktion), `*` (multiplikation) fungerar som förväntat.
+- `/` (division) returnerar alltid ett flyttal i PHP, även om resultatet är jämnt.
+- `%` (modulo) returnerar resten vid heltalsdivision. 17 ÷ 5 = 3 med rest 2.
+- `**` (exponent) beräknar potenser. `$a ** 2` är samma som `$a * $a`.
+
+Modulo är särskilt användbart för att kontrollera jämnhet (`$n % 2 === 0`), cykliska mönster (dagar i veckan) eller för att fördela data i grupper.
+</details>
+
+---
+
+### Övning 6: if/else
+
+Skriv en `if/else`-sats som kollar om variabeln `$productPrice` (från övning 5) är större än 500. Om den är det, skriv ut "Dyr produkt.", annars skriv ut "Billig produkt.".
 
 <details>
 <summary>Lösningsförslag</summary>
@@ -115,7 +147,36 @@ if ($productPrice > 500) {
 
 ---
 
-### Övning 6: Funktion med Type Hinting
+### Övning 7: match med true
+
+Använd `match(true)` för att kategorisera en variabel `$score = 78` enligt följande regler: 90+ ger "Utmärkt", 75-89 ger "Bra", 60-74 ger "Godkänd", under 60 ger "Underkänd". Skriv ut resultatet.
+
+<details>
+<summary>Lösningsförslag</summary>
+
+```php
+<?php
+$score = 78;
+
+$category = match (true) {
+    $score >= 90 => "Utmärkt",
+    $score >= 75 => "Bra",
+    $score >= 60 => "Godkänd",
+    default => "Underkänd",
+};
+
+echo "Resultat: " . $category; // Output: Resultat: Bra
+?>
+```
+
+**Förklaring:** `match(true)` är ett kraftfullt mönster för villkorsstyrd logik. Istället för att matcha ett specifikt värde, matchar vi mot `true`. Varje arm utvärderas i ordning – den första som returnerar `true` vinner. Detta ger samma beteende som en `if/elseif/else`-kedja men med `match`-syntaxens fördelar: strikt jämförelse, inga `break`, och att det är ett uttryck som returnerar ett värde.
+
+**Viktigt:** Ordningen spelar roll! Om du sätter `$score >= 60` först, skulle 78 matcha där istället för `$score >= 75`.
+</details>
+
+---
+
+### Övning 8: Funktion med Type Hinting
 
 Skapa en funktion `calculateDiscount($price, $percentage)` som tar ett pris och en procentsats (som heltal, t.ex. 10 för 10%) och returnerar det nya priset efter rabatten. Använd type hinting för parametrarna (`float` för pris, `int` för procent) och returvärdet (`float`).
 
@@ -140,7 +201,7 @@ function calculateDiscount(float $price, int $percentage): float {
 
 ---
 
-### Övning 7: Anropa Funktion
+### Övning 9: Anropa Funktion
 
 Anropa funktionen `calculateDiscount` med priset `250.0` och procentsatsen `20`. Skriv ut resultatet.
 
@@ -159,7 +220,7 @@ echo "Pris efter 20% rabatt: " . $discountedPrice; // Output: Pris efter 20% rab
 
 ---
 
-### Övning 8: match-uttryck
+### Övning 10: match-uttryck
 
 Skriv ett `match`-uttryck som tar en variabel `$statusCode` (anta att den innehåller ett heltal som 200, 404, eller 500) och returnerar en beskrivande sträng ("OK", "Not Found", "Server Error", eller "Unknown" för andra värden). Skriv ut den returnerade strängen.
 
@@ -184,7 +245,7 @@ echo "Status: " . $message; // Output: Status: Not Found
 
 ---
 
-### Övning 9: Strikta Typer
+### Övning 11: Strikta Typer
 
 Hur aktiverar du strikt typläge i en PHP-fil, och varför är det rekommenderat?
 
@@ -200,7 +261,7 @@ Strikt typläge aktiveras med `declare(strict_types=1);` överst i PHP-filen (ef
 
 ---
 
-### Övning 10: Konstanter och Null Coalescing
+### Övning 12: Konstanter och Null Coalescing
 
 Skapa en konstant `MAX_LOGIN_ATTEMPTS` med värdet 5. Skriv sedan kod som hämtar värdet från `$_GET['page']` – om det inte finns eller är null, använd defaultvärdet `"hem"`. Använd null coalescing-operatorn (`??`).
 
@@ -223,7 +284,7 @@ echo "Aktuell sida: " . $page;
 
 ## Arrayer och Loopar
 
-### Övning 11: Indexerad Array
+### Övning 13: Indexerad Array
 
 Skapa en indexerad array `$cities` som innehåller strängarna "Stockholm", "Göteborg", "Malmö".
 
@@ -242,7 +303,7 @@ $cities = ["Stockholm", "Göteborg", "Malmö"];
 
 ---
 
-### Övning 12: Åtkomst och Lägg till
+### Övning 14: Åtkomst och Lägg till
 
 Skriv ut den första staden från `$cities`. Lägg sedan till staden "Uppsala" i slutet av arrayen.
 
@@ -262,7 +323,7 @@ $cities[] = "Uppsala"; // Lägger till i slutet
 
 ---
 
-### Övning 13: Associativ Array
+### Övning 15: Associativ Array
 
 Skapa en associativ array `$car` med nycklarna `brand` (värde "Volvo") och `model` (värde "XC60"). Skriv ut bilens modell.
 
@@ -284,7 +345,7 @@ echo $car['model']; // Output: XC60
 
 ---
 
-### Övning 14: foreach – Värden och Nyckel & Värde
+### Övning 16: foreach – Värden och Nyckel & Värde
 
 Använd `foreach` för att skriva ut varje stad från `$cities` på en ny rad. Använd sedan `foreach` för att skriva ut både nyckel och värde från `$car`-arrayen, t.ex. "brand: Volvo".
 
@@ -310,7 +371,7 @@ foreach ($car as $key => $value) {
 
 ---
 
-### Övning 15: in_array och implode
+### Övning 17: in_array och implode
 
 Kontrollera om staden "Malmö" finns i `$cities` och skriv ut "Ja" eller "Nej". Skapa sedan en sträng från `$cities` där städerna är separerade med kommatecken och mellanslag.
 
@@ -336,7 +397,7 @@ echo "\n" . $cityString; // Stockholm, Göteborg, Malmö, Uppsala
 
 ---
 
-### Övning 16: explode och array-funktioner
+### Övning 18: explode och array-funktioner
 
 Skapa en sträng `"äpple,banan,päron"` och använd `explode()` för att dela upp den till en array. Sortera sedan arrayen med `sort()` och skriv ut den med `implode()`.
 
@@ -357,7 +418,7 @@ echo implode(", ", $fruits); // äpple, banan, päron
 
 ---
 
-### Övning 17: array_keys och array_values
+### Övning 19: array_keys och array_values
 
 Skapa en associativ array `$user` med `name`, `email` och `city`. Använd `array_keys()` och `array_values()` för att hämta respektive nycklar och värden som separata arrayer. Skriv ut dem med `print_r()`.
 
@@ -375,13 +436,150 @@ print_r($values); // Array ( [0] => Anna [1] => anna@example.com [2] => Stockhol
 ```
 
 **Förklaring:** `array_keys()` returnerar alla nycklar som en indexerad array. `array_values()` returnerar alla värden och skapar nya numeriska index. Användbart när du behöver iterera över endast nycklar eller värden, eller konvertera till indexerad array.
+
+---
+
+### Övning 20: Flerdimensionell Array
+
+Skapa en tvådimensionell array `$products` med tre produkter. Varje produkt ska vara en associativ array med nycklarna `name`, `price` och `stock`. Skriv sedan ut namnet på den första produkten och priset på den andra.
+
+<details>
+<summary>Lösningsförslag</summary>
+
+```php
+<?php
+$products = [
+    ["name" => "Laptop", "price" => 9999, "stock" => 5],
+    ["name" => "Mus", "price" => 299, "stock" => 20],
+    ["name" => "Tangentbord", "price" => 799, "stock" => 15],
+];
+
+echo "Första produkten: " . $products[0]["name"] . "\n"; // Laptop
+echo "Andra produktens pris: " . $products[1]["price"] . " kr\n"; // 299 kr
+?>
+```
+
+**Förklaring:** En tvådimensionell array är en "array av arrayer". Du når värden med `$array[rad][kolumn]` – först det numeriska indexet för den yttre arrayen, sedan nyckeln för den inre associativa arrayen. Detta är vanligt när man arbetar med databasresultat.
+</details>
+
+---
+
+### Övning 21: Iterera över Flerdimensionell Array
+
+Använd `$products`-arrayen från föregående övning. Skriv en `foreach`-loop som skriver ut varje produkts namn och pris på formatet "Laptop: 9999 kr".
+
+<details>
+<summary>Lösningsförslag</summary>
+
+```php
+<?php
+$products = [
+    ["name" => "Laptop", "price" => 9999, "stock" => 5],
+    ["name" => "Mus", "price" => 299, "stock" => 20],
+    ["name" => "Tangentbord", "price" => 799, "stock" => 15],
+];
+
+foreach ($products as $product) {
+    echo $product["name"] . ": " . $product["price"] . " kr\n";
+}
+// Output:
+// Laptop: 9999 kr
+// Mus: 299 kr
+// Tangentbord: 799 kr
+?>
+```
+
+**Förklaring:** `foreach` itererar över den yttre arrayen. Varje iteration ger dig en associativ array (`$product`) som du sedan kan komma åt med dess nycklar. Detta mönster är standard för att bearbeta databasresultat.
+</details>
+
+---
+
+### Övning 22: array_column
+
+Använd `$products`-arrayen och `array_column()` för att skapa en ny array som innehåller alla produktnamn. Skriv ut den nya arrayen med `implode()`.
+
+<details>
+<summary>Lösningsförslag</summary>
+
+```php
+<?php
+$products = [
+    ["name" => "Laptop", "price" => 9999, "stock" => 5],
+    ["name" => "Mus", "price" => 299, "stock" => 20],
+    ["name" => "Tangentbord", "price" => 799, "stock" => 15],
+];
+
+$names = array_column($products, "name");
+echo implode(", ", $names); // Laptop, Mus, Tangentbord
+?>
+```
+
+**Förklaring:** `array_column()` extraherar en specifik kolumn från en array av arrayer. Det är mycket användbart när du snabbt vill hämta alla värden för en viss nyckel, t.ex. alla ID:n eller namn från ett databasresultat.
+</details>
+
+---
+
+### Övning 23: Formulär med Checkboxar
+
+Ett HTML-formulär skickar checkboxar med `name="interests[]"` och värdena "php", "javascript", "python". Skriv PHP-kod som: (1) hämtar arrayen från `$_POST`, (2) kontrollerar att minst ett intresse är valt, (3) skriver ut intressena som en kommaseparerad sträng, och (4) kontrollerar om "php" finns bland intressena.
+
+<details>
+<summary>Lösningsförslag</summary>
+
+```php
+<?php
+// Antag att formuläret har skickats
+$interests = $_POST["interests"] ?? [];
+
+if (empty($interests)) {
+    echo "Du valde inga intressen.";
+} else {
+    // Skriv ut som kommaseparerad sträng
+    echo "Dina intressen: " . implode(", ", $interests) . "\n";
+    
+    // Kontrollera om php finns
+    if (in_array("php", $interests)) {
+        echo "Kul att du gillar PHP!";
+    }
+}
+?>
+```
+
+**Förklaring:** När ett formulär har `name="interests[]"` (med hakparenteser), skapar PHP automatiskt en array i `$_POST["interests"]` om flera värden skickas. Använd `?? []` för att hantera fallet där inget är valt (då nyckeln inte finns). `empty()` returnerar `true` för en tom array.
+</details>
+
+---
+
+### Övning 24: Säker Array-hantering
+
+Du har en array med användarinput från ett formulär: `$input = ["php", "javascript", "malicious_code"]`. Du har också en array med tillåtna värden: `$allowed = ["php", "javascript", "python"]`. Skriv kod som filtrerar bort ogiltiga värden och endast behåller de som finns i `$allowed`.
+
+<details>
+<summary>Lösningsförslag</summary>
+
+```php
+<?php
+$input = ["php", "javascript", "malicious_code"];
+$allowed = ["php", "javascript", "python"];
+
+$valid = array_filter($input, function($value) use ($allowed) {
+    return in_array($value, $allowed);
+});
+
+print_r($valid);
+// Array ( [0] => php [1] => javascript )
+// "malicious_code" är bortfiltrerat
+?>
+```
+
+**Förklaring:** `array_filter()` behåller endast element där callback-funktionen returnerar `true`. `use ($allowed)` gör den yttre variabeln tillgänglig inuti den anonyma funktionen. Detta är en viktig säkerhetsåtgärd – aldrig lita på att användarinput bara innehåller giltiga värden.
 </details>
 
 ---
 
 ## Funktionell PHP
 
-### Övning 18: array_map
+### Övning 25: array_map
 
 Använd `array_map` för att transformera arrayen `$prices = [100, 200, 300]` till en ny array där varje pris har lagts till med 25% moms. Använd en anonym funktion eller arrow-funktion.
 
@@ -406,7 +604,7 @@ $withTax = array_map(function($price) {
 
 ---
 
-### Övning 19: array_filter
+### Övning 26: array_filter
 
 Använd `array_filter` för att från arrayen `$numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]` plocka ut endast de jämna talen.
 
@@ -429,7 +627,7 @@ $evens = array_values(array_filter($numbers, fn($n) => $n % 2 === 0));
 
 ---
 
-### Övning 20: array_reduce
+### Övning 27: array_reduce
 
 Använd `array_reduce` för att beräkna summan av alla tal i `$numbers = [10, 20, 30, 40]`. Använd sedan `array_reduce` för att bygga en sträng av alla tal separerade med " + " (t.ex. "10 + 20 + 30 + 40").
 
@@ -453,7 +651,7 @@ $expression = array_reduce($numbers, fn($carry, $n) => $carry === '' ? $n : $car
 
 ---
 
-### Övning 21: Closure och use
+### Övning 28: Closure och use
 
 Skapa en funktion `makeMultiplier($factor)` som returnerar en anonym funktion. Den returnerade funktionen ska ta ett tal och returnera det multiplicerat med `$factor`. Använd `use` för att fånga `$factor`. Testa med `$double = makeMultiplier(2)` och `$triple = makeMultiplier(3)`.
 
@@ -481,7 +679,7 @@ echo $triple(5);  // 15
 
 ---
 
-### Övning 22: Pipeline – filter, map, reduce
+### Övning 29: Pipeline – filter, map, reduce
 
 Du har en array med produkter: `$products = [['name' => 'A', 'price' => 100], ['name' => 'B', 'price' => 50], ['name' => 'C', 'price' => 200]]`. Skriv en pipeline som: (1) filtrerar bort produkter med pris under 75, (2) plockar ut endast namnen, (3) reducerar till en kommaseparerad sträng. Resultatet ska bli `"A, C"`.
 
@@ -513,7 +711,7 @@ echo $result; // "A, C"
 
 Anta att du har en tabell `customers` med kolumnerna `id` (INT, PK), `name` (VARCHAR), `email` (VARCHAR), `city` (VARCHAR) och en tabell `orders` med kolumnerna `order_id` (INT, PK), `customer_id` (INT, FK till customers.id), `order_date` (DATE), `amount` (DECIMAL).
 
-### Övning 23: SELECT och WHERE
+### Övning 30: SELECT och WHERE
 
 Skriv SQL för att hämta alla kolumner för alla kunder. Skriv sedan SQL för att hämta `name` och `email` för kunder som bor i "Göteborg".
 
@@ -533,7 +731,7 @@ SELECT name, email FROM customers WHERE city = 'Göteborg';
 
 ---
 
-### Övning 24: ORDER BY och LIMIT
+### Övning 31: ORDER BY och LIMIT
 
 Skriv SQL för att hämta namnen på de 10 första kunderna sorterade i bokstavsordning (A-Ö).
 
@@ -549,7 +747,7 @@ SELECT name FROM customers ORDER BY name ASC LIMIT 10;
 
 ---
 
-### Övning 25: INSERT, UPDATE, DELETE
+### Övning 32: INSERT, UPDATE, DELETE
 
 Skriv SQL för att: (a) lägga till en ny kund med namn "Lisa Berg" och e-post "lisa@example.com" som bor i "Malmö", (b) ändra staden till "Lund" för kunden med `id` 15, (c) ta bort kunden med `id` 20.
 
@@ -573,7 +771,7 @@ DELETE FROM customers WHERE id = 20;
 
 ---
 
-### Övning 26: INNER JOIN
+### Övning 33: INNER JOIN
 
 Skriv SQL för att hämta order-ID (`orders.order_id`) och kundens namn (`customers.name`) för alla ordrar.
 
@@ -591,7 +789,7 @@ INNER JOIN customers ON orders.customer_id = customers.id;
 
 ---
 
-### Övning 27: CREATE TABLE och ALTER TABLE
+### Övning 34: CREATE TABLE och ALTER TABLE
 
 Skriv SQL för att skapa en tabell `products` med kolumnerna `id` (INT, AUTO_INCREMENT, PRIMARY KEY), `name` (VARCHAR 100, NOT NULL) och `price` (DECIMAL 10,2). Lägg sedan till en kolumn `stock` (INT) till tabellen.
 
@@ -615,7 +813,7 @@ ALTER TABLE products ADD COLUMN stock INT;
 
 ---
 
-### Övning 28: LIKE och NULL
+### Övning 35: LIKE och NULL
 
 Skriv SQL för att hämta kunder vars namn börjar med "Anders". Skriv sedan SQL för att hämta kunder där `city` inte är angiven (är NULL).
 
@@ -637,7 +835,7 @@ SELECT * FROM customers WHERE city IS NULL;
 
 ## Sessioner och Säkerhet
 
-### Övning 29: Starta Session och Lagra Data
+### Övning 36: Starta Session och Lagra Data
 
 Vilken PHP-funktion används för att starta en session, och var bör den placeras? Skriv sedan kod för att lagra värdet "dark" i sessionsvariabeln `theme`.
 
@@ -658,7 +856,7 @@ $_SESSION['theme'] = 'dark';
 
 ---
 
-### Övning 30: Kontrollera Session
+### Övning 37: Kontrollera Session
 
 Skriv en `if`-sats i PHP som kontrollerar om sessionsvariabeln `user_id` är satt. Om den är satt, skriv "Inloggad", annars skriv "Ej inloggad".
 
@@ -681,7 +879,7 @@ if (isset($_SESSION['user_id'])) {
 
 ---
 
-### Övning 31: Cookies – Sätt och Läs
+### Övning 38: Cookies – Sätt och Läs
 
 Skriv PHP-kod för att sätta en cookie `language` med värdet `sv` som är giltig i 7 dagar. Skriv sedan kod för att läsa cookien och skriva ut värdet (om den finns).
 
@@ -708,7 +906,7 @@ if (isset($_COOKIE['language'])) {
 
 ---
 
-### Övning 32: XSS-skydd
+### Övning 39: XSS-skydd
 
 Vilken PHP-funktion bör du alltid använda när du skriver ut data som kan ha kommit från en användare i HTML? Ge ett exempel.
 
@@ -730,7 +928,7 @@ echo htmlspecialchars($userInput, ENT_QUOTES, 'UTF-8');
 
 ---
 
-### Övning 33: SQL Injection-skydd
+### Övning 40: SQL Injection-skydd
 
 Vilken teknik ska du alltid använda när du bygger SQL-frågor med användarinput? Nämn den PHP/PDO-metod som initierar denna teknik.
 
@@ -744,7 +942,7 @@ Tekniken är **Prepared Statements**. I PDO används `$pdo->prepare("SQL med :pl
 
 ---
 
-### Övning 34: Lösenordshantering
+### Övning 41: Lösenordshantering
 
 Vilka två PHP-funktioner är standard för säker lösenordshantering? Vad gör var och en?
 
@@ -760,7 +958,7 @@ Vilka två PHP-funktioner är standard för säker lösenordshantering? Vad gör
 
 ---
 
-### Övning 35: CSRF-skydd
+### Övning 42: CSRF-skydd
 
 Beskriv kort hur anti-CSRF tokens (Synchronizer Token Pattern) fungerar för att skydda formulär.
 
@@ -778,7 +976,7 @@ Beskriv kort hur anti-CSRF tokens (Synchronizer Token Pattern) fungerar för att
 
 ---
 
-### Övning 36: Utloggning
+### Övning 43: Utloggning
 
 Skriv PHP-kod för att logga ut en användare: töm sessionsvariablerna, ta bort session-cookien och förstör sessionen. Inkludera nödvändiga steg.
 
@@ -818,7 +1016,7 @@ exit;
 
 Anta att du har en PDO-anslutning i variabeln `$pdo` och en `tasks`-tabell med kolumnerna `id` (INT, PK, AUTO_INCREMENT) och `description` (TEXT).
 
-### Övning 37: Hämta Input och INSERT
+### Övning 44: Hämta Input och INSERT
 
 Skriv PHP-koden för att säkert hämta värdet från ett formulärfält med `name="task_description"` som skickats via POST. Skriv sedan kod som använder prepared statements för att infoga värdet i `tasks`-tabellens `description`-kolumn.
 
@@ -849,7 +1047,7 @@ if (!empty($description)) {
 
 ---
 
-### Övning 38: SELECT och fetchAll
+### Övning 45: SELECT och fetchAll
 
 Skriv PHP-koden som använder `$pdo` för att hämta alla rader från `tasks`-tabellen (endast `id` och `description`) och lagra resultatet i en array `$allTasks`.
 
@@ -874,7 +1072,7 @@ try {
 
 ---
 
-### Övning 39: UPDATE och DELETE med PDO
+### Övning 46: UPDATE och DELETE med PDO
 
 Skriv PHP-kod som uppdaterar `description` för uppgiften med `id` som kommer från `$_GET['id']`. Validera ID:t först. Skriv sedan kod för att radera uppgiften med det validerade ID:t.
 
@@ -907,7 +1105,7 @@ $stmt->execute();
 
 ---
 
-### Övning 40: PDO-anslutning
+### Övning 47: PDO-anslutning
 
 Skriv en funktion `connect_db()` som returnerar en PDO-anslutning till databasen `db_fullstack` på `mysql` med användare `db_user` och lösenord `db_password`. Sätt `ERRMODE_EXCEPTION` och `FETCH_ASSOC` som default. Hantera fel med try/catch.
 
@@ -938,7 +1136,7 @@ function connect_db(): PDO {
 
 ## Klasser (OOP)
 
-### Övning 41: Definiera Klass
+### Övning 48: Definiera Klass
 
 Skapa en klass `Book` med två publika egenskaper: `$title` (string) och `$author` (string). Lägg till en publik metod `displayInfo()` som skriver ut "Title: [titel], Author: [författare]".
 
@@ -965,7 +1163,7 @@ class Book {
 
 ---
 
-### Övning 42: Konstruktor
+### Övning 49: Konstruktor
 
 Modifiera `Book`-klassen så att den har en konstruktor som tar emot titel och författare som argument och sätter egenskaperna. Skapa ett `Book`-objekt med konstruktorn och anropa `displayInfo()`.
 
@@ -998,7 +1196,7 @@ $book->displayInfo();
 
 ---
 
-### Övning 43: Privata Egenskaper och Getters
+### Övning 50: Privata Egenskaper och Getters
 
 Modifiera `Book`-klassen: gör `$title` och `$author` privata, lägg till `$pages` (int), uppdatera konstruktorn, och skapa getter-metoder `getTitle()`, `getAuthor()` och `getPages()`.
 
@@ -1044,7 +1242,7 @@ class Book {
 
 ---
 
-### Övning 44: Klass med Beteende (Setter med Validering)
+### Övning 51: Klass med Beteende (Setter med Validering)
 
 Skapa en klass `BankAccount` med privat egenskap `$balance` (float). Konstruktorn tar initialt saldo. Lägg till metoder `deposit($amount)` och `withdraw($amount)` som validerar att beloppen är positiva och att uttag inte överstiger saldot. Lägg till `getBalance()`.
 
@@ -1088,7 +1286,7 @@ class BankAccount {
 
 ## CRUD-applikation och Projektstruktur
 
-### Övning 45: Projektstruktur
+### Övning 52: Projektstruktur
 
 Vilka filer/mappar behövs typiskt i en enkel PHP CRUD-applikation (t.ex. blogg) för att separera konfiguration, databaslogik, admin-funktioner och uppladdade filer? Nämn minst fem.
 
@@ -1108,7 +1306,7 @@ Vilka filer/mappar behövs typiskt i en enkel PHP CRUD-applikation (t.ex. blogg)
 
 ---
 
-### Övning 46: Filuppladdning – Säkerhetskontroller
+### Övning 53: Filuppladdning – Säkerhetskontroller
 
 Nämn minst fyra säkerhetsåtgärder du bör implementera när användare laddar upp filer (t.ex. bilder) till din webbapplikation.
 
@@ -1126,7 +1324,7 @@ Nämn minst fyra säkerhetsåtgärder du bör implementera när användare ladda
 
 ---
 
-### Övning 47: Skydda Admin-sida
+### Övning 54: Skydda Admin-sida
 
 Skriv PHP-kod som ska placeras högst upp i en admin-sida. Koden ska kontrollera om användaren är inloggad (sessionsvariabeln `user_id` är satt). Om inte, omdirigera till `login.php` och avbryt.
 

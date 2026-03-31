@@ -430,6 +430,23 @@ echo $message; // Output: Success!
 ?&gt;
 </code></pre>
 <p><code>match</code> är ofta att föredra framför <code>switch</code> i modern PHP tack vare strikt jämförelse och att det är ett uttryck.</p>
+<h3 id="matchtrue--villkorsstyrd-logik"><a class="header" href="#matchtrue--villkorsstyrd-logik"><code>match(true)</code> – Villkorsstyrd logik</a></h3>
+<p>Ett kraftfullt mönster är att använda <code>match(true)</code> för villkorsstyrd logik. Istället för att matcha ett specifikt värde, matchar vi mot <code>true</code>. Varje arm innehåller ett villkor som utvärderas – den första som returnerar <code>true</code> vinner:</p>
+<pre><code class="language-php">&lt;?php
+$score = 78;
+
+$category = match (true) {
+    $score &gt;= 90 =&gt; "Utmärkt",
+    $score &gt;= 75 =&gt; "Bra",
+    $score &gt;= 60 =&gt; "Godkänd",
+    default =&gt; "Underkänd",
+};
+
+echo $category; // Output: Bra
+?&gt;
+</code></pre>
+<p>Detta ger samma beteende som en <code>if/elseif/else</code>-kedja men med <code>match</code>-syntaxens fördelar: strikt jämförelse, inga <code>break</code>, och att det är ett uttryck som returnerar ett värde.</p>
+<p><strong>Viktigt:</strong> Ordningen spelar roll! Armarna utvärderas i ordning uppifrån och ner. Om du sätter <code>$score &gt;= 60</code> först, skulle 78 matcha där istället för <code>$score &gt;= 75</code>.</p>
 <h3 id="loopar-for-while-do-while-foreach"><a class="header" href="#loopar-for-while-do-while-foreach">Loopar (<code>for</code>, <code>while</code>, <code>do-while</code>, <code>foreach</code>)</a></h3>
 <p><code>for</code>, <code>while</code>, och <code>do-while</code> fungerar i stort sett som i JavaScript.
 <code>foreach</code> är specifikt designad för att loopa över arrayer och objekt och täcks i detalj i <code>array-loopar.md</code>.</p>

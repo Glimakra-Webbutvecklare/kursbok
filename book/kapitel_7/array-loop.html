@@ -161,6 +161,21 @@
 <li><strong>Indexerade (Numeriska) Arrayer:</strong> Arrayer med numeriska index, vanligtvis startande från 0.</li>
 <li><strong>Associativa Arrayer:</strong> Arrayer med namngivna strängnycklar.</li>
 </ol>
+<pre class="mermaid">graph LR
+    subgraph &quot;Indexerad Array&quot;
+        direction TB
+        I0[&quot;[0] → 'Röd'&quot;]
+        I1[&quot;[1] → 'Grön'&quot;]
+        I2[&quot;[2] → 'Blå'&quot;]
+    end
+    subgraph &quot;Associativ Array&quot;
+        direction TB
+        A1[&quot;'name' → 'Anna'&quot;]
+        A2[&quot;'age' → 30&quot;]
+        A3[&quot;'city' → 'Stockholm'&quot;]
+    end
+</pre>
+<p>Tänk på en indexerad array som en <strong>rad med fack</strong> numrerade från 0. En associativ array är mer som en <strong>ordbok</strong> där du slår upp ett ord (nyckeln) för att hitta dess definition (värdet).</p>
 <h3 id="indexerade-arrayer"><a class="header" href="#indexerade-arrayer">Indexerade Arrayer</a></h3>
 <p>Dessa liknar mest de "vanliga" arrayerna i JavaScript.</p>
 <p><strong>PHP:</strong></p>
@@ -317,6 +332,90 @@ console.log(person); // lastName är nu borta
 <li><strong>Kolla existens:</strong> PHP använder <code>isset()</code>, JavaScript använder <code>in</code>-operatorn eller <code>hasOwnProperty()</code>.</li>
 <li><strong>Ta bort:</strong> PHP använder <code>unset()</code>, JavaScript använder <code>delete</code>.</li>
 </ul>
+<h2 id="flerdimensionella-arrayer"><a class="header" href="#flerdimensionella-arrayer">Flerdimensionella Arrayer</a></h2>
+<p>Arrayer kan innehålla andra arrayer som värden. Detta skapar <strong>flerdimensionella arrayer</strong> – arrayer i flera "nivåer". Detta är mycket vanligt när du arbetar med databasresultat, JSON-data eller komplexa datastrukturer.</p>
+<h3 id="tvådimensionell-array-matris"><a class="header" href="#tvådimensionell-array-matris">Tvådimensionell Array (Matris)</a></h3>
+<p>En tvådimensionell array kan ses som en tabell med rader och kolumner, eller en "array av arrayer".</p>
+<pre><code class="language-php">&lt;?php
+// En matris av produkter
+$products = [
+    ["name" =&gt; "Laptop", "price" =&gt; 9999, "stock" =&gt; 5],
+    ["name" =&gt; "Mus", "price" =&gt; 299, "stock" =&gt; 20],
+    ["name" =&gt; "Tangentbord", "price" =&gt; 799, "stock" =&gt; 15],
+];
+
+// Åtkomst: $array[rad][kolumn]
+echo $products[0]["name"];   // Output: Laptop
+echo $products[1]["price"];   // Output: 299
+echo $products[2]["stock"];    // Output: 15
+
+// Iterera över alla produkter
+foreach ($products as $product) {
+    echo $product["name"] . ": " . $product["price"] . " kr&lt;br&gt;";
+}
+// Output:
+// Laptop: 9999 kr
+// Mus: 299 kr
+// Tangentbord: 799 kr
+?&gt;
+</code></pre>
+<h3 id="iterera-med-nyckel-och-värde-i-nästlade-arrayer"><a class="header" href="#iterera-med-nyckel-och-värde-i-nästlade-arrayer">Iterera med nyckel och värde i nästlade arrayer</a></h3>
+<p>När du behöver både index och värde i en yttre loop, och sedan iterera över den inre arrayen:</p>
+<pre><code class="language-php">&lt;?php
+$users = [
+    ["name" =&gt; "Anna", "skills" =&gt; ["PHP", "JavaScript"]],
+    ["name" =&gt; "Bertil", "skills" =&gt; ["Python", "SQL"]],
+];
+
+foreach ($users as $index =&gt; $user) {
+    echo "Användare $index: " . $user["name"] . "&lt;br&gt;";
+    echo "Kompetenser: " . implode(", ", $user["skills"]) . "&lt;br&gt;&lt;br&gt;";
+}
+// Output:
+// Användare 0: Anna
+// Kompetenser: PHP, JavaScript
+//
+// Användare 1: Bertil
+// Kompetenser: Python, SQL
+?&gt;
+</code></pre>
+<h3 id="extrahera-en-kolumn-med-array_column"><a class="header" href="#extrahera-en-kolumn-med-array_column">Extrahera en kolumn med <code>array_column()</code></a></h3>
+<p>En vanlig uppgift är att extrahera alla värden för en specifik nyckel från en array av arrayer:</p>
+<pre><code class="language-php">&lt;?php
+$products = [
+    ["name" =&gt; "Laptop", "price" =&gt; 9999],
+    ["name" =&gt; "Mus", "price" =&gt; 299],
+    ["name" =&gt; "Tangentbord", "price" =&gt; 799],
+];
+
+// Extrahera alla namn till en ny array
+$names = array_column($products, "name");
+print_r($names);
+// Output: ["Laptop", "Mus", "Tangentbord"]
+
+// Extrahera alla priser
+$prices = array_column($products, "price");
+// [9999, 299, 799]
+?&gt;
+</code></pre>
+<p><strong>JavaScript-jämförelse:</strong> I JavaScript använder du ofta <code>array.map(item =&gt; item.name)</code> för samma syfte.</p>
+<h3 id="tre-dimensioner-och-mer"><a class="header" href="#tre-dimensioner-och-mer">Tre dimensioner och mer</a></h3>
+<p>Du kan fortsätta nästla arrayer i flera nivåer, men koden blir snabbt svår att läsa. Fundera på om du bör använda klasser/objekt istället för mycket djupt nästlade strukturer.</p>
+<pre><code class="language-php">&lt;?php
+// Tre dimensioner: företag → avdelningar → anställda
+$company = [
+    "IT" =&gt; [
+        ["name" =&gt; "Anna", "role" =&gt; "Utvecklare"],
+        ["name" =&gt; "Bertil", "role" =&gt; "Admin"],
+    ],
+    "HR" =&gt; [
+        ["name" =&gt; "Cecilia", "role" =&gt; "Rekryterare"],
+    ],
+];
+
+echo $company["IT"][0]["name"]; // Output: Anna
+?&gt;
+</code></pre>
 <h2 id="loopar-över-arrayer"><a class="header" href="#loopar-över-arrayer">Loopar över Arrayer</a></h2>
 <p>Att iterera över elementen i en array är en mycket vanlig uppgift.</p>
 <h3 id="foreach-loopen-php"><a class="header" href="#foreach-loopen-php"><code>foreach</code>-loopen (PHP)</a></h3>
@@ -477,6 +576,92 @@ echo "&lt;br&gt;";
 
 $fruit_string = implode(", ", $fruits);
 echo $fruit_string; // äpple, banan, päron, apelsin
+?&gt;
+</code></pre>
+<h2 id="praktiskt-exempel-hantera-formulärdata"><a class="header" href="#praktiskt-exempel-hantera-formulärdata">Praktiskt Exempel: Hantera Formulärdata</a></h2>
+<p>Ett av de vanligaste användningsområdena för arrayer i PHP är att hantera data från HTML-formulär. När ett formulär skickas med <code>method="POST"</code>, finns data tillgänglig i superglobalen <code>$_POST</code> – som är en associativ array.</p>
+<h3 id="enkelt-formulär"><a class="header" href="#enkelt-formulär">Enkelt formulär</a></h3>
+<pre><code class="language-html">&lt;form method="POST" action="process.php"&gt;
+    &lt;label&gt;Namn: &lt;input type="text" name="name"&gt;&lt;/label&gt;
+    &lt;label&gt;E-post: &lt;input type="email" name="email"&gt;&lt;/label&gt;
+    &lt;button type="submit"&gt;Skicka&lt;/button&gt;
+&lt;/form&gt;
+</code></pre>
+<pre><code class="language-php">&lt;?php
+// process.php
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    // $_POST är en associativ array där nycklarna är name-attributen
+    $name = trim($_POST["name"] ?? "");
+    $email = trim($_POST["email"] ?? "");
+    
+    // Validera
+    if (empty($name)) {
+        echo "Namn saknas!";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo "Ogiltig e-post!";
+    } else {
+        echo "Välkommen, " . htmlspecialchars($name) . "!";
+    }
+}
+?&gt;
+</code></pre>
+<h3 id="formulär-med-checkboxar-array-input"><a class="header" href="#formulär-med-checkboxar-array-input">Formulär med checkboxar (array-input)</a></h3>
+<p>När användaren kan välja flera alternativ (t.ex. checkboxar), använd <code>name="interests[]"</code> för att PHP ska tolka det som en array:</p>
+<pre><code class="language-html">&lt;form method="POST" action="process.php"&gt;
+    &lt;label&gt;Vad är du intresserad av?&lt;/label&gt;
+    &lt;label&gt;&lt;input type="checkbox" name="interests[]" value="php"&gt; PHP&lt;/label&gt;
+    &lt;label&gt;&lt;input type="checkbox" name="interests[]" value="javascript"&gt; JavaScript&lt;/label&gt;
+    &lt;label&gt;&lt;input type="checkbox" name="interests[]" value="python"&gt; Python&lt;/label&gt;
+    &lt;button type="submit"&gt;Skicka&lt;/button&gt;
+&lt;/form&gt;
+</code></pre>
+<pre><code class="language-php">&lt;?php
+// process.php
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    // $_POST["interests"] är nu en array (om något är valt)
+    $interests = $_POST["interests"] ?? [];
+    
+    if (empty($interests)) {
+        echo "Du valde inga intressen.";
+    } else {
+        echo "Dina intressen: " . implode(", ", $interests);
+        // Output (om alla valda): Dina intressen: php, javascript, python
+        
+        // Kontrollera om ett specifikt värde finns
+        if (in_array("php", $interests)) {
+            echo "&lt;br&gt;Kul att du gillar PHP!";
+        }
+    }
+}
+?&gt;
+</code></pre>
+<h3 id="säkerhet-vid-hantering-av-array-data"><a class="header" href="#säkerhet-vid-hantering-av-array-data">Säkerhet vid hantering av array-data</a></h3>
+<p>När du skriver ut array-data i HTML, använd alltid <code>htmlspecialchars()</code> för att förhindra XSS-attacker:</p>
+<pre><code class="language-php">&lt;?php
+$users = [
+    ["name" =&gt; "Anna", "email" =&gt; "anna@example.com"],
+    ["name" =&gt; "&lt;script&gt;alert('xss')&lt;/script&gt;", "email" =&gt; "evil@example.com"],
+];
+
+foreach ($users as $user) {
+    // SÄKERT: htmlspecialchars skyddar mot XSS
+    echo "&lt;li&gt;" . htmlspecialchars($user["name"]) . "&lt;/li&gt;";
+}
+?&gt;
+</code></pre>
+<p><strong>Viktigt:</strong> Validera alltid att arrayer innehåller förväntade värden. En angripare kan skicka manipulerad data:</p>
+<pre><code class="language-php">&lt;?php
+// Definiera tillåtna värden
+$allowedInterests = ["php", "javascript", "python"];
+
+$interests = $_POST["interests"] ?? [];
+
+// Filtrera bort ogiltiga värden
+$validInterests = array_filter($interests, function($interest) use ($allowedInterests) {
+    return in_array($interest, $allowedInterests);
+});
+
+// Nu är $validInterests säker att använda
 ?&gt;
 </code></pre>
 <p>Arrayer och loopar är centrala delar av PHP-programmering, särskilt vid hantering av data från databaser eller formulär. Att förstå både indexerade och associativa arrayer samt hur <code>foreach</code>-loopen fungerar är avgörande.</p>

@@ -11,6 +11,24 @@ Det finns två huvudsakliga typer av arrayer i PHP:
 1.  **Indexerade (Numeriska) Arrayer:** Arrayer med numeriska index, vanligtvis startande från 0.
 2.  **Associativa Arrayer:** Arrayer med namngivna strängnycklar.
 
+```mermaid
+graph LR
+    subgraph "Indexerad Array"
+        direction TB
+        I0["[0] → 'Röd'"]
+        I1["[1] → 'Grön'"]
+        I2["[2] → 'Blå'"]
+    end
+    subgraph "Associativ Array"
+        direction TB
+        A1["'name' → 'Anna'"]
+        A2["'age' → 30"]
+        A3["'city' → 'Stockholm'"]
+    end
+```
+
+Tänk på en indexerad array som en **rad med fack** numrerade från 0. En associativ array är mer som en **ordbok** där du slår upp ett ord (nyckeln) för att hitta dess definition (värdet).
+
 ### Indexerade Arrayer
 
 Dessa liknar mest de "vanliga" arrayerna i JavaScript.
@@ -182,6 +200,109 @@ console.log(person); // lastName är nu borta
 *   **Syntax:** PHP använder `=>` för att associera nyckel och värde, JavaScript använder `:`.
 *   **Kolla existens:** PHP använder `isset()`, JavaScript använder `in`-operatorn eller `hasOwnProperty()`.
 *   **Ta bort:** PHP använder `unset()`, JavaScript använder `delete`.
+
+## Flerdimensionella Arrayer
+
+Arrayer kan innehålla andra arrayer som värden. Detta skapar **flerdimensionella arrayer** – arrayer i flera "nivåer". Detta är mycket vanligt när du arbetar med databasresultat, JSON-data eller komplexa datastrukturer.
+
+### Tvådimensionell Array (Matris)
+
+En tvådimensionell array kan ses som en tabell med rader och kolumner, eller en "array av arrayer".
+
+```php
+<?php
+// En matris av produkter
+$products = [
+    ["name" => "Laptop", "price" => 9999, "stock" => 5],
+    ["name" => "Mus", "price" => 299, "stock" => 20],
+    ["name" => "Tangentbord", "price" => 799, "stock" => 15],
+];
+
+// Åtkomst: $array[rad][kolumn]
+echo $products[0]["name"];   // Output: Laptop
+echo $products[1]["price"];   // Output: 299
+echo $products[2]["stock"];    // Output: 15
+
+// Iterera över alla produkter
+foreach ($products as $product) {
+    echo $product["name"] . ": " . $product["price"] . " kr<br>";
+}
+// Output:
+// Laptop: 9999 kr
+// Mus: 299 kr
+// Tangentbord: 799 kr
+?>
+```
+
+### Iterera med nyckel och värde i nästlade arrayer
+
+När du behöver både index och värde i en yttre loop, och sedan iterera över den inre arrayen:
+
+```php
+<?php
+$users = [
+    ["name" => "Anna", "skills" => ["PHP", "JavaScript"]],
+    ["name" => "Bertil", "skills" => ["Python", "SQL"]],
+];
+
+foreach ($users as $index => $user) {
+    echo "Användare $index: " . $user["name"] . "<br>";
+    echo "Kompetenser: " . implode(", ", $user["skills"]) . "<br><br>";
+}
+// Output:
+// Användare 0: Anna
+// Kompetenser: PHP, JavaScript
+//
+// Användare 1: Bertil
+// Kompetenser: Python, SQL
+?>
+```
+
+### Extrahera en kolumn med `array_column()`
+
+En vanlig uppgift är att extrahera alla värden för en specifik nyckel från en array av arrayer:
+
+```php
+<?php
+$products = [
+    ["name" => "Laptop", "price" => 9999],
+    ["name" => "Mus", "price" => 299],
+    ["name" => "Tangentbord", "price" => 799],
+];
+
+// Extrahera alla namn till en ny array
+$names = array_column($products, "name");
+print_r($names);
+// Output: ["Laptop", "Mus", "Tangentbord"]
+
+// Extrahera alla priser
+$prices = array_column($products, "price");
+// [9999, 299, 799]
+?>
+```
+
+**JavaScript-jämförelse:** I JavaScript använder du ofta `array.map(item => item.name)` för samma syfte.
+
+### Tre dimensioner och mer
+
+Du kan fortsätta nästla arrayer i flera nivåer, men koden blir snabbt svår att läsa. Fundera på om du bör använda klasser/objekt istället för mycket djupt nästlade strukturer.
+
+```php
+<?php
+// Tre dimensioner: företag → avdelningar → anställda
+$company = [
+    "IT" => [
+        ["name" => "Anna", "role" => "Utvecklare"],
+        ["name" => "Bertil", "role" => "Admin"],
+    ],
+    "HR" => [
+        ["name" => "Cecilia", "role" => "Rekryterare"],
+    ],
+];
+
+echo $company["IT"][0]["name"]; // Output: Anna
+?>
+```
 
 ## Loopar över Arrayer
 
@@ -374,6 +495,112 @@ echo "<br>";
 
 $fruit_string = implode(", ", $fruits);
 echo $fruit_string; // äpple, banan, päron, apelsin
+?>
+```
+
+## Praktiskt Exempel: Hantera Formulärdata
+
+Ett av de vanligaste användningsområdena för arrayer i PHP är att hantera data från HTML-formulär. När ett formulär skickas med `method="POST"`, finns data tillgänglig i superglobalen `$_POST` – som är en associativ array.
+
+### Enkelt formulär
+
+```html
+<form method="POST" action="process.php">
+    <label>Namn: <input type="text" name="name"></label>
+    <label>E-post: <input type="email" name="email"></label>
+    <button type="submit">Skicka</button>
+</form>
+```
+
+```php
+<?php
+// process.php
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    // $_POST är en associativ array där nycklarna är name-attributen
+    $name = trim($_POST["name"] ?? "");
+    $email = trim($_POST["email"] ?? "");
+    
+    // Validera
+    if (empty($name)) {
+        echo "Namn saknas!";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo "Ogiltig e-post!";
+    } else {
+        echo "Välkommen, " . htmlspecialchars($name) . "!";
+    }
+}
+?>
+```
+
+### Formulär med checkboxar (array-input)
+
+När användaren kan välja flera alternativ (t.ex. checkboxar), använd `name="interests[]"` för att PHP ska tolka det som en array:
+
+```html
+<form method="POST" action="process.php">
+    <label>Vad är du intresserad av?</label>
+    <label><input type="checkbox" name="interests[]" value="php"> PHP</label>
+    <label><input type="checkbox" name="interests[]" value="javascript"> JavaScript</label>
+    <label><input type="checkbox" name="interests[]" value="python"> Python</label>
+    <button type="submit">Skicka</button>
+</form>
+```
+
+```php
+<?php
+// process.php
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    // $_POST["interests"] är nu en array (om något är valt)
+    $interests = $_POST["interests"] ?? [];
+    
+    if (empty($interests)) {
+        echo "Du valde inga intressen.";
+    } else {
+        echo "Dina intressen: " . implode(", ", $interests);
+        // Output (om alla valda): Dina intressen: php, javascript, python
+        
+        // Kontrollera om ett specifikt värde finns
+        if (in_array("php", $interests)) {
+            echo "<br>Kul att du gillar PHP!";
+        }
+    }
+}
+?>
+```
+
+### Säkerhet vid hantering av array-data
+
+När du skriver ut array-data i HTML, använd alltid `htmlspecialchars()` för att förhindra XSS-attacker:
+
+```php
+<?php
+$users = [
+    ["name" => "Anna", "email" => "anna@example.com"],
+    ["name" => "<script>alert('xss')</script>", "email" => "evil@example.com"],
+];
+
+foreach ($users as $user) {
+    // SÄKERT: htmlspecialchars skyddar mot XSS
+    echo "<li>" . htmlspecialchars($user["name"]) . "</li>";
+}
+?>
+```
+
+**Viktigt:** Validera alltid att arrayer innehåller förväntade värden. En angripare kan skicka manipulerad data:
+
+```php
+<?php
+// Definiera tillåtna värden
+$allowedInterests = ["php", "javascript", "python"];
+
+$interests = $_POST["interests"] ?? [];
+
+// Filtrera bort ogiltiga värden
+$validInterests = array_filter($interests, function($interest) use ($allowedInterests) {
+    return in_array($interest, $allowedInterests);
+});
+
+// Nu är $validInterests säker att använda
 ?>
 ```
 

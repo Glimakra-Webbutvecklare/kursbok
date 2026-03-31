@@ -325,6 +325,29 @@ echo $message; // Output: Success!
 ```
 `match` är ofta att föredra framför `switch` i modern PHP tack vare strikt jämförelse och att det är ett uttryck.
 
+### `match(true)` – Villkorsstyrd logik
+
+Ett kraftfullt mönster är att använda `match(true)` för villkorsstyrd logik. Istället för att matcha ett specifikt värde, matchar vi mot `true`. Varje arm innehåller ett villkor som utvärderas – den första som returnerar `true` vinner:
+
+```php
+<?php
+$score = 78;
+
+$category = match (true) {
+    $score >= 90 => "Utmärkt",
+    $score >= 75 => "Bra",
+    $score >= 60 => "Godkänd",
+    default => "Underkänd",
+};
+
+echo $category; // Output: Bra
+?>
+```
+
+Detta ger samma beteende som en `if/elseif/else`-kedja men med `match`-syntaxens fördelar: strikt jämförelse, inga `break`, och att det är ett uttryck som returnerar ett värde.
+
+**Viktigt:** Ordningen spelar roll! Armarna utvärderas i ordning uppifrån och ner. Om du sätter `$score >= 60` först, skulle 78 matcha där istället för `$score >= 75`.
+
 ### Loopar (`for`, `while`, `do-while`, `foreach`)
 
 `for`, `while`, och `do-while` fungerar i stort sett som i JavaScript.
