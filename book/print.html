@@ -40836,6 +40836,95 @@ $font-sizes: (
 }
 </code></pre>
 <p>Resultatet blir ett komplett bibliotek av hjälpklasser – samma princip som ramverk som Bootstrap och Tailwind CSS bygger på.</p>
+<h2 id="generera-css-custom-properties-från-maps"><a class="header" href="#generera-css-custom-properties-från-maps">Generera CSS custom properties från maps</a></h2>
+<p>En vanlig tillämpning av maps är att generera CSS custom properties (CSS-variabler) som kan ändras i webbläsaren. Detta är särskilt användbart för tema – en color map kan bli CSS-variabler som senare kan bytas dynamiskt.</p>
+<h3 id="från-map-till-css-variabler"><a class="header" href="#från-map-till-css-variabler">Från map till CSS-variabler</a></h3>
+<pre><code class="language-scss">@use 'sass:map';
+
+// Definiera färg-mappen
+$colors: (
+  primary: #0b6bcb,
+  success: #1a7f37,
+  warning: #9a6700,
+  danger: #cf222e,
+  info: #0969da,
+);
+
+// Generera CSS custom properties från mappen
+:root {
+  @each $name, $color in $colors {
+    --color-#{$name}: #{$color};
+  }
+}
+</code></pre>
+<p>Detta kompileras till:</p>
+<pre><code class="language-css">:root {
+  --color-primary: #0b6bcb;
+  --color-success: #1a7f37;
+  --color-warning: #9a6700;
+  --color-danger: #cf222e;
+  --color-info: #0969da;
+}
+</code></pre>
+<h3 id="praktiskt-exempel-teman-med-maps"><a class="header" href="#praktiskt-exempel-teman-med-maps">Praktiskt exempel: teman med maps</a></h3>
+<pre><code class="language-scss">@use 'sass:map';
+
+// Light theme färger
+$colors-light: (
+  bg: #ffffff,
+  surface: #f6f8fa,
+  text: #1f2328,
+  primary: #0b6bcb,
+);
+
+// Dark theme färger
+$colors-dark: (
+  bg: #0d1117,
+  surface: #161b22,
+  text: #e6edf3,
+  primary: #58a6ff,
+);
+
+// Exportera light theme som standard
+:root {
+  @each $name, $color in $colors-light {
+    --color-#{$name}: #{$color};
+  }
+}
+
+// Exportera dark theme med data-attribut
+[data-theme='dark'] {
+  @each $name, $color in $colors-dark {
+    --color-#{$name}: #{$color};
+  }
+}
+
+// Nu kan komponenter använda dessa
+.card {
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.button {
+  background: var(--color-primary);
+  color: #fff;
+}
+</code></pre>
+<p><strong>Varför är detta användbara?</strong></p>
+<ol>
+<li>Du skriver varje färg en gång i en map</li>
+<li>Mappen genererar CSS-variabler automatiskt</li>
+<li>CSS-variablerna kan ändras utan ombyggnad</li>
+<li>Komponenter använder <code>var()</code> istället för hårdkodade färger</li>
+<li>Temaväxling blir smidigt och snabbt</li>
+</ol>
+<p>Denna kombination av SCSS-maps och CSS custom properties är grunden i moderna designsystem.</p>
+<h2 id="se-även"><a class="header" href="#se-även">Se även</a></h2>
+<ul>
+<li><a href="SCSS/./loopar-utility-klasser.html">Loopar i praktiken och utility-klasser</a> – hur man använder @each med maps för att generera CSS</li>
+<li><a href="SCSS/./design-tokens-css-custom-properties.html">Design tokens och CSS custom properties</a> – hur maps kan exporteras som CSS-variabler</li>
+<li><a href="SCSS/./theming.html">Theming: ljust och mörkt tema</a> – hur maps används för att bygga tema-system</li>
+</ul>
 <h2 id="sammanfattning-60"><a class="header" href="#sammanfattning-60">Sammanfattning</a></h2>
 <ul>
 <li>SCSS-variabler deklareras med <code>$namn: värde</code> och gör koden lätt att underhålla.</li>
@@ -41022,6 +41111,9 @@ body {
 <p>Precis som variabler låter oss återanvända <em>värden</em>, låter <strong>mixins</strong> oss återanvända hela <em>CSS-regler</em>. Om du märker att du skriver samma uppsättning CSS-deklarationer om och om igen – till exempel för flexbox-centrering eller mediafrågor – är det ett tecken på att ett mixin kan förenkla koden.</p>
 <h2 id="vad-är-ett-mixin"><a class="header" href="#vad-är-ett-mixin">Vad är ett Mixin?</a></h2>
 <p>Ett <strong>mixin</strong> är ett namngivet block av CSS-regler som kan inkluderas var som helst i din SCSS-kod. Tänk på det som en funktion som istället för att returnera ett värde "klistrar in" ett kodblock.</p>
+<h3 id="en-analogi-muffinsrecept"><a class="header" href="#en-analogi-muffinsrecept">En analogi: Muffinsrecept</a></h3>
+<p>Föreställ dig ett grundmuffinsrecept som innehåller bas-ingredienserna – mjöl, ägg, mjölk och socker. Det är själva <strong>mixinet</strong>. Sedan kan du göra tusentals varianter genom att lägga på olika <strong>toppings</strong> och <strong>fyllningar</strong> – choklad, blåbär, karamell, kokos osv. Det är samma grundrecept, men resultatet ser helt olika ut beroende på vad du väljer att lägga på.</p>
+<p>I SCSS är det precis samma. Du skriver en gång hur en button, en flexbox-center eller en mediafråga fungerar, och sedan varierar du den genom <strong>parametrar</strong> (parametrar är dina toppings). På så sätt får du många olika varianter utan att upprepa hela receptet.</p>
 <pre><code class="language-scss">@mixin flex-center {
   display: flex;
   justify-content: center;
@@ -41054,6 +41146,55 @@ body {
 </code></pre>
 <h2 id="mixins-med-parametrar"><a class="header" href="#mixins-med-parametrar">Mixins med parametrar</a></h2>
 <p>Mixins blir riktigt kraftfulla när de tar <strong>parametrar</strong> (parameters) – argument som styr vad mixinet genererar. Parametrar deklareras med <code>$</code>-tecken, precis som vanliga variabler.</p>
+<p>Tänk på det så här: grundmuffinsrecepet är mixinet, och parametrarna är de toppings och fyllningar du kan välja. Varje gång du inkluderar mixinet kan du ge det andra "ingredienser" och få en helt annan slut-produkt.</p>
+<h3 id="button-muffin-med-olika-toppings"><a class="header" href="#button-muffin-med-olika-toppings">Button-muffin med olika toppings</a></h3>
+<p>Här är ett exempel som följer muffins-analogin helt genom – en knapp-mixin som tar "topping" och "fyllning" som parametrar:</p>
+<pre><code class="language-scss">// Definiera våra "toppings" och "fyllningar" (färgvariabler)
+$chocolate-topping: #6f4e37;
+$blueberry-filling: #4169e1;
+$caramel-topping: #d4a574;
+$strawberry-filling: #ff6b9d;
+
+// Grundrecept: button-mixin
+@mixin button-muffin($topping, $filling, $label) {
+  background-color: $topping;
+  border: 3px solid $filling;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &amp;:hover {
+    background-color: $filling;
+    border-color: $topping;
+    transform: scale(1.05);
+  }
+
+  &amp;::before {
+    content: "🧁 ";
+  }
+
+  &amp;::after {
+    content: " #{$label}";
+  }
+}
+
+// Året många varianter – samma recept, olika kombinationer!
+.btn-chocolate-blueberry {
+  @include button-muffin($chocolate-topping, $blueberry-filling, "Choklad &amp; Blåbär");
+}
+
+.btn-caramel-strawberry {
+  @include button-muffin($caramel-topping, $strawberry-filling, "Karamell &amp; Jordgubbe");
+}
+
+.btn-blueberry-chocolate {
+  @include button-muffin($blueberry-filling, $chocolate-topping, "Blåbär &amp; Choklad");
+}
+</code></pre>
+<p>Du får tre helt olika knappar genom att bara byta ordning på "toppings" och "fyllningar" – utan att skriva om någon CSS-regel!</p>
 <pre><code class="language-scss">@mixin flex($justify-content: center, $align-items: center) {
   display: flex;
   justify-content: $justify-content;
@@ -41073,6 +41214,7 @@ body {
 }
 </code></pre>
 <p>Värdet efter <code>:</code> är ett <strong>standardvärde</strong> (default value). Om du inte skickar in ett argument används standardvärdet automatiskt.</p>
+<p><strong>Se även:</strong> <a href="SCSS/./funktioner.html">Funktioner i SCSS</a> för att förstå skillnaden mellan mixins och funktioner.</p>
 <h3 id="namngivna-argument"><a class="header" href="#namngivna-argument">Namngivna argument</a></h3>
 <p>Du kan skicka in argument med namn för att göra anrop tydligare och kunna hoppa över argument du inte vill ändra:</p>
 <pre><code class="language-scss">.footer {
@@ -41231,6 +41373,12 @@ body {
   @include visually-hidden;
 }
 </code></pre>
+<h2 id="se-även-1"><a class="header" href="#se-även-1">Se även</a></h2>
+<ul>
+<li><a href="SCSS/./funktioner.html">Funktioner i SCSS</a> – när man använder funktioner istället för mixins</li>
+<li><a href="SCSS/./responsiv-breakpoints.html">Responsiv SCSS med breakpoints</a> – breakpoint-mixins i praktiken</li>
+<li><a href="SCSS/./nesting-selektorstrategi.html">Nesting och selektorstrategi</a> – ofta kombineras med nesting</li>
+</ul>
 <h2 id="sammanfattning-61"><a class="header" href="#sammanfattning-61">Sammanfattning</a></h2>
 <ul>
 <li>Mixins definieras med <code>@mixin namn { }</code> och inkluderas med <code>@include namn</code>.</li>
@@ -41239,6 +41387,1402 @@ body {
 <li>Mixins är oftast att föredra framför <code>@extend</code> tack vare sin flexibilitet.</li>
 <li>Använd mixins för regler, funktioner för beräknade värden.</li>
 </ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="funktioner-i-scss"><a class="header" href="#funktioner-i-scss">Funktioner i SCSS</a></h1>
+<p>SCSS-funktioner (functions) används när du vill returnera ett värde i stället för att generera hela CSS-regler. Det gör koden mer konsekvent och minskar risken för manuella fel.</p>
+<h2 id="varför-funktioner"><a class="header" href="#varför-funktioner">Varför funktioner?</a></h2>
+<p>När ett projekt växer dyker samma beräkningar upp flera gånger: px till rem, spacing-skalor och färgjusteringar. Om varje utvecklare räknar själv blir resultatet ofta inkonsekvent.</p>
+<p>Med en funktion skriver du logiken en gång och återanvänder den överallt.</p>
+<h2 id="grundsyntax"><a class="header" href="#grundsyntax">Grundsyntax</a></h2>
+<p>En funktion deklareras med @function och returnerar ett värde med @return.</p>
+<pre><code class="language-scss">@function rem($px) {
+  @return ($px / 16) * 1rem;
+}
+
+.title {
+  font-size: rem(24);
+}
+</code></pre>
+<p>Kompilerad CSS:</p>
+<pre><code class="language-css">.title {
+  font-size: 1.5rem;
+}
+</code></pre>
+<h2 id="exempel-spacing-funktion"><a class="header" href="#exempel-spacing-funktion">Exempel: spacing-funktion</a></h2>
+<pre><code class="language-scss">$space-unit: 0.25rem;
+
+@function space($step) {
+  @return $step * $space-unit;
+}
+
+.card {
+  padding: space(4); // 1rem
+  gap: space(2);     // 0.5rem
+}
+</code></pre>
+<p>Detta gör det enklare att hålla ett konsekvent design system (designsystem).</p>
+<h2 id="exempel-färgfunktion-med-sasscolor"><a class="header" href="#exempel-färgfunktion-med-sasscolor">Exempel: färgfunktion med sass:color</a></h2>
+<p>SCSS har en inbyggd color-modul som låter dig manipulera färger automatiskt. Med <code>color.scale()</code> och parametern <code>$lightness</code> kan du göra färger ljusare eller mörkare.</p>
+<p>Så här fungerar <code>$lightness</code>:</p>
+<ul>
+<li><strong><code>$lightness: 10%</code></strong> – gör färgen 10% ljusare på vägen mot vitt</li>
+<li><strong><code>$lightness: -10%</code></strong> – gör färgen 10% mörkare på vägen mot svart</li>
+</ul>
+<pre><code class="language-scss">@use 'sass:color';
+
+@function button-hover-color($base-color) {
+  @return color.scale($base-color, $lightness: -10%);
+}
+
+.button {
+  background-color: #007aff;
+
+  &amp;:hover {
+    background-color: button-hover-color(#007aff);
+  }
+}
+</code></pre>
+<h3 id="skillnad-mellan-colorscale-och-darkenlighten"><a class="header" href="#skillnad-mellan-colorscale-och-darkenlighten">Skillnad mellan color.scale och darken/lighten</a></h3>
+<p>Det finns flera sätt att manipulera färger i SCSS:</p>
+<pre><code class="language-scss">@use 'sass:color';
+
+$primary: #0b6bcb;
+
+// Modern sätt – använd color.scale
+color.scale($primary, $lightness: -15%)   // Gör 15% mörkare
+
+// Äldre sätt – fortfarande vanligt
+darken($primary, 15%)                     // Gör 15% mörkare
+lighten($primary, 15%)                    // Gör 15% ljusare
+</code></pre>
+<p><strong>Praktiskt exempel med flera tillstånd:</strong></p>
+<pre><code class="language-scss">@use 'sass:color';
+
+@function button-state-color($color, $state) {
+  @if $state == 'hover' {
+    @return color.scale($color, $lightness: -15%);
+  } @else if $state == 'active' {
+    @return color.scale($color, $lightness: -25%);
+  } @else if $state == 'disabled' {
+    @return color.scale($color, $lightness: 20%, $saturation: -40%);
+  } @else {
+    @return $color;
+  }
+}
+
+.button {
+  background-color: #007aff;
+
+  &amp;:hover {
+    background-color: button-state-color(#007aff, 'hover');
+  }
+
+  &amp;:active {
+    background-color: button-state-color(#007aff, 'active');
+  }
+
+  &amp;:disabled {
+    background-color: button-state-color(#007aff, 'disabled');
+  }
+}
+</code></pre>
+<p>Med denna funktion kan du helt automatiskt beräkna rätt färger för verschiedene tillstånd – hover blir mörkare, active ännu mörkare, och disabled blir gråare och ljusare.</p>
+<h2 id="funktioner-och-moduler"><a class="header" href="#funktioner-och-moduler">Funktioner och moduler</a></h2>
+<p>Placera funktioner i en separat modul, till exempel abstracts/_functions.scss.</p>
+<pre><code class="language-scss">// abstracts/_functions.scss
+@function rem($px) {
+  @return ($px / 16) * 1rem;
+}
+</code></pre>
+<pre><code class="language-scss">// components/_card.scss
+@use '../abstracts/functions' as f;
+
+.card {
+  border-radius: f.rem(8);
+}
+</code></pre>
+<h2 id="vanliga-misstag-7"><a class="header" href="#vanliga-misstag-7">Vanliga misstag</a></h2>
+<ol>
+<li>
+<p>Blanda ihop mixin och funktion
+En funktion returnerar ett värde. En mixin genererar regler.</p>
+</li>
+<li>
+<p>Dolda enheter
+Om indata är px i ett projekt och rem i ett annat blir resultatet svårt att förutsäga. Bestäm en tydlig standard.</p>
+</li>
+<li>
+<p>Otydliga namn
+Namn som calc1 eller size2 gör koden svår att förstå. Använd namn som beskriver syftet.</p>
+</li>
+</ol>
+<h2 id="praktiskt-exempel-typografisk-skala"><a class="header" href="#praktiskt-exempel-typografisk-skala">Praktiskt exempel: typografisk skala</a></h2>
+<pre><code class="language-scss">@function type-scale($level, $base: 1rem, $ratio: 1.2) {
+  $result: $base;
+
+  @for $i from 1 through $level {
+    $result: $result * $ratio;
+  }
+
+  @return $result;
+}
+
+h1 { font-size: type-scale(4); }
+h2 { font-size: type-scale(3); }
+h3 { font-size: type-scale(2); }
+</code></pre>
+<h2 id="säkerhet-och-robusthet-1"><a class="header" href="#säkerhet-och-robusthet-1">Säkerhet och robusthet</a></h2>
+<p>SCSS körs vid build (bygge), men felaktiga antaganden kan ändå ge trasig CSS i produktion. Begränsa därför indata till funktioner och undvik att bygga selektorer från okontrollerade strängar.</p>
+<h2 id="sammanfattning-62"><a class="header" href="#sammanfattning-62">Sammanfattning</a></h2>
+<ul>
+<li>Funktioner används för återanvändbara beräkningar.</li>
+<li>@return skickar tillbaka ett värde till en CSS-egenskap.</li>
+<li>Bra funktionsnamn och tydliga enhetsregler minskar buggar.</li>
+<li>Funktioner passar perfekt för px till rem, spacing och färglogik.</li>
+</ul>
+<h2 id="se-även-2"><a class="header" href="#se-även-2">Se även</a></h2>
+<ul>
+<li><a href="SCSS/./design-tokens-css-custom-properties.html">Design tokens och CSS custom properties</a> – hur funktioner kan användas tillsammans med tokens</li>
+<li><a href="SCSS/./mixins.html">Mixins</a> – skillnaden mellan funktioner och mixins</li>
+<li><a href="SCSS/./mini-projekt-komponentbibliotek.html">Mini-projekt: komponentbibliotek i SCSS</a> – funktioner i praktiken</li>
+</ul>
+<h2 id="Övningar-2"><a class="header" href="#Övningar-2">Övningar</a></h2>
+<ol>
+<li>Skapa en funktion to-em($px, $context) som konverterar px till em.</li>
+<li>Skapa en funktion radius($size) som hämtar värden från en map med nycklarna sm, md, lg.</li>
+<li>Bygg en typografisk skala för h1 till h4 med en funktion och ett ratio-värde.</li>
+</ol>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="nesting-och-selektorstrategi"><a class="header" href="#nesting-och-selektorstrategi">Nesting och selektorstrategi</a></h1>
+<p>Nesting i SCSS gör att du kan skriva selektorer hierarkiskt. Det kan öka läsbarheten, men för djup nesting leder snabbt till tung och svårunderhållen CSS.</p>
+<h2 id="motivation"><a class="header" href="#motivation">Motivation</a></h2>
+<p>I små komponenter är nesting tydligt. I större kodbaser kan fyra till fem nivåer nesting skapa långa selektorkedjor som blir svåra att återanvända och felsöka.</p>
+<p>Målet är att använda nesting medvetet, inte automatiskt.</p>
+<h2 id="bra-nesting"><a class="header" href="#bra-nesting">Bra nesting</a></h2>
+<pre><code class="language-scss">.card {
+  padding: 1rem;
+
+  &amp;__title {
+    font-size: 1.25rem;
+  }
+
+  &amp;:hover {
+    box-shadow: 0 8px 24px rgb(0 0 0 / 0.12);
+  }
+}
+</code></pre>
+<p>Exemplet håller sig nära en komponent (component) och använder parent selector (föräldraselektor) med &amp;.</p>
+<p><strong>HTML som motsvarar denna SCSS:</strong></p>
+<pre><code class="language-html">&lt;div class="card"&gt;
+  &lt;h2 class="card__title"&gt;Min kortkomponent&lt;/h2&gt;
+  &lt;p&gt;Innehål här...&lt;/p&gt;
+&lt;/div&gt;
+</code></pre>
+<p>När du hovrar över <code>.card</code>, gäller <code>:hover</code> och skuggan visas. Titeln får sin storlek från <code>.card__title</code>.</p>
+<h2 id="problem-med-för-djup-nesting"><a class="header" href="#problem-med-för-djup-nesting">Problem med för djup nesting</a></h2>
+<pre><code class="language-scss">.page {
+  .content {
+    .article {
+      .card {
+        .title {
+          color: #222;
+        }
+      }
+    }
+  }
+}
+</code></pre>
+<p>Det kompileras till: <code>.page .content .article .card .title { color: #222; }</code></p>
+<p>En mycket specifik selektor, vilket gör det svårt att skriva över stilar senare.</p>
+<p><strong>HTML som motsvarar denna SCSS:</strong></p>
+<pre><code class="language-html">&lt;div class="page"&gt;
+  &lt;div class="content"&gt;
+    &lt;article class="article"&gt;
+      &lt;div class="card"&gt;
+        &lt;h3 class="title"&gt;Rubrik&lt;/h3&gt;
+      &lt;/div&gt;
+    &lt;/article&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<p>Problemet: om du senare vill att <code>.title</code> ska ha en annan färg måste din nya selektor vara minst lika specifik, annars fungerar den inte.</p>
+<h2 id="rekommendationer-1"><a class="header" href="#rekommendationer-1">Rekommendationer</a></h2>
+<ol>
+<li>Håll nesting till max 2 till 3 nivåer.</li>
+<li>Nesting passar bäst för pseudo-klasser och tillstånd.</li>
+<li>Använd tydliga klassnamn i stället för långa beroendekedjor.</li>
+<li>Kombinera gärna med BEM (Block Element Modifier).</li>
+</ol>
+<h2 id="parent-selector-med"><a class="header" href="#parent-selector-med">Parent selector med &amp;</a></h2>
+<pre><code class="language-scss">.button {
+  background: #007aff;
+
+  &amp;:hover {
+    background: #0069d9;
+  }
+
+  &amp;:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &amp;--danger {
+    background: #d92d20;
+  }
+}
+</code></pre>
+<p><strong>HTML som motsvarar denna SCSS:</strong></p>
+<pre><code class="language-html">&lt;!-- Vanlig knapp --&gt;
+&lt;button class="button"&gt;Klicka här&lt;/button&gt;
+
+&lt;!-- Deaktiverad knapp --&gt;
+&lt;button class="button" disabled&gt;Deaktiverad&lt;/button&gt;
+
+&lt;!-- Danger-variant --&gt;
+&lt;button class="button button--danger"&gt;Ta bort&lt;/button&gt;
+</code></pre>
+<p>Här ser du hur <code>&amp;</code> expanderas:</p>
+<ul>
+<li><code>&amp;:hover</code> blir <code>.button:hover</code></li>
+<li><code>&amp;:disabled</code> blir <code>.button:disabled</code></li>
+<li><code>&amp;--danger</code> blir <code>.button--danger</code></li>
+</ul>
+<h2 id="nesting-med-media-query"><a class="header" href="#nesting-med-media-query">Nesting med media query</a></h2>
+<pre><code class="language-scss">.card {
+  padding: 1rem;
+
+  @media (min-width: 768px) {
+    padding: 1.5rem;
+  }
+}
+</code></pre>
+<p>Detta kan vara tydligt i komponentfiler, men undvik att sprida stora layoutbeslut i många filer utan plan.</p>
+<p><strong>HTML:</strong></p>
+<pre><code class="language-html">&lt;div class="card"&gt;
+  &lt;h3&gt;Min kort&lt;/h3&gt;
+  &lt;p&gt;På små skärmar: 1rem padding&lt;/p&gt;
+  &lt;p&gt;På stora skärmar (768px+): 1.5rem padding&lt;/p&gt;
+&lt;/div&gt;
+</code></pre>
+<p>Nesting med media queries gör att du kan se mobil och desktop tillsammans i samma kod-block, vilket kan vara praktiskt för komponenter som är små.</p>
+<h2 id="jämförelse-dålig-och-bättre-struktur"><a class="header" href="#jämförelse-dålig-och-bättre-struktur">Jämförelse: dålig och bättre struktur</a></h2>
+<p>Dålig struktur:</p>
+<pre><code class="language-scss">.main {
+  .sidebar {
+    .menu {
+      li {
+        a {
+          color: #333;
+        }
+      }
+    }
+  }
+}
+</code></pre>
+<p>Bättre struktur:</p>
+<pre><code class="language-scss">.sidebar-menu-link {
+  color: #333;
+}
+</code></pre>
+<p>Den bättre strukturen ger lägre specificitet och enklare återanvändning.</p>
+<h2 id="säkerhet-och-robusthet-2"><a class="header" href="#säkerhet-och-robusthet-2">Säkerhet och robusthet</a></h2>
+<p>Hög specificitet är inte en säkerhetsrisk i sig, men den ökar risken för oavsiktliga visuella fel. I gränssnitt för inloggning, betalning eller varningar kan sådana fel påverka användarens beslut.</p>
+<h2 id="sammanfattning-63"><a class="header" href="#sammanfattning-63">Sammanfattning</a></h2>
+<ul>
+<li>Nesting förbättrar läsbarhet när den hålls kort och lokal.</li>
+<li>För djup nesting skapar svåröverskådlig CSS med hög specificitet.</li>
+<li>Använd &amp; för tillstånd och varianter.</li>
+<li>Prioritera komponentbaserade klassnamn över djupa hierarkier.</li>
+</ul>
+<h2 id="se-även-3"><a class="header" href="#se-även-3">Se även</a></h2>
+<ul>
+<li><a href="SCSS/./mixins.html">Mixins</a> – ofta används tillsammans med nesting</li>
+<li><a href="SCSS/./sju-ett-struktur.html">7-1 Struktur med importer</a> – hur man organiserar nesting i större projekt</li>
+<li><a href="SCSS/./tillganglighet.html">Tillgänglighet i SCSS</a> – fokusstilar ofta kombineras med nesting</li>
+</ul>
+<h2 id="Övningar-3"><a class="header" href="#Övningar-3">Övningar</a></h2>
+<ol>
+<li>Refaktorera en djup nestad meny till max tre nivåer nesting.</li>
+<li>Skapa en knappkomponent med modifierare för primary, secondary och danger.</li>
+<li>Jämför kompilerad CSS före och efter refaktorering och beskriv skillnaden.</li>
+</ol>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="moduler-med-use-och-forward"><a class="header" href="#moduler-med-use-och-forward">Moduler med @use och @forward</a></h1>
+<p>Modern Sass rekommenderar modulsystemet med @use och @forward i stället för @import. Det ger tydligare beroenden och bättre struktur i större projekt.</p>
+<h2 id="varför-lämna-import"><a class="header" href="#varför-lämna-import">Varför lämna @import?</a></h2>
+<p>@import lägger allt i global scope (global räckvidd). Det kan skapa namnkonflikter när flera filer råkar använda samma variabelnamn.</p>
+<p>@use isolerar varje modul med namespace (namnrymd), vilket gör koden säkrare och mer läsbar.</p>
+<h2 id="use--ladda-en-modul"><a class="header" href="#use--ladda-en-modul">@use – Ladda en modul</a></h2>
+<p><strong>@use laddar en fil och gör dess innehål tillgängligt med ett namespace.</strong></p>
+<pre><code class="language-scss">// abstracts/_variables.scss
+$primary-color: #007aff;
+$radius-md: 0.5rem;
+</code></pre>
+<pre><code class="language-scss">// components/_button.scss
+@use '../abstracts/variables' as v;
+
+.button {
+  background: v.$primary-color;  // Måste använda namespace v.$
+  border-radius: v.$radius-md;
+}
+</code></pre>
+<p>Det viktiga här:</p>
+<ul>
+<li><code>@use</code> <strong>laddar</strong> filen <code>_variables.scss</code></li>
+<li>Allt från filen blir tillgängligt under namespace <code>v</code></li>
+<li>Du måste skriva <code>v.$primary-color</code> – inte bara <code>$primary-color</code></li>
+<li><strong>Du kan bara läsa</strong> variablerna, inte ändra dem</li>
+</ul>
+<h2 id="forward--exponera-moduler-för-andra"><a class="header" href="#forward--exponera-moduler-för-andra">@forward – Exponera moduler för andra</a></h2>
+<p><strong>@forward låter en fil dela vidare innehål från andra filer. Det är som att säga "användare av denna fil kan också nå dessa variabler".</strong></p>
+<pre><code class="language-scss">// abstracts/_index.scss
+@forward 'variables';
+@forward 'mixins';
+@forward 'functions';
+</code></pre>
+<p>Nu kan andra filer göra detta:</p>
+<pre><code class="language-scss">// components/_card.scss
+@use '../abstracts' as a;  // Laddar index.scss
+
+.card {
+  border-radius: a.$radius-md;      // Från variables via forward
+  @include a.flex-center;            // Från mixins via forward
+  font-size: a.rem(16);              // Från functions via forward
+}
+</code></pre>
+<p>Det viktiga här:</p>
+<ul>
+<li><code>@forward</code> <strong>exponerar</strong> innehålet från andra filer</li>
+<li>Den som använder <code>@use '../abstracts'</code> får tillgång till allt som är forwardat</li>
+<li>Det är bättre än att räkna upp många <code>@use</code>-rader</li>
+</ul>
+<h2 id="skillnad-mellan-use-och-forward"><a class="header" href="#skillnad-mellan-use-och-forward">Skillnad mellan @use och @forward</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>Aspekt</th><th>@use</th><th>@forward</th></tr></thead><tbody>
+<tr><td><strong>Vad gör det?</strong></td><td>Laddar och använder en modul</td><td>Exponerar innehål från andra moduler</td></tr>
+<tr><td><strong>Syfte</strong></td><td>"Jag behöver detta i min fil"</td><td>"Andra ska kunna nå detta genom mig"</td></tr>
+<tr><td><strong>Typ av fil</strong></td><td>Vilken fil som helst</td><td>Ofta index.scss, ett "publikt API"</td></tr>
+<tr><td><strong>Namespace</strong></td><td>Ja, du måste använda det</td><td>Ja, det passeras vidare</td></tr>
+</tbody></table>
+</div>
+<h3 id="praktiskt-exempel-utan-och-med-forward"><a class="header" href="#praktiskt-exempel-utan-och-med-forward">Praktiskt exempel: utan och med @forward</a></h3>
+<p><strong>Version 1: Utan @forward (många @use)</strong></p>
+<pre><code class="language-scss">// components/_card.scss
+@use '../abstracts/variables' as v;  // Måste importa var för sig
+@use '../abstracts/mixins' as m;
+@use '../abstracts/functions' as f;
+
+.card {
+  border-radius: v.$radius-md;
+  @include m.flex-center;
+  font-size: f.rem(16);
+}
+</code></pre>
+<p><strong>Version 2: Med @forward (renare)</strong></p>
+<pre><code class="language-scss">// abstracts/_index.scss – en central start
+@forward 'variables';
+@forward 'mixins';
+@forward 'functions';
+</code></pre>
+<pre><code class="language-scss">// components/_card.scss – mycket renare
+@use '../abstracts' as a;  // En import istället för tre
+
+.card {
+  border-radius: a.$radius-md;  // Tillgängligt via forward
+  @include a.flex-center;        // Tillgängligt via forward
+  font-size: a.rem(16);          // Tillgängligt via forward
+}
+</code></pre>
+<p>Den andra versionen är mycket enklare att läsa och underhålla.</p>
+<h2 id="när-använder-man-vad"><a class="header" href="#när-använder-man-vad">När använder man vad?</a></h2>
+<p><strong>Använd @use när:</strong></p>
+<ul>
+<li>Du behöver innehål från en modul i din nuvarande fil</li>
+<li>Du vill explicit visa vad du är beroende av</li>
+<li>Du skriver en komponentfil eller en fil som faktiskt gör något</li>
+</ul>
+<p><strong>Använd @forward när:</strong></p>
+<ul>
+<li>Du bygger en "samling" av moduler (som abstracts/)</li>
+<li>Du vill skapa ett rent offentligt API för mappen</li>
+<li>Du vill göra det enklare för andra filer att importera</li>
+</ul>
+<h2 id="fullständigt-praktiskt-exempel"><a class="header" href="#fullständigt-praktiskt-exempel">Fullständigt praktiskt exempel</a></h2>
+<p><strong>Mappstruktur:</strong></p>
+<pre><code class="language-text">SCSS/
+  abstracts/
+    _variables.scss   (definierar $primary-color, osv)
+    _mixins.scss      (definierar flex-center mixin)
+    _functions.scss   (definierar rem() funktion)
+    _index.scss       (forwardar allt)
+  components/
+    _button.scss      (använder @use för abstracts)
+    _card.scss        (använder @use för abstracts)
+  main.scss           (importerar komponenter)
+</code></pre>
+<p><strong>abstracts/_index.scss – Det centrala API:et:</strong></p>
+<pre><code class="language-scss">// Denna fil samlar allt från abstracts-mappen
+@forward 'variables';
+@forward 'mixins';
+@forward 'functions';
+</code></pre>
+<p><strong>components/_button.scss – Använder @use:</strong></p>
+<pre><code class="language-scss">@use '../abstracts' as a;  // Laddar allt som är forwardat
+
+.button {
+  background: a.$primary-color;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: a.$radius-md;
+  font-size: a.rem(16);
+
+  &amp;:hover {
+    @include a.focus-ring;  // Från abstracts/mixins via forward
+  }
+}
+</code></pre>
+<p><strong>main.scss – Slutligen:</strong></p>
+<pre><code class="language-scss">@use 'abstracts';           // Får allt från abstracts/_index.scss
+@use 'components/button';   // Komponenten laddar redan abstracts
+@use 'components/card';
+</code></pre>
+<p>Resultatet: Mycket tydligt, lätt att underhålla och enkelt att utöka!</p>
+<h2 id="migrering-från-import"><a class="header" href="#migrering-från-import">Migrering från @import</a></h2>
+<ol>
+<li>Byt @import mot @use i varje fil.</li>
+<li>Lägg till namespace där variabler och mixins används.</li>
+<li>Skapa indexfiler med @forward för mappar som abstracts.</li>
+<li>Kontrollera att builden ger samma CSS-output som tidigare.</li>
+</ol>
+<h2 id="när-ska-as--användas"><a class="header" href="#när-ska-as--användas">När ska <code>as *</code> användas?</a></h2>
+<p>Du kan skriva <code>as *</code> för att ta bort namespace:</p>
+<pre><code class="language-scss">@use '../abstracts' as *;  // Nu kan du skriva $primary-color direkt
+
+.button {
+  background: $primary-color;  // Fungerar, men oklart varifrån det kommer
+}
+</code></pre>
+<p><strong>Rekommendation:</strong> Undvik <code>as *</code> i större projekt. Det gör koden svårare att förstå och underhålla. Det är bättre att alltid använda ett tydligt namespace så att det är klart varifrån varje symbol kommer.</p>
+<h2 id="säkerhet-och-robusthet-3"><a class="header" href="#säkerhet-och-robusthet-3">Säkerhet och robusthet</a></h2>
+<p>Tydliga moduler minskar risken för oavsiktliga stilkrockar i kritiska komponenter, till exempel formulär för inloggning. Mindre överraskningar i CSS minskar risken för regressionsfel vid release.</p>
+<h2 id="sammanfattning-64"><a class="header" href="#sammanfattning-64">Sammanfattning</a></h2>
+<ul>
+<li>@use ersätter @import i modern Sass.</li>
+<li>Namespace gör beroenden tydliga.</li>
+<li>@forward används för att bygga rena offentliga API:er mellan SCSS-filer.</li>
+<li>Moduler gör projektet enklare att skala i team.</li>
+</ul>
+<h2 id="se-även-4"><a class="header" href="#se-även-4">Se även</a></h2>
+<ul>
+<li><a href="SCSS/./sju-ett-struktur.html">7-1 Struktur med importer</a> – hur @use/@forward används i praktisk mappstruktur</li>
+<li><a href="SCSS/./variabler-maps.html">Variabler och Maps</a> – vad som oftast exporteras via @forward</li>
+</ul>
+<h2 id="Övningar-4"><a class="header" href="#Övningar-4">Övningar</a></h2>
+<ol>
+<li>Bygg en abstracts-map med variables, functions och mixins samt en _index.scss med @forward.</li>
+<li>Refaktorera två komponentfiler så att de använder @use med namespace.</li>
+<li>Testa as * och förklara när det kan vara okej och när det bör undvikas.</li>
+</ol>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="design-tokens-och-css-custom-properties"><a class="header" href="#design-tokens-och-css-custom-properties">Design tokens och CSS custom properties</a></h1>
+<p>Design tokens är namngivna värden för till exempel färg, spacing och typografi. Tanken är att beskriva designbeslut en gång och återanvända dem konsekvent i hela projektet.</p>
+<h2 id="varför-kombinera-scss-och-css-variabler"><a class="header" href="#varför-kombinera-scss-och-css-variabler">Varför kombinera SCSS och CSS-variabler?</a></h2>
+<p>SCSS-variabler används vid kompilering. CSS custom properties (anpassade egenskaper) lever kvar i webbläsaren.</p>
+<p>Det betyder att du kan:</p>
+<ol>
+<li>Använda SCSS för struktur och logik i build.</li>
+<li>Använda CSS custom properties för runtime (körtid), till exempel tema-byte.</li>
+</ol>
+<h2 id="exempel-på-tokens-i-scss"><a class="header" href="#exempel-på-tokens-i-scss">Exempel på tokens i SCSS</a></h2>
+<pre><code class="language-scss">$color-brand-500: #0b6bcb;
+$color-surface-100: #f7f9fc;
+$space-md: 1rem;
+$radius-md: 0.5rem;
+</code></pre>
+<h2 id="exportera-tokens-till-css-custom-properties"><a class="header" href="#exportera-tokens-till-css-custom-properties">Exportera tokens till CSS custom properties</a></h2>
+<pre><code class="language-scss">:root {
+  --color-brand-500: #0b6bcb;
+  --color-surface-100: #f7f9fc;
+  --space-md: 1rem;
+  --radius-md: 0.5rem;
+}
+</code></pre>
+<h2 id="användning-i-komponenter"><a class="header" href="#användning-i-komponenter">Användning i komponenter</a></h2>
+<pre><code class="language-scss">.card {
+  background: var(--color-surface-100);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+}
+
+.button {
+  background: var(--color-brand-500);
+  color: #fff;
+}
+</code></pre>
+<h2 id="tema-med-data-attribut"><a class="header" href="#tema-med-data-attribut">Tema med data-attribut</a></h2>
+<pre><code class="language-scss">:root {
+  --color-text: #1b1f23;
+  --color-bg: #ffffff;
+}
+
+[data-theme='dark'] {
+  --color-text: #e6edf3;
+  --color-bg: #0d1117;
+}
+
+body {
+  color: var(--color-text);
+  background: var(--color-bg);
+}
+</code></pre>
+<p>Med JavaScript kan du byta tema utan ny build.</p>
+<h2 id="token-nivåer"><a class="header" href="#token-nivåer">Token-nivåer</a></h2>
+<p>En vanlig modell är tre nivåer:</p>
+<ol>
+<li>Primitive tokens (grundvärden), till exempel blå-500.</li>
+<li>Semantic tokens (semantiska värden), till exempel color-text-primary.</li>
+<li>Component tokens (komponentspecifika), till exempel button-primary-bg.</li>
+</ol>
+<p>Denna uppdelning gör det lättare att byta utseende utan att skriva om all CSS.</p>
+<h2 id="vanliga-misstag-8"><a class="header" href="#vanliga-misstag-8">Vanliga misstag</a></h2>
+<ol>
+<li>Direkt hårdkodning i komponenter i stället för tokens.</li>
+<li>Otydliga token-namn som color1, color2.</li>
+<li>För många nästan likadana tokens.</li>
+</ol>
+<h2 id="säkerhet-och-robusthet-4"><a class="header" href="#säkerhet-och-robusthet-4">Säkerhet och robusthet</a></h2>
+<p>Låt inte användardata skriva direkt till stil-attribut utan validering. Felaktiga eller oväntade värden kan ge trasad layout och i vissa fall påverka användbarhet på kritiska sidor.</p>
+<h2 id="sammanfattning-65"><a class="header" href="#sammanfattning-65">Sammanfattning</a></h2>
+<ul>
+<li>Design tokens ger konsekvens och skalar bra i team.</li>
+<li>SCSS hanterar struktur vid kompilering.</li>
+<li>CSS custom properties möjliggör dynamik i webbläsaren.</li>
+<li>Kombinationen är en praktisk väg till theming och designsystem.</li>
+</ul>
+<h2 id="se-även-5"><a class="header" href="#se-även-5">Se även</a></h2>
+<ul>
+<li><a href="SCSS/./variabler-maps.html">Variabler och Maps</a> – hur man strukturerar tokens i SCSS</li>
+<li><a href="SCSS/./theming.html">Theming: ljust och mörkt tema</a> – tokens i praktiken för tema-system</li>
+<li><a href="SCSS/./responsiv-breakpoints.html">Responsiv SCSS med breakpoints</a> – responsive tokens</li>
+</ul>
+<h2 id="Övningar-5"><a class="header" href="#Övningar-5">Övningar</a></h2>
+<ol>
+<li>Skapa fem färgtokens och fem spacing-tokens i :root.</li>
+<li>Bygg en card-komponent som endast använder var().</li>
+<li>Skapa ett dark theme med data-theme och visa skillnaden mellan teman.</li>
+</ol>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="responsiv-scss-med-breakpoints"><a class="header" href="#responsiv-scss-med-breakpoints">Responsiv SCSS med breakpoints</a></h1>
+<p>Responsiv design betyder att layouten anpassar sig till olika skärmstorlekar. I SCSS kan du strukturera detta med maps och mixins för att undvika upprepning.</p>
+<h2 id="mobile-first"><a class="header" href="#mobile-first">Mobile first</a></h2>
+<p>Mobile first (mobil först) innebär att du skriver grundstilar för små skärmar först och sedan lägger till regler för större skärmar med min-width.</p>
+<pre><code class="language-scss">.card-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+</code></pre>
+<h2 id="breakpoints-i-en-map"><a class="header" href="#breakpoints-i-en-map">Breakpoints i en map</a></h2>
+<pre><code class="language-scss">$breakpoints: (
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+);
+</code></pre>
+<h2 id="mixin-för-media-query"><a class="header" href="#mixin-för-media-query">Mixin för media query</a></h2>
+<pre><code class="language-scss">@use 'sass:map';
+
+$breakpoints: (
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+);
+
+@mixin up($size) {
+  $value: map.get($breakpoints, $size);
+
+  @media (min-width: $value) {
+    @content;
+  }
+}
+</code></pre>
+<p>Användning:</p>
+<pre><code class="language-scss">.container {
+  padding: 1rem;
+
+  @include up(md) {
+    padding: 2rem;
+  }
+
+  @include up(lg) {
+    max-width: 1100px;
+    margin-inline: auto;
+  }
+}
+</code></pre>
+<h2 id="struktur-i-7-1"><a class="header" href="#struktur-i-7-1">Struktur i 7-1</a></h2>
+<p>Placera breakpoint-map och mixin i abstracts.</p>
+<ul>
+<li>abstracts/_variables.scss för breakpoint-värden</li>
+<li>abstracts/_mixins.scss för up()-mixin</li>
+</ul>
+<p>Då får alla komponenter samma responsiva regler.</p>
+<h2 id="exempel-responsiv-navigation"><a class="header" href="#exempel-responsiv-navigation">Exempel: responsiv navigation</a></h2>
+<pre><code class="language-scss">.nav {
+  display: none;
+}
+
+.menu-toggle {
+  display: inline-flex;
+}
+
+@include up(md) {
+  .nav {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .menu-toggle {
+    display: none;
+  }
+}
+</code></pre>
+<h2 id="vanliga-misstag-9"><a class="header" href="#vanliga-misstag-9">Vanliga misstag</a></h2>
+<ol>
+<li>Blanda många godtyckliga breakpoint-värden i olika filer.</li>
+<li>Skriva desktop first och mobile first samtidigt utan plan.</li>
+<li>Duplicera samma media query i varje komponent i stället för att standardisera.</li>
+</ol>
+<h2 id="tillgänglighet-och-robusthet"><a class="header" href="#tillgänglighet-och-robusthet">Tillgänglighet och robusthet</a></h2>
+<p>Responsiv design handlar också om läsbarhet. Kontrollera radlängd, textstorlek och klickytor på små skärmar så att sidan fungerar för fler användare.</p>
+<h2 id="sammanfattning-66"><a class="header" href="#sammanfattning-66">Sammanfattning</a></h2>
+<ul>
+<li>Mobile first ger en stabil grund.</li>
+<li>Maps och mixins gör breakpoints konsekventa.</li>
+<li>Samma breakpoint-system i hela projektet minskar buggar.</li>
+<li>Responsiv kod ska vara både tekniskt och visuellt hållbar.</li>
+</ul>
+<h2 id="se-även-6"><a class="header" href="#se-även-6">Se även</a></h2>
+<ul>
+<li><a href="SCSS/./mixins.html">Mixins</a> – breakpoint-mixins med @content</li>
+<li><a href="SCSS/./design-tokens-css-custom-properties.html">Design tokens och CSS custom properties</a> – responsive design tokens</li>
+<li><a href="SCSS/./nesting-selektorstrategi.html">Nesting och selektorstrategi</a> – media queries i nesting</li>
+</ul>
+<h2 id="Övningar-6"><a class="header" href="#Övningar-6">Övningar</a></h2>
+<ol>
+<li>Skapa en responsive card-grid med 1, 2 och 3 kolumner för olika breakpoints.</li>
+<li>Bygg en meny som växlar mellan hamburger och horisontell navigation.</li>
+<li>Flytta alla media queries till ett enhetligt mixin-system.</li>
+</ol>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="loopar-i-praktiken-och-utility-klasser"><a class="header" href="#loopar-i-praktiken-och-utility-klasser">Loopar i praktiken och utility-klasser</a></h1>
+<p>Loopar i SCSS gör det möjligt att generera stora delar av CSS automatiskt. Det passar särskilt bra för utility classes (hjälpklasser), till exempel spacing, textstorlekar och färgvarianter.</p>
+<h2 id="varför-loopar"><a class="header" href="#varför-loopar">Varför loopar?</a></h2>
+<p>Utan loopar skriver du samma mönster många gånger:</p>
+<ul>
+<li>.mt-sm, .mt-md, .mt-lg</li>
+<li>.text-sm, .text-md, .text-lg</li>
+<li>.bg-primary, .bg-success, .bg-danger</li>
+</ul>
+<p>Med loopar blir koden kortare, tydligare och mindre felbenägen.</p>
+<h2 id="exempel-spacing-med-map-och-each"><a class="header" href="#exempel-spacing-med-map-och-each">Exempel: spacing med map och @each</a></h2>
+<pre><code class="language-scss">$spacing: (
+  xs: 0.25rem,
+  sm: 0.5rem,
+  md: 1rem,
+  lg: 1.5rem,
+  xl: 2rem,
+);
+
+@each $name, $value in $spacing {
+  .mt-#{$name} {
+    margin-top: $value;
+  }
+
+  .mb-#{$name} {
+    margin-bottom: $value;
+  }
+
+  .p-#{$name} {
+    padding: $value;
+  }
+}
+</code></pre>
+<h2 id="exempel-färgvarianter"><a class="header" href="#exempel-färgvarianter">Exempel: färgvarianter</a></h2>
+<pre><code class="language-scss">$colors: (
+  primary: #0b6bcb,
+  success: #1a7f37,
+  warning: #9a6700,
+  danger: #cf222e,
+);
+
+@each $name, $value in $colors {
+  .text-#{$name} {
+    color: $value;
+  }
+
+  .bg-#{$name} {
+    background-color: $value;
+    color: #fff;
+  }
+}
+</code></pre>
+<h2 id="exempel-for-loop"><a class="header" href="#exempel-for-loop">Exempel: @for-loop</a></h2>
+<pre><code class="language-scss">@for $i from 1 through 6 {
+  .col-#{$i} {
+    width: calc(($i / 6) * 100%);
+  }
+}
+</code></pre>
+<p>Bra för gridsystem och typografiska nivåer.</p>
+<h2 id="strukturförslag"><a class="header" href="#strukturförslag">Strukturförslag</a></h2>
+<p>Placera loopbaserade hjälpsystem i en egen fil, till exempel components/_utilities.scss eller base/_utilities.scss beroende på projektets konvention.</p>
+<h2 id="när-utility-klasser-är-rätt-val"><a class="header" href="#när-utility-klasser-är-rätt-val">När utility-klasser är rätt val</a></h2>
+<ol>
+<li>Snabb prototyping (prototypframtagning)</li>
+<li>Små variationer av spacing och text</li>
+<li>Enhetligt designsystem</li>
+</ol>
+<h2 id="när-du-bör-vara-försiktig"><a class="header" href="#när-du-bör-vara-försiktig">När du bör vara försiktig</a></h2>
+<ol>
+<li>För många utility-klasser kan ge stor CSS-fil.</li>
+<li>Otydliga namn gör HTML svårläst.</li>
+<li>Blandning av utility och komponentstil utan strategi skapar kaos.</li>
+</ol>
+<h2 id="säkerhet-och-robusthet-5"><a class="header" href="#säkerhet-och-robusthet-5">Säkerhet och robusthet</a></h2>
+<p>Generera inte klassnamn från okontrollerad användardata. Håll klassnamn till fördefinierade tokens så att du inte får oförutsägbar CSS-output.</p>
+<h2 id="sammanfattning-67"><a class="header" href="#sammanfattning-67">Sammanfattning</a></h2>
+<ul>
+<li>Loopar sparar tid och minskar repetitiv kod.</li>
+<li>@each passar för maps med tokens.</li>
+<li>@for passar för sekvenser och steg.</li>
+<li>Utility-klasser blir starka när namn och skala är konsekventa.</li>
+</ul>
+<h2 id="se-även-7"><a class="header" href="#se-även-7">Se även</a></h2>
+<ul>
+<li><a href="SCSS/./variabler-maps.html">Variabler och Maps</a> – maps som grund för loopar</li>
+<li><a href="SCSS/./prestanda-css-output.html">Prestanda och CSS-output</a> – risker med för många utility-klasser</li>
+</ul>
+<h2 id="Övningar-7"><a class="header" href="#Övningar-7">Övningar</a></h2>
+<ol>
+<li>Skapa ett utility-system för margin och padding med minst fem steg.</li>
+<li>Generera textfärger och bakgrundsfärger från en color map.</li>
+<li>Bygg ett enkelt 12-kolumnersystem med @for.</li>
+</ol>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="theming-ljust-och-mörkt-tema"><a class="header" href="#theming-ljust-och-mörkt-tema">Theming: ljust och mörkt tema</a></h1>
+<p>Theming innebär att samma komponenter kan få olika visuella uttryck utan att HTML-strukturen behöver ändras. Vanligast är light theme (ljust tema) och dark theme (mörkt tema).</p>
+<h2 id="varför-css-custom-properties-för-tema"><a class="header" href="#varför-css-custom-properties-för-tema">Varför CSS custom properties för tema?</a></h2>
+<p>Du har lärt dig om SCSS-variabler, men för tema använder vi istället <strong>CSS custom properties</strong> (CSS-variabler). Här är varför:</p>
+<div class="table-wrapper"><table><thead><tr><th>Aspekt</th><th>SCSS-variabler</th><th>CSS custom properties</th></tr></thead><tbody>
+<tr><td><strong>Kompilering</strong></td><td>Ersätts vid build, försvinner</td><td>Lever i den slutliga CSS:en</td></tr>
+<tr><td><strong>Ändring</strong></td><td>Kräver ombyggnad</td><td>Kan ändras utan ombyggnad</td></tr>
+<tr><td><strong>JavaScript</strong></td><td>Ingen åtkomst</td><td>Kan läsas och skrivas med JS</td></tr>
+<tr><td><strong>Tema-byte</strong></td><td>Måste bygga om för varje tema</td><td>Ändra värden, omedelbar effekt</td></tr>
+</tbody></table>
+</div>
+<p><strong>Exempel på skillnaden:</strong></p>
+<pre><code class="language-scss">// SCSS-variabel – ersätts vid kompilering
+$primary-color: #007aff;
+
+.button {
+  background: $primary-color;  // Blir: background: #007aff;
+}
+</code></pre>
+<pre><code class="language-css">/* CSS custom property – lever kvar i CSS */
+:root {
+  --primary-color: #007aff;
+}
+
+.button {
+  background: var(--primary-color);  /* Kan ändras under körning! */
+}
+</code></pre>
+<p>Om du senare vill byta tema för användaren behöver du bara ändra CSS-variablerna – inget build eller omstart krävs. Det är det som gör CSS-variabler så kraftfulla för tema.</p>
+<h2 id="steg-för-steg-bygg-ett-mörkt-och-ljust-tema"><a class="header" href="#steg-för-steg-bygg-ett-mörkt-och-ljust-tema">Steg-för-steg: Bygg ett mörkt och ljust tema</a></h2>
+<p>Här är en praktisk guide med mappstruktur och kod för varje steg.</p>
+<h3 id="steg-1-skapa-mappstruktur-för-teman"><a class="header" href="#steg-1-skapa-mappstruktur-för-teman">Steg 1: Skapa mappstruktur för teman</a></h3>
+<pre><code class="language-text">SCSS/
+  abstracts/
+    _variables.scss     # Grundvariabler (inte färger än)
+    _index.scss
+  themes/
+    _light.scss         # Light theme
+    _dark.scss          # Dark theme
+    _index.scss         # Exporterar båda
+  components/
+    _card.scss
+    _button.scss
+  main.scss
+</code></pre>
+<h3 id="steg-2-definiera-grundvariabler-abstracts_variablesscss"><a class="header" href="#steg-2-definiera-grundvariabler-abstracts_variablesscss">Steg 2: Definiera grundvariabler (abstracts/_variables.scss)</a></h3>
+<p>Här definierar du värdena som inte är temaspecifika – spacing, typografi osv.</p>
+<pre><code class="language-scss">// abstracts/_variables.scss
+
+// Spacing
+$spacing-xs: 0.25rem;
+$spacing-sm: 0.5rem;
+$spacing-md: 1rem;
+$spacing-lg: 1.5rem;
+$spacing-xl: 2rem;
+
+// Typografi
+$font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+$font-size-base: 1rem;
+$font-size-sm: 0.875rem;
+$font-size-lg: 1.125rem;
+
+// Border radius
+$radius-sm: 0.25rem;
+$radius-md: 0.5rem;
+$radius-lg: 0.75rem;
+</code></pre>
+<h3 id="steg-3-skapa-light-theme-themes_lightscss"><a class="header" href="#steg-3-skapa-light-theme-themes_lightscss">Steg 3: Skapa light theme (themes/_light.scss)</a></h3>
+<pre><code class="language-scss">// themes/_light.scss
+
+:root {
+  // Bakgrund
+  --color-bg: #ffffff;
+  --color-surface: #f6f8fa;
+  --color-surface-secondary: #eaeef2;
+
+  // Text
+  --color-text: #1f2328;
+  --color-text-secondary: #656d76;
+  --color-text-tertiary: #8b949e;
+
+  // Primär färg (brand)
+  --color-primary: #0b6bcb;
+  --color-primary-hover: #0969da;
+  --color-primary-active: #033d8b;
+
+  // Status färger
+  --color-success: #1a7f37;
+  --color-warning: #9a6700;
+  --color-danger: #cf222e;
+  --color-info: #0969da;
+
+  // Fokus
+  --color-focus: #0b6bcb;
+
+  // Border
+  --color-border: #d0d7de;
+}
+</code></pre>
+<h3 id="steg-4-skapa-dark-theme-themes_darkscss"><a class="header" href="#steg-4-skapa-dark-theme-themes_darkscss">Steg 4: Skapa dark theme (themes/_dark.scss)</a></h3>
+<pre><code class="language-scss">// themes/_dark.scss
+
+[data-theme='dark'] {
+  // Bakgrund
+  --color-bg: #0d1117;
+  --color-surface: #161b22;
+  --color-surface-secondary: #21262d;
+
+  // Text
+  --color-text: #e6edf3;
+  --color-text-secondary: #8b949e;
+  --color-text-tertiary: #6e7681;
+
+  // Primär färg (brand)
+  --color-primary: #58a6ff;
+  --color-primary-hover: #79c0ff;
+  --color-primary-active: #0969da;
+
+  // Status färger
+  --color-success: #3fb950;
+  --color-warning: #d29922;
+  --color-danger: #f85149;
+  --color-info: #79c0ff;
+
+  // Fokus
+  --color-focus: #58a6ff;
+
+  // Border
+  --color-border: #30363d;
+}
+</code></pre>
+<p><strong>Viktigt:</strong> Lägg märke till att farger är olika för dark theme – inte bara mörkare versioner av light. <code>--color-primary</code> är en helt annan färg i dark mode för bättre kontrast.</p>
+<h3 id="steg-5-exportera-teman-themes_indexscss"><a class="header" href="#steg-5-exportera-teman-themes_indexscss">Steg 5: Exportera teman (themes/_index.scss)</a></h3>
+<pre><code class="language-scss">// themes/_index.scss
+@forward 'light';
+@forward 'dark';
+</code></pre>
+<h3 id="steg-6-skapa-komponenter-som-använder-tokens-components_cardscss"><a class="header" href="#steg-6-skapa-komponenter-som-använder-tokens-components_cardscss">Steg 6: Skapa komponenter som använder tokens (components/_card.scss)</a></h3>
+<pre><code class="language-scss">// components/_card.scss
+@use '../abstracts/variables' as v;
+
+.card {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: v.$radius-md;
+  padding: v.$spacing-lg;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.card__title {
+  color: var(--color-text);
+  font-size: v.$font-size-lg;
+  margin: 0 0 v.$spacing-md 0;
+}
+
+.card__text {
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+</code></pre>
+<h3 id="steg-7-skapa-knappar-med-tema-components_buttonscss"><a class="header" href="#steg-7-skapa-knappar-med-tema-components_buttonscss">Steg 7: Skapa knappar med tema (components/_button.scss)</a></h3>
+<pre><code class="language-scss">// components/_button.scss
+@use '../abstracts/variables' as v;
+
+.button {
+  border: none;
+  border-radius: v.$radius-md;
+  padding: v.$spacing-sm v.$spacing-md;
+  font-family: v.$font-family-base;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &amp;:focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  &amp;:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// Primär knapp
+.button--primary {
+  background: var(--color-primary);
+  color: #fff;
+
+  &amp;:hover {
+    background: var(--color-primary-hover);
+  }
+
+  &amp;:active {
+    background: var(--color-primary-active);
+  }
+}
+
+// Sekundär knapp (outline)
+.button--secondary {
+  background: transparent;
+  border: 2px solid var(--color-primary);
+  color: var(--color-primary);
+
+  &amp;:hover {
+    background: var(--color-surface-secondary);
+  }
+}
+
+// Danger knapp
+.button--danger {
+  background: var(--color-danger);
+  color: #fff;
+
+  &amp;:hover {
+    filter: brightness(1.1);  // Lite ljusare vid hover
+  }
+}
+</code></pre>
+<h3 id="steg-8-anslut-allt-i-mainscss"><a class="header" href="#steg-8-anslut-allt-i-mainscss">Steg 8: Anslut allt i main.scss</a></h3>
+<pre><code class="language-scss">// main.scss
+@use 'abstracts/variables';
+@use 'themes';              // Importerar både light och dark
+@use 'components/card';
+@use 'components/button';
+</code></pre>
+<h3 id="steg-9-använd-det-i-html"><a class="header" href="#steg-9-använd-det-i-html">Steg 9: Använd det i HTML</a></h3>
+<pre><code class="language-html">&lt;!-- Light theme (standard) --&gt;
+&lt;div class="card"&gt;
+  &lt;h3 class="card__title"&gt;Min kort&lt;/h3&gt;
+  &lt;p class="card__text"&gt;Innehål här...&lt;/p&gt;
+  &lt;button class="button button--primary"&gt;Klicka&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;!-- Dark theme --&gt;
+&lt;html data-theme="dark"&gt;
+  &lt;body&gt;
+    &lt;div class="card"&gt;
+      &lt;h3 class="card__title"&gt;Min kort&lt;/h3&gt;
+      &lt;p class="card__text"&gt;Innehål här...&lt;/p&gt;
+      &lt;button class="button button--primary"&gt;Klicka&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<h3 id="steg-10-lägg-till-tema-switcher-med-javascript-valfritt"><a class="header" href="#steg-10-lägg-till-tema-switcher-med-javascript-valfritt">Steg 10: Lägg till tema-switcher med JavaScript (valfritt)</a></h3>
+<pre><code class="language-html">&lt;button id="theme-toggle"&gt;🌙 Dark&lt;/button&gt;
+
+&lt;script&gt;
+  const toggle = document.getElementById('theme-toggle');
+  const html = document.documentElement;
+
+  toggle.addEventListener('click', () =&gt; {
+    const current = html.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    toggle.textContent = next === 'dark' ? '☀️ Light' : '🌙 Dark';
+  });
+
+  // Återställ sparad tema vid sidladdning
+  const saved = localStorage.getItem('theme') || 'light';
+  html.setAttribute('data-theme', saved);
+  toggle.textContent = saved === 'dark' ? '☀️ Light' : '🌙 Dark';
+&lt;/script&gt;
+</code></pre>
+<h2 id="sammanfattning-av-processen"><a class="header" href="#sammanfattning-av-processen">Sammanfattning av processen</a></h2>
+<ol>
+<li><strong>Abstracts:</strong> Grundvariabler som spacing, typografi (samma i båda teman)</li>
+<li><strong>Themes:</strong> CSS custom properties för färger (olika per tema)</li>
+<li><strong>Components:</strong> Komponenter som använder <code>var()</code> för färger</li>
+<li><strong>main.scss:</strong> Sammanslutning av alles</li>
+<li><strong>HTML:</strong> Användning av <code>data-theme</code> för att byta tema</li>
+</ol>
+<p>Fördelarna:</p>
+<ul>
+<li>Samma SCSS-kod för båda teman</li>
+<li>Temabyte utan ny build</li>
+<li>Lätt att lägga till fler teman senare</li>
+<li>Tydlig indelning mellan struktur och design</li>
+</ul>
+<h2 id="automatisk-tema-uppstart"><a class="header" href="#automatisk-tema-uppstart">Automatisk tema-uppstart</a></h2>
+<p>Du kan även utgå från prefers-color-scheme.</p>
+<pre><code class="language-scss">@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #0d1117;
+    --color-surface: #161b22;
+    --color-text: #e6edf3;
+  }
+}
+</code></pre>
+<h2 id="kontrast-och-tillgänglighet"><a class="header" href="#kontrast-och-tillgänglighet">Kontrast och tillgänglighet</a></h2>
+<p>När du bygger tema måste du kontrollera kontrast mellan text och bakgrund. Låg kontrast gör innehåll svårt att läsa, särskilt i mörka teman.</p>
+<h2 id="vanliga-misstag-10"><a class="header" href="#vanliga-misstag-10">Vanliga misstag</a></h2>
+<ol>
+<li>Hårdkodade färger i komponenter som kringgår tokens.</li>
+<li>Endast färgbyte utan att kontrollera hover, focus och disabled.</li>
+<li>Mörkt tema där grå nyanser blir för lika varandra.</li>
+</ol>
+<h2 id="säkerhet-och-robusthet-6"><a class="header" href="#säkerhet-och-robusthet-6">Säkerhet och robusthet</a></h2>
+<p>Tema-byte ska inte påverka funktionalitet. Om fokusmarkeringar försvinner i ett tema kan användaren missa viktiga interaktioner i formulär och dialoger.</p>
+<h2 id="sammanfattning-68"><a class="header" href="#sammanfattning-68">Sammanfattning</a></h2>
+<ul>
+<li>Theming byggs bäst med semantiska tokens.</li>
+<li>CSS custom properties gör tema-byte möjligt utan ny build.</li>
+<li>SCSS hjälper till med struktur och återanvändning.</li>
+<li>Kontrast och fokusstilar måste testas i alla teman.</li>
+</ul>
+<h2 id="se-även-8"><a class="header" href="#se-även-8">Se även</a></h2>
+<ul>
+<li><a href="SCSS/./design-tokens-css-custom-properties.html">Design tokens och CSS custom properties</a> – grunderna för tokens</li>
+<li><a href="SCSS/./variabler-maps.html">Variabler och Maps</a> – hur man genererar CSS-variabler från maps</li>
+<li><a href="SCSS/./tillganglighet.html">Tillgänglighet i SCSS</a> – fokusstilar och kontrast i teman</li>
+</ul>
+<h2 id="Övningar-8"><a class="header" href="#Övningar-8">Övningar</a></h2>
+<ol>
+<li>Skapa light och dark theme med data-theme.</li>
+<li>Bygg en kortkomponent och en knapp som fungerar i båda teman.</li>
+<li>Lägg till fokusstil som syns tydligt i båda lägena.</li>
+</ol>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="prestanda-och-css-output"><a class="header" href="#prestanda-och-css-output">Prestanda och CSS-output</a></h1>
+<p>SCSS gör det enkelt att skriva mycket kod snabbt. Samtidigt kan för mycket genererad CSS ge större filer, långsammare laddning och mer komplex felsökning.</p>
+<h2 id="varför-tänka-på-output"><a class="header" href="#varför-tänka-på-output">Varför tänka på output?</a></h2>
+<p>Webbläsaren läser bara slutlig CSS. Om SCSS-koden genererar tusentals rader oanvända regler påverkar det prestanda, särskilt på mobila nätverk.</p>
+<h2 id="vanliga-orsaker-till-stor-css"><a class="header" href="#vanliga-orsaker-till-stor-css">Vanliga orsaker till stor CSS</a></h2>
+<ol>
+<li>För breda loopar med många varianter som aldrig används.</li>
+<li>Dubblerad kod från mixins i många komponenter.</li>
+<li>Djup nesting som skapar långa selektorer.</li>
+<li>Oklara imports där samma filer används flera gånger.</li>
+</ol>
+<h2 id="praktiskt-exempel-övergenerering"><a class="header" href="#praktiskt-exempel-övergenerering">Praktiskt exempel: övergenerering</a></h2>
+<pre><code class="language-scss">$colors: (
+  blue: #007aff,
+  red: #cf222e,
+  green: #1a7f37,
+);
+
+$sizes: (
+  sm: 0.875rem,
+  md: 1rem,
+  lg: 1.25rem,
+);
+
+@each $color-name, $color in $colors {
+  @each $size-name, $size in $sizes {
+    .badge-#{$color-name}-#{$size-name} {
+      background: $color;
+      font-size: $size;
+    }
+  }
+}
+</code></pre>
+<p>I små projekt är detta okej. I stora projekt kan kombinationer växa exponentiellt.</p>
+<h2 id="strategier-för-bättre-prestanda"><a class="header" href="#strategier-för-bättre-prestanda">Strategier för bättre prestanda</a></h2>
+<ol>
+<li>Generera bara de varianter som faktiskt används.</li>
+<li>Håll utility-system fokuserat och token-baserat.</li>
+<li>Mät filstorlek regelbundet i build-pipeline.</li>
+<li>Använd minifiering i produktion.</li>
+</ol>
+<h2 id="specificitet-och-renderingskostnad"><a class="header" href="#specificitet-och-renderingskostnad">Specificitet och renderingskostnad</a></h2>
+<p>Långa selektorkedjor kan vara svårare att underhålla och kan påverka renderingen. Kortare, komponentbaserade selektorer är oftast bättre.</p>
+<h2 id="exempel-mer-kontrollerad-loop"><a class="header" href="#exempel-mer-kontrollerad-loop">Exempel: mer kontrollerad loop</a></h2>
+<pre><code class="language-scss">$button-variants: (
+  primary: #0b6bcb,
+  danger: #cf222e,
+);
+
+@each $name, $value in $button-variants {
+  .btn-#{$name} {
+    background: $value;
+    color: #fff;
+  }
+}
+</code></pre>
+<h2 id="säkerhet-och-robusthet-7"><a class="header" href="#säkerhet-och-robusthet-7">Säkerhet och robusthet</a></h2>
+<p>För stor CSS kan leda till att kritiska stilar laddas sent på långsamma enheter. Det kan ge visuellt trasiga vyer i till exempel formulärflöden där tydlig feedback är viktig.</p>
+<h2 id="sammanfattning-69"><a class="header" href="#sammanfattning-69">Sammanfattning</a></h2>
+<ul>
+<li>Optimera SCSS efter faktisk användning.</li>
+<li>Begränsa loopar och varianter till tydliga behov.</li>
+<li>Håll selektorer korta och förutsägbara.</li>
+<li>Kontrollera outputstorlek och minifiera för produktion.</li>
+</ul>
+<h2 id="se-även-9"><a class="header" href="#se-även-9">Se även</a></h2>
+<ul>
+<li><a href="SCSS/./loopar-utility-klasser.html">Loopar i praktiken och utility-klasser</a> – risker med övergenerering</li>
+<li><a href="SCSS/./nesting-selektorstrategi.html">Nesting och selektorstrategi</a> – specificity-problem</li>
+<li><a href="SCSS/./sju-ett-struktur.html">7-1 Struktur med importer</a> – organisering för bättre prestanda</li>
+</ul>
+<h2 id="Övningar-9"><a class="header" href="#Övningar-9">Övningar</a></h2>
+<ol>
+<li>Mät skillnad i CSS-storlek mellan bred och kontrollerad loop.</li>
+<li>Identifiera en komponent med onödigt hög specificitet och förenkla den.</li>
+<li>Skapa en enkel checklista för SCSS-prestanda i teamet.</li>
+</ol>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="tillgänglighet-i-scss"><a class="header" href="#tillgänglighet-i-scss">Tillgänglighet i SCSS</a></h1>
+<p>Tillgänglighet (accessibility) handlar om att fler användare ska kunna förstå och använda gränssnittet. SCSS spelar en viktig roll genom färg, typografi, fokusstilar och rörelse.</p>
+<h2 id="kontrast"><a class="header" href="#kontrast">Kontrast</a></h2>
+<p>Text måste ha tillräcklig kontrast mot bakgrunden för att vara läsbar.</p>
+<pre><code class="language-scss">:root {
+  --color-text: #1f2328;
+  --color-bg: #ffffff;
+}
+
+body {
+  color: var(--color-text);
+  background: var(--color-bg);
+}
+</code></pre>
+<p>Undvik ljusgrå text på vit bakgrund i vanliga textstorlekar.</p>
+<h2 id="fokusstilar"><a class="header" href="#fokusstilar">Fokusstilar</a></h2>
+<p>När användaren navigerar med tangentbord måste fokus synas tydligt.</p>
+<pre><code class="language-scss">.button:focus-visible,
+.link:focus-visible,
+.input:focus-visible {
+  outline: 3px solid #0b6bcb;
+  outline-offset: 2px;
+}
+</code></pre>
+<p>Ta inte bort outline utan att ersätta den med en tydlig variant.</p>
+<h2 id="klickytor"><a class="header" href="#klickytor">Klickytor</a></h2>
+<p>För små klickytor är svåra att använda, särskilt på mobil.</p>
+<pre><code class="language-scss">.icon-button {
+  min-width: 44px;
+  min-height: 44px;
+}
+</code></pre>
+<h2 id="läsbar-typografi"><a class="header" href="#läsbar-typografi">Läsbar typografi</a></h2>
+<pre><code class="language-scss">body {
+  line-height: 1.5;
+  font-size: 1rem;
+}
+
+.article {
+  max-width: 70ch;
+}
+</code></pre>
+<p>Lagom radlängd och radavstånd förbättrar läsbarheten.</p>
+<h2 id="reduced-motion"><a class="header" href="#reduced-motion">Reduced motion</a></h2>
+<p>Vissa användare är känsliga för rörelse. Stöd prefers-reduced-motion.</p>
+<pre><code class="language-scss">@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+</code></pre>
+<h2 id="tillstånd-i-formulär"><a class="header" href="#tillstånd-i-formulär">Tillstånd i formulär</a></h2>
+<p>Färg ensam räcker inte för att kommunicera fel eller framgång. Kombinera färg med text och ikoner i gränssnittet.</p>
+<h2 id="säkerhet-och-robusthet-8"><a class="header" href="#säkerhet-och-robusthet-8">Säkerhet och robusthet</a></h2>
+<p>God tillgänglighet minskar risken att användare missar kritisk information, till exempel varningar, felmeddelanden eller bekräftelser i viktiga flöden.</p>
+<h2 id="sammanfattning-70"><a class="header" href="#sammanfattning-70">Sammanfattning</a></h2>
+<ul>
+<li>Kontrast och fokus är grundläggande tillgänglighet.</li>
+<li>Klickytor och typografi påverkar användbarheten direkt.</li>
+<li>Stöd reduced motion för att minska obehag.</li>
+<li>Tillgänglighet ska testas i alla teman och skärmstorlekar.</li>
+</ul>
+<h2 id="se-även-10"><a class="header" href="#se-även-10">Se även</a></h2>
+<ul>
+<li><a href="SCSS/./theming.html">Theming: ljust och mörkt tema</a> – kontrast i olika teman</li>
+<li><a href="SCSS/./nesting-selektorstrategi.html">Nesting och selektorstrategi</a> – fokusstilar med &amp;:focus-visible</li>
+<li><a href="SCSS/./design-tokens-css-custom-properties.html">Design tokens och CSS custom properties</a> – konsekvent tillgänglighet via tokens</li>
+</ul>
+<h2 id="Övningar-10"><a class="header" href="#Övningar-10">Övningar</a></h2>
+<ol>
+<li>Lägg till fokusstilar för knappar, länkar och formulärfält i ett befintligt projekt.</li>
+<li>Kontrollera kontrast för primär knapp, sekundär knapp och varningsmeddelande.</li>
+<li>Lägg till stöd för prefers-reduced-motion och verifiera resultatet.</li>
+</ol>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="mini-projekt-komponentbibliotek-i-scss"><a class="header" href="#mini-projekt-komponentbibliotek-i-scss">Mini-projekt: komponentbibliotek i SCSS</a></h1>
+<p>I den här lektionen bygger du ett litet komponentbibliotek med samma principer som i tidigare kapitel: tokens, mixins, moduler, responsiv design och tillgänglighet.</p>
+<h2 id="mål"><a class="header" href="#mål">Mål</a></h2>
+<p>Efter övningen ska du kunna:</p>
+<ol>
+<li>Strukturera SCSS med moduler.</li>
+<li>Skapa återanvändbara komponenter.</li>
+<li>Bygga light och dark theme.</li>
+<li>Säkerställa grundläggande tillgänglighet.</li>
+</ol>
+<h2 id="föreslagen-struktur"><a class="header" href="#föreslagen-struktur">Föreslagen struktur</a></h2>
+<pre><code class="language-text">SCSS/
+  abstracts/
+    _variables.scss
+    _functions.scss
+    _mixins.scss
+    _index.scss
+  components/
+    _button.scss
+    _card.scss
+    _input.scss
+  themes/
+    _theme-light.scss
+    _theme-dark.scss
+  main.scss
+</code></pre>
+<h2 id="steg-1-tokens"><a class="header" href="#steg-1-tokens">Steg 1: Tokens</a></h2>
+<pre><code class="language-scss">// abstracts/_variables.scss
+$radius-md: 0.5rem;
+$space-md: 1rem;
+$space-lg: 1.5rem;
+</code></pre>
+<pre><code class="language-scss">// themes/_theme-light.scss
+:root {
+  --color-bg: #ffffff;
+  --color-surface: #f6f8fa;
+  --color-text: #1f2328;
+  --color-primary: #0b6bcb;
+}
+</code></pre>
+<pre><code class="language-scss">// themes/_theme-dark.scss
+[data-theme='dark'] {
+  --color-bg: #0d1117;
+  --color-surface: #161b22;
+  --color-text: #e6edf3;
+  --color-primary: #58a6ff;
+}
+</code></pre>
+<h2 id="steg-2-mixins"><a class="header" href="#steg-2-mixins">Steg 2: Mixins</a></h2>
+<pre><code class="language-scss">// abstracts/_mixins.scss
+@mixin focus-ring {
+  &amp;:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}
+</code></pre>
+<h2 id="steg-3-komponenter"><a class="header" href="#steg-3-komponenter">Steg 3: Komponenter</a></h2>
+<pre><code class="language-scss">// components/_button.scss
+@use '../abstracts' as a;
+
+.button {
+  border: 0;
+  border-radius: a.$radius-md;
+  padding: 0.625rem 1rem;
+  background: var(--color-primary);
+  color: #fff;
+  cursor: pointer;
+
+  @include a.focus-ring;
+}
+</code></pre>
+<pre><code class="language-scss">// components/_card.scss
+@use '../abstracts' as a;
+
+.card {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-radius: a.$radius-md;
+  padding: a.$space-lg;
+}
+</code></pre>
+<pre><code class="language-scss">// components/_input.scss
+@use '../abstracts' as a;
+
+.input {
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid #d0d7de;
+  border-radius: a.$radius-md;
+  background: var(--color-bg);
+  color: var(--color-text);
+
+  @include a.focus-ring;
+}
+</code></pre>
+<h2 id="steg-4-mainscss"><a class="header" href="#steg-4-mainscss">Steg 4: main.scss</a></h2>
+<pre><code class="language-scss">@use 'abstracts';
+@use 'themes/theme-light';
+@use 'themes/theme-dark';
+@use 'components/button';
+@use 'components/card';
+@use 'components/input';
+</code></pre>
+<h2 id="steg-5-responsiv-förbättring"><a class="header" href="#steg-5-responsiv-förbättring">Steg 5: Responsiv förbättring</a></h2>
+<p>Lägg till en enkel breakpoint-mixin och öka spacing i kort på större skärmar.</p>
+<h2 id="steg-6-testa-kvalitet"><a class="header" href="#steg-6-testa-kvalitet">Steg 6: Testa kvalitet</a></h2>
+<p>Kontrollera:</p>
+<ol>
+<li>Fungerar komponenterna i båda teman?</li>
+<li>Syns fokus tydligt vid tangentbordsnavigering?</li>
+<li>Är kontrasten tillräcklig för text och knappar?</li>
+<li>Ser layouten bra ut på mobil och desktop?</li>
+</ol>
+<h2 id="utmaning-5"><a class="header" href="#utmaning-5">Utmaning</a></h2>
+<p>Bygg även en badge-komponent med tre varianter: info, success och danger. Använd tokens och loop för att undvika duplicerad kod.</p>
+<h2 id="sammanfattning-71"><a class="header" href="#sammanfattning-71">Sammanfattning</a></h2>
+<p>Detta mini-projekt samlar hela SCSS-spåret i en praktisk leverans. Samma arbetssätt går att använda i större frontend-projekt med flera utvecklare.</p>
+<h2 id="se-även--alla-tidigare-scss-kapitel"><a class="header" href="#se-även--alla-tidigare-scss-kapitel">Se även – alla tidigare SCSS-kapitel</a></h2>
+<ul>
+<li><a href="SCSS/./variabler-maps.html">Variabler och Maps</a> – tokens i abstracts/</li>
+<li><a href="SCSS/./funktioner.html">Funktioner i SCSS</a> – för beräkningar i komponenter</li>
+<li><a href="SCSS/./mixins.html">Mixins</a> – återanvändbar logik</li>
+<li><a href="SCSS/./nesting-selektorstrategi.html">Nesting och selektorstrategi</a> – komponentstil</li>
+<li><a href="SCSS/./sju-ett-struktur.html">7-1 Struktur med importer</a> – mapporganisation</li>
+<li><a href="SCSS/./moduler-use-forward.html">Moduler med @use och @forward</a> – moderna imports</li>
+<li><a href="SCSS/./design-tokens-css-custom-properties.html">Design tokens och CSS custom properties</a> – token-system</li>
+<li><a href="SCSS/./theming.html">Theming: ljust och mörkt tema</a> – multi-tema-stöd</li>
+<li><a href="SCSS/./loopar-utility-klasser.html">Loopar i praktiken och utility-klasser</a> – utility-klasser</li>
+<li><a href="SCSS/./tillganglighet.html">Tillgänglighet i SCSS</a> – WCAG-compliance</li>
+</ul>
+<p>Detta projekt samlar all kunskap från SCSS-spåret.</p>
+<h2 id="Övningar-11"><a class="header" href="#Övningar-11">Övningar</a></h2>
+<ol>
+<li>Lägg till en modal-komponent med fokusstil och tema-stöd.</li>
+<li>Skapa utility-klasser för spacing som komplement till komponenterna.</li>
+<li>Dokumentera komponenterna med exempel på användning i HTML.</li>
+</ol>
 
                     </main>
 

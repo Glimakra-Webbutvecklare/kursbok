@@ -155,6 +155,16 @@
   - [Variabler och Maps](./SCSS/variabler-maps.md)
   - [7-1 Struktur med importer](./SCSS/sju-ett-struktur.md)
   - [Mixins](./SCSS/mixins.md)
+  - [Funktioner i SCSS](./SCSS/funktioner.md)
+  - [Nesting och selektorstrategi](./SCSS/nesting-selektorstrategi.md)
+  - [Moduler med @use och @forward](./SCSS/moduler-use-forward.md)
+  - [Design tokens och CSS custom properties](./SCSS/design-tokens-css-custom-properties.md)
+  - [Responsiv SCSS med breakpoints](./SCSS/responsiv-breakpoints.md)
+  - [Loopar i praktiken och utility-klasser](./SCSS/loopar-utility-klasser.md)
+  - [Theming: ljust och mörkt tema](./SCSS/theming.md)
+  - [Prestanda och CSS-output](./SCSS/prestanda-css-output.md)
+  - [Tillgänglighet i SCSS](./SCSS/tillganglighet.md)
+  - [Mini-projekt: komponentbibliotek i SCSS](./SCSS/mini-projekt-komponentbibliotek.md)
 
 <!--
 # Design

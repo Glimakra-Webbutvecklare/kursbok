@@ -182,6 +182,107 @@ $font-sizes: (
 
 Resultatet blir ett komplett bibliotek av hjälpklasser – samma princip som ramverk som Bootstrap och Tailwind CSS bygger på.
 
+## Generera CSS custom properties från maps
+
+En vanlig tillämpning av maps är att generera CSS custom properties (CSS-variabler) som kan ändras i webbläsaren. Detta är särskilt användbart för tema – en color map kan bli CSS-variabler som senare kan bytas dynamiskt.
+
+### Från map till CSS-variabler
+
+```scss
+@use 'sass:map';
+
+// Definiera färg-mappen
+$colors: (
+  primary: #0b6bcb,
+  success: #1a7f37,
+  warning: #9a6700,
+  danger: #cf222e,
+  info: #0969da,
+);
+
+// Generera CSS custom properties från mappen
+:root {
+  @each $name, $color in $colors {
+    --color-#{$name}: #{$color};
+  }
+}
+```
+
+Detta kompileras till:
+
+```css
+:root {
+  --color-primary: #0b6bcb;
+  --color-success: #1a7f37;
+  --color-warning: #9a6700;
+  --color-danger: #cf222e;
+  --color-info: #0969da;
+}
+```
+
+### Praktiskt exempel: teman med maps
+
+```scss
+@use 'sass:map';
+
+// Light theme färger
+$colors-light: (
+  bg: #ffffff,
+  surface: #f6f8fa,
+  text: #1f2328,
+  primary: #0b6bcb,
+);
+
+// Dark theme färger
+$colors-dark: (
+  bg: #0d1117,
+  surface: #161b22,
+  text: #e6edf3,
+  primary: #58a6ff,
+);
+
+// Exportera light theme som standard
+:root {
+  @each $name, $color in $colors-light {
+    --color-#{$name}: #{$color};
+  }
+}
+
+// Exportera dark theme med data-attribut
+[data-theme='dark'] {
+  @each $name, $color in $colors-dark {
+    --color-#{$name}: #{$color};
+  }
+}
+
+// Nu kan komponenter använda dessa
+.card {
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.button {
+  background: var(--color-primary);
+  color: #fff;
+}
+```
+
+**Varför är detta användbara?**
+
+1. Du skriver varje färg en gång i en map
+2. Mappen genererar CSS-variabler automatiskt
+3. CSS-variablerna kan ändras utan ombyggnad
+4. Komponenter använder `var()` istället för hårdkodade färger
+5. Temaväxling blir smidigt och snabbt
+
+Denna kombination av SCSS-maps och CSS custom properties är grunden i moderna designsystem.
+
+## Se även
+
+- [Loopar i praktiken och utility-klasser](./loopar-utility-klasser.md) – hur man använder @each med maps för att generera CSS
+- [Design tokens och CSS custom properties](./design-tokens-css-custom-properties.md) – hur maps kan exporteras som CSS-variabler
+- [Theming: ljust och mörkt tema](./theming.md) – hur maps används för att bygga tema-system
+
 ## Sammanfattning
 
 - SCSS-variabler deklareras med `$namn: värde` och gör koden lätt att underhålla.

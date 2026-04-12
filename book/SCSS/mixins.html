@@ -156,6 +156,9 @@
 <p>Precis som variabler låter oss återanvända <em>värden</em>, låter <strong>mixins</strong> oss återanvända hela <em>CSS-regler</em>. Om du märker att du skriver samma uppsättning CSS-deklarationer om och om igen – till exempel för flexbox-centrering eller mediafrågor – är det ett tecken på att ett mixin kan förenkla koden.</p>
 <h2 id="vad-är-ett-mixin"><a class="header" href="#vad-är-ett-mixin">Vad är ett Mixin?</a></h2>
 <p>Ett <strong>mixin</strong> är ett namngivet block av CSS-regler som kan inkluderas var som helst i din SCSS-kod. Tänk på det som en funktion som istället för att returnera ett värde "klistrar in" ett kodblock.</p>
+<h3 id="en-analogi-muffinsrecept"><a class="header" href="#en-analogi-muffinsrecept">En analogi: Muffinsrecept</a></h3>
+<p>Föreställ dig ett grundmuffinsrecept som innehåller bas-ingredienserna – mjöl, ägg, mjölk och socker. Det är själva <strong>mixinet</strong>. Sedan kan du göra tusentals varianter genom att lägga på olika <strong>toppings</strong> och <strong>fyllningar</strong> – choklad, blåbär, karamell, kokos osv. Det är samma grundrecept, men resultatet ser helt olika ut beroende på vad du väljer att lägga på.</p>
+<p>I SCSS är det precis samma. Du skriver en gång hur en button, en flexbox-center eller en mediafråga fungerar, och sedan varierar du den genom <strong>parametrar</strong> (parametrar är dina toppings). På så sätt får du många olika varianter utan att upprepa hela receptet.</p>
 <pre><code class="language-scss">@mixin flex-center {
   display: flex;
   justify-content: center;
@@ -188,6 +191,55 @@
 </code></pre>
 <h2 id="mixins-med-parametrar"><a class="header" href="#mixins-med-parametrar">Mixins med parametrar</a></h2>
 <p>Mixins blir riktigt kraftfulla när de tar <strong>parametrar</strong> (parameters) – argument som styr vad mixinet genererar. Parametrar deklareras med <code>$</code>-tecken, precis som vanliga variabler.</p>
+<p>Tänk på det så här: grundmuffinsrecepet är mixinet, och parametrarna är de toppings och fyllningar du kan välja. Varje gång du inkluderar mixinet kan du ge det andra "ingredienser" och få en helt annan slut-produkt.</p>
+<h3 id="button-muffin-med-olika-toppings"><a class="header" href="#button-muffin-med-olika-toppings">Button-muffin med olika toppings</a></h3>
+<p>Här är ett exempel som följer muffins-analogin helt genom – en knapp-mixin som tar "topping" och "fyllning" som parametrar:</p>
+<pre><code class="language-scss">// Definiera våra "toppings" och "fyllningar" (färgvariabler)
+$chocolate-topping: #6f4e37;
+$blueberry-filling: #4169e1;
+$caramel-topping: #d4a574;
+$strawberry-filling: #ff6b9d;
+
+// Grundrecept: button-mixin
+@mixin button-muffin($topping, $filling, $label) {
+  background-color: $topping;
+  border: 3px solid $filling;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &amp;:hover {
+    background-color: $filling;
+    border-color: $topping;
+    transform: scale(1.05);
+  }
+
+  &amp;::before {
+    content: "🧁 ";
+  }
+
+  &amp;::after {
+    content: " #{$label}";
+  }
+}
+
+// Året många varianter – samma recept, olika kombinationer!
+.btn-chocolate-blueberry {
+  @include button-muffin($chocolate-topping, $blueberry-filling, "Choklad &amp; Blåbär");
+}
+
+.btn-caramel-strawberry {
+  @include button-muffin($caramel-topping, $strawberry-filling, "Karamell &amp; Jordgubbe");
+}
+
+.btn-blueberry-chocolate {
+  @include button-muffin($blueberry-filling, $chocolate-topping, "Blåbär &amp; Choklad");
+}
+</code></pre>
+<p>Du får tre helt olika knappar genom att bara byta ordning på "toppings" och "fyllningar" – utan att skriva om någon CSS-regel!</p>
 <pre><code class="language-scss">@mixin flex($justify-content: center, $align-items: center) {
   display: flex;
   justify-content: $justify-content;
@@ -207,6 +259,7 @@
 }
 </code></pre>
 <p>Värdet efter <code>:</code> är ett <strong>standardvärde</strong> (default value). Om du inte skickar in ett argument används standardvärdet automatiskt.</p>
+<p><strong>Se även:</strong> <a href="./funktioner.html">Funktioner i SCSS</a> för att förstå skillnaden mellan mixins och funktioner.</p>
 <h3 id="namngivna-argument"><a class="header" href="#namngivna-argument">Namngivna argument</a></h3>
 <p>Du kan skicka in argument med namn för att göra anrop tydligare och kunna hoppa över argument du inte vill ändra:</p>
 <pre><code class="language-scss">.footer {
@@ -365,6 +418,12 @@
   @include visually-hidden;
 }
 </code></pre>
+<h2 id="se-även"><a class="header" href="#se-även">Se även</a></h2>
+<ul>
+<li><a href="./funktioner.html">Funktioner i SCSS</a> – när man använder funktioner istället för mixins</li>
+<li><a href="./responsiv-breakpoints.html">Responsiv SCSS med breakpoints</a> – breakpoint-mixins i praktiken</li>
+<li><a href="./nesting-selektorstrategi.html">Nesting och selektorstrategi</a> – ofta kombineras med nesting</li>
+</ul>
 <h2 id="sammanfattning"><a class="header" href="#sammanfattning">Sammanfattning</a></h2>
 <ul>
 <li>Mixins definieras med <code>@mixin namn { }</code> och inkluderas med <code>@include namn</code>.</li>
@@ -382,6 +441,9 @@
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
+                            <a rel="next prefetch" href="../SCSS/funktioner.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
 
                         <div style="clear: both"></div>
                     </nav>
@@ -393,6 +455,9 @@
                         <i class="fa fa-angle-left"></i>
                     </a>
 
+                    <a rel="next prefetch" href="../SCSS/funktioner.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
             </nav>
 
         </div>

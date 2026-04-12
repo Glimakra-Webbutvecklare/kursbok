@@ -295,6 +295,95 @@ $font-sizes: (
 }
 </code></pre>
 <p>Resultatet blir ett komplett bibliotek av hjälpklasser – samma princip som ramverk som Bootstrap och Tailwind CSS bygger på.</p>
+<h2 id="generera-css-custom-properties-från-maps"><a class="header" href="#generera-css-custom-properties-från-maps">Generera CSS custom properties från maps</a></h2>
+<p>En vanlig tillämpning av maps är att generera CSS custom properties (CSS-variabler) som kan ändras i webbläsaren. Detta är särskilt användbart för tema – en color map kan bli CSS-variabler som senare kan bytas dynamiskt.</p>
+<h3 id="från-map-till-css-variabler"><a class="header" href="#från-map-till-css-variabler">Från map till CSS-variabler</a></h3>
+<pre><code class="language-scss">@use 'sass:map';
+
+// Definiera färg-mappen
+$colors: (
+  primary: #0b6bcb,
+  success: #1a7f37,
+  warning: #9a6700,
+  danger: #cf222e,
+  info: #0969da,
+);
+
+// Generera CSS custom properties från mappen
+:root {
+  @each $name, $color in $colors {
+    --color-#{$name}: #{$color};
+  }
+}
+</code></pre>
+<p>Detta kompileras till:</p>
+<pre><code class="language-css">:root {
+  --color-primary: #0b6bcb;
+  --color-success: #1a7f37;
+  --color-warning: #9a6700;
+  --color-danger: #cf222e;
+  --color-info: #0969da;
+}
+</code></pre>
+<h3 id="praktiskt-exempel-teman-med-maps"><a class="header" href="#praktiskt-exempel-teman-med-maps">Praktiskt exempel: teman med maps</a></h3>
+<pre><code class="language-scss">@use 'sass:map';
+
+// Light theme färger
+$colors-light: (
+  bg: #ffffff,
+  surface: #f6f8fa,
+  text: #1f2328,
+  primary: #0b6bcb,
+);
+
+// Dark theme färger
+$colors-dark: (
+  bg: #0d1117,
+  surface: #161b22,
+  text: #e6edf3,
+  primary: #58a6ff,
+);
+
+// Exportera light theme som standard
+:root {
+  @each $name, $color in $colors-light {
+    --color-#{$name}: #{$color};
+  }
+}
+
+// Exportera dark theme med data-attribut
+[data-theme='dark'] {
+  @each $name, $color in $colors-dark {
+    --color-#{$name}: #{$color};
+  }
+}
+
+// Nu kan komponenter använda dessa
+.card {
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.button {
+  background: var(--color-primary);
+  color: #fff;
+}
+</code></pre>
+<p><strong>Varför är detta användbara?</strong></p>
+<ol>
+<li>Du skriver varje färg en gång i en map</li>
+<li>Mappen genererar CSS-variabler automatiskt</li>
+<li>CSS-variablerna kan ändras utan ombyggnad</li>
+<li>Komponenter använder <code>var()</code> istället för hårdkodade färger</li>
+<li>Temaväxling blir smidigt och snabbt</li>
+</ol>
+<p>Denna kombination av SCSS-maps och CSS custom properties är grunden i moderna designsystem.</p>
+<h2 id="se-även"><a class="header" href="#se-även">Se även</a></h2>
+<ul>
+<li><a href="./loopar-utility-klasser.html">Loopar i praktiken och utility-klasser</a> – hur man använder @each med maps för att generera CSS</li>
+<li><a href="./design-tokens-css-custom-properties.html">Design tokens och CSS custom properties</a> – hur maps kan exporteras som CSS-variabler</li>
+<li><a href="./theming.html">Theming: ljust och mörkt tema</a> – hur maps används för att bygga tema-system</li>
+</ul>
 <h2 id="sammanfattning"><a class="header" href="#sammanfattning">Sammanfattning</a></h2>
 <ul>
 <li>SCSS-variabler deklareras med <code>$namn: värde</code> och gör koden lätt att underhålla.</li>

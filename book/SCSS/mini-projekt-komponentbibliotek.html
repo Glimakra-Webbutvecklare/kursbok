@@ -1,0 +1,340 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Mini-projekt: komponentbibliotek i SCSS - Glimåkra Webbutvecklare - Kursbok</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Glimåkra Webbutvecklare - Kursbok</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="mini-projekt-komponentbibliotek-i-scss"><a class="header" href="#mini-projekt-komponentbibliotek-i-scss">Mini-projekt: komponentbibliotek i SCSS</a></h1>
+<p>I den här lektionen bygger du ett litet komponentbibliotek med samma principer som i tidigare kapitel: tokens, mixins, moduler, responsiv design och tillgänglighet.</p>
+<h2 id="mål"><a class="header" href="#mål">Mål</a></h2>
+<p>Efter övningen ska du kunna:</p>
+<ol>
+<li>Strukturera SCSS med moduler.</li>
+<li>Skapa återanvändbara komponenter.</li>
+<li>Bygga light och dark theme.</li>
+<li>Säkerställa grundläggande tillgänglighet.</li>
+</ol>
+<h2 id="föreslagen-struktur"><a class="header" href="#föreslagen-struktur">Föreslagen struktur</a></h2>
+<pre><code class="language-text">SCSS/
+  abstracts/
+    _variables.scss
+    _functions.scss
+    _mixins.scss
+    _index.scss
+  components/
+    _button.scss
+    _card.scss
+    _input.scss
+  themes/
+    _theme-light.scss
+    _theme-dark.scss
+  main.scss
+</code></pre>
+<h2 id="steg-1-tokens"><a class="header" href="#steg-1-tokens">Steg 1: Tokens</a></h2>
+<pre><code class="language-scss">// abstracts/_variables.scss
+$radius-md: 0.5rem;
+$space-md: 1rem;
+$space-lg: 1.5rem;
+</code></pre>
+<pre><code class="language-scss">// themes/_theme-light.scss
+:root {
+  --color-bg: #ffffff;
+  --color-surface: #f6f8fa;
+  --color-text: #1f2328;
+  --color-primary: #0b6bcb;
+}
+</code></pre>
+<pre><code class="language-scss">// themes/_theme-dark.scss
+[data-theme='dark'] {
+  --color-bg: #0d1117;
+  --color-surface: #161b22;
+  --color-text: #e6edf3;
+  --color-primary: #58a6ff;
+}
+</code></pre>
+<h2 id="steg-2-mixins"><a class="header" href="#steg-2-mixins">Steg 2: Mixins</a></h2>
+<pre><code class="language-scss">// abstracts/_mixins.scss
+@mixin focus-ring {
+  &amp;:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}
+</code></pre>
+<h2 id="steg-3-komponenter"><a class="header" href="#steg-3-komponenter">Steg 3: Komponenter</a></h2>
+<pre><code class="language-scss">// components/_button.scss
+@use '../abstracts' as a;
+
+.button {
+  border: 0;
+  border-radius: a.$radius-md;
+  padding: 0.625rem 1rem;
+  background: var(--color-primary);
+  color: #fff;
+  cursor: pointer;
+
+  @include a.focus-ring;
+}
+</code></pre>
+<pre><code class="language-scss">// components/_card.scss
+@use '../abstracts' as a;
+
+.card {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-radius: a.$radius-md;
+  padding: a.$space-lg;
+}
+</code></pre>
+<pre><code class="language-scss">// components/_input.scss
+@use '../abstracts' as a;
+
+.input {
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid #d0d7de;
+  border-radius: a.$radius-md;
+  background: var(--color-bg);
+  color: var(--color-text);
+
+  @include a.focus-ring;
+}
+</code></pre>
+<h2 id="steg-4-mainscss"><a class="header" href="#steg-4-mainscss">Steg 4: main.scss</a></h2>
+<pre><code class="language-scss">@use 'abstracts';
+@use 'themes/theme-light';
+@use 'themes/theme-dark';
+@use 'components/button';
+@use 'components/card';
+@use 'components/input';
+</code></pre>
+<h2 id="steg-5-responsiv-förbättring"><a class="header" href="#steg-5-responsiv-förbättring">Steg 5: Responsiv förbättring</a></h2>
+<p>Lägg till en enkel breakpoint-mixin och öka spacing i kort på större skärmar.</p>
+<h2 id="steg-6-testa-kvalitet"><a class="header" href="#steg-6-testa-kvalitet">Steg 6: Testa kvalitet</a></h2>
+<p>Kontrollera:</p>
+<ol>
+<li>Fungerar komponenterna i båda teman?</li>
+<li>Syns fokus tydligt vid tangentbordsnavigering?</li>
+<li>Är kontrasten tillräcklig för text och knappar?</li>
+<li>Ser layouten bra ut på mobil och desktop?</li>
+</ol>
+<h2 id="utmaning"><a class="header" href="#utmaning">Utmaning</a></h2>
+<p>Bygg även en badge-komponent med tre varianter: info, success och danger. Använd tokens och loop för att undvika duplicerad kod.</p>
+<h2 id="sammanfattning"><a class="header" href="#sammanfattning">Sammanfattning</a></h2>
+<p>Detta mini-projekt samlar hela SCSS-spåret i en praktisk leverans. Samma arbetssätt går att använda i större frontend-projekt med flera utvecklare.</p>
+<h2 id="se-även--alla-tidigare-scss-kapitel"><a class="header" href="#se-även--alla-tidigare-scss-kapitel">Se även – alla tidigare SCSS-kapitel</a></h2>
+<ul>
+<li><a href="./variabler-maps.html">Variabler och Maps</a> – tokens i abstracts/</li>
+<li><a href="./funktioner.html">Funktioner i SCSS</a> – för beräkningar i komponenter</li>
+<li><a href="./mixins.html">Mixins</a> – återanvändbar logik</li>
+<li><a href="./nesting-selektorstrategi.html">Nesting och selektorstrategi</a> – komponentstil</li>
+<li><a href="./sju-ett-struktur.html">7-1 Struktur med importer</a> – mapporganisation</li>
+<li><a href="./moduler-use-forward.html">Moduler med @use och @forward</a> – moderna imports</li>
+<li><a href="./design-tokens-css-custom-properties.html">Design tokens och CSS custom properties</a> – token-system</li>
+<li><a href="./theming.html">Theming: ljust och mörkt tema</a> – multi-tema-stöd</li>
+<li><a href="./loopar-utility-klasser.html">Loopar i praktiken och utility-klasser</a> – utility-klasser</li>
+<li><a href="./tillganglighet.html">Tillgänglighet i SCSS</a> – WCAG-compliance</li>
+</ul>
+<p>Detta projekt samlar all kunskap från SCSS-spåret.</p>
+<h2 id="Övningar"><a class="header" href="#Övningar">Övningar</a></h2>
+<ol>
+<li>Lägg till en modal-komponent med fokusstil och tema-stöd.</li>
+<li>Skapa utility-klasser för spacing som komplement till komponenterna.</li>
+<li>Dokumentera komponenterna med exempel på användning i HTML.</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../SCSS/tillganglighet.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../SCSS/tillganglighet.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../mermaid.min.js"></script>
+        <script src="../mermaid-init.js"></script>
+
+
+    </div>
+    </body>
+</html>
