@@ -835,6 +835,211 @@ SELECT * FROM customers WHERE city IS NULL;
 
 ---
 
+## SQL + PHP (PDO)
+
+Anta att du har en PDO-anslutning i variabeln `$pdo` och tabellerna `users` (`id`, `name`, `email`, `city`) och `orders` (`order_id`, `user_id`, `product`, `amount`).
+
+### Övning 35A: Prepared SELECT med parameter
+
+Skriv PHP-kod som hämtar alla användare från en viss stad via prepared statement. Staden ska komma från variabeln `$cityFilter`.
+
+<details>
+<summary>Lösningsförslag</summary>
+
+```php
+<?php
+$cityFilter = 'Göteborg';
+
+$stmt = $pdo->prepare(
+    "SELECT id, name, email, city
+     FROM users
+     WHERE city = :city
+     ORDER BY name"
+);
+$stmt->execute([':city' => $cityFilter]);
+$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
+```
+
+**Förklaring:** `prepare()` + `execute()` med named placeholder (`:city`) skyddar mot SQL injection och gör frågan enkel att återanvända med olika filter.
+</details>
+
+---
+
+### Övning 35B: Paginering med `LIMIT` och offset
+
+Skriv PHP-kod som hämtar en sida med användare. Använd variablerna `$page = 3` och `$perPage = 10`. Beräkna offset och hämta rätt rader sorterat på `id`.
+
+<details>
+<summary>Lösningsförslag</summary>
+
+```php
+<?php
+$page = 3;
+$perPage = 10;
+$offset = ($page - 1) * $perPage; // 20
+
+$stmt = $pdo->prepare(
+    "SELECT id, name, email
+     FROM users
+     ORDER BY id
+     LIMIT :offset, :count"
+);
+$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+$stmt->bindValue(':count', $perPage, PDO::PARAM_INT);
+$stmt->execute();
+$pagedUsers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
+```
+
+**Förklaring:** `LIMIT`-värden ska behandlas som heltal. `bindValue(..., PDO::PARAM_INT)` hjälper databasen tolka parametrarna korrekt.
+</details>
+
+---
+
+### Övning 35C: `INSERT` med try/catch
+
+Skriv kod som lägger till en användare med variablerna `$name`, `$email`, `$city`. Hantera databasfel med `try/catch` och skriv ut ett kort felmeddelande utan känslig info.
+
+<details>
+<summary>Lösningsförslag</summary>
+
+```php
+<?php
+$name = 'Sara Lind';
+$email = 'sara.lind@example.com';
+$city = 'Malmö';
+
+try {
+    $stmt = $pdo->prepare(
+        "INSERT INTO users (name, email, city)
+         VALUES (:name, :email, :city)"
+    );
+    $stmt->execute([
+        ':name' => $name,
+        ':email' => $email,
+        ':city' => $city,
+    ]);
+
+    echo "Ny användare skapad med ID: " . $pdo->lastInsertId();
+} catch (PDOException $e) {
+    error_log('Insert users failed: ' . $e->getMessage());
+    echo "Kunde inte spara användaren just nu.";
+}
+?>
+```
+
+**Förklaring:** Logga tekniska fel med `error_log`, men visa ett generellt meddelande till användaren. `lastInsertId()` används för att verifiera att insert lyckades.
+</details>
+
+---
+
+### Övning 35D: `UPDATE` med whitelist av tillåtna fält
+
+Du får in två variabler: `$field` och `$value`, samt ett `$userId`. Endast `name` och `city` ska vara tillåtna att uppdatera. Skriv säker kod som uppdaterar om fältet är tillåtet.
+
+<details>
+<summary>Lösningsförslag</summary>
+
+```php
+<?php
+$field = 'city';
+$value = 'Lund';
+$userId = 7;
+
+$allowedFields = ['name', 'city'];
+
+if (!in_array($field, $allowedFields, true)) {
+    throw new InvalidArgumentException('Otillåtet fält');
+}
+
+$sql = "UPDATE users SET {$field} = :value WHERE id = :id";
+$stmt = $pdo->prepare($sql);
+$stmt->bindValue(':value', $value, PDO::PARAM_STR);
+$stmt->bindValue(':id', $userId, PDO::PARAM_INT);
+$stmt->execute();
+
+echo "Antal uppdaterade rader: " . $stmt->rowCount();
+?>
+```
+
+**Förklaring:** Kolumnnamn kan inte bindas som vanliga parametrar, så du måste whitelista dem innan de interpoleras i SQL-strängen.
+</details>
+
+---
+
+### Övning 35E: `DELETE` med bekräftelseflöde
+
+Anta att ett formulär skickar `user_id` och `confirm_delete`. Skriv kod som endast raderar raden om `confirm_delete === 'yes'` och `user_id` är ett giltigt heltal.
+
+<details>
+<summary>Lösningsförslag</summary>
+
+```php
+<?php
+$userId = filter_input(INPUT_POST, 'user_id', FILTER_VALIDATE_INT);
+$confirmDelete = $_POST['confirm_delete'] ?? '';
+
+if (!$userId || $confirmDelete !== 'yes') {
+    echo "Radering avbruten.";
+    return;
+}
+
+$stmt = $pdo->prepare("DELETE FROM users WHERE id = :id");
+$stmt->bindValue(':id', $userId, PDO::PARAM_INT);
+$stmt->execute();
+
+echo "Antal rader raderade: " . $stmt->rowCount();
+?>
+```
+
+**Förklaring:** Ett enkelt bekräftelseflöde minskar risken för oavsiktlig radering. `filter_input(..., FILTER_VALIDATE_INT)` validerar ID innan SQL körs.
+</details>
+
+---
+
+### Övning 35F: Enkel JOIN-rapport i HTML
+
+Skriv kod som hämtar `users.name`, `orders.product` och `orders.amount` med `INNER JOIN`, och skriver ut resultatet i en HTML-tabell.
+
+<details>
+<summary>Lösningsförslag</summary>
+
+```php
+<?php
+$sql = "SELECT users.name, orders.product, orders.amount
+        FROM orders
+        INNER JOIN users ON orders.user_id = users.id
+        ORDER BY users.name, orders.order_id";
+
+$rows = $pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+?>
+
+<table>
+    <thead>
+        <tr>
+            <th>Användare</th>
+            <th>Produkt</th>
+            <th>Belopp</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($rows as $row): ?>
+            <tr>
+                <td><?= htmlspecialchars($row['name'], ENT_QUOTES, 'UTF-8'); ?></td>
+                <td><?= htmlspecialchars($row['product'], ENT_QUOTES, 'UTF-8'); ?></td>
+                <td><?= htmlspecialchars((string) $row['amount'], ENT_QUOTES, 'UTF-8'); ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+```
+
+**Förklaring:** `JOIN` kombinerar data från två tabeller och gör det enkelt att rendera rapportliknande vyer. Använd `htmlspecialchars()` när du skriver ut dynamiska värden i HTML.
+</details>
+
+---
+
 ## Sessioner och Säkerhet
 
 ### Övning 36: Starta Session och Lagra Data

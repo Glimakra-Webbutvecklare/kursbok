@@ -4,12 +4,74 @@ När vi bygger webbapplikationer behöver vi nästan alltid ett sätt att lagra,
 
 En **database** (databas) är en organiserad samling av data. Det finns olika typer av databaser, men för många traditionella webbapplikationer är **Relational Database Management Systems** (Relationsdatabashanteringssystem, RDBMS) det vanligaste valet. Exempel på populära RDBMS inkluderar MySQL, MariaDB, PostgreSQL, SQLite och Microsoft SQL Server. I det här kapitlet fokuserar vi på MariaDB (som är mycket likt MySQL), eftersom det fungerar bra ihop med PHP.
 
+## Det här ska du kunna efter avsnittet
+
+Efter avsnittet ska du kunna:
+
+*   Förklara hur tabeller, rader, kolumner och relationer används i en relationsdatabas.
+*   Skriva SQL-frågor med `SELECT`, `INSERT`, `UPDATE`, `DELETE`, `JOIN`, `ORDER BY` och `LIMIT`.
+*   Köra och verifiera SQL-frågor i phpMyAdmin.
+*   Köra samma frågor säkert från PHP med PDO och prepared statements.
+*   Felsöka vanliga databasproblem i en lokal Docker-miljö.
+
 Kärnan i en relationsdatabas är konceptet med **tables** (tabeller). En tabell organiserar data i:
 *   **Rows** (Rader): Varje rad representerar en enskild post eller ett objekt (t.ex. en specifik användare, en produkt).
 *   **Columns** (Kolumner): Varje kolumn representerar ett specifikt attribut eller egenskap för posterna (t.ex. användarens namn, produktens pris).
 *   **Relations** (Relationer): Data i olika tabeller kan kopplas samman baserat på gemensamma värden, vilket gör att vi kan kombinera information (t.ex. koppla en order till den användare som lade den).
 
-För att kommunicera med ett RDBMS – för att definiera tabellstrukturer, lägga till, ändra, ta bort och hämta data – använder vi ett standardiserat språk som heter **SQL** (Structured Query Language, Uttalas ofta "Sequel" eller S-Q-L).
+För att kommunicera med ett RDBMS – för att definiera tabellstrukturer, lägga till, ändra, ta bort och hämta data – använder vi ett standardiserat språk som heter **SQL** (Structured Query Language, uttalas ofta "Sequel" eller S-Q-L).
+
+## Arbetsflöde: SQL i phpMyAdmin -> PHP med PDO
+
+I den här lektionen jobbar vi i två steg varje gång du lär dig en ny SQL-del:
+
+1.  **Kör frågan i phpMyAdmin** för att se att SQL-syntaxen fungerar.
+2.  **Kör motsvarande logik i PHP (PDO)** för att koppla frågan till din applikation.
+
+Detta ger dig både databasförståelse och praktisk backend-träning.
+
+![phpMyAdmin databasöversikt för SQL-övningarna](./assets/sql/sql-01-phpmyadmin-database-overview.png)
+
+## Setup: tabellerna som används i screenshots
+
+Om du vill återskapa samma data som i bilderna, kör detta i phpMyAdmin (SQL-fliken) i databasen `db_fullstack`:
+
+```sql
+-- Rensa först om tabeller redan finns (viktigt: orders före users pga relation)
+DROP TABLE IF EXISTS orders;
+DROP TABLE IF EXISTS users;
+
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    city VARCHAR(50),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE orders (
+    order_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    product VARCHAR(100) NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO users (name, email, city)
+VALUES
+    ('Alice', 'alice@example.com', 'Stockholm'),
+    ('Bob', 'bob@example.com', 'Göteborg'),
+    ('Charlie', 'charlie@example.com', 'Malmö');
+
+INSERT INTO orders (user_id, product, amount)
+VALUES
+    (1, 'Laptop', 12999.00),
+    (2, 'Keyboard', 899.00),
+    (1, 'Mouse', 499.00),
+    (4, 'Monitor', 2999.00);
+```
+
+`orders.user_id = 4` finns med medvetet för att kunna visa skillnaden mellan matchande och icke-matchande rader i `INNER JOIN`.
 
 ## Grundläggande SQL-Syntax
 
@@ -142,6 +204,20 @@ SELECT *
 FROM users;
 ```
 
+### Miniövning: `SELECT` i phpMyAdmin och PHP
+
+1. Kör en fråga i phpMyAdmin som hämtar `id`, `name`, `email` från `users` och sorterar på `id` fallande.
+2. Skriv sedan PHP-kod med PDO som kör samma fråga och loopar ut resultatet som en HTML-lista.
+3. Testa att lägga till `LIMIT 5` och verifiera att bara fem rader visas.
+
+```php
+<?php
+// Hint: använd query() när du inte har användarinput.
+$stmt = $pdo->query("SELECT id, name, email FROM users ORDER BY id DESC LIMIT 5");
+$rows = $stmt->fetchAll();
+?>
+```
+
 ### Filtrera Rader (`WHERE`)
 
 `WHERE`-klausulen används för att specificera villkor som raderna måste uppfylla för att inkluderas i resultatet.
@@ -202,6 +278,19 @@ WHERE city IS NOT NULL;
 SELECT name, email, city
 FROM users
 WHERE city = 'Stockholm' AND name = 'Anna';
+```
+
+### Miniövning: Filter med parameter
+
+Skapa en PHP-fråga som filtrerar användare på stad från en variabel `$city` med prepared statement. Skriv ut namn + e-post för alla matchningar.
+
+```php
+<?php
+$city = 'Stockholm';
+$stmt = $pdo->prepare("SELECT name, email FROM users WHERE city = :city ORDER BY name");
+$stmt->execute([':city' => $city]);
+$users = $stmt->fetchAll();
+?>
 ```
 
 ### Sortera Resultat (`ORDER BY`)
@@ -266,6 +355,26 @@ VALUES
 
 *Not:* Om du har en `AUTO_INCREMENT`-kolumn (som `id` i vårt exempel) behöver du inte (och ska oftast inte) ange den i `INSERT`-satsen. Databasen sköter det automatiskt.
 
+![SELECT-fråga i phpMyAdmin med resultat](./assets/sql/sql-02-select-query-result.png)
+
+### Miniövning: `INSERT` + verifiering i PHP
+
+1. Lägg till en användare i phpMyAdmin med `INSERT`.
+2. Gör sedan samma sak via PDO i PHP.
+3. Skriv ut det nya ID:t med `lastInsertId()` och kontrollera i phpMyAdmin att raden finns.
+
+```php
+<?php
+$stmt = $pdo->prepare("INSERT INTO users (name, email, city) VALUES (:name, :email, :city)");
+$stmt->execute([
+    ':name' => 'Test User',
+    ':email' => 'test.user@example.com',
+    ':city' => 'Malmö',
+]);
+echo "Skapad rad med ID: " . $pdo->lastInsertId();
+?>
+```
+
 ## Uppdatera Data (`UPDATE`)
 
 `UPDATE` används för att ändra data i befintliga rader.
@@ -305,6 +414,26 @@ WHERE city = 'Ankeborg';
 ```
 
 **VARNING:** Precis som med `UPDATE`, är `WHERE`-klausulen i `DELETE` kritisk. Utan den raderas **alla** rader i tabellen!
+
+![INSERT, UPDATE och DELETE verifierat i phpMyAdmin](./assets/sql/sql-03-insert-update-delete-result.png)
+
+### Miniövning: `UPDATE`/`DELETE` med validerat ID
+
+Bygg två små PHP-block:
+
+1. Ett som uppdaterar `city` för en användare baserat på ett validerat heltals-ID.
+2. Ett som raderar en användare baserat på ett validerat heltals-ID.
+
+Kontrollera antalet påverkade rader med `rowCount()` efter varje operation.
+
+```php
+<?php
+$userId = 3; // Byt mot validerad input i riktig kod.
+$stmt = $pdo->prepare("UPDATE users SET city = :city WHERE id = :id");
+$stmt->execute([':city' => 'Lund', ':id' => $userId]);
+echo "Antal uppdaterade rader: " . $stmt->rowCount();
+?>
+```
 
 ## Sammanfogning av Tabeller (`JOIN`)
 
@@ -363,35 +492,37 @@ ON
 **Visualisering av `INNER JOIN`:**
 
 ```mermaid
-graph LR
-    subgraph Users Table
-        U1["id: 1<br>name: 'Alice'"]
-        U2["id: 2<br>name: 'Bob'"]
-        U3["id: 3<br>name: 'Charlie'"]
-    end
-    subgraph Orders Table
-        O1["id: 101<br>user_id: 1<br>product: 'Laptop'"]
-        O2["id: 102<br>user_id: 2<br>product: 'Keyboard'"]
-        O3["id: 103<br>user_id: 1<br>product: 'Mouse'"]
-        O4["id: 104<br>user_id: 4<br>product: 'Monitor'"]
-    end
-    subgraph INNER JOIN Result (on users.id = orders.user_id)
-        R1["user.name: 'Alice'<br>order.product: 'Laptop'"]
-        R2["user.name: 'Bob'<br>order.product: 'Keyboard'"]
-        R3["user.name: 'Alice'<br>order.product: 'Mouse'"]
-    end
+flowchart TD
+    A["users.id = 1 (Alice)"] --> M1["match"]
+    B["orders.user_id = 1 (Laptop)"] --> M1
+    M1 --> R1["Resultatrad: Alice + Laptop"]
 
-    U1 -- "match" --> R1
-    U1 -- "match" --> R3
-    U2 -- "match" --> R2
-    O1 -- "match" --> R1
-    O2 -- "match" --> R2
-    O3 -- "match" --> R3
+    C["users.id = 2 (Bob)"] --> M2["match"]
+    D["orders.user_id = 2 (Keyboard)"] --> M2
+    M2 --> R2["Resultatrad: Bob + Keyboard"]
 
-    style U3 fill:#f9f,stroke:#333,stroke-width:2px
-    style O4 fill:#f9f,stroke:#333,stroke-width:2px
+    E["users.id = 3 (Charlie)"] --> N1["ingen match -> inte med i resultat"]
+    F["orders.user_id = 4 (Monitor)"] --> N2["ingen match i users -> inte med i resultat"]
 ```
-(De rosa noderna representerar rader som inte inkluderas i `INNER JOIN`-resultatet.)
+
+Kort sagt: `INNER JOIN` tar bara med rader där `users.id = orders.user_id` faktiskt matchar.
+
+![JOIN-resultat i phpMyAdmin](./assets/sql/sql-04-join-result.png)
+
+### Miniövning: `JOIN` till HTML-tabell i PHP
+
+Skriv en PHP-fråga som hämtar användarnamn och produkt med `INNER JOIN` och skriv ut resultatet i en enkel HTML-tabell.
+
+```php
+<?php
+$sql = "SELECT users.name, orders.product
+        FROM users
+        INNER JOIN orders ON users.id = orders.user_id
+        ORDER BY users.name";
+$stmt = $pdo->query($sql);
+$rows = $stmt->fetchAll();
+?>
+```
 
 ### Andra `JOIN`-typer (Kort)
 
@@ -406,7 +537,7 @@ Nu när du har en grundläggande förståelse för SQL-satser är nästa steg at
 1.  **PDO (PHP Data Objects):** Ett databasabstraktionslager som ger ett konsekvent gränssnitt för att arbeta med olika databastyper.
 2.  **MySQLi (MySQL Improved Extension):** En specifik extension för att arbeta med MySQL och MariaDB.
 
-_Vi kommer jobba främst med PDO._
+_Vi kommer att jobba främst med PDO._
 
 ### Ansluta till databasen
 
@@ -482,6 +613,24 @@ echo "Ny användare skapad med ID: " . $new_id;
 ?>
 ```
 
+### Miniövning: Från SQL till funktion i PHP
+
+Skapa en funktion `create_user(PDO $pdo, string $username, string $email, string $password): string` som:
+
+1. hashar lösenordet,
+2. kör `INSERT` med prepared statement,
+3. returnerar `lastInsertId()` som sträng.
+
+På så sätt börjar du återanvända databaslogik i mindre funktioner, vilket blir viktigt i CRUD-projektet.
+
+## Vanliga fel och snabb felsökning
+
+*   **Fel host i DSN:** I Docker-miljö ska host oftast vara `mysql` (service-namnet), inte `localhost`.
+*   **Ingen `WHERE` i `UPDATE`/`DELETE`:** Risk att alla rader påverkas. Lägg alltid till villkor och dubbelkolla före körning.
+*   **Fel bindning av datatyp:** Validera heltal innan bindning till `:id` och använd rätt parametertyp när det behövs.
+*   **SQL-injektion via strängkonkatenering:** Undvik att bygga SQL med `"... $input ..."`; använd prepared statements.
+*   **Svårtolkade PDO-fel:** Aktivera `PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION` under utveckling.
+
 ### Nästa steg: CRUD-applikationen
 
 I avsnittet `crud-app.md` bygger vi en komplett bloggapplikation som använder dessa tekniker:
@@ -491,5 +640,7 @@ I avsnittet `crud-app.md` bygger vi en komplett bloggapplikation som använder d
 *   Hantering av resultat med `fetch()` och `fetchAll()`.
 *   Integration med formulär, sessioner och filuppladdning.
 
-Att kunna SQL är en grundläggande färdighet för fullstack-utveckling, eftersom det låter dig interagera med den data som driver din applikation.
+Du har nu grunderna för att gå från SQL-kommandon till verklig backend-kod i PHP. Nästa steg är att använda exakt dessa mönster i en större helhet där flera sidor samverkar.
+
+Fortsätt med [CRUD-applikationen](crud-app.md) för att bygga hela flödet end-to-end.
 

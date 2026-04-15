@@ -154,6 +154,13 @@
                     <main>
                         <h1 id="introduktion-till-php"><a class="header" href="#introduktion-till-php">Introduktion till PHP</a></h1>
 <p>PHP (Hypertext Preprocessor) är ett populärt skriptspråk med öppen källkod som främst används för webbutveckling på serversidan. Det skapades ursprungligen av Rasmus Lerdorf 1994 och har sedan dess utvecklats till ett kraftfullt och flexibelt språk som driver en stor del av webben, inklusive välkända plattformar som WordPress och Facebook.</p>
+<h2 id="det-här-ska-du-kunna-efter-avsnittet"><a class="header" href="#det-här-ska-du-kunna-efter-avsnittet">Det här ska du kunna efter avsnittet</a></h2>
+<p>Efter avsnittet ska du kunna:</p>
+<ul>
+<li>Förklara skillnaden mellan server-side (serversidan) och client-side (klientsidan) kod.</li>
+<li>Beskriva hur en HTTP request (förfrågan) går från webbläsare till PHP och tillbaka.</li>
+<li>Starta en enkel lokal PHP-miljö med Docker och köra en första <code>index.php</code>.</li>
+</ul>
 <h2 id="php-i-modern-webbutveckling"><a class="header" href="#php-i-modern-webbutveckling">PHP i modern webbutveckling</a></h2>
 <p>Trots framväxten av nyare teknologier förblir PHP ett relevant och ofta använt språk inom webbutveckling. Några anledningar till detta är:</p>
 <ul>
@@ -349,6 +356,31 @@ RUN docker-php-ext-install mysqli pdo pdo_mysql
 <li>Webbläsaren renderar HTML:en och exekverar JavaScript-koden inuti <code>&lt;script&gt;</code>-taggarna, vilket skriver ut meddelandet till webbläsarkonsolen och visar en <code>alert</code>-ruta.</li>
 </ol>
 <p>Detta visar tydligt hur PHP genererar innehållet på serversidan medan JavaScript hanterar interaktivitet och logik på klientsidan.</p>
+<h2 id="testa-nu"><a class="header" href="#testa-nu">Testa nu</a></h2>
+<p>Om du använder exempelappen i <code>code-examples/kapitel_7/crud-app</code>, starta miljön med:</p>
+<pre><code class="language-bash">docker compose up -d --build
+</code></pre>
+<p>Öppna sedan:</p>
+<ul>
+<li>App: <code>http://localhost:8060</code></li>
+<li>phpMyAdmin: <code>http://localhost:8061</code></li>
+</ul>
+<p>Skapa en enkel <code>index.php</code> i appens <code>public</code>-mapp och verifiera att PHP-kod renderas i webbläsaren.</p>
+<h2 id="checklista-innan-du-går-vidare"><a class="header" href="#checklista-innan-du-går-vidare">Checklista innan du går vidare</a></h2>
+<ul>
+<li>Du kan förklara vad PHP gör som JavaScript i webbläsaren inte gör.</li>
+<li>Du kan beskriva request/svar-flödet mellan webbläsare, webbserver och PHP.</li>
+<li>Du har kört ett första PHP-exempel lokalt.</li>
+</ul>
+<h2 id="miniövning"><a class="header" href="#miniövning">Miniövning</a></h2>
+<p>Skapa en sida som skriver ut:</p>
+<ol>
+<li>Dagens datum via PHP.</li>
+<li>En variabel med ditt namn via <code>echo</code>.</li>
+<li>Ett JavaScript <code>console.log</code>-meddelande.</li>
+</ol>
+<p>Målet är att tydligt se vad som körs på servern respektive i klienten.</p>
+<p>Nästa steg: <a href="syntax.html">PHP Syntax och grundläggande funktioner</a>, där du börjar skriva mer strukturerad PHP-kod med variabler, kontrollstrukturer och funktioner.</p>
 
                     </main>
 

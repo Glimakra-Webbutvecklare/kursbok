@@ -2,6 +2,14 @@
 
 PHP (Hypertext Preprocessor) är ett populärt skriptspråk med öppen källkod som främst används för webbutveckling på serversidan. Det skapades ursprungligen av Rasmus Lerdorf 1994 och har sedan dess utvecklats till ett kraftfullt och flexibelt språk som driver en stor del av webben, inklusive välkända plattformar som WordPress och Facebook.
 
+## Det här ska du kunna efter avsnittet
+
+Efter avsnittet ska du kunna:
+
+*   Förklara skillnaden mellan server-side (serversidan) och client-side (klientsidan) kod.
+*   Beskriva hur en HTTP request (förfrågan) går från webbläsare till PHP och tillbaka.
+*   Starta en enkel lokal PHP-miljö med Docker och köra en första `index.php`.
+
 ## PHP i modern webbutveckling
 
 Trots framväxten av nyare teknologier förblir PHP ett relevant och ofta använt språk inom webbutveckling. Några anledningar till detta är:
@@ -219,3 +227,36 @@ När du besöker denna sida i webbläsaren:
 3.  Webbläsaren renderar HTML:en och exekverar JavaScript-koden inuti `<script>`-taggarna, vilket skriver ut meddelandet till webbläsarkonsolen och visar en `alert`-ruta.
 
 Detta visar tydligt hur PHP genererar innehållet på serversidan medan JavaScript hanterar interaktivitet och logik på klientsidan.
+
+## Testa nu
+
+Om du använder exempelappen i `code-examples/kapitel_7/crud-app`, starta miljön med:
+
+```bash
+docker compose up -d --build
+```
+
+Öppna sedan:
+
+*   App: `http://localhost:8060`
+*   phpMyAdmin: `http://localhost:8061`
+
+Skapa en enkel `index.php` i appens `public`-mapp och verifiera att PHP-kod renderas i webbläsaren.
+
+## Checklista innan du går vidare
+
+*   Du kan förklara vad PHP gör som JavaScript i webbläsaren inte gör.
+*   Du kan beskriva request/svar-flödet mellan webbläsare, webbserver och PHP.
+*   Du har kört ett första PHP-exempel lokalt.
+
+## Miniövning
+
+Skapa en sida som skriver ut:
+
+1. Dagens datum via PHP.
+2. En variabel med ditt namn via `echo`.
+3. Ett JavaScript `console.log`-meddelande.
+
+Målet är att tydligt se vad som körs på servern respektive i klienten.
+
+Nästa steg: [PHP Syntax och grundläggande funktioner](syntax.md), där du börjar skriva mer strukturerad PHP-kod med variabler, kontrollstrukturer och funktioner.

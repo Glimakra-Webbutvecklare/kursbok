@@ -720,6 +720,167 @@ INNER JOIN customers ON orders.customer_id = customers.id;
 <p><strong>Förklaring:</strong> <code>LIKE</code> används för mönstermatchning. <code>%</code> matchar noll eller flera tecken. <code>Anders%</code> matchar "Andersson", "Anders" etc. För NULL använd <code>IS NULL</code> eller <code>IS NOT NULL</code> – inte <code>= NULL</code>.</p>
 </details>
 <hr />
+<h2 id="sql--php-pdo"><a class="header" href="#sql--php-pdo">SQL + PHP (PDO)</a></h2>
+<p>Anta att du har en PDO-anslutning i variabeln <code>$pdo</code> och tabellerna <code>users</code> (<code>id</code>, <code>name</code>, <code>email</code>, <code>city</code>) och <code>orders</code> (<code>order_id</code>, <code>user_id</code>, <code>product</code>, <code>amount</code>).</p>
+<h3 id="Övning-35a-prepared-select-med-parameter"><a class="header" href="#Övning-35a-prepared-select-med-parameter">Övning 35A: Prepared SELECT med parameter</a></h3>
+<p>Skriv PHP-kod som hämtar alla användare från en viss stad via prepared statement. Staden ska komma från variabeln <code>$cityFilter</code>.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-php">&lt;?php
+$cityFilter = 'Göteborg';
+
+$stmt = $pdo-&gt;prepare(
+    "SELECT id, name, email, city
+     FROM users
+     WHERE city = :city
+     ORDER BY name"
+);
+$stmt-&gt;execute([':city' =&gt; $cityFilter]);
+$users = $stmt-&gt;fetchAll(PDO::FETCH_ASSOC);
+?&gt;
+</code></pre>
+<p><strong>Förklaring:</strong> <code>prepare()</code> + <code>execute()</code> med named placeholder (<code>:city</code>) skyddar mot SQL injection och gör frågan enkel att återanvända med olika filter.</p>
+</details>
+<hr />
+<h3 id="Övning-35b-paginering-med-limit-och-offset"><a class="header" href="#Övning-35b-paginering-med-limit-och-offset">Övning 35B: Paginering med <code>LIMIT</code> och offset</a></h3>
+<p>Skriv PHP-kod som hämtar en sida med användare. Använd variablerna <code>$page = 3</code> och <code>$perPage = 10</code>. Beräkna offset och hämta rätt rader sorterat på <code>id</code>.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-php">&lt;?php
+$page = 3;
+$perPage = 10;
+$offset = ($page - 1) * $perPage; // 20
+
+$stmt = $pdo-&gt;prepare(
+    "SELECT id, name, email
+     FROM users
+     ORDER BY id
+     LIMIT :offset, :count"
+);
+$stmt-&gt;bindValue(':offset', $offset, PDO::PARAM_INT);
+$stmt-&gt;bindValue(':count', $perPage, PDO::PARAM_INT);
+$stmt-&gt;execute();
+$pagedUsers = $stmt-&gt;fetchAll(PDO::FETCH_ASSOC);
+?&gt;
+</code></pre>
+<p><strong>Förklaring:</strong> <code>LIMIT</code>-värden ska behandlas som heltal. <code>bindValue(..., PDO::PARAM_INT)</code> hjälper databasen tolka parametrarna korrekt.</p>
+</details>
+<hr />
+<h3 id="Övning-35c-insert-med-trycatch"><a class="header" href="#Övning-35c-insert-med-trycatch">Övning 35C: <code>INSERT</code> med try/catch</a></h3>
+<p>Skriv kod som lägger till en användare med variablerna <code>$name</code>, <code>$email</code>, <code>$city</code>. Hantera databasfel med <code>try/catch</code> och skriv ut ett kort felmeddelande utan känslig info.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-php">&lt;?php
+$name = 'Sara Lind';
+$email = 'sara.lind@example.com';
+$city = 'Malmö';
+
+try {
+    $stmt = $pdo-&gt;prepare(
+        "INSERT INTO users (name, email, city)
+         VALUES (:name, :email, :city)"
+    );
+    $stmt-&gt;execute([
+        ':name' =&gt; $name,
+        ':email' =&gt; $email,
+        ':city' =&gt; $city,
+    ]);
+
+    echo "Ny användare skapad med ID: " . $pdo-&gt;lastInsertId();
+} catch (PDOException $e) {
+    error_log('Insert users failed: ' . $e-&gt;getMessage());
+    echo "Kunde inte spara användaren just nu.";
+}
+?&gt;
+</code></pre>
+<p><strong>Förklaring:</strong> Logga tekniska fel med <code>error_log</code>, men visa ett generellt meddelande till användaren. <code>lastInsertId()</code> används för att verifiera att insert lyckades.</p>
+</details>
+<hr />
+<h3 id="Övning-35d-update-med-whitelist-av-tillåtna-fält"><a class="header" href="#Övning-35d-update-med-whitelist-av-tillåtna-fält">Övning 35D: <code>UPDATE</code> med whitelist av tillåtna fält</a></h3>
+<p>Du får in två variabler: <code>$field</code> och <code>$value</code>, samt ett <code>$userId</code>. Endast <code>name</code> och <code>city</code> ska vara tillåtna att uppdatera. Skriv säker kod som uppdaterar om fältet är tillåtet.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-php">&lt;?php
+$field = 'city';
+$value = 'Lund';
+$userId = 7;
+
+$allowedFields = ['name', 'city'];
+
+if (!in_array($field, $allowedFields, true)) {
+    throw new InvalidArgumentException('Otillåtet fält');
+}
+
+$sql = "UPDATE users SET {$field} = :value WHERE id = :id";
+$stmt = $pdo-&gt;prepare($sql);
+$stmt-&gt;bindValue(':value', $value, PDO::PARAM_STR);
+$stmt-&gt;bindValue(':id', $userId, PDO::PARAM_INT);
+$stmt-&gt;execute();
+
+echo "Antal uppdaterade rader: " . $stmt-&gt;rowCount();
+?&gt;
+</code></pre>
+<p><strong>Förklaring:</strong> Kolumnnamn kan inte bindas som vanliga parametrar, så du måste whitelista dem innan de interpoleras i SQL-strängen.</p>
+</details>
+<hr />
+<h3 id="Övning-35e-delete-med-bekräftelseflöde"><a class="header" href="#Övning-35e-delete-med-bekräftelseflöde">Övning 35E: <code>DELETE</code> med bekräftelseflöde</a></h3>
+<p>Anta att ett formulär skickar <code>user_id</code> och <code>confirm_delete</code>. Skriv kod som endast raderar raden om <code>confirm_delete === 'yes'</code> och <code>user_id</code> är ett giltigt heltal.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-php">&lt;?php
+$userId = filter_input(INPUT_POST, 'user_id', FILTER_VALIDATE_INT);
+$confirmDelete = $_POST['confirm_delete'] ?? '';
+
+if (!$userId || $confirmDelete !== 'yes') {
+    echo "Radering avbruten.";
+    return;
+}
+
+$stmt = $pdo-&gt;prepare("DELETE FROM users WHERE id = :id");
+$stmt-&gt;bindValue(':id', $userId, PDO::PARAM_INT);
+$stmt-&gt;execute();
+
+echo "Antal rader raderade: " . $stmt-&gt;rowCount();
+?&gt;
+</code></pre>
+<p><strong>Förklaring:</strong> Ett enkelt bekräftelseflöde minskar risken för oavsiktlig radering. <code>filter_input(..., FILTER_VALIDATE_INT)</code> validerar ID innan SQL körs.</p>
+</details>
+<hr />
+<h3 id="Övning-35f-enkel-join-rapport-i-html"><a class="header" href="#Övning-35f-enkel-join-rapport-i-html">Övning 35F: Enkel JOIN-rapport i HTML</a></h3>
+<p>Skriv kod som hämtar <code>users.name</code>, <code>orders.product</code> och <code>orders.amount</code> med <code>INNER JOIN</code>, och skriver ut resultatet i en HTML-tabell.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-php">&lt;?php
+$sql = "SELECT users.name, orders.product, orders.amount
+        FROM orders
+        INNER JOIN users ON orders.user_id = users.id
+        ORDER BY users.name, orders.order_id";
+
+$rows = $pdo-&gt;query($sql)-&gt;fetchAll(PDO::FETCH_ASSOC);
+?&gt;
+
+&lt;table&gt;
+    &lt;thead&gt;
+        &lt;tr&gt;
+            &lt;th&gt;Användare&lt;/th&gt;
+            &lt;th&gt;Produkt&lt;/th&gt;
+            &lt;th&gt;Belopp&lt;/th&gt;
+        &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+        &lt;?php foreach ($rows as $row): ?&gt;
+            &lt;tr&gt;
+                &lt;td&gt;&lt;?= htmlspecialchars($row['name'], ENT_QUOTES, 'UTF-8'); ?&gt;&lt;/td&gt;
+                &lt;td&gt;&lt;?= htmlspecialchars($row['product'], ENT_QUOTES, 'UTF-8'); ?&gt;&lt;/td&gt;
+                &lt;td&gt;&lt;?= htmlspecialchars((string) $row['amount'], ENT_QUOTES, 'UTF-8'); ?&gt;&lt;/td&gt;
+            &lt;/tr&gt;
+        &lt;?php endforeach; ?&gt;
+    &lt;/tbody&gt;
+&lt;/table&gt;
+</code></pre>
+<p><strong>Förklaring:</strong> <code>JOIN</code> kombinerar data från två tabeller och gör det enkelt att rendera rapportliknande vyer. Använd <code>htmlspecialchars()</code> när du skriver ut dynamiska värden i HTML.</p>
+</details>
+<hr />
 <h2 id="sessioner-och-säkerhet"><a class="header" href="#sessioner-och-säkerhet">Sessioner och Säkerhet</a></h2>
 <h3 id="Övning-36-starta-session-och-lagra-data"><a class="header" href="#Övning-36-starta-session-och-lagra-data">Övning 36: Starta Session och Lagra Data</a></h3>
 <p>Vilken PHP-funktion används för att starta en session, och var bör den placeras? Skriv sedan kod för att lagra värdet "dark" i sessionsvariabeln <code>theme</code>.</p>

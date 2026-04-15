@@ -13048,6 +13048,13 @@ console.log("Hej!");
 <p><em>Not:</em> Sessioner och säkerhet introduceras också i CRUD-appen under bygget. Du kan läsa <code>sessions.md</code> och <code>security.md</code> parallellt eller efteråt för att fördjupa dig.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="introduktion-till-php"><a class="header" href="#introduktion-till-php">Introduktion till PHP</a></h1>
 <p>PHP (Hypertext Preprocessor) är ett populärt skriptspråk med öppen källkod som främst används för webbutveckling på serversidan. Det skapades ursprungligen av Rasmus Lerdorf 1994 och har sedan dess utvecklats till ett kraftfullt och flexibelt språk som driver en stor del av webben, inklusive välkända plattformar som WordPress och Facebook.</p>
+<h2 id="det-här-ska-du-kunna-efter-avsnittet"><a class="header" href="#det-här-ska-du-kunna-efter-avsnittet">Det här ska du kunna efter avsnittet</a></h2>
+<p>Efter avsnittet ska du kunna:</p>
+<ul>
+<li>Förklara skillnaden mellan server-side (serversidan) och client-side (klientsidan) kod.</li>
+<li>Beskriva hur en HTTP request (förfrågan) går från webbläsare till PHP och tillbaka.</li>
+<li>Starta en enkel lokal PHP-miljö med Docker och köra en första <code>index.php</code>.</li>
+</ul>
 <h2 id="php-i-modern-webbutveckling"><a class="header" href="#php-i-modern-webbutveckling">PHP i modern webbutveckling</a></h2>
 <p>Trots framväxten av nyare teknologier förblir PHP ett relevant och ofta använt språk inom webbutveckling. Några anledningar till detta är:</p>
 <ul>
@@ -13243,6 +13250,31 @@ RUN docker-php-ext-install mysqli pdo pdo_mysql
 <li>Webbläsaren renderar HTML:en och exekverar JavaScript-koden inuti <code>&lt;script&gt;</code>-taggarna, vilket skriver ut meddelandet till webbläsarkonsolen och visar en <code>alert</code>-ruta.</li>
 </ol>
 <p>Detta visar tydligt hur PHP genererar innehållet på serversidan medan JavaScript hanterar interaktivitet och logik på klientsidan.</p>
+<h2 id="testa-nu"><a class="header" href="#testa-nu">Testa nu</a></h2>
+<p>Om du använder exempelappen i <code>code-examples/kapitel_7/crud-app</code>, starta miljön med:</p>
+<pre><code class="language-bash">docker compose up -d --build
+</code></pre>
+<p>Öppna sedan:</p>
+<ul>
+<li>App: <code>http://localhost:8060</code></li>
+<li>phpMyAdmin: <code>http://localhost:8061</code></li>
+</ul>
+<p>Skapa en enkel <code>index.php</code> i appens <code>public</code>-mapp och verifiera att PHP-kod renderas i webbläsaren.</p>
+<h2 id="checklista-innan-du-går-vidare"><a class="header" href="#checklista-innan-du-går-vidare">Checklista innan du går vidare</a></h2>
+<ul>
+<li>Du kan förklara vad PHP gör som JavaScript i webbläsaren inte gör.</li>
+<li>Du kan beskriva request/svar-flödet mellan webbläsare, webbserver och PHP.</li>
+<li>Du har kört ett första PHP-exempel lokalt.</li>
+</ul>
+<h2 id="miniövning"><a class="header" href="#miniövning">Miniövning</a></h2>
+<p>Skapa en sida som skriver ut:</p>
+<ol>
+<li>Dagens datum via PHP.</li>
+<li>En variabel med ditt namn via <code>echo</code>.</li>
+<li>Ett JavaScript <code>console.log</code>-meddelande.</li>
+</ol>
+<p>Målet är att tydligt se vad som körs på servern respektive i klienten.</p>
+<p>Nästa steg: <a href="kapitel_7/syntax.html">PHP Syntax och grundläggande funktioner</a>, där du börjar skriva mer strukturerad PHP-kod med variabler, kontrollstrukturer och funktioner.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="php-syntax-och-grundläggande-funktioner"><a class="header" href="#php-syntax-och-grundläggande-funktioner">PHP Syntax och grundläggande funktioner</a></h1>
 <p>Detta avsnitt dyker djupare in i den grundläggande syntaxen för PHP. Om du har läst <a href="kapitel_7/php-intro.html">Introduktion till PHP</a> vet du redan vad PHP är och hur det skiljer sig från JavaScript. Här fokuserar vi på hur du skriver koden: variabler, datatyper, operatorer, kontrollstrukturer och funktioner. Mycket kommer att kännas bekant om du har erfarenhet av JavaScript, men det finns viktiga skillnader – särskilt i variabeldeklaration (<code>$</code>), strängkonkatenering (<code>.</code>), och typdeklarationer.</p>
 <h2 id="php-taggar-och-kommentarer"><a class="header" href="#php-taggar-och-kommentarer">PHP-taggar och kommentarer</a></h2>
@@ -14635,13 +14667,66 @@ if ($success) {
 <div style="break-before: page; page-break-before: always;"></div><h1 id="introduktion-till-sql-och-relationsdatabaser"><a class="header" href="#introduktion-till-sql-och-relationsdatabaser">Introduktion till SQL och Relationsdatabaser</a></h1>
 <p>När vi bygger webbapplikationer behöver vi nästan alltid ett sätt att lagra, organisera och hämta data på ett beständigt sätt. Det kan vara användarinformation, produktlistor, blogginlägg eller vad som helst som applikationen behöver komma ihåg mellan besök och över tid. Här kommer databaser in i bilden.</p>
 <p>En <strong>database</strong> (databas) är en organiserad samling av data. Det finns olika typer av databaser, men för många traditionella webbapplikationer är <strong>Relational Database Management Systems</strong> (Relationsdatabashanteringssystem, RDBMS) det vanligaste valet. Exempel på populära RDBMS inkluderar MySQL, MariaDB, PostgreSQL, SQLite och Microsoft SQL Server. I det här kapitlet fokuserar vi på MariaDB (som är mycket likt MySQL), eftersom det fungerar bra ihop med PHP.</p>
+<h2 id="det-här-ska-du-kunna-efter-avsnittet-1"><a class="header" href="#det-här-ska-du-kunna-efter-avsnittet-1">Det här ska du kunna efter avsnittet</a></h2>
+<p>Efter avsnittet ska du kunna:</p>
+<ul>
+<li>Förklara hur tabeller, rader, kolumner och relationer används i en relationsdatabas.</li>
+<li>Skriva SQL-frågor med <code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>, <code>JOIN</code>, <code>ORDER BY</code> och <code>LIMIT</code>.</li>
+<li>Köra och verifiera SQL-frågor i phpMyAdmin.</li>
+<li>Köra samma frågor säkert från PHP med PDO och prepared statements.</li>
+<li>Felsöka vanliga databasproblem i en lokal Docker-miljö.</li>
+</ul>
 <p>Kärnan i en relationsdatabas är konceptet med <strong>tables</strong> (tabeller). En tabell organiserar data i:</p>
 <ul>
 <li><strong>Rows</strong> (Rader): Varje rad representerar en enskild post eller ett objekt (t.ex. en specifik användare, en produkt).</li>
 <li><strong>Columns</strong> (Kolumner): Varje kolumn representerar ett specifikt attribut eller egenskap för posterna (t.ex. användarens namn, produktens pris).</li>
 <li><strong>Relations</strong> (Relationer): Data i olika tabeller kan kopplas samman baserat på gemensamma värden, vilket gör att vi kan kombinera information (t.ex. koppla en order till den användare som lade den).</li>
 </ul>
-<p>För att kommunicera med ett RDBMS – för att definiera tabellstrukturer, lägga till, ändra, ta bort och hämta data – använder vi ett standardiserat språk som heter <strong>SQL</strong> (Structured Query Language, Uttalas ofta "Sequel" eller S-Q-L).</p>
+<p>För att kommunicera med ett RDBMS – för att definiera tabellstrukturer, lägga till, ändra, ta bort och hämta data – använder vi ett standardiserat språk som heter <strong>SQL</strong> (Structured Query Language, uttalas ofta "Sequel" eller S-Q-L).</p>
+<h2 id="arbetsflöde-sql-i-phpmyadmin---php-med-pdo"><a class="header" href="#arbetsflöde-sql-i-phpmyadmin---php-med-pdo">Arbetsflöde: SQL i phpMyAdmin -&gt; PHP med PDO</a></h2>
+<p>I den här lektionen jobbar vi i två steg varje gång du lär dig en ny SQL-del:</p>
+<ol>
+<li><strong>Kör frågan i phpMyAdmin</strong> för att se att SQL-syntaxen fungerar.</li>
+<li><strong>Kör motsvarande logik i PHP (PDO)</strong> för att koppla frågan till din applikation.</li>
+</ol>
+<p>Detta ger dig både databasförståelse och praktisk backend-träning.</p>
+<p><img src="kapitel_7/./assets/sql/sql-01-phpmyadmin-database-overview.png" alt="phpMyAdmin databasöversikt för SQL-övningarna" /></p>
+<h2 id="setup-tabellerna-som-används-i-screenshots"><a class="header" href="#setup-tabellerna-som-används-i-screenshots">Setup: tabellerna som används i screenshots</a></h2>
+<p>Om du vill återskapa samma data som i bilderna, kör detta i phpMyAdmin (SQL-fliken) i databasen <code>db_fullstack</code>:</p>
+<pre><code class="language-sql">-- Rensa först om tabeller redan finns (viktigt: orders före users pga relation)
+DROP TABLE IF EXISTS orders;
+DROP TABLE IF EXISTS users;
+
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    city VARCHAR(50),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE orders (
+    order_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    product VARCHAR(100) NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO users (name, email, city)
+VALUES
+    ('Alice', 'alice@example.com', 'Stockholm'),
+    ('Bob', 'bob@example.com', 'Göteborg'),
+    ('Charlie', 'charlie@example.com', 'Malmö');
+
+INSERT INTO orders (user_id, product, amount)
+VALUES
+    (1, 'Laptop', 12999.00),
+    (2, 'Keyboard', 899.00),
+    (1, 'Mouse', 499.00),
+    (4, 'Monitor', 2999.00);
+</code></pre>
+<p><code>orders.user_id = 4</code> finns med medvetet för att kunna visa skillnaden mellan matchande och icke-matchande rader i <code>INNER JOIN</code>.</p>
 <h2 id="grundläggande-sql-syntax"><a class="header" href="#grundläggande-sql-syntax">Grundläggande SQL-Syntax</a></h2>
 <p>SQL består av olika <strong>statements</strong> (satser eller kommandon) som talar om för databasen vad den ska göra. Varje sats avslutas vanligtvis med ett semikolon (<code>;</code>), även om det ibland är valfritt beroende på verktyget man använder.</p>
 <p>Viktiga nyckelord skrivs ofta med versaler av konvention (för läsbarhet), men SQL är generellt inte skiftlägeskänsligt för nyckelord. Tabell- och kolumnnamn kan dock vara skiftlägeskänsliga beroende på databasens konfiguration och operativsystemet.</p>
@@ -14757,6 +14842,18 @@ FROM users;
 SELECT *
 FROM users;
 </code></pre>
+<h3 id="miniövning-select-i-phpmyadmin-och-php"><a class="header" href="#miniövning-select-i-phpmyadmin-och-php">Miniövning: <code>SELECT</code> i phpMyAdmin och PHP</a></h3>
+<ol>
+<li>Kör en fråga i phpMyAdmin som hämtar <code>id</code>, <code>name</code>, <code>email</code> från <code>users</code> och sorterar på <code>id</code> fallande.</li>
+<li>Skriv sedan PHP-kod med PDO som kör samma fråga och loopar ut resultatet som en HTML-lista.</li>
+<li>Testa att lägga till <code>LIMIT 5</code> och verifiera att bara fem rader visas.</li>
+</ol>
+<pre><code class="language-php">&lt;?php
+// Hint: använd query() när du inte har användarinput.
+$stmt = $pdo-&gt;query("SELECT id, name, email FROM users ORDER BY id DESC LIMIT 5");
+$rows = $stmt-&gt;fetchAll();
+?&gt;
+</code></pre>
 <h3 id="filtrera-rader-where"><a class="header" href="#filtrera-rader-where">Filtrera Rader (<code>WHERE</code>)</a></h3>
 <p><code>WHERE</code>-klausulen används för att specificera villkor som raderna måste uppfylla för att inkluderas i resultatet.</p>
 <pre><code class="language-sql">-- Hämta användare från Stockholm
@@ -14815,6 +14912,15 @@ SELECT name, email, city
 FROM users
 WHERE city = 'Stockholm' AND name = 'Anna';
 </code></pre>
+<h3 id="miniövning-filter-med-parameter"><a class="header" href="#miniövning-filter-med-parameter">Miniövning: Filter med parameter</a></h3>
+<p>Skapa en PHP-fråga som filtrerar användare på stad från en variabel <code>$city</code> med prepared statement. Skriv ut namn + e-post för alla matchningar.</p>
+<pre><code class="language-php">&lt;?php
+$city = 'Stockholm';
+$stmt = $pdo-&gt;prepare("SELECT name, email FROM users WHERE city = :city ORDER BY name");
+$stmt-&gt;execute([':city' =&gt; $city]);
+$users = $stmt-&gt;fetchAll();
+?&gt;
+</code></pre>
 <h3 id="sortera-resultat-order-by"><a class="header" href="#sortera-resultat-order-by">Sortera Resultat (<code>ORDER BY</code>)</a></h3>
 <p><code>ORDER BY</code> används för att sortera resultatet baserat på en eller flera kolumner.</p>
 <pre><code class="language-sql">-- Hämta alla användare sorterade efter namn i bokstavsordning (stigande, ASC är default)
@@ -14864,6 +14970,23 @@ VALUES
     ('Joakim von Anka', 'joakim@example.com', NULL);
 </code></pre>
 <p><em>Not:</em> Om du har en <code>AUTO_INCREMENT</code>-kolumn (som <code>id</code> i vårt exempel) behöver du inte (och ska oftast inte) ange den i <code>INSERT</code>-satsen. Databasen sköter det automatiskt.</p>
+<p><img src="kapitel_7/./assets/sql/sql-02-select-query-result.png" alt="SELECT-fråga i phpMyAdmin med resultat" /></p>
+<h3 id="miniövning-insert--verifiering-i-php"><a class="header" href="#miniövning-insert--verifiering-i-php">Miniövning: <code>INSERT</code> + verifiering i PHP</a></h3>
+<ol>
+<li>Lägg till en användare i phpMyAdmin med <code>INSERT</code>.</li>
+<li>Gör sedan samma sak via PDO i PHP.</li>
+<li>Skriv ut det nya ID:t med <code>lastInsertId()</code> och kontrollera i phpMyAdmin att raden finns.</li>
+</ol>
+<pre><code class="language-php">&lt;?php
+$stmt = $pdo-&gt;prepare("INSERT INTO users (name, email, city) VALUES (:name, :email, :city)");
+$stmt-&gt;execute([
+    ':name' =&gt; 'Test User',
+    ':email' =&gt; 'test.user@example.com',
+    ':city' =&gt; 'Malmö',
+]);
+echo "Skapad rad med ID: " . $pdo-&gt;lastInsertId();
+?&gt;
+</code></pre>
 <h2 id="uppdatera-data-update"><a class="header" href="#uppdatera-data-update">Uppdatera Data (<code>UPDATE</code>)</a></h2>
 <p><code>UPDATE</code> används för att ändra data i befintliga rader.</p>
 <pre><code class="language-sql">-- Uppdatera staden för användaren med id 5
@@ -14894,6 +15017,21 @@ WHERE city = 'Ankeborg';
 -- DELETE FROM users; -- Gör INTE detta utan att vara säker!
 </code></pre>
 <p><strong>VARNING:</strong> Precis som med <code>UPDATE</code>, är <code>WHERE</code>-klausulen i <code>DELETE</code> kritisk. Utan den raderas <strong>alla</strong> rader i tabellen!</p>
+<p><img src="kapitel_7/./assets/sql/sql-03-insert-update-delete-result.png" alt="INSERT, UPDATE och DELETE verifierat i phpMyAdmin" /></p>
+<h3 id="miniövning-updatedelete-med-validerat-id"><a class="header" href="#miniövning-updatedelete-med-validerat-id">Miniövning: <code>UPDATE</code>/<code>DELETE</code> med validerat ID</a></h3>
+<p>Bygg två små PHP-block:</p>
+<ol>
+<li>Ett som uppdaterar <code>city</code> för en användare baserat på ett validerat heltals-ID.</li>
+<li>Ett som raderar en användare baserat på ett validerat heltals-ID.</li>
+</ol>
+<p>Kontrollera antalet påverkade rader med <code>rowCount()</code> efter varje operation.</p>
+<pre><code class="language-php">&lt;?php
+$userId = 3; // Byt mot validerad input i riktig kod.
+$stmt = $pdo-&gt;prepare("UPDATE users SET city = :city WHERE id = :id");
+$stmt-&gt;execute([':city' =&gt; 'Lund', ':id' =&gt; $userId]);
+echo "Antal uppdaterade rader: " . $stmt-&gt;rowCount();
+?&gt;
+</code></pre>
 <h2 id="sammanfogning-av-tabeller-join"><a class="header" href="#sammanfogning-av-tabeller-join">Sammanfogning av Tabeller (<code>JOIN</code>)</a></h2>
 <p>Ofta är den data vi behöver spridd över flera relaterade tabeller. Till exempel kanske vi har en <code>users</code>-tabell och en <code>orders</code>-tabell, där <code>orders</code>-tabellen innehåller en referens till användaren som lade ordern.</p>
 <p>För att kombinera data från flera tabeller i en enda fråga använder vi <code>JOIN</code>.</p>
@@ -14940,35 +15078,31 @@ ON
 <li>Order 104 (user_id 4) har ingen matchande användare i <code>users</code>, så den inkluderas inte.</li>
 </ul>
 <p><strong>Visualisering av <code>INNER JOIN</code>:</strong></p>
-<pre class="mermaid">graph LR
-    subgraph Users Table
-        U1[&quot;id: 1&lt;br&gt;name: 'Alice'&quot;]
-        U2[&quot;id: 2&lt;br&gt;name: 'Bob'&quot;]
-        U3[&quot;id: 3&lt;br&gt;name: 'Charlie'&quot;]
-    end
-    subgraph Orders Table
-        O1[&quot;id: 101&lt;br&gt;user_id: 1&lt;br&gt;product: 'Laptop'&quot;]
-        O2[&quot;id: 102&lt;br&gt;user_id: 2&lt;br&gt;product: 'Keyboard'&quot;]
-        O3[&quot;id: 103&lt;br&gt;user_id: 1&lt;br&gt;product: 'Mouse'&quot;]
-        O4[&quot;id: 104&lt;br&gt;user_id: 4&lt;br&gt;product: 'Monitor'&quot;]
-    end
-    subgraph INNER JOIN Result (on users.id = orders.user_id)
-        R1[&quot;user.name: 'Alice'&lt;br&gt;order.product: 'Laptop'&quot;]
-        R2[&quot;user.name: 'Bob'&lt;br&gt;order.product: 'Keyboard'&quot;]
-        R3[&quot;user.name: 'Alice'&lt;br&gt;order.product: 'Mouse'&quot;]
-    end
+<pre class="mermaid">flowchart TD
+    A[&quot;users.id = 1 (Alice)&quot;] --&gt; M1[&quot;match&quot;]
+    B[&quot;orders.user_id = 1 (Laptop)&quot;] --&gt; M1
+    M1 --&gt; R1[&quot;Resultatrad: Alice + Laptop&quot;]
 
-    U1 -- &quot;match&quot; --&gt; R1
-    U1 -- &quot;match&quot; --&gt; R3
-    U2 -- &quot;match&quot; --&gt; R2
-    O1 -- &quot;match&quot; --&gt; R1
-    O2 -- &quot;match&quot; --&gt; R2
-    O3 -- &quot;match&quot; --&gt; R3
+    C[&quot;users.id = 2 (Bob)&quot;] --&gt; M2[&quot;match&quot;]
+    D[&quot;orders.user_id = 2 (Keyboard)&quot;] --&gt; M2
+    M2 --&gt; R2[&quot;Resultatrad: Bob + Keyboard&quot;]
 
-    style U3 fill:#f9f,stroke:#333,stroke-width:2px
-    style O4 fill:#f9f,stroke:#333,stroke-width:2px
+    E[&quot;users.id = 3 (Charlie)&quot;] --&gt; N1[&quot;ingen match -&gt; inte med i resultat&quot;]
+    F[&quot;orders.user_id = 4 (Monitor)&quot;] --&gt; N2[&quot;ingen match i users -&gt; inte med i resultat&quot;]
 </pre>
-<p>(De rosa noderna representerar rader som inte inkluderas i <code>INNER JOIN</code>-resultatet.)</p>
+<p>Kort sagt: <code>INNER JOIN</code> tar bara med rader där <code>users.id = orders.user_id</code> faktiskt matchar.</p>
+<p><img src="kapitel_7/./assets/sql/sql-04-join-result.png" alt="JOIN-resultat i phpMyAdmin" /></p>
+<h3 id="miniövning-join-till-html-tabell-i-php"><a class="header" href="#miniövning-join-till-html-tabell-i-php">Miniövning: <code>JOIN</code> till HTML-tabell i PHP</a></h3>
+<p>Skriv en PHP-fråga som hämtar användarnamn och produkt med <code>INNER JOIN</code> och skriv ut resultatet i en enkel HTML-tabell.</p>
+<pre><code class="language-php">&lt;?php
+$sql = "SELECT users.name, orders.product
+        FROM users
+        INNER JOIN orders ON users.id = orders.user_id
+        ORDER BY users.name";
+$stmt = $pdo-&gt;query($sql);
+$rows = $stmt-&gt;fetchAll();
+?&gt;
+</code></pre>
 <h3 id="andra-join-typer-kort"><a class="header" href="#andra-join-typer-kort">Andra <code>JOIN</code>-typer (Kort)</a></h3>
 <ul>
 <li><code>LEFT JOIN</code>: Returnerar alla rader från den <em>vänstra</em> tabellen (<code>users</code> i exemplet ovan) och matchande rader från den högra (<code>orders</code>). Om ingen matchning finns i den högra tabellen, fylls dess kolumner ut med <code>NULL</code>. (Charlie skulle komma med, men med <code>NULL</code> i produktkolumnen).</li>
@@ -14981,7 +15115,7 @@ ON
 <li><strong>PDO (PHP Data Objects):</strong> Ett databasabstraktionslager som ger ett konsekvent gränssnitt för att arbeta med olika databastyper.</li>
 <li><strong>MySQLi (MySQL Improved Extension):</strong> En specifik extension för att arbeta med MySQL och MariaDB.</li>
 </ol>
-<p><em>Vi kommer jobba främst med PDO.</em></p>
+<p><em>Vi kommer att jobba främst med PDO.</em></p>
 <h3 id="ansluta-till-databasen"><a class="header" href="#ansluta-till-databasen">Ansluta till databasen</a></h3>
 <p>Först skapar vi en anslutning med PDO. Du behöver värd, databasnamn, användarnamn och lösenord (samma uppgifter som i <code>php-intro.md</code> Docker-exemplet):</p>
 <pre><code class="language-php">&lt;?php
@@ -15045,6 +15179,22 @@ $new_id = $pdo-&gt;lastInsertId(); // ID för den nyligen infogade raden
 echo "Ny användare skapad med ID: " . $new_id;
 ?&gt;
 </code></pre>
+<h3 id="miniövning-från-sql-till-funktion-i-php"><a class="header" href="#miniövning-från-sql-till-funktion-i-php">Miniövning: Från SQL till funktion i PHP</a></h3>
+<p>Skapa en funktion <code>create_user(PDO $pdo, string $username, string $email, string $password): string</code> som:</p>
+<ol>
+<li>hashar lösenordet,</li>
+<li>kör <code>INSERT</code> med prepared statement,</li>
+<li>returnerar <code>lastInsertId()</code> som sträng.</li>
+</ol>
+<p>På så sätt börjar du återanvända databaslogik i mindre funktioner, vilket blir viktigt i CRUD-projektet.</p>
+<h2 id="vanliga-fel-och-snabb-felsökning"><a class="header" href="#vanliga-fel-och-snabb-felsökning">Vanliga fel och snabb felsökning</a></h2>
+<ul>
+<li><strong>Fel host i DSN:</strong> I Docker-miljö ska host oftast vara <code>mysql</code> (service-namnet), inte <code>localhost</code>.</li>
+<li><strong>Ingen <code>WHERE</code> i <code>UPDATE</code>/<code>DELETE</code>:</strong> Risk att alla rader påverkas. Lägg alltid till villkor och dubbelkolla före körning.</li>
+<li><strong>Fel bindning av datatyp:</strong> Validera heltal innan bindning till <code>:id</code> och använd rätt parametertyp när det behövs.</li>
+<li><strong>SQL-injektion via strängkonkatenering:</strong> Undvik att bygga SQL med <code>"... $input ..."</code>; använd prepared statements.</li>
+<li><strong>Svårtolkade PDO-fel:</strong> Aktivera <code>PDO::ATTR_ERRMODE =&gt; PDO::ERRMODE_EXCEPTION</code> under utveckling.</li>
+</ul>
 <h3 id="nästa-steg-crud-applikationen"><a class="header" href="#nästa-steg-crud-applikationen">Nästa steg: CRUD-applikationen</a></h3>
 <p>I avsnittet <code>crud-app.md</code> bygger vi en komplett bloggapplikation som använder dessa tekniker:</p>
 <ul>
@@ -15053,7 +15203,8 @@ echo "Ny användare skapad med ID: " . $new_id;
 <li>Hantering av resultat med <code>fetch()</code> och <code>fetchAll()</code>.</li>
 <li>Integration med formulär, sessioner och filuppladdning.</li>
 </ul>
-<p>Att kunna SQL är en grundläggande färdighet för fullstack-utveckling, eftersom det låter dig interagera med den data som driver din applikation.</p>
+<p>Du har nu grunderna för att gå från SQL-kommandon till verklig backend-kod i PHP. Nästa steg är att använda exakt dessa mönster i en större helhet där flera sidor samverkar.</p>
+<p>Fortsätt med <a href="kapitel_7/crud-app.html">CRUD-applikationen</a> för att bygga hela flödet end-to-end.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="bygga-en-crud-applikation-enkel-blogg"><a class="header" href="#bygga-en-crud-applikation-enkel-blogg">Bygga en CRUD-applikation: Enkel Blogg</a></h1>
 <p>I detta avsnitt bygger vi en komplett men enkel bloggapplikation från grunden med PHP och MariaDB/MySQL. Målet är att praktiskt demonstrera <strong>CRUD</strong>-operationerna (Create, Read, Update, Delete) och integrera andra viktiga webbkoncept som databasinteraktion med PDO, användarautentisering, sessionshantering och filuppladdning.</p>
 <p>Vi börjar med en mycket grundläggande struktur och kodstil för att sedan i slutet refaktorera och förbättra koden, bland annat genom att introducera type hinting. Varje del byggs steg för steg – du får inte hela lösningen på en gång utan bygger upp funktionaliteten inkrementellt.</p>
@@ -18905,6 +19056,167 @@ INNER JOIN customers ON orders.customer_id = customers.id;
 <pre><code class="language-sql">SELECT * FROM customers WHERE city IS NULL;
 </code></pre>
 <p><strong>Förklaring:</strong> <code>LIKE</code> används för mönstermatchning. <code>%</code> matchar noll eller flera tecken. <code>Anders%</code> matchar "Andersson", "Anders" etc. För NULL använd <code>IS NULL</code> eller <code>IS NOT NULL</code> – inte <code>= NULL</code>.</p>
+</details>
+<hr />
+<h2 id="sql--php-pdo"><a class="header" href="#sql--php-pdo">SQL + PHP (PDO)</a></h2>
+<p>Anta att du har en PDO-anslutning i variabeln <code>$pdo</code> och tabellerna <code>users</code> (<code>id</code>, <code>name</code>, <code>email</code>, <code>city</code>) och <code>orders</code> (<code>order_id</code>, <code>user_id</code>, <code>product</code>, <code>amount</code>).</p>
+<h3 id="Övning-35a-prepared-select-med-parameter"><a class="header" href="#Övning-35a-prepared-select-med-parameter">Övning 35A: Prepared SELECT med parameter</a></h3>
+<p>Skriv PHP-kod som hämtar alla användare från en viss stad via prepared statement. Staden ska komma från variabeln <code>$cityFilter</code>.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-php">&lt;?php
+$cityFilter = 'Göteborg';
+
+$stmt = $pdo-&gt;prepare(
+    "SELECT id, name, email, city
+     FROM users
+     WHERE city = :city
+     ORDER BY name"
+);
+$stmt-&gt;execute([':city' =&gt; $cityFilter]);
+$users = $stmt-&gt;fetchAll(PDO::FETCH_ASSOC);
+?&gt;
+</code></pre>
+<p><strong>Förklaring:</strong> <code>prepare()</code> + <code>execute()</code> med named placeholder (<code>:city</code>) skyddar mot SQL injection och gör frågan enkel att återanvända med olika filter.</p>
+</details>
+<hr />
+<h3 id="Övning-35b-paginering-med-limit-och-offset"><a class="header" href="#Övning-35b-paginering-med-limit-och-offset">Övning 35B: Paginering med <code>LIMIT</code> och offset</a></h3>
+<p>Skriv PHP-kod som hämtar en sida med användare. Använd variablerna <code>$page = 3</code> och <code>$perPage = 10</code>. Beräkna offset och hämta rätt rader sorterat på <code>id</code>.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-php">&lt;?php
+$page = 3;
+$perPage = 10;
+$offset = ($page - 1) * $perPage; // 20
+
+$stmt = $pdo-&gt;prepare(
+    "SELECT id, name, email
+     FROM users
+     ORDER BY id
+     LIMIT :offset, :count"
+);
+$stmt-&gt;bindValue(':offset', $offset, PDO::PARAM_INT);
+$stmt-&gt;bindValue(':count', $perPage, PDO::PARAM_INT);
+$stmt-&gt;execute();
+$pagedUsers = $stmt-&gt;fetchAll(PDO::FETCH_ASSOC);
+?&gt;
+</code></pre>
+<p><strong>Förklaring:</strong> <code>LIMIT</code>-värden ska behandlas som heltal. <code>bindValue(..., PDO::PARAM_INT)</code> hjälper databasen tolka parametrarna korrekt.</p>
+</details>
+<hr />
+<h3 id="Övning-35c-insert-med-trycatch"><a class="header" href="#Övning-35c-insert-med-trycatch">Övning 35C: <code>INSERT</code> med try/catch</a></h3>
+<p>Skriv kod som lägger till en användare med variablerna <code>$name</code>, <code>$email</code>, <code>$city</code>. Hantera databasfel med <code>try/catch</code> och skriv ut ett kort felmeddelande utan känslig info.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-php">&lt;?php
+$name = 'Sara Lind';
+$email = 'sara.lind@example.com';
+$city = 'Malmö';
+
+try {
+    $stmt = $pdo-&gt;prepare(
+        "INSERT INTO users (name, email, city)
+         VALUES (:name, :email, :city)"
+    );
+    $stmt-&gt;execute([
+        ':name' =&gt; $name,
+        ':email' =&gt; $email,
+        ':city' =&gt; $city,
+    ]);
+
+    echo "Ny användare skapad med ID: " . $pdo-&gt;lastInsertId();
+} catch (PDOException $e) {
+    error_log('Insert users failed: ' . $e-&gt;getMessage());
+    echo "Kunde inte spara användaren just nu.";
+}
+?&gt;
+</code></pre>
+<p><strong>Förklaring:</strong> Logga tekniska fel med <code>error_log</code>, men visa ett generellt meddelande till användaren. <code>lastInsertId()</code> används för att verifiera att insert lyckades.</p>
+</details>
+<hr />
+<h3 id="Övning-35d-update-med-whitelist-av-tillåtna-fält"><a class="header" href="#Övning-35d-update-med-whitelist-av-tillåtna-fält">Övning 35D: <code>UPDATE</code> med whitelist av tillåtna fält</a></h3>
+<p>Du får in två variabler: <code>$field</code> och <code>$value</code>, samt ett <code>$userId</code>. Endast <code>name</code> och <code>city</code> ska vara tillåtna att uppdatera. Skriv säker kod som uppdaterar om fältet är tillåtet.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-php">&lt;?php
+$field = 'city';
+$value = 'Lund';
+$userId = 7;
+
+$allowedFields = ['name', 'city'];
+
+if (!in_array($field, $allowedFields, true)) {
+    throw new InvalidArgumentException('Otillåtet fält');
+}
+
+$sql = "UPDATE users SET {$field} = :value WHERE id = :id";
+$stmt = $pdo-&gt;prepare($sql);
+$stmt-&gt;bindValue(':value', $value, PDO::PARAM_STR);
+$stmt-&gt;bindValue(':id', $userId, PDO::PARAM_INT);
+$stmt-&gt;execute();
+
+echo "Antal uppdaterade rader: " . $stmt-&gt;rowCount();
+?&gt;
+</code></pre>
+<p><strong>Förklaring:</strong> Kolumnnamn kan inte bindas som vanliga parametrar, så du måste whitelista dem innan de interpoleras i SQL-strängen.</p>
+</details>
+<hr />
+<h3 id="Övning-35e-delete-med-bekräftelseflöde"><a class="header" href="#Övning-35e-delete-med-bekräftelseflöde">Övning 35E: <code>DELETE</code> med bekräftelseflöde</a></h3>
+<p>Anta att ett formulär skickar <code>user_id</code> och <code>confirm_delete</code>. Skriv kod som endast raderar raden om <code>confirm_delete === 'yes'</code> och <code>user_id</code> är ett giltigt heltal.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-php">&lt;?php
+$userId = filter_input(INPUT_POST, 'user_id', FILTER_VALIDATE_INT);
+$confirmDelete = $_POST['confirm_delete'] ?? '';
+
+if (!$userId || $confirmDelete !== 'yes') {
+    echo "Radering avbruten.";
+    return;
+}
+
+$stmt = $pdo-&gt;prepare("DELETE FROM users WHERE id = :id");
+$stmt-&gt;bindValue(':id', $userId, PDO::PARAM_INT);
+$stmt-&gt;execute();
+
+echo "Antal rader raderade: " . $stmt-&gt;rowCount();
+?&gt;
+</code></pre>
+<p><strong>Förklaring:</strong> Ett enkelt bekräftelseflöde minskar risken för oavsiktlig radering. <code>filter_input(..., FILTER_VALIDATE_INT)</code> validerar ID innan SQL körs.</p>
+</details>
+<hr />
+<h3 id="Övning-35f-enkel-join-rapport-i-html"><a class="header" href="#Övning-35f-enkel-join-rapport-i-html">Övning 35F: Enkel JOIN-rapport i HTML</a></h3>
+<p>Skriv kod som hämtar <code>users.name</code>, <code>orders.product</code> och <code>orders.amount</code> med <code>INNER JOIN</code>, och skriver ut resultatet i en HTML-tabell.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-php">&lt;?php
+$sql = "SELECT users.name, orders.product, orders.amount
+        FROM orders
+        INNER JOIN users ON orders.user_id = users.id
+        ORDER BY users.name, orders.order_id";
+
+$rows = $pdo-&gt;query($sql)-&gt;fetchAll(PDO::FETCH_ASSOC);
+?&gt;
+
+&lt;table&gt;
+    &lt;thead&gt;
+        &lt;tr&gt;
+            &lt;th&gt;Användare&lt;/th&gt;
+            &lt;th&gt;Produkt&lt;/th&gt;
+            &lt;th&gt;Belopp&lt;/th&gt;
+        &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+        &lt;?php foreach ($rows as $row): ?&gt;
+            &lt;tr&gt;
+                &lt;td&gt;&lt;?= htmlspecialchars($row['name'], ENT_QUOTES, 'UTF-8'); ?&gt;&lt;/td&gt;
+                &lt;td&gt;&lt;?= htmlspecialchars($row['product'], ENT_QUOTES, 'UTF-8'); ?&gt;&lt;/td&gt;
+                &lt;td&gt;&lt;?= htmlspecialchars((string) $row['amount'], ENT_QUOTES, 'UTF-8'); ?&gt;&lt;/td&gt;
+            &lt;/tr&gt;
+        &lt;?php endforeach; ?&gt;
+    &lt;/tbody&gt;
+&lt;/table&gt;
+</code></pre>
+<p><strong>Förklaring:</strong> <code>JOIN</code> kombinerar data från två tabeller och gör det enkelt att rendera rapportliknande vyer. Använd <code>htmlspecialchars()</code> när du skriver ut dynamiska värden i HTML.</p>
 </details>
 <hr />
 <h2 id="sessioner-och-säkerhet"><a class="header" href="#sessioner-och-säkerhet">Sessioner och Säkerhet</a></h2>
