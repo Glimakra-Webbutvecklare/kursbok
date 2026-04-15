@@ -18636,6 +18636,7 @@ print_r($values); // Array ( [0] =&gt; Anna [1] =&gt; anna@example.com [2] =&gt;
 ?&gt;
 </code></pre>
 <p><strong>Förklaring:</strong> <code>array_keys()</code> returnerar alla nycklar som en indexerad array. <code>array_values()</code> returnerar alla värden och skapar nya numeriska index. Användbart när du behöver iterera över endast nycklar eller värden, eller konvertera till indexerad array.</p>
+</details>
 <hr />
 <h3 id="Övning-20-flerdimensionell-array"><a class="header" href="#Övning-20-flerdimensionell-array">Övning 20: Flerdimensionell Array</a></h3>
 <p>Skapa en tvådimensionell array <code>$products</code> med tre produkter. Varje produkt ska vara en associativ array med nycklarna <code>name</code>, <code>price</code> och <code>stock</code>. Skriv sedan ut namnet på den första produkten och priset på den andra.</p>
@@ -19249,8 +19250,131 @@ class BankAccount {
 <p><strong>Förklaring:</strong> Inkapsling låter klassen kontrollera hur <code>$balance</code> ändras. <code>deposit</code> och <code>withdraw</code> validerar input och returnerar <code>true</code>/<code>false</code> för att indikera lyckad operation. <code>max(0.0, $initialBalance)</code> förhindrar negativt startsaldo.</p>
 </details>
 <hr />
+<h3 id="Övning-52-statisk-egenskap-och-klassmetod"><a class="header" href="#Övning-52-statisk-egenskap-och-klassmetod">Övning 52: Statisk Egenskap och Klassmetod</a></h3>
+<p>Skapa en klass <code>User</code> med en statisk egenskap <code>$count</code> som håller koll på hur många <code>User</code>-objekt som skapats. Öka räknaren i konstruktorn och skapa en statisk metod <code>getCount()</code> som returnerar antalet.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-php">&lt;?php
+declare(strict_types=1);
+
+class User {
+    private static int $count = 0;
+    private string $name;
+
+    public function __construct(string $name) {
+        $this-&gt;name = $name;
+        self::$count++;
+    }
+
+    public static function getCount(): int {
+        return self::$count;
+    }
+}
+
+$u1 = new User("Anna");
+$u2 = new User("Erik");
+echo User::getCount(); // 2
+?&gt;
+</code></pre>
+<p><strong>Förklaring:</strong> <code>static</code> gör att egenskapen tillhör klassen, inte varje objekt. <code>self::$count</code> används inuti klassen för att nå statiska medlemmar. <code>User::getCount()</code> anropas utan att skapa ett nytt objekt.</p>
+</details>
+<hr />
+<h3 id="Övning-53-arv-och-Överskuggning-av-metod"><a class="header" href="#Övning-53-arv-och-Överskuggning-av-metod">Övning 53: Arv och Överskuggning av Metod</a></h3>
+<p>Skapa en basklass <code>Vehicle</code> med egenskapen <code>$brand</code> och metoden <code>getInfo()</code>. Skapa sedan en subklass <code>Car</code> som lägger till egenskapen <code>$doors</code> och överskuggar <code>getInfo()</code> så att både märke och antal dörrar skrivs ut.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-php">&lt;?php
+declare(strict_types=1);
+
+class Vehicle {
+    protected string $brand;
+
+    public function __construct(string $brand) {
+        $this-&gt;brand = $brand;
+    }
+
+    public function getInfo(): string {
+        return "Märke: " . $this-&gt;brand;
+    }
+}
+
+class Car extends Vehicle {
+    private int $doors;
+
+    public function __construct(string $brand, int $doors) {
+        parent::__construct($brand);
+        $this-&gt;doors = $doors;
+    }
+
+    public function getInfo(): string {
+        return parent::getInfo() . ", Dörrar: " . $this-&gt;doors;
+    }
+}
+
+$car = new Car("Volvo", 4);
+echo $car-&gt;getInfo(); // Märke: Volvo, Dörrar: 4
+?&gt;
+</code></pre>
+<p><strong>Förklaring:</strong> <code>extends</code> används för arv. <code>parent::__construct(...)</code> anropar basklassens konstruktor. När subklassen definierar en metod med samma namn överskuggas basklassens implementation.</p>
+</details>
+<hr />
+<h3 id="Övning-54-abstrakt-klass"><a class="header" href="#Övning-54-abstrakt-klass">Övning 54: Abstrakt Klass</a></h3>
+<p>Skapa en abstrakt klass <code>Shape</code> med en abstrakt metod <code>area(): float</code>. Skapa klassen <code>Rectangle</code> som ärver <code>Shape</code> och implementerar <code>area()</code> med bredd * höjd.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-php">&lt;?php
+declare(strict_types=1);
+
+abstract class Shape {
+    abstract public function area(): float;
+}
+
+class Rectangle extends Shape {
+    public function __construct(
+        private float $width,
+        private float $height
+    ) {}
+
+    public function area(): float {
+        return $this-&gt;width * $this-&gt;height;
+    }
+}
+
+$rectangle = new Rectangle(5, 2.5);
+echo $rectangle-&gt;area(); // 12.5
+?&gt;
+</code></pre>
+<p><strong>Förklaring:</strong> En abstrakt klass kan inte instansieras direkt. Den fungerar som en mall där subklasser måste implementera abstrakta metoder, vilket ger en gemensam struktur med tydliga krav.</p>
+</details>
+<hr />
+<h3 id="Övning-55-interface"><a class="header" href="#Övning-55-interface">Övning 55: Interface</a></h3>
+<p>Skapa ett interface <code>CanBeRendered</code> med metoden <code>render(): string</code>. Skapa en klass <code>Button</code> som implementerar interfacet och returnerar en enkel HTML-knapp med text.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-php">&lt;?php
+declare(strict_types=1);
+
+interface CanBeRendered {
+    public function render(): string;
+}
+
+class Button implements CanBeRendered {
+    public function __construct(private string $label) {}
+
+    public function render(): string {
+        return '&lt;button&gt;' . htmlspecialchars($this-&gt;label, ENT_QUOTES, 'UTF-8') . '&lt;/button&gt;';
+    }
+}
+
+$button = new Button("Spara");
+echo $button-&gt;render(); // &lt;button&gt;Spara&lt;/button&gt;
+?&gt;
+</code></pre>
+<p><strong>Förklaring:</strong> Ett interface definierar ett kontrakt utan implementation. Klasser som implementerar interfacet måste implementera alla metoder. Det gör koden mer flexibel eftersom olika klasser kan användas via samma typ.</p>
+</details>
+<hr />
 <h2 id="crud-applikation-och-projektstruktur"><a class="header" href="#crud-applikation-och-projektstruktur">CRUD-applikation och Projektstruktur</a></h2>
-<h3 id="Övning-52-projektstruktur"><a class="header" href="#Övning-52-projektstruktur">Övning 52: Projektstruktur</a></h3>
+<h3 id="Övning-56-projektstruktur"><a class="header" href="#Övning-56-projektstruktur">Övning 56: Projektstruktur</a></h3>
 <p>Vilka filer/mappar behövs typiskt i en enkel PHP CRUD-applikation (t.ex. blogg) för att separera konfiguration, databaslogik, admin-funktioner och uppladdade filer? Nämn minst fem.</p>
 <details>
 <summary>Lösningsförslag</summary>
@@ -19266,7 +19390,7 @@ class BankAccount {
 <p><strong>Förklaring:</strong> Separation av concerns gör koden underhållbar. <code>includes/</code> återanvänds på flera sidor. <code>admin/</code> grupperar skyddade resurser. <code>uploads/</code> ska vara skrivbar för webbservern och bortom document root om möjligt av säkerhetsskäl.</p>
 </details>
 <hr />
-<h3 id="Övning-53-filuppladdning--säkerhetskontroller"><a class="header" href="#Övning-53-filuppladdning--säkerhetskontroller">Övning 53: Filuppladdning – Säkerhetskontroller</a></h3>
+<h3 id="Övning-57-filuppladdning--säkerhetskontroller"><a class="header" href="#Övning-57-filuppladdning--säkerhetskontroller">Övning 57: Filuppladdning – Säkerhetskontroller</a></h3>
 <p>Nämn minst fyra säkerhetsåtgärder du bör implementera när användare laddar upp filer (t.ex. bilder) till din webbapplikation.</p>
 <details>
 <summary>Lösningsförslag</summary>
@@ -19280,7 +19404,7 @@ class BankAccount {
 <p><strong>Förklaring:</strong> Filuppladdning är en vanlig attackvektor. Angripare kan försöka ladda upp PHP-filer som exekveras på servern, eller extremt stora filer. Alltid validera på serversidan – klientvalidering kan kringgås.</p>
 </details>
 <hr />
-<h3 id="Övning-54-skydda-admin-sida"><a class="header" href="#Övning-54-skydda-admin-sida">Övning 54: Skydda Admin-sida</a></h3>
+<h3 id="Övning-58-skydda-admin-sida"><a class="header" href="#Övning-58-skydda-admin-sida">Övning 58: Skydda Admin-sida</a></h3>
 <p>Skriv PHP-kod som ska placeras högst upp i en admin-sida. Koden ska kontrollera om användaren är inloggad (sessionsvariabeln <code>user_id</code> är satt). Om inte, omdirigera till <code>login.php</code> och avbryt.</p>
 <details>
 <summary>Lösningsförslag</summary>

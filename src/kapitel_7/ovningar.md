@@ -437,6 +437,8 @@ print_r($values); // Array ( [0] => Anna [1] => anna@example.com [2] => Stockhol
 
 **Förklaring:** `array_keys()` returnerar alla nycklar som en indexerad array. `array_values()` returnerar alla värden och skapar nya numeriska index. Användbart när du behöver iterera över endast nycklar eller värden, eller konvertera till indexerad array.
 
+</details>
+
 ---
 
 ### Övning 20: Flerdimensionell Array
@@ -1284,9 +1286,160 @@ class BankAccount {
 
 ---
 
+### Övning 52: Statisk Egenskap och Klassmetod
+
+Skapa en klass `User` med en statisk egenskap `$count` som håller koll på hur många `User`-objekt som skapats. Öka räknaren i konstruktorn och skapa en statisk metod `getCount()` som returnerar antalet.
+
+<details>
+<summary>Lösningsförslag</summary>
+
+```php
+<?php
+declare(strict_types=1);
+
+class User {
+    private static int $count = 0;
+    private string $name;
+
+    public function __construct(string $name) {
+        $this->name = $name;
+        self::$count++;
+    }
+
+    public static function getCount(): int {
+        return self::$count;
+    }
+}
+
+$u1 = new User("Anna");
+$u2 = new User("Erik");
+echo User::getCount(); // 2
+?>
+```
+
+**Förklaring:** `static` gör att egenskapen tillhör klassen, inte varje objekt. `self::$count` används inuti klassen för att nå statiska medlemmar. `User::getCount()` anropas utan att skapa ett nytt objekt.
+</details>
+
+---
+
+### Övning 53: Arv och Överskuggning av Metod
+
+Skapa en basklass `Vehicle` med egenskapen `$brand` och metoden `getInfo()`. Skapa sedan en subklass `Car` som lägger till egenskapen `$doors` och överskuggar `getInfo()` så att både märke och antal dörrar skrivs ut.
+
+<details>
+<summary>Lösningsförslag</summary>
+
+```php
+<?php
+declare(strict_types=1);
+
+class Vehicle {
+    protected string $brand;
+
+    public function __construct(string $brand) {
+        $this->brand = $brand;
+    }
+
+    public function getInfo(): string {
+        return "Märke: " . $this->brand;
+    }
+}
+
+class Car extends Vehicle {
+    private int $doors;
+
+    public function __construct(string $brand, int $doors) {
+        parent::__construct($brand);
+        $this->doors = $doors;
+    }
+
+    public function getInfo(): string {
+        return parent::getInfo() . ", Dörrar: " . $this->doors;
+    }
+}
+
+$car = new Car("Volvo", 4);
+echo $car->getInfo(); // Märke: Volvo, Dörrar: 4
+?>
+```
+
+**Förklaring:** `extends` används för arv. `parent::__construct(...)` anropar basklassens konstruktor. När subklassen definierar en metod med samma namn överskuggas basklassens implementation.
+</details>
+
+---
+
+### Övning 54: Abstrakt Klass
+
+Skapa en abstrakt klass `Shape` med en abstrakt metod `area(): float`. Skapa klassen `Rectangle` som ärver `Shape` och implementerar `area()` med bredd * höjd.
+
+<details>
+<summary>Lösningsförslag</summary>
+
+```php
+<?php
+declare(strict_types=1);
+
+abstract class Shape {
+    abstract public function area(): float;
+}
+
+class Rectangle extends Shape {
+    public function __construct(
+        private float $width,
+        private float $height
+    ) {}
+
+    public function area(): float {
+        return $this->width * $this->height;
+    }
+}
+
+$rectangle = new Rectangle(5, 2.5);
+echo $rectangle->area(); // 12.5
+?>
+```
+
+**Förklaring:** En abstrakt klass kan inte instansieras direkt. Den fungerar som en mall där subklasser måste implementera abstrakta metoder, vilket ger en gemensam struktur med tydliga krav.
+</details>
+
+---
+
+### Övning 55: Interface
+
+Skapa ett interface `CanBeRendered` med metoden `render(): string`. Skapa en klass `Button` som implementerar interfacet och returnerar en enkel HTML-knapp med text.
+
+<details>
+<summary>Lösningsförslag</summary>
+
+```php
+<?php
+declare(strict_types=1);
+
+interface CanBeRendered {
+    public function render(): string;
+}
+
+class Button implements CanBeRendered {
+    public function __construct(private string $label) {}
+
+    public function render(): string {
+        return '<button>' . htmlspecialchars($this->label, ENT_QUOTES, 'UTF-8') . '</button>';
+    }
+}
+
+$button = new Button("Spara");
+echo $button->render(); // <button>Spara</button>
+?>
+```
+
+**Förklaring:** Ett interface definierar ett kontrakt utan implementation. Klasser som implementerar interfacet måste implementera alla metoder. Det gör koden mer flexibel eftersom olika klasser kan användas via samma typ.
+</details>
+
+---
+
 ## CRUD-applikation och Projektstruktur
 
-### Övning 52: Projektstruktur
+### Övning 56: Projektstruktur
 
 Vilka filer/mappar behövs typiskt i en enkel PHP CRUD-applikation (t.ex. blogg) för att separera konfiguration, databaslogik, admin-funktioner och uppladdade filer? Nämn minst fem.
 
@@ -1306,7 +1459,7 @@ Vilka filer/mappar behövs typiskt i en enkel PHP CRUD-applikation (t.ex. blogg)
 
 ---
 
-### Övning 53: Filuppladdning – Säkerhetskontroller
+### Övning 57: Filuppladdning – Säkerhetskontroller
 
 Nämn minst fyra säkerhetsåtgärder du bör implementera när användare laddar upp filer (t.ex. bilder) till din webbapplikation.
 
@@ -1324,7 +1477,7 @@ Nämn minst fyra säkerhetsåtgärder du bör implementera när användare ladda
 
 ---
 
-### Övning 54: Skydda Admin-sida
+### Övning 58: Skydda Admin-sida
 
 Skriv PHP-kod som ska placeras högst upp i en admin-sida. Koden ska kontrollera om användaren är inloggad (sessionsvariabeln `user_id` är satt). Om inte, omdirigera till `login.php` och avbryt.
 
