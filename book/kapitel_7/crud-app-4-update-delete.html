@@ -171,10 +171,12 @@ $logged_in_user_id = $_SESSION['user_id'];
 $logged_in_username = $_SESSION['username'];
 
 require_once '../includes/database.php';
+require_once '../includes/Post.php';
 
 $posts = [];
 $fetch_error = null;
 $success_message = null;
+$post_model = new Post(connect_db());
 
 if (isset($_GET['created']) &amp;&amp; $_GET['created'] === 'success') {
     $success_message = "Nytt inlägg skapat!";
@@ -185,14 +187,7 @@ if (isset($_GET['created']) &amp;&amp; $_GET['created'] === 'success') {
 }
 
 try {
-    $pdo = connect_db();
-    $stmt = $pdo-&gt;prepare("SELECT id, title, created_at, updated_at
-                           FROM posts
-                           WHERE user_id = :user_id
-                           ORDER BY created_at DESC");
-    $stmt-&gt;bindParam(':user_id', $logged_in_user_id, PDO::PARAM_INT);
-    $stmt-&gt;execute();
-    $posts = $stmt-&gt;fetchAll();
+    $posts = $post_model-&gt;showAllByUser($logged_in_user_id);
 } catch (PDOException $e) {
     error_log("Admin Index Error: " . $e-&gt;getMessage());
     $fetch_error = "Kunde inte hämta dina blogginlägg just nu.";
@@ -289,6 +284,7 @@ if (!isset($_SESSION['user_id'])) {
 $logged_in_user_id = $_SESSION['user_id'];
 
 require_once '../includes/database.php';
+require_once '../includes/Post.php';
 
 $errors = [];
 $post_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
@@ -301,11 +297,8 @@ if ($post_id === false || $post_id &lt;= 0) {
     $errors[] = "Ogiltigt inläggs-ID.";
 } else {
     try {
-        $pdo = connect_db();
-        $stmt = $pdo-&gt;prepare("SELECT * FROM posts WHERE id = :id");
-        $stmt-&gt;bindParam(':id', $post_id, PDO::PARAM_INT);
-        $stmt-&gt;execute();
-        $post = $stmt-&gt;fetch();
+        $post_model = new Post(connect_db());
+        $post = $post_model-&gt;showOne($post_id);
 
         if (!$post) {
             $errors[] = "Inlägget hittades inte.";
@@ -342,15 +335,8 @@ if ($post_id === false || $post_id &lt;= 0) {
 
     if (empty($errors)) {
         try {
-            if (!isset($pdo)) $pdo = connect_db();
-            $stmt = $pdo-&gt;prepare("UPDATE posts SET title = :title, body = :body, image_path = :image_path WHERE id = :id AND user_id = :user_id");
-            $stmt-&gt;bindParam(':title', $title);
-            $stmt-&gt;bindParam(':body', $body);
-            $stmt-&gt;bindParam(':image_path', $new_image_path, $new_image_path === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-            $stmt-&gt;bindParam(':id', $post_id, PDO::PARAM_INT);
-            $stmt-&gt;bindParam(':user_id', $logged_in_user_id, PDO::PARAM_INT);
-
-            if ($stmt-&gt;execute()) {
+            $post_model = new Post(connect_db());
+            if ($post_model-&gt;updateOne($post_id, $logged_in_user_id, $title, $body, $new_image_path)) {
                 header('Location: index.php?updated=success&amp;id=' . $post_id);
                 exit;
             } else {
@@ -547,15 +533,8 @@ if ($delete_image &amp;&amp; $current_image_path) {
 
     if (empty($errors)) {
         try {
-            if (!isset($pdo)) $pdo = connect_db();
-            $stmt = $pdo-&gt;prepare("UPDATE posts SET title = :title, body = :body, image_path = :image_path WHERE id = :id AND user_id = :user_id");
-            $stmt-&gt;bindParam(':title', $title);
-            $stmt-&gt;bindParam(':body', $body);
-            $stmt-&gt;bindParam(':image_path', $new_image_path, $new_image_path === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-            $stmt-&gt;bindParam(':id', $post_id, PDO::PARAM_INT);
-            $stmt-&gt;bindParam(':user_id', $logged_in_user_id, PDO::PARAM_INT);
-
-            if ($stmt-&gt;execute()) {
+            $post_model = new Post(connect_db());
+            if ($post_model-&gt;updateOne($post_id, $logged_in_user_id, $title, $body, $new_image_path)) {
                 header('Location: index.php?updated=success&amp;id=' . $post_id);
                 exit;
             } else {
@@ -591,6 +570,7 @@ if (!isset($_SESSION['user_id'])) {
 $logged_in_user_id = $_SESSION['user_id'];
 
 require_once '../includes/database.php';
+require_once '../includes/Post.php';
 
 $errors = [];
 
@@ -602,22 +582,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         try {
             $pdo = connect_db();
+            $post_model = new Post($pdo);
 
-            $stmt_fetch = $pdo-&gt;prepare("SELECT user_id, image_path FROM posts WHERE id = :id");
-            $stmt_fetch-&gt;bindParam(':id', $post_id, PDO::PARAM_INT);
-            $stmt_fetch-&gt;execute();
-            $post_data = $stmt_fetch-&gt;fetch();
+            $post_data = $post_model-&gt;showOne($post_id);
 
             if (!$post_data) {
                 $errors[] = "Inlägget hittades inte.";
             } elseif ($post_data['user_id'] != $logged_in_user_id) {
                 $errors[] = "Du har inte behörighet att radera detta inlägg.";
             } else {
-                $stmt_delete = $pdo-&gt;prepare("DELETE FROM posts WHERE id = :id AND user_id = :user_id");
-                $stmt_delete-&gt;bindParam(':id', $post_id, PDO::PARAM_INT);
-                $stmt_delete-&gt;bindParam(':user_id', $logged_in_user_id, PDO::PARAM_INT);
-
-                if ($stmt_delete-&gt;execute()) {
+                if ($post_model-&gt;deleteOne($post_id, $logged_in_user_id)) {
                     $image_to_delete = $post_data['image_path'];
                     if ($image_to_delete &amp;&amp; file_exists(UPLOAD_PATH . basename($image_to_delete))) {
                         unlink(UPLOAD_PATH . basename($image_to_delete));

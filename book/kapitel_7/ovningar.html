@@ -1394,6 +1394,160 @@ if (!isset($_SESSION['user_id'])) {
 <p><strong>Förklaring:</strong> Denna "guard"-kod måste köras före all annan output. <code>header('Location: ...')</code> skickar en redirect. <code>exit</code> förhindrar att resten av skriptet körs efter redirect. <code>__DIR__</code> ger aktuell mapps sökväg för relativ inkludering.</p>
 </details>
 <hr />
+<h2 id="crud-modell-post--pdo"><a class="header" href="#crud-modell-post--pdo">CRUD-modell (Post + PDO)</a></h2>
+<p>Anta att du har en PDO-anslutning i variabeln <code>$pdo</code> och tabellen <code>posts</code> med kolumnerna <code>id</code>, <code>user_id</code>, <code>title</code>, <code>body</code>, <code>image_path</code>, <code>created_at</code>, <code>updated_at</code>.</p>
+<h3 id="Övning-59-skapa-grundklass-med-konstruktor"><a class="header" href="#Övning-59-skapa-grundklass-med-konstruktor">Övning 59: Skapa grundklass med konstruktor</a></h3>
+<p>Skapa en klass <code>Post</code> som tar emot en <code>PDO</code> i konstruktorn och sparar den i en privat egenskap.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-php">&lt;?php
+declare(strict_types=1);
+
+class Post
+{
+    public function __construct(private PDO $pdo)
+    {
+    }
+}
+?&gt;
+</code></pre>
+<p><strong>Förklaring:</strong> Genom dependency injection (att skicka in <code>PDO</code> i konstruktorn) blir klassen återanvändbar och lättare att testa. Modellen behöver inte själv skapa anslutningen.</p>
+</details>
+<hr />
+<h3 id="Övning-60-implementera-create"><a class="header" href="#Övning-60-implementera-create">Övning 60: Implementera <code>create(...)</code></a></h3>
+<p>Lägg till metoden <code>create(int $userId, string $title, string $body, ?string $imagePath): int</code> som sparar ett inlägg med prepared statement och returnerar nytt ID.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-php">&lt;?php
+public function create(int $userId, string $title, string $body, ?string $imagePath): int
+{
+    $stmt = $this-&gt;pdo-&gt;prepare(
+        "INSERT INTO posts (user_id, title, body, image_path)
+         VALUES (:user_id, :title, :body, :image_path)"
+    );
+
+    $stmt-&gt;bindValue(':user_id', $userId, PDO::PARAM_INT);
+    $stmt-&gt;bindValue(':title', $title);
+    $stmt-&gt;bindValue(':body', $body);
+    $stmt-&gt;bindValue(':image_path', $imagePath, $imagePath === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+    $stmt-&gt;execute();
+
+    return (int) $this-&gt;pdo-&gt;lastInsertId();
+}
+?&gt;
+</code></pre>
+<p><strong>Förklaring:</strong> <code>lastInsertId()</code> används för att få ID för den nyskapade raden. <code>?string</code> för <code>imagePath</code> gör att metoden kan hantera både text och <code>null</code>.</p>
+</details>
+<hr />
+<h3 id="Övning-61-implementera-showone"><a class="header" href="#Övning-61-implementera-showone">Övning 61: Implementera <code>showOne(...)</code></a></h3>
+<p>Skriv <code>showOne(int $id): array|false</code> som hämtar ett inlägg via <code>id</code>. Om inget hittas ska metoden returnera <code>false</code>.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-php">&lt;?php
+public function showOne(int $id): array|false
+{
+    $stmt = $this-&gt;pdo-&gt;prepare("SELECT * FROM posts WHERE id = :id");
+    $stmt-&gt;bindValue(':id', $id, PDO::PARAM_INT);
+    $stmt-&gt;execute();
+    return $stmt-&gt;fetch(PDO::FETCH_ASSOC);
+}
+?&gt;
+</code></pre>
+<p><strong>Förklaring:</strong> <code>fetch()</code> returnerar en rad som array, eller <code>false</code> om ingen rad matchar. Därför passar returtypen <code>array|false</code>.</p>
+</details>
+<hr />
+<h3 id="Övning-62-implementera-showall"><a class="header" href="#Övning-62-implementera-showall">Övning 62: Implementera <code>showAll(...)</code></a></h3>
+<p>Skriv <code>showAll(): array</code> som hämtar alla inlägg sorterade på <code>created_at DESC</code>.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-php">&lt;?php
+public function showAll(): array
+{
+    $stmt = $this-&gt;pdo-&gt;query(
+        "SELECT id, user_id, title, body, image_path, created_at, updated_at
+         FROM posts
+         ORDER BY created_at DESC"
+    );
+    return $stmt-&gt;fetchAll(PDO::FETCH_ASSOC);
+}
+?&gt;
+</code></pre>
+<p><strong>Förklaring:</strong> När ingen användarinput används kan <code>query()</code> räcka. Sortering med <code>DESC</code> visar nyaste inlägg först.</p>
+</details>
+<hr />
+<h3 id="Övning-63-implementera-updateone-med-ägarskap"><a class="header" href="#Övning-63-implementera-updateone-med-ägarskap">Övning 63: Implementera <code>updateOne(...)</code> med ägarskap</a></h3>
+<p>Skriv <code>updateOne(int $id, int $userId, string $title, string $body, ?string $imagePath): bool</code> som endast uppdaterar raden om <code>id</code> och <code>user_id</code> matchar.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-php">&lt;?php
+public function updateOne(int $id, int $userId, string $title, string $body, ?string $imagePath): bool
+{
+    $stmt = $this-&gt;pdo-&gt;prepare(
+        "UPDATE posts
+         SET title = :title, body = :body, image_path = :image_path
+         WHERE id = :id AND user_id = :user_id"
+    );
+
+    $stmt-&gt;bindValue(':title', $title);
+    $stmt-&gt;bindValue(':body', $body);
+    $stmt-&gt;bindValue(':image_path', $imagePath, $imagePath === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+    $stmt-&gt;bindValue(':id', $id, PDO::PARAM_INT);
+    $stmt-&gt;bindValue(':user_id', $userId, PDO::PARAM_INT);
+
+    $stmt-&gt;execute();
+    return $stmt-&gt;rowCount() &gt; 0;
+}
+?&gt;
+</code></pre>
+<p><strong>Förklaring:</strong> <code>WHERE id = :id AND user_id = :user_id</code> är en enkel men viktig behörighetskontroll. <code>rowCount()</code> visar om någon rad faktiskt ändrades.</p>
+</details>
+<hr />
+<h3 id="Övning-64-implementera-deleteone-med-ägarskap"><a class="header" href="#Övning-64-implementera-deleteone-med-ägarskap">Övning 64: Implementera <code>deleteOne(...)</code> med ägarskap</a></h3>
+<p>Skriv <code>deleteOne(int $id, int $userId): bool</code> som raderar ett inlägg om användaren är ägare.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-php">&lt;?php
+public function deleteOne(int $id, int $userId): bool
+{
+    $stmt = $this-&gt;pdo-&gt;prepare(
+        "DELETE FROM posts
+         WHERE id = :id AND user_id = :user_id"
+    );
+    $stmt-&gt;bindValue(':id', $id, PDO::PARAM_INT);
+    $stmt-&gt;bindValue(':user_id', $userId, PDO::PARAM_INT);
+    $stmt-&gt;execute();
+
+    return $stmt-&gt;rowCount() &gt; 0;
+}
+?&gt;
+</code></pre>
+<p><strong>Förklaring:</strong> Precis som vid update bör delete begränsas med <code>user_id</code>. Det minskar risken att en användare kan radera någon annans data.</p>
+</details>
+<hr />
+<h3 id="Övning-65-enkel-integration-i-en-sida"><a class="header" href="#Övning-65-enkel-integration-i-en-sida">Övning 65: Enkel integration i en sida</a></h3>
+<p>Du har tidigare kört en inline-SQL i <code>index.php</code> för att hämta inlägg. Byt ut den mot modellanrop med <code>Post</code>-klassen och skriv resultatet till <code>$posts</code>.</p>
+<details>
+<summary>Lösningsförslag</summary>
+<pre><code class="language-php">&lt;?php
+require_once 'includes/config.php';
+require_once 'includes/database.php';
+require_once 'includes/Post.php';
+
+$posts = [];
+$fetch_error = null;
+
+try {
+    $postModel = new Post(connect_db());
+    $posts = $postModel-&gt;showAll();
+} catch (PDOException $e) {
+    error_log('Index Page Error: ' . $e-&gt;getMessage());
+    $fetch_error = 'Kunde inte hämta blogginlägg just nu.';
+}
+?&gt;
+</code></pre>
+<p><strong>Förklaring:</strong> Sidan ansvarar för HTTP-flöde och felmeddelanden, medan modellen ansvarar för SQL. Det gör varje fil tydligare och lättare att underhålla.</p>
+</details>
+<hr />
 <h2 id="sammanfattning"><a class="header" href="#sammanfattning">Sammanfattning</a></h2>
 <p>Dessa övningar täcker:</p>
 <ul>

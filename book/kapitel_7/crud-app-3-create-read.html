@@ -156,6 +156,102 @@
 <p>I denna del skapar vi formuläret för att skapa blogginlägg och sidorna för att visa dem – steg för steg. <strong>Förutsättning:</strong> Du har genomfört <a href="crud-app-2-autentisering.html">Del 2: Autentisering</a>.</p>
 <p>Vi börjar med att skapa inlägg <em>utan</em> bild, så att grundlogiken fungerar. Sedan lägger vi till bilduppladdning.</p>
 <hr />
+<h2 id="steg-6c-förbered-en-enkel-modell-includespostphp"><a class="header" href="#steg-6c-förbered-en-enkel-modell-includespostphp">Steg 6c: Förbered en enkel modell (<code>includes/Post.php</code>)</a></h2>
+<p>Innan vi går vidare med fler CRUD-steg skapar vi en enkel modellklass för inlägg. Modellen samlar SQL-frågorna på ett ställe.</p>
+<p>Skapa <code>includes/Post.php</code>:</p>
+<pre><code class="language-php">&lt;?php
+declare(strict_types=1);
+
+class Post
+{
+    public function __construct(private PDO $pdo)
+    {
+    }
+
+    public function create(int $userId, string $title, string $body, ?string $imagePath): int
+    {
+        $stmt = $this-&gt;pdo-&gt;prepare(
+            "INSERT INTO posts (user_id, title, body, image_path)
+             VALUES (:user_id, :title, :body, :image_path)"
+        );
+
+        $stmt-&gt;bindValue(':user_id', $userId, PDO::PARAM_INT);
+        $stmt-&gt;bindValue(':title', $title);
+        $stmt-&gt;bindValue(':body', $body);
+        $stmt-&gt;bindValue(':image_path', $imagePath, $imagePath === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+        $stmt-&gt;execute();
+
+        return (int) $this-&gt;pdo-&gt;lastInsertId();
+    }
+
+    public function showOne(int $id): array|false
+    {
+        $stmt = $this-&gt;pdo-&gt;prepare(
+            "SELECT posts.*, users.username
+             FROM posts
+             JOIN users ON posts.user_id = users.id
+             WHERE posts.id = :id"
+        );
+        $stmt-&gt;bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt-&gt;execute();
+
+        return $stmt-&gt;fetch();
+    }
+
+    public function showAll(): array
+    {
+        $stmt = $this-&gt;pdo-&gt;query(
+            "SELECT posts.*, users.username
+             FROM posts
+             JOIN users ON posts.user_id = users.id
+             ORDER BY posts.created_at DESC"
+        );
+        return $stmt-&gt;fetchAll();
+    }
+
+    public function showAllByUser(int $userId): array
+    {
+        $stmt = $this-&gt;pdo-&gt;prepare(
+            "SELECT id, title, created_at, updated_at
+             FROM posts
+             WHERE user_id = :user_id
+             ORDER BY created_at DESC"
+        );
+        $stmt-&gt;bindValue(':user_id', $userId, PDO::PARAM_INT);
+        $stmt-&gt;execute();
+
+        return $stmt-&gt;fetchAll();
+    }
+
+    public function updateOne(int $id, int $userId, string $title, string $body, ?string $imagePath): bool
+    {
+        $stmt = $this-&gt;pdo-&gt;prepare(
+            "UPDATE posts
+             SET title = :title, body = :body, image_path = :image_path
+             WHERE id = :id AND user_id = :user_id"
+        );
+
+        $stmt-&gt;bindValue(':title', $title);
+        $stmt-&gt;bindValue(':body', $body);
+        $stmt-&gt;bindValue(':image_path', $imagePath, $imagePath === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+        $stmt-&gt;bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt-&gt;bindValue(':user_id', $userId, PDO::PARAM_INT);
+
+        return $stmt-&gt;execute();
+    }
+
+    public function deleteOne(int $id, int $userId): bool
+    {
+        $stmt = $this-&gt;pdo-&gt;prepare("DELETE FROM posts WHERE id = :id AND user_id = :user_id");
+        $stmt-&gt;bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt-&gt;bindValue(':user_id', $userId, PDO::PARAM_INT);
+
+        return $stmt-&gt;execute();
+    }
+}
+</code></pre>
+<p>Nu kan vi använda samma modell i flera sidor, istället för att duplicera SQL i varje fil.</p>
+<hr />
 <h2 id="steg-7a-skapa-inlägg--utan-bild"><a class="header" href="#steg-7a-skapa-inlägg--utan-bild">Steg 7a: Skapa inlägg – utan bild</a></h2>
 <h3 id="steg-1-grundläggande-formulär"><a class="header" href="#steg-1-grundläggande-formulär">Steg 1: Grundläggande formulär</a></h3>
 <p>Skapa <code>admin/create_post.php</code> med session-skydd (som i Del 2) och ett enkelt formulär för titel och innehåll:</p>
@@ -169,10 +265,12 @@ if (!isset($_SESSION['user_id'])) {
 $logged_in_user_id = $_SESSION['user_id'];
 
 require_once '../includes/database.php';
+require_once '../includes/Post.php';
 
 $errors = [];
 $title = '';
 $body = '';
+$post_model = new Post(connect_db());
 
 // POST-hantering kommer i nästa steg
 ?&gt;
@@ -234,19 +332,9 @@ $body = '';
 
     if (empty($errors)) {
         try {
-            $pdo = connect_db();
-            $stmt = $pdo-&gt;prepare("INSERT INTO posts (user_id, title, body, image_path) VALUES (:user_id, :title, :body, :image_path)");
-            $stmt-&gt;bindParam(':user_id', $logged_in_user_id);
-            $stmt-&gt;bindParam(':title', $title);
-            $stmt-&gt;bindParam(':body', $body);
-            $stmt-&gt;bindValue(':image_path', null, PDO::PARAM_NULL);  // Ingen bild ännu
-
-            if ($stmt-&gt;execute()) {
-                header('Location: index.php?created=success');
-                exit;
-            } else {
-                $errors[] = 'Ett fel uppstod när inlägget skulle sparas.';
-            }
+            $post_model-&gt;create($logged_in_user_id, $title, $body, null);
+            header('Location: index.php?created=success');
+            exit;
         } catch (PDOException $e) {
             error_log("Create Post Error: " . $e-&gt;getMessage());
             $errors[] = 'Databasfel. Kan inte spara inlägg just nu.';
@@ -348,22 +436,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($errors)) {
         try {
-            $pdo = connect_db();
-            $stmt = $pdo-&gt;prepare("INSERT INTO posts (user_id, title, body, image_path) VALUES (:user_id, :title, :body, :image_path)");
-            $stmt-&gt;bindParam(':user_id', $logged_in_user_id);
-            $stmt-&gt;bindParam(':title', $title);
-            $stmt-&gt;bindParam(':body', $body);
-            $stmt-&gt;bindParam(':image_path', $image_path, $image_path === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-
-            if ($stmt-&gt;execute()) {
-                header('Location: index.php?created=success');
-                exit;
-            } else {
-                $errors[] = 'Ett fel uppstod när inlägget skulle sparas.';
-                if ($image_path &amp;&amp; file_exists(UPLOAD_PATH . basename($image_path))) {
-                    unlink(UPLOAD_PATH . basename($image_path));
-                }
-            }
+            $post_model-&gt;create($logged_in_user_id, $title, $body, $image_path);
+            header('Location: index.php?created=success');
+            exit;
         } catch (PDOException $e) {
             error_log("Create Post Error: " . $e-&gt;getMessage());
             $errors[] = 'Databasfel. Kan inte spara inlägg just nu.';
@@ -398,12 +473,8 @@ $posts = [];
 $fetch_error = null;
 
 try {
-    $pdo = connect_db();
-    $stmt = $pdo-&gt;query("SELECT posts.*, users.username
-                         FROM posts
-                         JOIN users ON posts.user_id = users.id
-                         ORDER BY posts.created_at DESC");
-    $posts = $stmt-&gt;fetchAll();
+    $post_model = new Post(connect_db());
+    $posts = $post_model-&gt;showAll();
 } catch (PDOException $e) {
     error_log("Index Page Error: " . $e-&gt;getMessage());
     $fetch_error = "Kunde inte hämta blogginlägg just nu. Försök igen senare.";
@@ -495,6 +566,7 @@ try {
 <pre><code class="language-php">&lt;?php
 require_once 'includes/config.php';
 require_once 'includes/database.php';
+require_once 'includes/Post.php';
 
 $post_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 $post = null;
@@ -504,14 +576,8 @@ if ($post_id === false || $post_id &lt;= 0) {
     $fetch_error = "Ogiltigt inläggs-ID.";
 } else {
     try {
-        $pdo = connect_db();
-        $stmt = $pdo-&gt;prepare("SELECT posts.*, users.username
-                               FROM posts
-                               JOIN users ON posts.user_id = users.id
-                               WHERE posts.id = :id");
-        $stmt-&gt;bindParam(':id', $post_id, PDO::PARAM_INT);
-        $stmt-&gt;execute();
-        $post = $stmt-&gt;fetch();
+        $post_model = new Post(connect_db());
+        $post = $post_model-&gt;showOne($post_id);
         if (!$post) {
             $fetch_error = "Inlägget hittades inte.";
         }

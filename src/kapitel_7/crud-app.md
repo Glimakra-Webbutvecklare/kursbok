@@ -20,6 +20,6 @@ Lektionen är uppdelad i följande delar. Följ dem i ordning:
 2.  **[Autentisering](crud-app-2-autentisering.md)** – Registrering, inloggning, sessioner och logout
 3.  **[Skapa och läsa inlägg](crud-app-3-create-read.md)** – Create (formulär med bilduppladdning), Read (index, post)
 4.  **[Uppdatera och radera](crud-app-4-update-delete.md)** – Edit, Delete, Admin-panel
-5.  **[Refaktorering](crud-app-5-refaktorering.md)** – Funktioner, type hinting, förbättrad filstruktur
+5.  **[Refaktorering](crud-app-5-refaktorering.md)** – `Post`-modell, type hinting, förbättrad filstruktur
 
 **Förutsättningar:** Du har läst [MySQL och databaser](sql.md) inklusive avsnittet om PHP och PDO.

@@ -152,166 +152,151 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="del-5-refaktorering"><a class="header" href="#del-5-refaktorering">Del 5: Refaktorering</a></h1>
-<p>I denna del förbättrar vi koden genom att flytta återkommande logik till funktioner och introducera type hinting. <strong>Förutsättning:</strong> Du har genomfört <a href="crud-app-4-update-delete.html">Del 4: Uppdatera och radera</a>.</p>
-<p>Koden fungerar, men databasfrågor och HTML är blandade i samma filer. Vi refaktorerar steg för steg – en funktion i taget.</p>
+                        <h1 id="del-5-refaktorering-med-modellklass"><a class="header" href="#del-5-refaktorering-med-modellklass">Del 5: Refaktorering med modellklass</a></h1>
+<p>I denna del förbättrar vi strukturen genom att samla databaslogik i en modellklass (<code>Post</code>). <strong>Förutsättning:</strong> Du har genomfört <a href="crud-app-4-update-delete.html">Del 4: Uppdatera och radera</a>.</p>
+<p>Koden fungerar redan, men utan tydlig separering mellan sidlogik och SQL. Målet nu är att göra koden lättare att återanvända, testa och underhålla.</p>
 <hr />
-<h2 id="steg-12a-skapa-functionsphp-med-en-funktion"><a class="header" href="#steg-12a-skapa-functionsphp-med-en-funktion">Steg 12a: Skapa functions.php med en funktion</a></h2>
-<p>Börja med att flytta <em>en</em> databasfråga till en funktion. Vi väljer den som hämtar ett enskilt inlägg – den används i <code>post.php</code>.</p>
-<h3 id="steg-1-skapa-filen"><a class="header" href="#steg-1-skapa-filen">Steg 1: Skapa filen</a></h3>
-<p>Skapa <code>includes/functions.php</code>:</p>
+<h2 id="steg-12a-samla-crud-logik-i-post-modellen"><a class="header" href="#steg-12a-samla-crud-logik-i-post-modellen">Steg 12a: Samla CRUD-logik i <code>Post</code>-modellen</a></h2>
+<p>Du har redan använt <code>Post</code> i Del 3 och Del 4. Nu gör vi modellen tydligare och konsekvent med type hints.</p>
+<p>Skapa eller uppdatera <code>includes/Post.php</code>:</p>
 <pre><code class="language-php">&lt;?php
-// includes/functions.php
-require_once __DIR__ . '/database.php';
+declare(strict_types=1);
 
-/**
- * Hämtar ett specifikt inlägg från databasen.
- *
- * @param int $post_id ID för inlägget.
- * @return array|false Post-datan eller false om den inte hittas.
- */
-function get_post_by_id(int $post_id): array|false {
-    $pdo = connect_db();
-    $stmt = $pdo-&gt;prepare("SELECT posts.*, users.username
-                           FROM posts
-                           JOIN users ON posts.user_id = users.id
-                           WHERE posts.id = :id");
-    $stmt-&gt;bindParam(':id', $post_id, PDO::PARAM_INT);
-    $stmt-&gt;execute();
-    return $stmt-&gt;fetch();
-}
-?&gt;
-</code></pre>
-<p><strong>Nytt i detta steg:</strong> <code>int $post_id</code> och <code>: array|false</code> är <em>type hints</em> – de anger vilka typer funktionen förväntar sig och returnerar. PHP kontrollerar detta vid anrop.</p>
-<h3 id="steg-2-använd-funktionen-i-postphp"><a class="header" href="#steg-2-använd-funktionen-i-postphp">Steg 2: Använd funktionen i post.php</a></h3>
-<p>I <code>post.php</code>, ersätt <code>try</code>-blocket som hämtar inlägget med:</p>
-<pre><code class="language-php">} else {
-    try {
-        $post = get_post_by_id($post_id);
-        if (!$post) {
-            $fetch_error = "Inlägget hittades inte.";
-        }
-    } catch (PDOException $e) {
-        error_log("View Post Error (ID: $post_id): " . $e-&gt;getMessage());
-        $fetch_error = "Kunde inte hämta blogginlägget just nu.";
+class Post
+{
+    public function __construct(private PDO $pdo)
+    {
+    }
+
+    public function create(int $userId, string $title, string $body, ?string $imagePath): int
+    {
+        $stmt = $this-&gt;pdo-&gt;prepare(
+            "INSERT INTO posts (user_id, title, body, image_path)
+             VALUES (:user_id, :title, :body, :image_path)"
+        );
+        $stmt-&gt;bindValue(':user_id', $userId, PDO::PARAM_INT);
+        $stmt-&gt;bindValue(':title', $title);
+        $stmt-&gt;bindValue(':body', $body);
+        $stmt-&gt;bindValue(':image_path', $imagePath, $imagePath === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+        $stmt-&gt;execute();
+
+        return (int) $this-&gt;pdo-&gt;lastInsertId();
+    }
+
+    public function showOne(int $id): array|false
+    {
+        $stmt = $this-&gt;pdo-&gt;prepare(
+            "SELECT posts.*, users.username
+             FROM posts
+             JOIN users ON posts.user_id = users.id
+             WHERE posts.id = :id"
+        );
+        $stmt-&gt;bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt-&gt;execute();
+
+        return $stmt-&gt;fetch();
+    }
+
+    public function showAll(): array
+    {
+        $stmt = $this-&gt;pdo-&gt;query(
+            "SELECT posts.*, users.username
+             FROM posts
+             JOIN users ON posts.user_id = users.id
+             ORDER BY posts.created_at DESC"
+        );
+        return $stmt-&gt;fetchAll();
+    }
+
+    public function showAllByUser(int $userId): array
+    {
+        $stmt = $this-&gt;pdo-&gt;prepare(
+            "SELECT id, title, created_at, updated_at
+             FROM posts
+             WHERE user_id = :user_id
+             ORDER BY created_at DESC"
+        );
+        $stmt-&gt;bindValue(':user_id', $userId, PDO::PARAM_INT);
+        $stmt-&gt;execute();
+
+        return $stmt-&gt;fetchAll();
+    }
+
+    public function updateOne(int $id, int $userId, string $title, string $body, ?string $imagePath): bool
+    {
+        $stmt = $this-&gt;pdo-&gt;prepare(
+            "UPDATE posts
+             SET title = :title, body = :body, image_path = :image_path
+             WHERE id = :id AND user_id = :user_id"
+        );
+        $stmt-&gt;bindValue(':title', $title);
+        $stmt-&gt;bindValue(':body', $body);
+        $stmt-&gt;bindValue(':image_path', $imagePath, $imagePath === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+        $stmt-&gt;bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt-&gt;bindValue(':user_id', $userId, PDO::PARAM_INT);
+
+        return $stmt-&gt;execute();
+    }
+
+    public function deleteOne(int $id, int $userId): bool
+    {
+        $stmt = $this-&gt;pdo-&gt;prepare("DELETE FROM posts WHERE id = :id AND user_id = :user_id");
+        $stmt-&gt;bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt-&gt;bindValue(':user_id', $userId, PDO::PARAM_INT);
+
+        return $stmt-&gt;execute();
     }
 }
 </code></pre>
-<p>Lägg till <code>require_once 'includes/functions.php';</code> (efter config och före eller istället för database – functions inkluderar database). Du kan ta bort den direkta <code>require_once 'includes/database.php';</code> om du vill, eftersom functions.php inkluderar den.</p>
-<p>Testa att öppna ett inlägg. Det ska fungera som tidigare, men koden i post.php är nu enklare.</p>
-<p><img src="./assets/crud-app/del-5/del-5-post-fungerar.png" alt="Enskilt inlägg fungerar fortfarande efter refaktorering" /></p>
-<p><strong>Du har nu lärt dig:</strong> Att extrahera databaslogik till funktioner och att använda type hints (<code>int</code>, <code>array|false</code>).</p>
 <hr />
-<h2 id="steg-12b-lägg-till-fler-funktioner"><a class="header" href="#steg-12b-lägg-till-fler-funktioner">Steg 12b: Lägg till fler funktioner</a></h2>
-<p>När den första funktionen fungerar lägger vi till två till: en för alla inlägg (index.php) och en för användarens inlägg (admin).</p>
-<h3 id="lägg-till-i-functionsphp"><a class="header" href="#lägg-till-i-functionsphp">Lägg till i functions.php</a></h3>
-<pre><code class="language-php">/**
- * Hämtar alla inlägg, senaste först.
- *
- * @return array Lista med inlägg (inkl. username från JOIN).
- */
-function get_all_posts(): array {
-    $pdo = connect_db();
-    $stmt = $pdo-&gt;query("SELECT posts.*, users.username
-                         FROM posts
-                         JOIN users ON posts.user_id = users.id
-                         ORDER BY posts.created_at DESC");
-    return $stmt-&gt;fetchAll();
-}
-
-/**
- * Hämtar alla inlägg för en specifik användare.
- *
- * @param int $user_id Användarens ID.
- * @return array Lista med användarens inlägg.
- */
-function get_posts_by_user(int $user_id): array {
-    $pdo = connect_db();
-    $stmt = $pdo-&gt;prepare("SELECT id, title, created_at, updated_at
-                            FROM posts
-                            WHERE user_id = :user_id
-                            ORDER BY created_at DESC");
-    $stmt-&gt;bindParam(':user_id', $user_id, PDO::PARAM_INT);
-    $stmt-&gt;execute();
-    return $stmt-&gt;fetchAll();
-}
-</code></pre>
-<h3 id="uppdatera-indexphp"><a class="header" href="#uppdatera-indexphp">Uppdatera index.php</a></h3>
-<p>Ersätt <code>try</code>-blocket med:</p>
-<pre><code class="language-php">try {
-    $posts = get_all_posts();
-} catch (PDOException $e) {
-    error_log("Index Page Error: " . $e-&gt;getMessage());
-    $fetch_error = "Kunde inte hämta blogginlägg just nu.";
-}
-</code></pre>
-<p>Glöm inte <code>require_once 'includes/functions.php';</code>.</p>
-<h3 id="uppdatera-adminindexphp"><a class="header" href="#uppdatera-adminindexphp">Uppdatera admin/index.php</a></h3>
-<p>Ersätt <code>try</code>-blocket med:</p>
-<pre><code class="language-php">try {
-    $posts = get_posts_by_user($logged_in_user_id);
-} catch (PDOException $e) {
-    error_log("Admin Index Error: " . $e-&gt;getMessage());
-    $fetch_error = "Kunde inte hämta dina blogginlägg just nu.";
-}
-</code></pre>
-<p><strong>Försök själv:</strong> Skulle du kunna skapa en funktion <code>get_user_by_username(string $username)</code> för login.php? Vad skulle den returnera?</p>
+<h2 id="steg-12b-jämför-mot-funktionsbaserad-lösning"><a class="header" href="#steg-12b-jämför-mot-funktionsbaserad-lösning">Steg 12b: Jämför mot funktionsbaserad lösning</a></h2>
+<p>I en tidigare refaktorering kunde man skapa hjälpfunktioner som:</p>
+<ul>
+<li><code>get_post_by_id(...)</code></li>
+<li><code>get_all_posts()</code></li>
+<li><code>get_posts_by_user(...)</code></li>
+</ul>
+<p>Det fungerar bra i små projekt. Men en modellklass ger tydligare ansvar när CRUD växer:</p>
+<ol>
+<li>SQL för inlägg ligger i <strong>en</strong> fil (<code>Post.php</code>).</li>
+<li>Metodnamn (<code>showOne</code>, <code>updateOne</code>) beskriver användningsfall tydligt.</li>
+<li>Konstruktor med <code>PDO</code> gör klassen enkel att återanvända och testa.</li>
+</ol>
 <hr />
-<h2 id="steg-12c-type-hinting--en-snabb-genomgång"><a class="header" href="#steg-12c-type-hinting--en-snabb-genomgång">Steg 12c: Type hinting – en snabb genomgång</a></h2>
-<p>Type hints gör koden tydligare och fångar fel tidigare.</p>
+<h2 id="steg-12c-type-hints-i-modellen"><a class="header" href="#steg-12c-type-hints-i-modellen">Steg 12c: Type hints i modellen</a></h2>
+<p>Type hints gör API:t för modellen tydligt:</p>
 <div class="table-wrapper"><table><thead><tr><th>Syntax</th><th>Betydelse</th></tr></thead><tbody>
-<tr><td><code>int $post_id</code></td><td>Parametern måste vara ett heltal</td></tr>
-<tr><td><code>string $username</code></td><td>Parametern måste vara en sträng</td></tr>
-<tr><td><code>: array</code></td><td>Funktionen returnerar en array</td></tr>
+<tr><td><code>int $id</code></td><td>Parametern måste vara heltal</td></tr>
+<tr><td><code>?string $imagePath</code></td><td>Sträng eller <code>null</code></td></tr>
 <tr><td>`: array</td><td>false`</td></tr>
-<tr><td><code>: void</code></td><td>Returnerar inget (använd för t.ex. echo-funktioner)</td></tr>
+<tr><td><code>: array</code></td><td>Lista med rader</td></tr>
+<tr><td><code>: bool</code></td><td>Metoden returnerar sant/falskt</td></tr>
 </tbody></table>
 </div>
-<p>Om du anropar <code>get_post_by_id("abc")</code> ger PHP ett TypeError. Det är bra – det avslöjar fel som annars kanske inte märks förrän senare.</p>
+<p>Exempel: Om du råkar anropa <code>showOne("abc")</code> får du ett tydligt <code>TypeError</code> tidigt.</p>
 <hr />
-<h2 id="steg-12d-nästa-steg--templates-översikt"><a class="header" href="#steg-12d-nästa-steg--templates-översikt">Steg 12d: Nästa steg – templates (översikt)</a></h2>
-<p>En större förbättring är att separera HTML från PHP med template-filer. Istället för att blanda PHP och HTML i samma fil kan du ha:</p>
-<pre><code>.
-├── includes/
-│   ├── config.php
-│   ├── database.php
-│   └── functions.php
-├── templates/           # HTML-mallar
-│   ├── partials/
-│   │   ├── header.php   # &lt;html&gt;, &lt;head&gt;, &lt;nav&gt;
-│   │   └── footer.php  # &lt;/body&gt;&lt;/html&gt;
-│   ├── index.view.php  # Innehållet för startsidan
-│   ├── post.view.php
-│   └── ...
-├── index.php            # Hämtar data, inkluderar template
-├── post.php
-└── ...
-</code></pre>
-<p>I <code>index.php</code> skulle du då ha:</p>
+<h2 id="steg-12d-tunnare-sidfiler"><a class="header" href="#steg-12d-tunnare-sidfiler">Steg 12d: Tunnare sidfiler</a></h2>
+<p>När modellen tar SQL-ansvaret blir sidfilerna enklare:</p>
 <pre><code class="language-php">&lt;?php
 require_once 'includes/config.php';
-require_once 'includes/functions.php';
+require_once 'includes/database.php';
+require_once 'includes/Post.php';
 
-$posts = get_all_posts();
-$fetch_error = null;
-// ... felhantering ...
-
-require 'templates/partials/header.php';
-require 'templates/index.view.php';
-require 'templates/partials/footer.php';
+$postModel = new Post(connect_db());
+$posts = $postModel-&gt;showAll();
 </code></pre>
-<p><code>index.view.php</code> innehåller bara HTML med <code>&lt;?php ?&gt;</code> för att skriva ut variabler som <code>$posts</code>. Detta är ett större steg – prova gärna på egen hand när du känner dig redo.</p>
+<p>Nu läser sidan nästan som vanlig svenska: "skapa modell, hämta alla inlägg". Det gör koden lättare att följa för både dig och teamet.</p>
 <hr />
 <h2 id="ytterligare-förbättringar-att-utforska"><a class="header" href="#ytterligare-förbättringar-att-utforska">Ytterligare förbättringar att utforska</a></h2>
-<p>När du vill gå vidare kan du överväga:</p>
+<p>När du vill gå vidare kan du testa:</p>
 <ul>
-<li><strong>CSRF-tokens:</strong> Dolda tokens i formulär för create/update/delete för att skydda mot Cross-Site Request Forgery.</li>
-<li><strong>Twig eller liknande:</strong> Ett templating-språk som separerar HTML och logik ännu tydligare.</li>
-<li><strong>Klasser (OOP):</strong> T.ex. en <code>Post</code>-klass med metoder som <code>save()</code>, <code>delete()</code>.</li>
-<li><strong>Routing:</strong> En enda <code>index.php</code> som hanterar alla URL:er via ett routing-system.</li>
-<li><strong>Strikare filvalidering:</strong> Kontrollera filinnehåll, inte bara <code>$_FILES['type']</code>, vid bilduppladdning.</li>
+<li><strong>CSRF-tokens:</strong> Skydda create/update/delete-formulär mot CSRF.</li>
+<li><strong>Validering i separata klasser:</strong> Flytta valideringslogik från sidfiler till egna tjänster.</li>
+<li><strong>Templates:</strong> Separera HTML och PHP ytterligare.</li>
+<li><strong>Transaktioner:</strong> Vid avancerade flöden där flera databasoperationer måste lyckas tillsammans.</li>
+<li><strong>Striktare filvalidering:</strong> Kontrollera filinnehåll med <code>finfo_file()</code> vid uppladdning.</li>
 </ul>
-<p>Du har nu byggt en fungerande CRUD-applikation och börjat refaktorera den. Bra jobbat!</p>
+<p>Du har nu en mer realistisk struktur: sidorna hanterar HTTP-flöde, modellen hanterar databaslogik.</p>
 <hr />
 <p><strong>Föregående:</strong> <a href="crud-app-4-update-delete.html">Del 4: Uppdatera och radera</a></p>
 
