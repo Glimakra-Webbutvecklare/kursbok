@@ -6,9 +6,38 @@ I denna del sätter vi upp databasen och autentiseringen med Laravel – motsvar
 
 ---
 
-## Skillnad från CRUD-appen: Breeze använder e-post
+## Jämförelse med CRUD-appen – Vad motsvarar vad?
+
+I CRUD-appen byggde du autentisering, databaskoppling och tabeller manuellt. Laravel hanterar mycket av detta automatiskt. Här ser du vad som motsvarar vad:
+
+| CRUD-app (Del 1 & 2) | Laravel (denna del) |
+|-----------------------|---------------------|
+| `includes/config.php` (DB_HOST, DB_NAME, session_start) | `.env` (DB-inställningar) + Breeze (session) |
+| `includes/database.php` (connect_db, PDO) | Eloquent (automatisk anslutning via `.env`) |
+| `CREATE TABLE users (...)` i phpMyAdmin | `php artisan migrate` (users-tabellen skapas av Breeze) |
+| `CREATE TABLE posts (...)` i phpMyAdmin | Migration: `Schema::create('posts', ...)` |
+| `register.php` (formulär + validering + password_hash + INSERT) | `/register` (Breeze – färdigt formulär, validering och hashning) |
+| `login.php` (formulär + password_verify + session) | `/login` (Breeze – färdigt formulär, verifiering och session) |
+| `logout.php` (session_destroy + cookie-radering) | `/logout` (Breeze – POST-route, hanterar allt automatiskt) |
+| `if (!isset($_SESSION['user_id']))` i varje admin-fil | `Route::middleware('auth')` + `auth()`-helper |
+| `$logged_in_user_id = $_SESSION['user_id']` | `auth()->user()->id` |
+| `$logged_in_username = $_SESSION['username']` | `auth()->user()->name` |
+
+### Skillnad: Breeze använder e-post istället för användarnamn
 
 I CRUD-appen loggade du in med **användarnamn**. Laravel Breeze använder **e-post** för inloggning. Båda är vanliga lösningar – Breeze följer Laravels standard. Registrering och inloggning finns på `/register` och `/login`. Breeze skapar vyer i `resources/views/auth/` och routes i `routes/auth.php`. Du behöver inte skriva någon auth-kod själv.
+
+### Vad Breeze automatiserar
+
+När du byggde CRUD-appens Del 2 skrev du manuellt:
+
+- `password_hash()` och `password_verify()` – Breeze hanterar detta internt
+- `session_regenerate_id(true)` – Breeze hanterar sessionssäkerhet
+-cookie-radering vid logout – Breeze hanterar detta
+- Validering av e-post och lösenord vid registrering – Breeses valideringsregler
+- Dublett-koll (finns användarnamnet/e-posten redan?) – Breeze kollar detta
+
+Allt detta får du "gratis" med Breeze. Ramverkets autentisering är dessutom genomtestat och följer best practices.
 
 ---
 
@@ -182,6 +211,7 @@ exit
 *   Att skapa migrations istället för manuella CREATE TABLE
 *   Att konfigurera Eloquent-modeller med `$fillable` och relationer (`belongsTo`, `hasMany`)
 *   Att använda Tinker för att testa modeller och relationer
+*   Hur CRUD-appens manuella kod (config.php, database.php, register.php, login.php, logout.php) motsvaras av Laravel-funktioner (.env, Eloquent, Breeze)
 
 ---
 

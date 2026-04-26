@@ -6,6 +6,27 @@ I denna del implementerar vi Create och Read – motsvarar [Del 3: Skapa och lä
 
 ---
 
+## Jämförelse med CRUD-appen – detta byggde du för hand
+
+Innan vi börjar koda – här ser du hur koncepten från CRUD-appens Del 3 motsvarar Laravel:
+
+| CRUD-app (Del 3) | Laravel (denna del) |
+|-------------------|----------------------|
+| `includes/Post.php` ( Klass med PDO) | `app/Models/Post.php` (Eloquent-modell) |
+| `$post_model = new Post(connect_db())` | `Post::with('user')->latest()->get()` |
+| `filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT)` + `$post_model->showOne($id)` | Route model binding: `show(Post $post)` |
+| `$_SERVER['REQUEST_METHOD'] === 'POST'` | Route: `Route::post(...)` |
+| `$_POST['title']` + `trim()` + `empty()` | `$request->validate(['title' => 'required'])` |
+| `$errors[] = 'Titel är obligatoriskt.'` + `foreach` i HTML | `@error('title')` + `$message` ( automatiskt) |
+| `htmlspecialchars($title)` i input-fält | `{{ old('title') }}` (escapas automatiskt ) |
+| `move_uploaded_file()` + `uniqid()` + validering av filtyp/storlek | `$request->file('image')->store('posts', 'public')` |
+| `<form action="create_post.php" method="post">` | `<form action="{{ route('posts.store') }}" method="POST">` + `@csrf` |
+| `if (!isset($_SESSION['user_id']))` på varje admin-sida | `Route::middleware('auth')->group(...)` |
+
+När du nu bygger Del 4, tänk på dessa paralleller – varje steg motsvarar något du redan gjort i CRUD-appen.
+
+---
+
 ## Steg 1: Routes och grundläggande PostController
 
 Börja med att definiera alla routes och en controller som returnerar enkel output. Vi bygger vyer stegvis.
@@ -151,6 +172,17 @@ public function store(Request $request)
 
 **Nyckelkoncept:** `$request->validate()` ersätter manuell `$errors[]`-logik. Laravel validerar och returnerar fel automatiskt till formuläret om valideringen misslyckas.
 
+**Jämförelse med CRUD-appen:** I CRUD-appens `create_post.php` skrev du:
+```php
+if (empty($title)) {
+    $errors[] = 'Titel är obligatoriskt.';
+}
+if (empty($body)) {
+    $errors[] = 'Innehåll är obligatoriskt.';
+}
+```
+I Laravel gör `$request->validate(['title' => 'required', 'body' => 'required'])` samma sak – och mycket mer (max-längd, XSS-skydd, automatisk felåtergivning). Du behöver inte skriva `foreach ($errors as $error)` – Blade-direktivet `@error` visar felen per fält.
+
 Skapa `resources/views/posts/create.blade.php`:
 
 ```blade
@@ -177,6 +209,17 @@ Skapa `resources/views/posts/create.blade.php`:
 ```
 
 **Blade-tips:** `@error('title')` visar valideringsfel för fältet. `old('title')` återställer värdet om formuläret skickas tillbaka med fel – så användaren inte behöver skriva om allt.
+
+**Jämförelse med CRUD-appen:** I CRUD-appen skrev du:
+```php
+<input type="text" name="title" value="<?php echo htmlspecialchars($title); ?>">
+<?php if (!empty($errors)): ?>
+    <ul><?php foreach ($errors as $error): ?>
+        <li><?php echo htmlspecialchars($error); ?></li>
+    <?php endforeach; ?></ul>
+<?php endif; ?>
+```
+I Blade blir detta mycket kortare: `{{ old('title') }}` återställer värdet (och escapas automatiskt, inget `htmlspecialchars`), `@error('title')` visar felmeddelandet för just det fältet.
 
 ![Formulär för att skapa nytt inlägg](./assets/laravel-crud/del-4/del-4-create-formular.png)
 
@@ -278,6 +321,8 @@ Skapa `resources/views/posts/show.blade.php`:
 
 ## Steg 5: Bilduppladdning
 
+**Jämförelse med CRUD-appen:** I CRUD-appens Del 3 skrev du ~30 rader för bilduppladdning: validering av filtyp/storlek, `uniqid()`, `move_uploaded_file()`, felhantering och sökvägsnycklar. I Laravel gör `$request->file('image')->store('posts', 'public')` allt detta i en rad – filnamn genereras automatiskt, lagring hanteras av Laravels filesystem, och validering sker via `'image' => 'nullable|image|max:7168'`.
+
 Lägg till stöd för att ladda upp en bild när man skapar inlägg.
 
 Uppdatera `store()` i PostController:
@@ -366,6 +411,8 @@ php artisan storage:link
 
 Detta skapar en länk från `public/storage` till `storage/app/public`. Uppladdade bilder hamnar i `storage/app/public/posts/`.
 
+**Jämförelse med CRUD-appen:** I CRUD-appen sparade du bilder direkt i `uploads/`-mappen och refererade till dem med `BASE_URL . '/' . $post['image_path']`. I Laravel sparas filer i `storage/app/public/` och nås via `asset('storage/' . $post->image_path)` – `storage:link` gör mappen tillgänglig från webben.
+
 **Kontrollera att det fungerar:** Skapa ett nytt inlägg med en bild. Du ska se bilden på startsidan och på inläggets sida. Om bilden inte visas, se "Vanliga problem" nedan.
 
 ---
@@ -404,6 +451,7 @@ Breeze:s `routes/auth.php` inkluderas via `Route::middleware('auth')->group(...)
 *   Att validera formulär med `$request->validate()`
 *   Att använda Blade-direktiv som `@forelse`, `@error` och `old()` i formulär
 *   Att ladda upp filer med `$request->file()->store()` och `storage:link`
+*   Hur CRUD-appens manuella kod (filter_input, $_FILES, move_uploaded_file, htmlspecialchars) motsvaras av Laravel-funktioner (route model binding, validate, store, Blade {{ }})
 
 ---
 
