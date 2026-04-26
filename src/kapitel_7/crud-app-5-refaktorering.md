@@ -6,7 +6,7 @@ Koden fungerar redan, men utan tydlig separering mellan sidlogik och SQL. Målet
 
 ---
 
-## Steg 12a: Samla CRUD-logik i `Post`-modellen
+## Steg 1: Samla CRUD-logik i `Post`-modellen
 
 Du har redan använt `Post` i Del 3 och Del 4. Nu gör vi modellen tydligare och konsekvent med type hints.
 
@@ -105,7 +105,7 @@ class Post
 
 ---
 
-## Steg 12b: Jämför mot funktionsbaserad lösning
+## Steg 2: Jämför mot funktionsbaserad lösning
 
 I en tidigare refaktorering kunde man skapa hjälpfunktioner som:
 
@@ -121,7 +121,7 @@ Det fungerar bra i små projekt. Men en modellklass ger tydligare ansvar när CR
 
 ---
 
-## Steg 12c: Type hints i modellen
+## Steg 3: Type hints i modellen
 
 Type hints gör API:t för modellen tydligt:
 
@@ -137,7 +137,7 @@ Exempel: Om du råkar anropa `showOne("abc")` får du ett tydligt `TypeError` ti
 
 ---
 
-## Steg 12d: Tunnare sidfiler
+## Steg 4: Tunnare sidfiler
 
 När modellen tar SQL-ansvaret blir sidfilerna enklare:
 

@@ -6,11 +6,11 @@ Vi börjar med admin-panelen så att du har någonstans att navigera, sedan redi
 
 ---
 
-## Steg 9a: Adminpanel – grundversion
+## Steg 1: Adminpanel – grundversion
 
 Admin-panelen är den sida inloggade användare når efter inloggning. Den ska lista användarens inlägg och ge länkar till att skapa, redigera och radera.
 
-### Steg 1: Hämta användarens inlägg
+### Steg 1.1: Hämta användarens inlägg
 
 Uppdatera `admin/index.php` (som du skapade minimalt i Del 2) med följande logik:
 
@@ -52,7 +52,7 @@ try {
 
 **Nytt i detta steg:** `WHERE user_id = :user_id` – varje användare ser bara sina egna inlägg.
 
-### Steg 2: Visa listan med länkar
+### Steg 1.2: Visa listan med länkar
 
 Lägg till HTML-delen med navigering, länk till "Skapa nytt inlägg" och tabell:
 
@@ -116,7 +116,7 @@ Lägg till HTML-delen med navigering, länk till "Skapa nytt inlägg" och tabell
                         <td>
                             <a href="../post.php?id=<?php echo $post['id']; ?>" target="_blank">Visa</a>
                             <a href="edit_post.php?id=<?php echo $post['id']; ?>">Redigera</a>
-                            <!-- Radera-knapp kommer i steg 10 -->
+                            <!-- Radera-knapp kommer i steg 4 -->
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -133,11 +133,11 @@ Nu har du en fungerande admin-panel. "Redigera"-länken pekar på `edit_post.php
 
 ---
 
-## Steg 9b: Redigera inlägg – utan bildhantering
+## Steg 2: Redigera inlägg – utan bildhantering
 
 Redigering kräver två saker: hämta befintlig data (GET) och spara ändringar (POST). Vi börjar utan bildhantering.
 
-### Steg 1: Hämta inlägget och kontrollera ägarskap
+### Steg 2.1: Hämta inlägget och kontrollera ägarskap
 
 **Försök själv:** Varför måste vi kolla att `$post['user_id']` matchar `$logged_in_user_id`? Vad skulle hända om vi inte gjorde det?
 
@@ -191,7 +191,7 @@ if ($post_id === false || $post_id <= 0) {
 
 **Viktigt:** `user_id`-kontrollen förhindrar att användare redigerar andras inlägg genom att ändra ID:t i URL:en.
 
-### Steg 2: Hantera POST (uppdatering utan bild)
+### Steg 2.2: Hantera POST (uppdatering utan bild)
 
 Lägg till detta *efter* hämtningen och *före* `?>`:
 
@@ -227,7 +227,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $post) {
 
 **Nytt i detta steg:** `UPDATE` med `WHERE id = :id AND user_id = :user_id` – dubbelkollar ägarskap i databasen.
 
-### Steg 3: Formuläret
+### Steg 2.3: Formuläret
 
 Lägg till HTML-delen (formuläret visas bara om `$post` finns):
 
@@ -292,11 +292,11 @@ Testa att redigera ett inlägg. Titeln och innehållet ska uppdateras.
 
 ---
 
-## Steg 9c: Redigering – lägg till bildhantering
+## Steg 3: Redigering – lägg till bildhantering
 
 Nu lägger vi till möjlighet att ta bort eller ersätta bilden. Vi bryter upp i tre understeg så att varje del blir lättare att följa.
 
-### Steg 9c-1: Visa nuvarande bild och checkbox "Ta bort"
+### Steg 3.1: Visa nuvarande bild och checkbox "Ta bort"
 
 Börja med att uppdatera formuläret. Ändra `<form>` till att använda `enctype="multipart/form-data"` och lägg till bildsektionen *före* submit-knappen:
 
@@ -325,7 +325,7 @@ Lägg till hantering av "Ta bort bild" i POST-blocket. Ersätt raden `$new_image
 ```php
 $delete_image = isset($_POST['delete_image']);
 $new_image_path = $current_image_path;
-$image_uploaded = false;  // Används vid städning om databasen misslyckas (steg 9c-3)
+$image_uploaded = false;  // Används vid städning om databasen misslyckas (steg 3.3)
 
 if ($delete_image && $current_image_path) {
     if (file_exists(UPLOAD_PATH . basename($current_image_path))) {
@@ -338,7 +338,7 @@ if ($delete_image && $current_image_path) {
 
 Testa: redigera ett inlägg med bild och kryssa i "Ta bort nuvarande bild". Inlägget ska uppdateras utan bild.
 
-### Steg 9c-2: Ladda upp ny bild (ersätter nuvarande)
+### Steg 3.2: Ladda upp ny bild (ersätter nuvarande)
 
 Lägg till filfältet i formuläret, *före* submit-knappen:
 
@@ -370,7 +370,7 @@ Lägg till hantering av ny uppladdning i POST-blocket, *efter* `if ($delete_imag
                 unlink(UPLOAD_PATH . basename($current_image_path));
             }
             $new_image_path = 'uploads/' . $unique_filename;
-            $image_uploaded = true;  // Behövs för städning vid databasfel (steg 9c-3)
+            $image_uploaded = true;  // Behövs för städning vid databasfel (steg 3.3)
         } else {
             $errors[] = 'Kunde inte ladda upp den nya bilden.';
         }
@@ -378,11 +378,11 @@ Lägg till hantering av ny uppladdning i POST-blocket, *efter* `if ($delete_imag
 }
 ```
 
-OBS: Lägg till `$image = $_FILES['image'] ?? null;` i början av POST-blocket. Variabeln `$image_uploaded` sattes redan i steg 9c-1.
+OBS: Lägg till `$image = $_FILES['image'] ?? null;` i början av POST-blocket. Variabeln `$image_uploaded` sattes redan i steg 3.1.
 
 Testa att ladda upp en ny bild – den ska ersätta den gamla.
 
-### Steg 9c-3: Städa upp vid databasfel
+### Steg 3.3: Städa upp vid databasfel
 
 Om `$stmt->execute()` eller databasen misslyckas efter att vi redan flyttat en ny bild till `uploads/`, måste vi ta bort den filen. Annars blir det kvar "förlorade" filer. Lägg till variabeln `$image_uploaded = true` när en ny bild sparas, och i `else`-grenarna (där vi sätter `$errors[]`) efter `$stmt->execute()`:
 
@@ -470,11 +470,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $post) {
 
 ---
 
-## Steg 10: Radera inlägg
+## Steg 4: Radera inlägg
 
 Radering ska ske via **POST**, inte GET. En GET-länk kan triggas av t.ex. en prefetch eller en felaktig klick, vilket kan leda till oavsiktlig radering.
 
-### Steg 1: Skapa delete_post.php
+### Steg 4.1: Skapa delete_post.php
 
 Skapa `admin/delete_post.php`:
 
@@ -560,9 +560,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 **Viktigt:** Vi hämtar `image_path` *innan* radering, eftersom vi behöver veta vilken fil som ska tas bort. Efter DELETE finns inte raden kvar.
 
-### Steg 2: Radera-knapp i admin-panelen
+### Steg 4.2: Radera-knapp i admin-panelen
 
-I `admin/index.php`, ersätt kommentaren `<!-- Radera-knapp kommer i steg 10 -->` med ett formulär:
+I `admin/index.php`, ersätt kommentaren `<!-- Radera-knapp kommer i steg 4 -->` med ett formulär:
 
 ```html
 <form action="delete_post.php" method="post" style="display: inline;"

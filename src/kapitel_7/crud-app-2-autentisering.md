@@ -39,11 +39,11 @@ En angripare kan skicka `admin' OR '1'='1` som användarnamn. Då blir SQL-fråg
 
 ---
 
-## Steg 4a: Registrering – minimal version
+## Steg 1: Registrering – minimal version
 
 Börja med det enklaste som behövs för att få registrering att fungera: ett formulär som sparar användare i databasen.
 
-### Steg 1: Skapa formuläret
+### Steg 1.1: Skapa formuläret
 
 Skapa filen `register.php` med endast HTML-formuläret. Inga fält är validerade än – vi fokuserar på strukturen.
 
@@ -109,7 +109,7 @@ Testa att ladda sidan. Formuläret visas, men skickar ännu ingen data till data
 
 ![Registreringsformuläret](./assets/crud-app/del-2/del-2-register-formular.png)
 
-### Steg 2: Lägg till POST-hantering
+### Steg 1.2: Lägg till POST-hantering
 
 **Nytt i detta steg:** Att kolla `$_SERVER['REQUEST_METHOD']`, hämta data från `$_POST`, och använda prepared statements för INSERT.
 
@@ -156,7 +156,7 @@ Testa att registrera en användare. Du ska omdirigeras till login.php (som ännu
 
 ---
 
-## Steg 4b: Lägg till validering
+## Steg 2: Lägg till validering
 
 Nu när grundregistrering fungerar lägger vi till validering för att fånga fel innan de når databasen.
 
@@ -252,11 +252,11 @@ Lägg också till `required` och `minlength="6"` på lösenordsfälten i formul�
 
 ---
 
-## Steg 5: Inloggning (`login.php`)
+## Steg 3: Inloggning (`login.php`)
 
 Nu skapar vi inloggningssidan. Flödet: formulär → hämta användare från databasen → verifiera lösenord → spara i session → omdirigera.
 
-### Steg 1: Formulär och POST-hantering
+### Steg 3.1: Formulär och POST-hantering
 
 Skapa `login.php` med formulär och grundläggande POST-logik:
 
@@ -366,7 +366,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 ---
 
-## Steg 6: Sessioner – spara inloggning och skydda sidor
+## Steg 4: Sessioner – spara inloggning och skydda sidor
 
 När användaren loggar in måste vi *komma ihåg* det på andra sidor. Det gör vi med sessioner.
 
@@ -376,7 +376,7 @@ När användaren loggar in måste vi *komma ihåg* det på andra sidor. Det gör
 2. **`$_SESSION`** – En array där vi lagrar data som ska finnas kvar mellan sidladdningar (t.ex. `user_id`).
 3. **Session-cookie** – PHP skickar ett session-ID till webbläsaren. Vid varje ny förfrågan skickas ID:t tillbaka så PHP vet vilken session som gäller.
 
-### Steg 1: Spara användardata vid inloggning
+### Steg 4.1: Spara användardata vid inloggning
 
 I `login.php`, *ersätt* raden `header('Location: admin/index.php');` med följande innan omdirigeringen:
 
@@ -393,7 +393,7 @@ if ($user && password_verify($password, $user['password_hash'])) {
 
 Nu sparas användarens ID och användarnamn i sessionen när de loggar in.
 
-### Steg 2: Skydda admin-sidor
+### Steg 4.2: Skydda admin-sidor
 
 Admin-sidorna finns inte än, men vi kan förbereda skyddet. I **början** av varje fil i `admin/` (t.ex. `admin/index.php`, `admin/create_post.php`) lägger du till:
 
@@ -448,7 +448,7 @@ Om du inte är inloggad omdirigeras du till login.php. I Del 4 bygger vi ut denn
 
 ![Admin Dashboard – minimal version](./assets/crud-app/del-2/del-2-admin-dashboard.png)
 
-### Steg 3a: Logout – enkel version
+### Steg 4.3a: Logout – enkel version
 
 Skapa `logout.php` med den enklaste varianten:
 
@@ -464,7 +464,7 @@ exit;
 
 Testa att logga in och sedan klicka "Logga ut". Fungerar det? Ibland verkar det som att du fortfarande är inloggad vid nästa besök – det beror på att session-cookien kan ligga kvar i webbläsaren. PHP återanvänder då samma session.
 
-### Steg 3b: Logout – ta bort cookien också
+### Steg 4.3b: Logout – ta bort cookien också
 
 För att verkligen logga ut måste vi tömma sessionen *och* ta bort session-cookien. Ersätt innehållet i `logout.php` med:
 

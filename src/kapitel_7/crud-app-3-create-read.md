@@ -6,7 +6,7 @@ Vi börjar med att skapa inlägg *utan* bild, så att grundlogiken fungerar. Sed
 
 ---
 
-## Steg 6c: Förbered en enkel modell (`includes/Post.php`)
+## Steg 1: Förbered en enkel modell (`includes/Post.php`)
 
 Innan vi går vidare med fler CRUD-steg skapar vi en enkel modellklass för inlägg. Modellen samlar SQL-frågorna på ett ställe.
 
@@ -109,9 +109,9 @@ Nu kan vi använda samma modell i flera sidor, istället för att duplicera SQL 
 
 ---
 
-## Steg 7a: Skapa inlägg – utan bild
+## Steg 2: Skapa inlägg – utan bild
 
-### Steg 1: Grundläggande formulär
+### Steg 2.1: Grundläggande formulär
 
 Skapa `admin/create_post.php` med session-skydd (som i Del 2) och ett enkelt formulär för titel och innehåll:
 
@@ -180,7 +180,7 @@ $post_model = new Post(connect_db());
 
 ![Formulär för att skapa nytt inlägg](./assets/crud-app/del-3/del-3-create-formular.png)
 
-### Steg 2: Lägg till POST-hantering och spara i databasen
+### Steg 2.2: Lägg till POST-hantering och spara i databasen
 
 **Nytt i detta steg:** INSERT till `posts`-tabellen med `user_id` från sessionen.
 
@@ -226,7 +226,7 @@ Lägg också till felvisning *ovanför* formuläret:
 <?php endif; ?>
 ```
 
-Testa att skapa ett inlägg. Du ska omdirigeras till admin/index.php (som ännu inte visar inläggen – det kommer i steg 8a).
+Testa att skapa ett inlägg. Du ska omdirigeras till admin/index.php (som ännu inte visar inläggen – det kommer i steg 4).
 
 **Du har nu lärt dig:** Att spara data till en tabell med foreign key (`user_id`), och att använda `PDO::PARAM_NULL` för NULL-värden.
 
@@ -257,7 +257,7 @@ Ladda upp en bild och klicka Skicka. Du ser: `name` (originalfilnamn), `type` (t
 
 ---
 
-## Steg 7b: Lägg till bilduppladdning
+## Steg 3: Lägg till bilduppladdning
 
 Nu när grundfunktionen fungerar lägger vi till möjlighet att ladda upp en bild till varje inlägg.
 
@@ -267,7 +267,7 @@ Nu när grundfunktionen fungerar lägger vi till möjlighet att ladda upp en bil
 2. **`$_FILES`** – innehåller information om uppladdade filer (du såg strukturen i mini-exemplet ovan).
 3. **`move_uploaded_file()`** – flyttar filen från temporär mapp till din `uploads/`-mapp.
 
-### Steg 1: Uppdatera formuläret
+### Steg 3.1: Uppdatera formuläret
 
 Ändra `<form>`-taggen till:
 
@@ -284,7 +284,7 @@ Lägg till bildfältet *före* submit-knappen:
 </div>
 ```
 
-### Steg 2: Hantera uppladdad bild i POST-blocket
+### Steg 3.2: Hantera uppladdad bild i POST-blocket
 
 **Försök själv:** Vad finns i `$_FILES['image']` när en fil laddas upp? Tänk på: `error`, `tmp_name`, `name`, `type`, `size`.
 
@@ -363,11 +363,11 @@ En fråga istället för många – snabbare och enklare. Vi använder JOIN i b�
 
 ---
 
-## Steg 8a: Lista alla inlägg (`index.php`)
+## Steg 4: Lista alla inlägg (`index.php`)
 
 Startsidan ska visa alla blogginlägg. Vi skapar den i roten av projektet (samma nivå som `login.php`).
 
-### Steg 1: Hämta data från databasen
+### Steg 4.1: Hämta data från databasen
 
 Skapa eller uppdatera `index.php` i projektroten:
 
@@ -391,7 +391,7 @@ try {
 
 **Nytt i detta steg:** `JOIN` för att hämta författarens användarnamn tillsammans med inlägget. `ORDER BY created_at DESC` visar senaste först.
 
-### Steg 2: Visa inläggen i HTML
+### Steg 4.2: Visa inläggen i HTML
 
 Lägg till HTML-delen med navigering och listan:
 
@@ -475,11 +475,11 @@ Lägg till HTML-delen med navigering och listan:
 
 ---
 
-## Steg 8b: Visa enskilt inlägg (`post.php`)
+## Steg 5: Visa enskilt inlägg (`post.php`)
 
 När användaren klickar "Läs mer" ska de se hela inlägget. Sidan tar emot `id` via URL:en (`post.php?id=3`).
 
-### Steg 1: Hämta ID och validera
+### Steg 5.1: Hämta ID och validera
 
 **Försök själv:** Varför är det farligt att använda `$_GET['id']` direkt i en SQL-fråga? Hur kan `filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT)` hjälpa?
 
@@ -512,7 +512,7 @@ if ($post_id === false || $post_id <= 0) {
 ?>
 ```
 
-### Steg 2: Visa inlägget
+### Steg 5.2: Visa inlägget
 
 Lägg till HTML-delen (med samma `<nav>` som index.php):
 
