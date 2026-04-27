@@ -36,7 +36,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-85e3c6c1.js";
+            window.path_to_searchindex_js = "searchindex-31827df8.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-feb7936f.js"></script>
@@ -17258,8 +17258,9 @@ $posts = $postModel-&gt;showAll();
 <hr>
 <p><strong>Föregående:</strong> <a href="#del-4-uppdatera-och-radera">Del 4: Uppdatera och radera</a></p>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="crud-applikation-med-laravel"><a class="header" href="#crud-applikation-med-laravel">CRUD-applikation med Laravel</a></h1>
-<p>I detta avsnitt bygger vi samma bloggapplikation som i <a href="#bygga-en-crud-applikation-enkel-blogg">CRUD-appen</a> – men med Laravel. Du får se hur ramverket ersätter mycket av den manuella koden och introducerar nya koncept steg för steg.</p>
+<h1 id="crud-med-laravel"><a class="header" href="#crud-med-laravel">CRUD med Laravel</a></h1>
+<p>Nu när du har byggt en CRUD-applikation med vanilla PHP vet du hur mycket kod som krävs: <code>session_start</code> i varje fil, <code>require_once</code> överallt, PDO-frågor utspridda i många sidor, manuell validering med <code>$errors[]</code> och <code>htmlspecialchars()</code> på varje utskrift.</p>
+<p>I detta avsnitt bygger vi samma bloggapplikation igen – men med Laravel. Du kommer att se hur ramverket tar hand om repetitiv kod så att du kan fokusera på applikationens logik. Varje steg refererar tillbaka till motsvarande del i <a href="#bygga-en-crud-applikation-enkel-blogg">CRUD-appen</a> så att du ser vad Laravel ersätter och förenklar.</p>
 <p><strong>Applikationens funktioner (samma som CRUD-appen):</strong></p>
 <ul>
 <li>Användare kan registrera sig och logga in.</li>
@@ -17297,7 +17298,8 @@ $posts = $postModel-&gt;showAll();
 </div>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="varför-ett-ramverk-introduktion-till-laravel"><a class="header" href="#varför-ett-ramverk-introduktion-till-laravel">Varför ett ramverk? Introduktion till Laravel</a></h1>
-<p>Du har nu byggt en komplett bloggapplikation från grunden med PHP, PDO, sessioner och manuell filhantering. Applikationen fungerar – men tänk tillbaka på vad som krävde mycket upprepning och manuellt arbete. Det är här ett ramverk som Laravel kommer in i bilden.</p>
+<p>Nu när du har byggt en CRUD-applikation med vanilla PHP vet du hur mycket kod som krävs för grundläggande saker: session-kontroll i varje fil, <code>require_once</code> överallt, PDO-frågor utspridda, manuell validering med <code>$errors[]</code> och <code>htmlspecialchars()</code> på varje utskrift. Applikationen fungerar – men mycket av koden handlar om infrastruktur, inte om applikationens logik.</p>
+<p>Det är här ett ramverk som Laravel kommer in. I de kommande delarna bygger vi samma bloggapplikation igen, och du får se hur Laravel ersätter mycket av den manuella koden.</p>
 <p><strong>Förutsättning:</strong> Du har genomfört <a href="#bygga-en-crud-applikation-enkel-blogg">CRUD-applikationen</a> (alla fem delar).</p>
 <hr>
 <h2 id="återkoppling-till-crud-appen"><a class="header" href="#återkoppling-till-crud-appen">Återkoppling till CRUD-appen</a></h2>
@@ -17360,7 +17362,7 @@ $posts = $postModel-&gt;showAll();
 <p><strong>Föregående:</strong> <a href="#del-5-refaktorering-med-modellklass">Del 5: Refaktorering</a> | <strong>Nästa:</strong> <a href="#komma-igång-med-laravel">Del 2: Komma igång</a></p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="komma-igång-med-laravel"><a class="header" href="#komma-igång-med-laravel">Komma igång med Laravel</a></h1>
-<p>I denna del får du ett Laravel-projekt igång och lär dig grundstrukturen. Vi bygger inte hela bloggen ännu – fokus är att förstå hur Laravel är uppbyggt.</p>
+<p>I denna del får du ett Laravel-projekt igång och lär dig grundstrukturen. Vi bygger inte hela bloggen ännu – fokus är att förstå hur Laravel är uppbyggt. Du kommer att känna igen många koncept från <a href="#bygga-en-crud-applikation-enkel-blogg">CRUD-appen</a> – routing, vyer och databas – men nu hanteras de av ramverket.</p>
 <p><strong>Förutsättning:</strong> Du har läst <a href="#varför-ett-ramverk-introduktion-till-laravel">Introduktion till Laravel</a>.</p>
 <hr>
 <h2 id="förutsättningar-1"><a class="header" href="#förutsättningar-1">Förutsättningar</a></h2>
@@ -17536,7 +17538,7 @@ Route::get('/', [HejController::class, 'index']);
 <p><strong>Föregående:</strong> <a href="#varför-ett-ramverk-introduktion-till-laravel">Del 1: Varför ett ramverk?</a> | <strong>Nästa:</strong> <a href="#del-3-setup-och-autentisering">Del 3: Setup och autentisering</a></p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="del-3-setup-och-autentisering"><a class="header" href="#del-3-setup-och-autentisering">Del 3: Setup och autentisering</a></h1>
-<p>I denna del sätter vi upp databasen och autentiseringen med Laravel – motsvarar <a href="#bygga-en-crud-applikation-enkel-blogg-1">Del 1: Setup och databas</a> och <a href="#del-2-autentisering">Del 2: Autentisering</a> i CRUD-appen.</p>
+<p>I denna del sätter vi upp databasen och autentiseringen med Laravel – motsvarar <a href="#bygga-en-crud-applikation-enkel-blogg-1">Del 1: Setup och databas</a> och <a href="#del-2-autentisering">Del 2: Autentisering</a> i CRUD-appen. Du fick skriva all den koden manuellt. Nu får du se hur Laravel hanterar mycket av det automatiskt.</p>
 <p><strong>Förutsättning:</strong> Du har genomfört <a href="#komma-igång-med-laravel">Del 2: Komma igång</a> och har ett fungerande Laravel-projekt.</p>
 <hr>
 <h2 id="jämförelse-med-crud-appen--vad-motsvarar-vad"><a class="header" href="#jämförelse-med-crud-appen--vad-motsvarar-vad">Jämförelse med CRUD-appen – Vad motsvarar vad?</a></h2>
@@ -17689,38 +17691,15 @@ exit
 <p>I denna del implementerar vi Create och Read – motsvarar <a href="#del-3-skapa-och-läsa-inlägg">Del 3: Skapa och läsa inlägg</a> i CRUD-appen. Vi bygger steg för steg: först routes och grundstruktur, sedan skapa inlägg utan bild, därefter lista och visa, admin-panel och till sist bilduppladdning.</p>
 <p><strong>Förutsättning:</strong> Du har genomfört <a href="#del-3-setup-och-autentisering">Del 3: Setup och autentisering</a>.</p>
 <hr>
-<h2 id="jämförelse-med-crud-appen--detta-byggde-du-för-hand"><a class="header" href="#jämförelse-med-crud-appen--detta-byggde-du-för-hand">Jämförelse med CRUD-appen – detta byggde du för hand</a></h2>
-<p>Innan vi börjar koda – här ser du hur koncepten från CRUD-appens Del 3 motsvarar Laravel:</p>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>CRUD-app (Del 3)</th><th>Laravel (denna del)</th></tr>
-</thead>
-<tbody>
-<tr><td><code>includes/Post.php</code> ( Klass med PDO)</td><td><code>app/Models/Post.php</code> (Eloquent-modell)</td></tr>
-<tr><td><code>$post_model = new Post(connect_db())</code></td><td><code>Post::with('user')-&gt;latest()-&gt;get()</code></td></tr>
-<tr><td><code>filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT)</code> + <code>$post_model-&gt;showOne($id)</code></td><td>Route model binding: <code>show(Post $post)</code></td></tr>
-<tr><td><code>$_SERVER['REQUEST_METHOD'] === 'POST'</code></td><td>Route: <code>Route::post(...)</code></td></tr>
-<tr><td><code>$_POST['title']</code> + <code>trim()</code> + <code>empty()</code></td><td><code>$request-&gt;validate(['title' =&gt; 'required'])</code></td></tr>
-<tr><td><code>$errors[] = 'Titel är obligatoriskt.'</code> + <code>foreach</code> i HTML</td><td><code>@error('title')</code> + <code>$message</code> ( automatiskt)</td></tr>
-<tr><td><code>htmlspecialchars($title)</code> i input-fält</td><td><code>&amp;#123;&amp;#123; old('title') &amp;#125;&amp;#125;</code> (escapas automatiskt )</td></tr>
-<tr><td><code>move_uploaded_file()</code> + <code>uniqid()</code> + validering av filtyp/storlek</td><td><code>$request-&gt;file('image')-&gt;store('posts', 'public')</code></td></tr>
-<tr><td><code>&lt;form action="create_post.php" method="post"&gt;</code></td><td><code>&lt;form action="&amp;#123;&amp;#123; route('posts.store') &amp;#125;&amp;#125;" method="POST"&gt;</code> + <code>@csrf</code></td></tr>
-<tr><td><code>if (!isset($_SESSION['user_id']))</code> på varje admin-sida</td><td><code>Route::middleware('auth')-&gt;group(...)</code></td></tr>
-</tbody>
-</table>
-</div>
-<p>När du nu bygger Del 4, tänk på dessa paralleller – varje steg motsvarar något du redan gjort i CRUD-appen.</p>
-<hr>
 <h2 id="steg-1-routes-och-grundläggande-postcontroller"><a class="header" href="#steg-1-routes-och-grundläggande-postcontroller">Steg 1: Routes och grundläggande PostController</a></h2>
-<p>Börja med att definiera alla routes och en controller som returnerar enkel output. Vi bygger vyer stegvis.</p>
+<p>Vi börjar med att definiera alla URL:er i en fil – <code>routes/web.php</code>. I CRUD-appen bestämdes routingen av filstrukturen (<code>admin/create_post.php</code>, <code>post.php?id=3</code> osv.). Nu samlar vi allt på ett ställe.</p>
 <p>Skapa controllern:</p>
 <pre><code class="language-bash">php artisan make:controller PostController
 </code></pre>
 <p><strong>Exempel på utdata:</strong></p>
-<pre><code>  INFO  Controller [app/Http/Controllers/PostController.php] created successfully.
+<pre><code>   INFO  Controller [app/Http/Controllers/PostController.php] created successfully.
 </code></pre>
-<p>Lägg till i <code>routes/web.php</code> (under de routes Breeze skapat, men <strong>före</strong> Breeze:s route för <code>/</code> om den finns). Om Breeze har satt <code>/</code> som dashboard behöver vi ändra det – se avsnittet “Uppdatera startsidan” längst ned.</p>
+<p>Lägg till i <code>routes/web.php</code>:</p>
 <pre><code class="language-php">use App\Http\Controllers\PostController;
 
 Route::get('/', [PostController::class, 'index'])-&gt;name('posts.index');
@@ -17731,16 +17710,20 @@ Route::middleware('auth')-&gt;group(function () {
     Route::get('/admin/posts/create', [PostController::class, 'create'])-&gt;name('posts.create');
     Route::post('/admin/posts', [PostController::class, 'store'])-&gt;name('posts.store');
     Route::get('/admin/posts/{post}/edit', [PostController::class, 'edit'])-&gt;name('posts.edit');
-    Route::put('/admin/posts/{post}', [PostController::class, 'update'])-&gt;name('posts.update');
-    Route::delete('/admin/posts/{post}', [PostController::class, 'destroy'])-&gt;name('posts.destroy');
+    Route::post('/admin/posts/{post}/edit', [PostController::class, 'update'])-&gt;name('posts.update');
+    Route::post('/admin/posts/{post}/delete', [PostController::class, 'destroy'])-&gt;name('posts.destroy');
 });
 </code></pre>
-<p><strong>Nyckelkoncept:</strong></p>
+<blockquote>
+<p><strong>Om RESTful routes:</strong> I Laravel-projekt är det vanligt att använda <code>Route::put()</code> för uppdatering och <code>Route::delete()</code> för radering – så kallade RESTful routes. HTML-formulär stödjer bara GET och POST, så Laravel använder då <code>@method('PUT')</code> som ett dolt fält. I denna kurs håller vi oss till GET och POST för att hålla antalet nya koncept nere. Principerna är desamma.</p>
+</blockquote>
+<p><strong>Nya koncept i routen:</strong></p>
 <ul>
-<li><strong><code>Route::middleware('auth')</code></strong> – Skyddar admin-routes. Motsvarar <code>if (!isset($_SESSION['user_id']))</code> i varje admin-fil. Om användaren inte är inloggad omdirigeras de till login.</li>
-<li><strong><code>{post}</code> i URL:en</strong> – <strong>Route model binding</strong>. Laravel hämtar automatiskt Post-modellen baserat på ID. Du behöver inte <code>filter_input</code> eller <code>get_post_by_id()</code>.</li>
+<li><strong><code>Route::middleware('auth')</code></strong> – Skyddar admin-routes. Som i CRUD-appen skrev du <code>if (!isset($_SESSION['user_id']))</code> i varje admin-fil. Här räcker en rad.</li>
+<li><strong><code>{post}</code> i URL:en</strong> – Route model binding. Laravel hämtar automatiskt Post-modellen baserat på ID. I CRUD-appen använde du <code>filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT)</code> och <code>$post_model-&gt;showOne($id)</code>.</li>
+<li><strong><code>name('posts.store')</code></strong> – Namnger routen så att du kan referera till den i vyer med <code>route('posts.store')</code>. I CRUD-appen skrev du <code>action="create_post.php"</code>.</li>
 </ul>
-<p>Implementera temporära metoder i <code>PostController</code> som bara returnerar text (vi bygger vyer i nästa steg):</p>
+<p>Implementera temporära metoder i <code>PostController</code>:</p>
 <pre><code class="language-php">&lt;?php
 
 namespace App\Http\Controllers;
@@ -17774,13 +17757,12 @@ class PostController extends Controller
 
     public function store(Request $request)
     {
-        // Kommer i Steg 2
         return redirect()-&gt;route('posts.admin');
     }
 }
 </code></pre>
 <p>Skapa mappen <code>resources/views/posts/</code> och två minimala vyer.</p>
-<p><code>index.blade.php</code> (för startsidan):</p>
+<p><code>index.blade.php</code>:</p>
 <pre><code class="language-blade">@extends('layouts.app')
 
 @section('content')
@@ -17792,7 +17774,7 @@ class PostController extends Controller
 @endforelse
 @endsection
 </code></pre>
-<p><code>admin.blade.php</code> (för admin-panelen – vi bygger ut den i Steg 3):</p>
+<p><code>admin.blade.php</code>:</p>
 <pre><code class="language-blade">@extends('layouts.app')
 
 @section('content')
@@ -17804,11 +17786,10 @@ class PostController extends Controller
 @endforeach
 @endsection
 </code></pre>
-<p><strong>OBS:</strong> Create-vyn bygger vi i Steg 2. Om du klickar “Skapa nytt inlägg” innan dess får du fel – det är normalt, gå vidare till Steg 2.</p>
-<p><strong>Kontrollera att det fungerar:</strong> Gå till <code>/</code>. Om du har testinlägget från Del 3 (Tinker) ska du se det. Annars ska du se “Det finns inga blogginlägg ännu.” Logga in och gå till <code>/admin</code> – du ska se admin-panelen med dina inlägg (eller tom lista). Om du får fel om att vyn saknas, kontrollera att <code>layouts.app</code> finns (Breeze skapar den).</p>
+<p><strong>Kontrollera att det fungerar:</strong> Gå till <code>/</code>. Om du har testinlägget från Del 3 (Tinker) ska du se det. Logga in och gå till <code>/admin</code> – du ska se admin-panelen.</p>
 <hr>
 <h2 id="steg-2-skapa-inlägg--utan-bild-1"><a class="header" href="#steg-2-skapa-inlägg--utan-bild-1">Steg 2: Skapa inlägg – utan bild</a></h2>
-<p>Nu lägger vi till formuläret och <code>store()</code>-metoden. Vi börjar <strong>utan</strong> bilduppladdning så att grundlogiken fungerar.</p>
+<p>Nu lägger vi till formuläret och <code>store()</code>-metoden. Vi börjar utan bilduppladdning så att grundlogiken fungerar.</p>
 <p>Uppdatera <code>store()</code> i PostController:</p>
 <pre><code class="language-php">public function store(Request $request)
 {
@@ -17826,16 +17807,14 @@ class PostController extends Controller
     return redirect()-&gt;route('posts.admin')-&gt;with('success', 'Nytt inlägg skapat!');
 }
 </code></pre>
-<p><strong>Nyckelkoncept:</strong> <code>$request-&gt;validate()</code> ersätter manuell <code>$errors[]</code>-logik. Laravel validerar och returnerar fel automatiskt till formuläret om valideringen misslyckas.</p>
-<p><strong>Jämförelse med CRUD-appen:</strong> I CRUD-appens <code>create_post.php</code> skrev du:</p>
+<blockquote>
+<p><strong>Som i CRUD-appen:</strong> I <code>create_post.php</code> skrev du:</p>
 <pre><code class="language-php">if (empty($title)) {
     $errors[] = 'Titel är obligatoriskt.';
 }
-if (empty($body)) {
-    $errors[] = 'Innehåll är obligatoriskt.';
-}
 </code></pre>
-<p>I Laravel gör <code>$request-&gt;validate(['title' =&gt; 'required', 'body' =&gt; 'required'])</code> samma sak – och mycket mer (max-längd, XSS-skydd, automatisk felåtergivning). Du behöver inte skriva <code>foreach ($errors as $error)</code> – Blade-direktivet <code>@error</code> visar felen per fält.</p>
+<p>I Laravel gör <code>$request-&gt;validate(...)</code> samma sak – och mer: max-längd, XSS-skydd och automatisk felåtergivning.</p>
+</blockquote>
 <p>Skapa <code>resources/views/posts/create.blade.php</code>:</p>
 <pre><code class="language-blade">@extends('layouts.app')
 
@@ -17847,33 +17826,30 @@ if (empty($body)) {
     &lt;div&gt;
         &lt;label for="title"&gt;Titel:&lt;/label&gt;
         &lt;input type="text" id="title" name="title" value="{{ old('title') }}" required&gt;
-        @error('title') &lt;span class="text-red-600"&gt;{{ $message }}&lt;/span&gt; @enderror
+        @error('title') &lt;span style="color:red"&gt;{{ $message }}&lt;/span&gt; @enderror
     &lt;/div&gt;
     &lt;div&gt;
         &lt;label for="body"&gt;Innehåll:&lt;/label&gt;
         &lt;textarea id="body" name="body" required&gt;{{ old('body') }}&lt;/textarea&gt;
-        @error('body') &lt;span class="text-red-600"&gt;{{ $message }}&lt;/span&gt; @enderror
+        @error('body') &lt;span style="color:red"&gt;{{ $message }}&lt;/span&gt; @enderror
     &lt;/div&gt;
     &lt;button type="submit"&gt;Spara inlägg&lt;/button&gt;
 &lt;/form&gt;
 @endsection
 </code></pre>
-<p><strong>Blade-tips:</strong> <code>@error('title')</code> visar valideringsfel för fältet. <code>old('title')</code> återställer värdet om formuläret skickas tillbaka med fel – så användaren inte behöver skriva om allt.</p>
-<p><strong>Jämförelse med CRUD-appen:</strong> I CRUD-appen skrev du:</p>
-<pre><code class="language-php">&lt;input type="text" name="title" value="&lt;?php echo htmlspecialchars($title); ?&gt;"&gt;
-&lt;?php if (!empty($errors)): ?&gt;
-    &lt;ul&gt;&lt;?php foreach ($errors as $error): ?&gt;
-        &lt;li&gt;&lt;?php echo htmlspecialchars($error); ?&gt;&lt;/li&gt;
-    &lt;?php endforeach; ?&gt;&lt;/ul&gt;
-&lt;?php endif; ?&gt;
-</code></pre>
-<p>I Blade blir detta mycket kortare: <code>&amp;#123;&amp;#123; old('title') &amp;#125;&amp;#125;</code> återställer värdet (och escapas automatiskt, inget <code>htmlspecialchars</code>), <code>@error('title')</code> visar felmeddelandet för just det fältet.</p>
+<blockquote>
+<p><strong>Som i CRUD-appen:</strong> I <code>create_post.php</code> skrev du <code>value="&lt;?php echo htmlspecialchars($title); ?&gt;"</code> för att behålla indata vid fel. I Blade gör <code>{{ old('title') }}</code> samma sak – och escapas automatiskt, inget <code>htmlspecialchars</code> behövs.</p>
+</blockquote>
+<p><strong>Två viktiga Blade-direktiv:</strong></p>
+<ul>
+<li><code>@csrf</code> – Genererar ett dolt fält som skyddar mot CSRF-attacker. I CRUD-appen hade vi inget CSRF-skydd.</li>
+<li><code>@error('title')</code> – Visar valideringsfel för just det fältet. I CRUD-appen loopade du <code>$errors</code> manuellt.</li>
+</ul>
 <p><img src="kapitel_7/assets/laravel-crud/del-4/del-4-create-formular.png" alt="Formulär för att skapa nytt inlägg"></p>
-<p><strong>Kontrollera att det fungerar:</strong> Logga in och gå till <code>/admin/posts/create</code>. Skapa ett inlägg med titel och innehåll. Du ska omdirigeras till admin-panelen och se ditt nya inlägg. Testa att skicka formuläret tomt – du ska se valideringsfel.</p>
+<p><strong>Kontrollera att det fungerar:</strong> Logga in, gå till <code>/admin/posts/create</code>. Skapa ett inlägg. Testa att skicka formuläret tomt – du ska se valideringsfel.</p>
 <hr>
 <h2 id="steg-3-admin-panel-och-lista"><a class="header" href="#steg-3-admin-panel-och-lista">Steg 3: Admin-panel och lista</a></h2>
-<p>Skapa admin-vyn så att du kan se dina inlägg och nå “Skapa nytt inlägg”:</p>
-<p>Skapa <code>resources/views/posts/admin.blade.php</code>:</p>
+<p>Skapa admin-vyn med tabell över dina inlägg:</p>
 <pre><code class="language-blade">@extends('layouts.app')
 
 @section('content')
@@ -17881,7 +17857,7 @@ if (empty($body)) {
 &lt;p&gt;Välkommen, {{ auth()-&gt;user()-&gt;name }}!&lt;/p&gt;
 
 @if(session('success'))
-    &lt;p class="text-green-600"&gt;{{ session('success') }}&lt;/p&gt;
+    &lt;p style="color:green"&gt;{{ session('success') }}&lt;/p&gt;
 @endif
 
 &lt;a href="{{ route('posts.create') }}"&gt;Skapa nytt inlägg&lt;/a&gt;
@@ -17906,10 +17882,13 @@ if (empty($body)) {
 &lt;/table&gt;
 @endsection
 </code></pre>
-<p><strong>Kontrollera att det fungerar:</strong> Gå till <code>/admin</code>. Du ska se dina inlägg i en tabell. Klicka “Skapa nytt inlägg”, skapa ett inlägg – du ska se det i listan och få meddelandet “Nytt inlägg skapat!”. (“Redigera”-länken ger fel tills Del 5 – det är normalt.)</p>
+<blockquote>
+<p><strong>Som i CRUD-appen:</strong> I <code>admin/index.php</code> visade du inlägg med <code>foreach ($posts as $post)</code> och <code>htmlspecialchars()</code> på varje utskrift. Här gör <code>{{ $post-&gt;title }}</code> samma sak – escapas automatiskt.</p>
+</blockquote>
+<p><strong>Kontrollera att det fungerar:</strong> Gå till <code>/admin</code>. Du ska se dina inlägg i en tabell. Skapa ett inlägg – du ska se meddelandet “Nytt inlägg skapat!”.</p>
 <hr>
 <h2 id="steg-4-förbättra-index-och-show"><a class="header" href="#steg-4-förbättra-index-och-show">Steg 4: Förbättra index och show</a></h2>
-<p>Uppdatera <code>resources/views/posts/index.blade.php</code> så att listan visar mer information:</p>
+<p>Uppdatera startsidan så att den visar mer information:</p>
 <pre><code class="language-blade">@extends('layouts.app')
 
 @section('content')
@@ -17939,21 +17918,24 @@ if (empty($body)) {
 &lt;a href="{{ route('posts.index') }}"&gt;&amp;laquo; Tillbaka&lt;/a&gt;
 @endsection
 </code></pre>
-<p><strong>OBS:</strong> <code>{!! nl2br(e($post-&gt;body)) !!}</code> – vi använder <code>e()</code> för att escap:a (skydda mot XSS) och <code>nl2br()</code> för radbrytningar. <code>{!! !!}</code> skriver ut utan extra escaping eftersom vi redan escap:at med <code>e()</code>.</p>
-<p><strong>Kontrollera att det fungerar:</strong> Gå till <code>/</code>. Klicka “Läs mer” på ett inlägg – du ska se hela inlägget. Klicka “Tillbaka” – du ska tillbaka till listan.</p>
+<blockquote>
+<p><strong>Som i CRUD-appen:</strong> I <code>post.php</code> skrev du <code>htmlspecialchars($post['title'])</code> och <code>nl2br()</code> för radbrytningar. Här gör <code>{{ $post-&gt;title }}</code> escaping automatiskt. För radbrytningar använder vi <code>nl2br(e($post-&gt;body))</code>.</p>
+</blockquote>
+<p><strong>Kontrollera att det fungerar:</strong> Gå till <code>/</code>. Klicka “Läs mer” på ett inlägg – du ska se hela inlägget.</p>
 <p><img src="kapitel_7/assets/laravel-crud/del-4/del-4-index-med-inlagg.png" alt="Startsidan med listan över blogginlägg"></p>
-<p><img src="kapitel_7/assets/laravel-crud/del-4/del-4-post-enskilt.png" alt="Enskilt blogginlägg med bild"></p>
+<p><img src="kapitel_7/assets/laravel-crud/del-4/del-4-post-enskilt.png" alt="Enskilt blogginlägg"></p>
 <hr>
 <h2 id="steg-5-bilduppladdning"><a class="header" href="#steg-5-bilduppladdning">Steg 5: Bilduppladdning</a></h2>
-<p><strong>Jämförelse med CRUD-appen:</strong> I CRUD-appens Del 3 skrev du ~30 rader för bilduppladdning: validering av filtyp/storlek, <code>uniqid()</code>, <code>move_uploaded_file()</code>, felhantering och sökvägsnycklar. I Laravel gör <code>$request-&gt;file('image')-&gt;store('posts', 'public')</code> allt detta i en rad – filnamn genereras automatiskt, lagring hanteras av Laravels filesystem, och validering sker via <code>'image' =&gt; 'nullable|image|max:7168'</code>.</p>
-<p>Lägg till stöd för att ladda upp en bild när man skapar inlägg.</p>
+<blockquote>
+<p><strong>Som i CRUD-appen:</strong> I Del 3 skrev du ~30 rader för bilduppladdning: validering av filtyp/storlek, <code>uniqid()</code>, <code>move_uploaded_file()</code> och felhantering. I Laravel gör <code>$request-&gt;file('image')-&gt;store('posts', 'public')</code> allt detta i en rad.</p>
+</blockquote>
 <p>Uppdatera <code>store()</code> i PostController:</p>
 <pre><code class="language-php">public function store(Request $request)
 {
     $validated = $request-&gt;validate([
         'title' =&gt; 'required|max:255',
         'body' =&gt; 'required',
-        'image' =&gt; 'nullable|image|max:7168', // 7 MB
+        'image' =&gt; 'nullable|image|max:7168',
     ]);
 
     $path = null;
@@ -17970,60 +17952,46 @@ if (empty($body)) {
     return redirect()-&gt;route('posts.admin')-&gt;with('success', 'Nytt inlägg skapat!');
 }
 </code></pre>
-<p>Uppdatera <code>resources/views/posts/create.blade.php</code> – lägg till <code>enctype="multipart/form-data"</code> i form-taggen och bildfältet:</p>
+<p>Lägg till <code>enctype="multipart/form-data"</code> och bildfältet i <code>create.blade.php</code>:</p>
 <pre><code class="language-blade">&lt;form action="{{ route('posts.store') }}" method="POST" enctype="multipart/form-data"&gt;
     @csrf
     &lt;div&gt;
         &lt;label for="title"&gt;Titel:&lt;/label&gt;
         &lt;input type="text" id="title" name="title" value="{{ old('title') }}" required&gt;
-        @error('title') &lt;span class="text-red-600"&gt;{{ $message }}&lt;/span&gt; @enderror
+        @error('title') &lt;span style="color:red"&gt;{{ $message }}&lt;/span&gt; @enderror
     &lt;/div&gt;
     &lt;div&gt;
         &lt;label for="body"&gt;Innehåll:&lt;/label&gt;
         &lt;textarea id="body" name="body" required&gt;{{ old('body') }}&lt;/textarea&gt;
-        @error('body') &lt;span class="text-red-600"&gt;{{ $message }}&lt;/span&gt; @enderror
+        @error('body') &lt;span style="color:red"&gt;{{ $message }}&lt;/span&gt; @enderror
     &lt;/div&gt;
     &lt;div&gt;
         &lt;label for="image"&gt;Bild (valfritt, max 7 MB):&lt;/label&gt;
         &lt;input type="file" id="image" name="image" accept="image/jpeg,image/png,image/gif"&gt;
-        @error('image') &lt;span class="text-red-600"&gt;{{ $message }}&lt;/span&gt; @enderror
+        @error('image') &lt;span style="color:red"&gt;{{ $message }}&lt;/span&gt; @enderror
     &lt;/div&gt;
     &lt;button type="submit"&gt;Spara inlägg&lt;/button&gt;
 &lt;/form&gt;
 </code></pre>
-<p>Uppdatera <code>index.blade.php</code> och <code>show.blade.php</code> – lägg till bildvisning där det passar:</p>
-<p>I <code>index.blade.php</code>, inuti <code>@forelse</code>-loopen, före <code>&lt;h2&gt;</code>:</p>
+<p>Lägg till bildvisning i <code>index.blade.php</code> (inuti <code>@forelse</code>-loopen, före <code>&lt;h2&gt;</code>):</p>
 <pre><code class="language-blade">@if($post-&gt;image_path)
     &lt;img src="{{ asset('storage/' . $post-&gt;image_path) }}" alt="" style="max-width: 150px;"&gt;
 @endif
 </code></pre>
-<p>I <code>show.blade.php</code>, efter rubriken:</p>
+<p>Och i <code>show.blade.php</code> (efter rubriken):</p>
 <pre><code class="language-blade">@if($post-&gt;image_path)
     &lt;img src="{{ asset('storage/' . $post-&gt;image_path) }}" alt="{{ $post-&gt;title }}" style="max-width: 100%;"&gt;
 @endif
 </code></pre>
-<hr>
-<h2 id="steg-6-symbolisk-länk-för-uppladdningar"><a class="header" href="#steg-6-symbolisk-länk-för-uppladdningar">Steg 6: Symbolisk länk för uppladdningar</a></h2>
-<p>För att bilder ska vara tillgängliga via webbläsaren måste du skapa en symbolisk länk:</p>
+<p>Skapa symbolisk länk för uppladdningar:</p>
 <pre><code class="language-bash">php artisan storage:link
 </code></pre>
-<p><strong>Exempel på utdata:</strong></p>
-<pre><code>  INFO  The [public/storage] link has been connected to [storage/app/public].
-</code></pre>
-<p>Detta skapar en länk från <code>public/storage</code> till <code>storage/app/public</code>. Uppladdade bilder hamnar i <code>storage/app/public/posts/</code>.</p>
-<p><strong>Jämförelse med CRUD-appen:</strong> I CRUD-appen sparade du bilder direkt i <code>uploads/</code>-mappen och refererade till dem med <code>BASE_URL . '/' . $post['image_path']</code>. I Laravel sparas filer i <code>storage/app/public/</code> och nås via <code>asset('storage/' . $post-&gt;image_path)</code> – <code>storage:link</code> gör mappen tillgänglig från webben.</p>
-<p><strong>Kontrollera att det fungerar:</strong> Skapa ett nytt inlägg med en bild. Du ska se bilden på startsidan och på inläggets sida. Om bilden inte visas, se “Vanliga problem” nedan.</p>
+<blockquote>
+<p><strong>Som i CRUD-appen:</strong> I CRUD-appen sparade du bilder i <code>uploads/</code> och refererade med <code>BASE_URL . '/' . $post['image_path']</code>. I Laravel sparas filer i <code>storage/app/public/</code> och nås via <code>asset('storage/' . $post-&gt;image_path)</code>.</p>
+</blockquote>
 <hr>
 <h2 id="uppdatera-startsidan"><a class="header" href="#uppdatera-startsidan">Uppdatera startsidan</a></h2>
-<p>Breeze sätter som standard <code>/</code> som dashboard för inloggade användare. Vi vill att <code>/</code> alltid visar postlistan (som i CRUD-appens <code>index.php</code>).</p>
-<p><strong>Så här fixar du det:</strong></p>
-<ol>
-<li>Öppna <code>routes/web.php</code>.</li>
-<li>Ta bort eller kommentera bort Breeze:s route för <code>/</code> om den finns (t.ex. <code>Route::get('/', ...)</code> som pekar på dashboard).</li>
-<li>Se till att vår route <code>Route::get('/', [PostController::class, 'index'])</code> kommer <strong>före</strong> eventuella andra routes som matchar <code>/</code>.</li>
-<li>Om du vill ha en separat dashboard för inloggade användare kan du lägga <code>Route::get('/dashboard', ...)</code> och peka admin-länken dit – eller använd <code>/admin</code> som “dashboard” (som vi redan gör).</li>
-</ol>
-<p>Breeze:s <code>routes/auth.php</code> inkluderas via <code>Route::middleware('auth')-&gt;group(...)</code> i <code>web.php</code>. Kontrollera att vår <code>PostController</code>-route för <code>/</code> är definierad och att ingen annan route överskuggar den.</p>
+<p>Breeze sätter som standard <code>/</code> som dashboard. Vi vill att <code>/</code> alltid visar postlistan. Leta efter eventuell Breeze-route för <code>/</code> i <code>routes/web.php</code> eller <code>routes/auth.php</code> och ta bort/kommentera bort den. Vår <code>PostController</code>-route för <code>/</code> ska gälla.</p>
 <hr>
 <h2 id="vanliga-problem-1"><a class="header" href="#vanliga-problem-1">Vanliga problem</a></h2>
 <div class="table-wrapper">
@@ -18033,9 +18001,9 @@ if (empty($body)) {
 </thead>
 <tbody>
 <tr><td><strong>Bilder visas inte</strong></td><td>Kör <code>php artisan storage:link</code>. Kontrollera att filen finns i <code>storage/app/public/posts/</code>.</td></tr>
-<tr><td><strong>404 på <code>/posts/1</code></strong></td><td>Route model binding kräver att parametern heter <code>{post}</code> (singular) och att metoden tar <code>Post $post</code>. Kontrollera <code>routes/web.php</code> och <code>show()</code>-metoden.</td></tr>
-<tr><td><strong>Valideringsfel visas inte</strong></td><td>Kontrollera att du har <code>@error('fältnamn')</code> i formuläret och att <code>old('fältnamn')</code> används för att återställa värdet.</td></tr>
-<tr><td><strong>403 eller redirect till login på /admin</strong></td><td>Du måste vara inloggad. Gå till <code>/login</code> och logga in först.</td></tr>
+<tr><td><strong>404 på <code>/posts/1</code></strong></td><td>Route model binding kräver att parametern heter <code>{post}</code> (singular) och att metoden tar <code>Post $post</code>.</td></tr>
+<tr><td><strong>Valideringsfel visas inte</strong></td><td>Kontrollera att du har <code>@error('fältnamn')</code> i formuläret och att <code>old('fältnamn')</code> används.</td></tr>
+<tr><td><strong>403 eller redirect till login på /admin</strong></td><td>Du måste vara inloggad. Gå till <code>/login</code> först.</td></tr>
 <tr><td><strong>Class “Post” not found</strong></td><td>Kontrollera att du har <code>use App\Models\Post;</code> högst upp i PostController.</td></tr>
 </tbody>
 </table>
@@ -18048,7 +18016,7 @@ if (empty($body)) {
 <li>Att validera formulär med <code>$request-&gt;validate()</code></li>
 <li>Att använda Blade-direktiv som <code>@forelse</code>, <code>@error</code> och <code>old()</code> i formulär</li>
 <li>Att ladda upp filer med <code>$request-&gt;file()-&gt;store()</code> och <code>storage:link</code></li>
-<li>Hur CRUD-appens manuella kod (filter_input, $_FILES, move_uploaded_file, htmlspecialchars) motsvaras av Laravel-funktioner (route model binding, validate, store, Blade {{ }})</li>
+<li>Hur CRUD-appens manuella kod motsvaras av Laravel-funktioner</li>
 </ul>
 <hr>
 <p><strong>Föregående:</strong> <a href="#del-3-setup-och-autentisering">Del 3: Setup och autentisering</a> | <strong>Nästa:</strong> <a href="#del-5-uppdatera-och-radera">Del 5: Uppdatera och radera</a></p>
@@ -18058,19 +18026,19 @@ if (empty($body)) {
 <p><strong>Förutsättning:</strong> Du har genomfört <a href="#del-4-skapa-och-läsa-inlägg">Del 4: Skapa och läsa inlägg</a>.</p>
 <hr>
 <h2 id="steg-1-policy-för-ägarskap"><a class="header" href="#steg-1-policy-för-ägarskap">Steg 1: Policy för ägarskap</a></h2>
-<p><strong>Jämförelse med CRUD-appen:</strong> I CRUD-appens Del 4 skrev du:</p>
+<blockquote>
+<p><strong>Som i CRUD-appen:</strong> I <code>edit_post.php</code> och <code>delete_post.php</code> skrev du:</p>
 <pre><code class="language-php">if ($post['user_id'] != $logged_in_user_id) {
     $errors[] = "Du har inte behörighet att redigera detta inlägg.";
-    $post = null;
 }
 </code></pre>
-<p>Du upprepade denna kontroll i varje admin-fil (edit_post.php, delete_post.php). I Laravel samlar du behörighetslogiken i en Policy-klass – en enda plats att uppdatera istället för flera filer.</p>
-<p>I CRUD-appen kollade du <code>$post['user_id'] != $logged_in_user_id</code> i edit och delete. I Laravel använder vi en <strong>Policy</strong> – en klass som centraliserar behörighetslogik. Användaren får bara redigera och radera sina egna inlägg.</p>
+<p>Du upprepade denna kontroll i varje admin-fil. I Laravel samlar du behörighetslogiken i en Policy-klass – en enda plats att uppdatera.</p>
+</blockquote>
 <p>Skapa policyn:</p>
 <pre><code class="language-bash">php artisan make:policy PostPolicy --model=Post
 </code></pre>
 <p><strong>Exempel på utdata:</strong></p>
-<pre><code>  INFO  Policy [app/Policies/PostPolicy.php] created successfully.
+<pre><code>   INFO  Policy [app/Policies/PostPolicy.php] created successfully.
 </code></pre>
 <p>Öppna <code>app/Policies/PostPolicy.php</code> och uppdatera metoderna <code>update</code> och <code>delete</code>:</p>
 <pre><code class="language-php">public function update(User $user, Post $post): bool
@@ -18085,8 +18053,9 @@ public function delete(User $user, Post $post): bool
 </code></pre>
 <p>Laravel registrerar automatiskt policyn för Post-modellen. Vi använder den i nästa steg med <code>$this-&gt;authorize('update', $post)</code>.</p>
 <hr>
-<h2 id="steg-2-edit-vyn-och-edit-metoden"><a class="header" href="#steg-2-edit-vyn-och-edit-metoden">Steg 2: Edit-vyn och edit()-metoden</a></h2>
-<p>Skapa redigeringsformuläret och metoden som visar det.</p>
+<h2 id="steg-2-redigera-inlägg"><a class="header" href="#steg-2-redigera-inlägg">Steg 2: Redigera inlägg</a></h2>
+<p>Redigering kräver två routes – en för att visa formuläret (GET) och en för att spara ändringar (POST). I CRUD-appen hade du <code>edit_post.php</code> som hanterade båda med <code>$_SERVER['REQUEST_METHOD']</code>.</p>
+<h3 id="steg-21-visningsrouten-get"><a class="header" href="#steg-21-visningsrouten-get">Steg 2.1: Visningsrouten (GET)</a></h3>
 <p>Lägg till i <code>PostController</code>:</p>
 <pre><code class="language-php">public function edit(Post $post)
 {
@@ -18094,7 +18063,7 @@ public function delete(User $user, Post $post): bool
     return view('posts.edit', compact('post'));
 }
 </code></pre>
-<p><strong><code>$this-&gt;authorize('update', $post)</code></strong> – Anropar Policy:n. Om användaren inte äger inlägget returneras 403 Forbidden automatiskt. Du behöver inte skriva <code>if ($user-&gt;id !== $post-&gt;user_id)</code> – policyn gör det.</p>
+<p><code>$this-&gt;authorize('update', $post)</code> anropar Policy:n. Om användaren inte äger inlägget returneras 403 Forbidden automatiskt.</p>
 <p>Skapa <code>resources/views/posts/edit.blade.php</code>:</p>
 <pre><code class="language-blade">@extends('layouts.app')
 
@@ -18103,16 +18072,15 @@ public function delete(User $user, Post $post): bool
 
 &lt;form action="{{ route('posts.update', $post) }}" method="POST" enctype="multipart/form-data"&gt;
     @csrf
-    @method('PUT')
     &lt;div&gt;
         &lt;label for="title"&gt;Titel:&lt;/label&gt;
         &lt;input type="text" id="title" name="title" value="{{ old('title', $post-&gt;title) }}" required&gt;
-        @error('title') &lt;span class="text-red-600"&gt;{{ $message }}&lt;/span&gt; @enderror
+        @error('title') &lt;span style="color:red"&gt;{{ $message }}&lt;/span&gt; @enderror
     &lt;/div&gt;
     &lt;div&gt;
         &lt;label for="body"&gt;Innehåll:&lt;/label&gt;
         &lt;textarea id="body" name="body" required&gt;{{ old('body', $post-&gt;body) }}&lt;/textarea&gt;
-        @error('body') &lt;span class="text-red-600"&gt;{{ $message }}&lt;/span&gt; @enderror
+        @error('body') &lt;span style="color:red"&gt;{{ $message }}&lt;/span&gt; @enderror
     &lt;/div&gt;
     @if($post-&gt;image_path)
         &lt;div&gt;
@@ -18128,13 +18096,17 @@ public function delete(User $user, Post $post): bool
 &lt;/form&gt;
 @endsection
 </code></pre>
-<p><strong>OBS:</strong> <code>@method('PUT')</code> – HTML-formulär stödjer bara GET och POST. Laravel använder detta dolda fält för att simulera PUT, så routen <code>Route::put(...)</code> matchar.</p>
-<p><strong>Jämförelse med CRUD-appen:</strong> I <code>edit_post.php</code> skickade du formuläret till samma sida (<code>edit_post.php?id=...</code>) och kollade <code>$_SERVER['REQUEST_METHOD'] === 'POST'</code>. I Laravel skiljer du på GET (visa formuläret) och PUT (spara ändringar) med separata routes. Dessutom behöver du inte lägga in <code>?id=</code> i URL:en – route model binding skickar in rätt post automatiskt.</p>
-<p><strong>Kontrollera att det fungerar:</strong> Gå till <code>/admin</code> och klicka “Redigera” på ett inlägg. Du ska se formuläret med befintlig titel och innehåll. Om du försöker redigera ett inlägg som tillhör en annan användare (skapa en annan användare först) ska du få 403 Forbidden.</p>
+<blockquote>
+<p><strong>Som i CRUD-appen:</strong> I <code>edit_post.php</code> skickade du formuläret till samma sida (<code>edit_post.php?id=...</code>) och kollade <code>$_SERVER['REQUEST_METHOD'] === 'POST'</code>. I Laravel använder du separata routes: GET visar formuläret, POST sparar ändringen. Du behöver inte lägga in <code>?id=</code> i URL:en – route model binding skickar in rätt post automatiskt.</p>
+</blockquote>
+<blockquote>
+<p><strong>Notera:</strong> Formuläret använder <code>method="POST"</code> – samma metod som i CRUD-appen. I standard Laravel används <code>@method('PUT')</code> för edit-formulär, men vi håller oss till POST för att minimera nya koncept.</p>
+</blockquote>
 <p><img src="kapitel_7/assets/laravel-crud/del-5/del-5-edit-formular.png" alt="Redigeringsformuläret"></p>
+<p><strong>Kontrollera att det fungerar:</strong> Gå till <code>/admin</code> och klicka “Redigera” på ett inlägg. Du ska se formuläret med befintlig titel och innehåll. Om du försöker redigera ett inlägg som tillhör en annan användare ska du få 403 Forbidden.</p>
 <hr>
-<h2 id="steg-3-update-metoden"><a class="header" href="#steg-3-update-metoden">Steg 3: update()-metoden</a></h2>
-<p>Lägg till <code>update()</code> i PostController så att ändringar sparas:</p>
+<h3 id="steg-22-spararouten-post"><a class="header" href="#steg-22-spararouten-post">Steg 2.2: Spararouten (POST)</a></h3>
+<p>Lägg till <code>update()</code> i PostController:</p>
 <pre><code class="language-php">public function update(Request $request, Post $post)
 {
     $this-&gt;authorize('update', $post);
@@ -18165,10 +18137,16 @@ public function delete(User $user, Post $post): bool
     return redirect()-&gt;route('posts.admin')-&gt;with('success', 'Inlägg uppdaterat!');
 }
 </code></pre>
-<p><strong>Jämförelse med CRUD-appen – bildhantering vid redigering:</strong> I CRUD-appens <code>edit_post.php</code> skrev du ~50 rader för att hantera tre fall (behålla, ta bort, ersätta bild): <code>isset($_POST['delete_image'])</code>, <code>$_FILES['image']</code>, <code>file_exists()</code>, <code>unlink()</code>, <code>move_uploaded_file()</code> och städning vid databasfel. I Laravel gör <code>\Storage::disk('public')-&gt;delete($path)</code> samma sak som <code>unlink(UPLOAD_PATH . basename($path))</code>, och <code>$request-&gt;file('image')-&gt;store()</code> ersätter <code>move_uploaded_file()</code>. Validering av filtyp/storlek sköts av <code>'image' =&gt; 'nullable|image|max:5120'</code> i <code>$request-&gt;validate()</code>.</p>
+<blockquote>
+<p><strong>Som i CRUD-appen – bildhantering:</strong> I <code>edit_post.php</code> skrev du ~50 rader för att hantera tre fall (behålla, ta bort, ersätta bild): <code>isset($_POST['delete_image'])</code>, <code>$_FILES['image']</code>, <code>file_exists()</code>, <code>unlink()</code>, <code>move_uploaded_file()</code> och städning vid databasfel. I Laravel gör <code>\Storage::disk('public')-&gt;delete($path)</code> samma sak som <code>unlink(UPLOAD_PATH . basename($path))</code>, och <code>$request-&gt;file('image')-&gt;store()</code> ersätter <code>move_uploaded_file()</code>.</p>
+</blockquote>
 <hr>
-<h2 id="steg-4-destroy-och-radera-knapp"><a class="header" href="#steg-4-destroy-och-radera-knapp">Steg 4: destroy() och radera-knapp</a></h2>
-<p>Lägg till <code>destroy()</code> i PostController:</p>
+<h2 id="steg-3-radera-inlägg"><a class="header" href="#steg-3-radera-inlägg">Steg 3: Radera inlägg</a></h2>
+<blockquote>
+<p><strong>Som i CRUD-appen:</strong> I <code>delete_post.php</code> skickade du ett POST-formulär med ett dolt <code>post_id</code>-fält. Här gör vi samma sak – men Laravel hämtar rätt inlägg via route model binding istället för <code>$_POST['post_id']</code>.</p>
+</blockquote>
+<h3 id="steg-31-destroy-metoden"><a class="header" href="#steg-31-destroy-metoden">Steg 3.1: destroy()-metoden</a></h3>
+<p>Lägg till i <code>PostController</code>:</p>
 <pre><code class="language-php">public function destroy(Post $post)
 {
     $this-&gt;authorize('delete', $post);
@@ -18179,56 +18157,55 @@ public function delete(User $user, Post $post): bool
     return redirect()-&gt;route('posts.admin')-&gt;with('success', 'Inlägg raderat!');
 }
 </code></pre>
-<p>Uppdatera <code>resources/views/posts/admin.blade.php</code> – ersätt kommentaren <code>&lt;!-- Radera-knapp kommer i Del 5 --&gt;</code> med ett formulär:</p>
-<pre><code class="language-blade">&lt;form action="{{ route('posts.destroy', $post) }}" method="POST" style="display:inline;"
+<h3 id="steg-32-radera-knapp-i-admin-panelen"><a class="header" href="#steg-32-radera-knapp-i-admin-panelen">Steg 3.2: Radera-knapp i admin-panelen</a></h3>
+<p>Uppdatera <code>resources/views/posts/admin.blade.php</code> – ersätt kommentaren <code>&lt;!-- Radera-knapp kommer i Del 5 --&gt;</code> med:</p>
+<pre><code class="language-blade">&lt;form action="{{ route('posts.destroy', $post) }}" method="POST"
       onsubmit="return confirm('Är du säker på att du vill radera detta inlägg?');"&gt;
     @csrf
-    @method('DELETE')
     &lt;button type="submit"&gt;Radera&lt;/button&gt;
 &lt;/form&gt;
 </code></pre>
-<p>Radering ska ske via <strong>POST</strong> (med <code>@method('DELETE')</code>), inte GET – samma princip som i CRUD-appen. GET ska inte ha sidoeffekter som radering.</p>
-<p><strong>Kontrollera att det fungerar:</strong> Klicka “Radera” på ett inlägg. Du ska få en bekräftelsedialog. Bekräfta – inlägget ska försvinna från listan. Om inlägget hade en bild ska filen också tas bort från <code>storage/app/public/posts/</code>.</p>
+<blockquote>
+<p><strong>Som i CRUD-appen:</strong> I <code>admin/index.php</code> hade du ett POST-formulär med <code>&lt;input type="hidden" name="post_id"&gt;</code>. Här sköter route model binding det – inläggets ID finns redan i URL:en (<code>/admin/posts/3/delete</code>), så du behöver inget dolt fält. <code>@csrf</code> skyddar mot CSRF-attacker (något CRUD-appen saknade).</p>
+</blockquote>
+<p><strong>Kontrollera att det fungerar:</strong> Klicka “Radera” på ett inlägg. Du ska få en bekräftelsedialog. Bekräfta – inlägget ska försvinna från listan.</p>
 <p><img src="kapitel_7/assets/laravel-crud/del-5/del-5-delete-bekraftelse.png" alt="Bekräftelsedialog innan radering av inlägg"></p>
 <hr>
-<h2 id="jämförelse-plain-php-vs-laravel"><a class="header" href="#jämförelse-plain-php-vs-laravel">Jämförelse: Plain PHP vs. Laravel</a></h2>
+<h2 id="jämförelse-vanilla-php-vs-laravel"><a class="header" href="#jämförelse-vanilla-php-vs-laravel">Jämförelse: Vanilla PHP vs. Laravel</a></h2>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>Uppgift</th><th>CRUD-app (plain PHP)</th><th>Laravel</th></tr>
+<tr><th>Uppgift</th><th>CRUD-app (vanilla PHP)</th><th>Laravel</th></tr>
 </thead>
 <tbody>
-<tr><td><strong>Autentisering</strong></td><td>register.php, login.php, logout.php, session-hantering, password_hash</td><td>Laravel Breeze – färdigt</td></tr>
-<tr><td><strong>Skydda admin-sidor</strong></td><td><code>if (!isset($_SESSION['user_id']))</code> i varje fil</td><td><code>Route::middleware('auth')</code></td></tr>
-<tr><td><strong>Databasfrågor</strong></td><td>PDO, prepare, bindParam, fetch</td><td>Eloquent: <code>Post::with('user')-&gt;get()</code></td></tr>
-<tr><td><strong>Hämta ett inlägg</strong></td><td><code>filter_input</code> + <code>get_post_by_id()</code></td><td>Route model binding: <code>show(Post $post)</code></td></tr>
-<tr><td><strong>Validering</strong></td><td>Manuell <code>$errors[]</code>, empty(), filter_var</td><td><code>$request-&gt;validate([...])</code></td></tr>
-<tr><td><strong>Vyer</strong></td><td>PHP och HTML blandat, <code>htmlspecialchars()</code></td><td>Blade: <code>&amp;#123;&amp;#123; $post-&gt;title &amp;#125;&amp;#125;</code> (escapas automatiskt)</td></tr>
-<tr><td><strong>Ägarskap (edit/delete)</strong></td><td><code>$post['user_id'] != $logged_in_user_id</code> i varje fil</td><td>Policy: <code>$this-&gt;authorize('update', $post)</code></td></tr>
-<tr><td><strong>Bilduppladdning</strong></td><td><code>$_FILES</code>, <code>move_uploaded_file()</code>, <code>uniqid()</code>, filtyps-koll</td><td><code>$request-&gt;file()-&gt;store('posts', 'public')</code>, validering <code>'image'</code></td></tr>
+<tr><td><strong>Autentisering</strong></td><td><code>register.php</code>, <code>login.php</code>, <code>logout.php</code>, <code>session_start</code>, <code>password_hash</code></td><td>Laravel Breeze – färdigt</td></tr>
+<tr><td><strong>Skydda admin-sidor</strong></td><td><code>if (!isset($_SESSION['user_id']))</code> i varje fil</td><td><code>Route::middleware('auth')</code> – en rad</td></tr>
+<tr><td><strong>Databasfrågor</strong></td><td>PDO, <code>prepare</code>, <code>bindParam</code>, <code>fetch</code></td><td>Eloquent: <code>Post::with('user')-&gt;get()</code></td></tr>
+<tr><td><strong>Hämta ett inlägg</strong></td><td><code>filter_input</code> + <code>$post_model-&gt;showOne($id)</code></td><td>Route model binding: <code>show(Post $post)</code></td></tr>
+<tr><td><strong>Validering</strong></td><td><code>$errors[]</code>, <code>empty()</code>, <code>filter_var()</code></td><td><code>$request-&gt;validate([...])</code></td></tr>
+<tr><td><strong>Vyer</strong></td><td>PHP och HTML blandat, <code>htmlspecialchars()</code></td><td>Blade: <code>{{ $post-&gt;title }}</code> (escapas automatiskt)</td></tr>
+<tr><td><strong>Ägarskap</strong></td><td><code>$post['user_id'] != $logged_in_user_id</code> i varje fil</td><td>Policy: <code>$this-&gt;authorize('update', $post)</code></td></tr>
+<tr><td><strong>Bilduppladdning</strong></td><td><code>$_FILES</code>, <code>move_uploaded_file()</code>, <code>uniqid()</code></td><td><code>$request-&gt;file()-&gt;store('posts', 'public')</code></td></tr>
 <tr><td><strong>Ta bort bild</strong></td><td><code>file_exists()</code> + <code>unlink()</code></td><td><code>\Storage::disk('public')-&gt;delete($path)</code></td></tr>
-<tr><td><strong>CSRF-skydd</strong></td><td>Inte implementerat i CRUD-appen</td><td><code>@csrf</code> i varje formulär (automatiskt)</td></tr>
-<tr><td><strong>Bild i vy</strong></td><td><code>htmlspecialchars(BASE_URL . '/' . $post['image_path'])</code></td><td><code>asset('storage/' . $post-&gt;image_path)</code></td></tr>
-<tr><td><strong>Formulärdata kvar vid fel</strong></td><td><code>value="&lt;?php echo htmlspecialchars($title); ?&gt;"</code></td><td><code>value="&amp;#123;&amp;#123; old('title') &amp;#125;&amp;#125;"</code> (automatiskt escaped)</td></tr>
-<tr><td><strong>Radera via POST</strong></td><td><code>&lt;form method="post"&gt;</code> med dolt <code>post_id</code>-fält</td><td><code>@method('DELETE')</code> + <code>@csrf</code></td></tr>
+<tr><td><strong>CSRF-skydd</strong></td><td>Inte implementerat</td><td><code>@csrf</code> i varje formulär</td></tr>
+<tr><td><strong>Formulärdata kvar vid fel</strong></td><td><code>value="&lt;?php echo htmlspecialchars($title); ?&gt;"</code></td><td><code>{{ old('title') }}</code> (automatiskt escaped)</td></tr>
+<tr><td><strong>Radera via POST</strong></td><td><code>&lt;form method="post"&gt;</code> med dolt <code>post_id</code>-fält</td><td><code>&lt;form method="POST"&gt;</code> med route model binding</td></tr>
 <tr><td><strong>Sessionsmeddelanden</strong></td><td><code>$_GET['created=success']</code> i URL:en</td><td><code>-&gt;with('success', '...')</code> + <code>session('success')</code></td></tr>
-<tr><td><strong>Modelklass vs PDO</strong></td><td><code>class Post { showOne(), create(), updateOne() }</code> med PDO</td><td><code>class Post extends Model</code> med Eloquent</td></tr>
-<tr><td><strong>Logout</strong></td><td>session_destroy + cookie-radering manuellt</td><td>Breeze POST <code>/logout</code> – automatiskt</td></tr>
 </tbody>
 </table>
 </div>
-<p>I plain PHP skrev du hundratals rader för auth, routing och infrastruktur. I Laravel fokuserar du på applikationslogiken – ramverket löser resten.</p>
+<p>I vanilla PHP skrev du hundratals rader för auth, routing och infrastruktur. I Laravel fokuserar du på applikationslogiken – ramverket löser resten.</p>
 <hr>
 <h2 id="i-denna-del-har-du-lärt-dig-4"><a class="header" href="#i-denna-del-har-du-lärt-dig-4">I denna del har du lärt dig</a></h2>
 <ul>
 <li>Att använda Policies för att centralisera behörighetslogik (ägarskap)</li>
 <li>Att anropa <code>$this-&gt;authorize('update', $post)</code> för att skydda edit/update/delete</li>
-<li>Att använda <code>@method('PUT')</code> och <code>@method('DELETE')</code> i formulär för RESTful routes</li>
 <li>Att uppdatera och radera poster med Eloquent, samt ta bort associerade filer från storage</li>
-<li>Hur CRUD-appens manuella ägarskapskontroll, filhantering och sessionsmeddelanden motsvaras av Laravel-funktioner (Policy, Storage, with()/session())</li>
+<li>Att använda POST-formulär för både uppdatering och radering</li>
+<li>Hur CRUD-appens manuella kod motsvaras av Laravel-funktioner</li>
 </ul>
 <hr>
-<p><strong>Föregående:</strong> <a href="#del-4-skapa-och-läsa-inlägg">Del 4: Skapa och läsa inlägg</a> | <strong>Nästa:</strong> <a href="#sessioner-och-cookies-att-komma-ihåg-användare">Sessioner och cookies</a></p>
+<p><strong>Föregående:</strong> <a href="#del-4-skapa-och-läsa-inlägg">Del 4: Skapa och läsa inlägg</a> | <strong>Nästa:</strong> <a href="sessions.html">Sessioner och cookies</a></p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="sessioner-och-cookies-att-komma-ihåg-användare"><a class="header" href="#sessioner-och-cookies-att-komma-ihåg-användare">Sessioner och Cookies: Att Komma Ihåg Användare</a></h1>
 <p>En av de grundläggande utmaningarna i webbutveckling är att <strong>HTTP (Hypertext Transfer Protocol)</strong>, protokollet som webbläsare och servrar använder för att kommunicera, är <strong>stateless</strong> (tillståndslöst). Varje HTTP-förfrågan (request) från en webbläsare till en server behandlas som en helt oberoende händelse. Servern har inget inbyggt minne av tidigare förfrågningar från samma användare.</p>
@@ -43984,22 +43961,6 @@ $space-lg: 1.5rem;
         <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
         <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
 
-        <!-- Livereload script (if served using the cli tool) -->
-        <script>
-            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
-            const socket = new WebSocket(wsAddress);
-            socket.onmessage = function (event) {
-                if (event.data === "reload") {
-                    socket.close();
-                    location.reload();
-                }
-            };
-
-            window.onbeforeunload = function() {
-                socket.close();
-            }
-        </script>
 
 
         <script>

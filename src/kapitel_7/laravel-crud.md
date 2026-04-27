@@ -1,6 +1,8 @@
-# CRUD-applikation med Laravel
+# CRUD med Laravel
 
-I detta avsnitt bygger vi samma bloggapplikation som i [CRUD-appen](crud-app.md) – men med Laravel. Du får se hur ramverket ersätter mycket av den manuella koden och introducerar nya koncept steg för steg.
+Nu när du har byggt en CRUD-applikation med vanilla PHP vet du hur mycket kod som krävs: `session_start` i varje fil, `require_once` överallt, PDO-frågor utspridda i många sidor, manuell validering med `$errors[]` och `htmlspecialchars()` på varje utskrift.
+
+I detta avsnitt bygger vi samma bloggapplikation igen – men med Laravel. Du kommer att se hur ramverket tar hand om repetitiv kod så att du kan fokusera på applikationens logik. Varje steg refererar tillbaka till motsvarande del i [CRUD-appen](crud-app.md) så att du ser vad Laravel ersätter och förenklar.
 
 **Applikationens funktioner (samma som CRUD-appen):**
 

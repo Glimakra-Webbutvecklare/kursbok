@@ -1,6 +1,8 @@
 # Varför ett ramverk? Introduktion till Laravel
 
-Du har nu byggt en komplett bloggapplikation från grunden med PHP, PDO, sessioner och manuell filhantering. Applikationen fungerar – men tänk tillbaka på vad som krävde mycket upprepning och manuellt arbete. Det är här ett ramverk som Laravel kommer in i bilden.
+Nu när du har byggt en CRUD-applikation med vanilla PHP vet du hur mycket kod som krävs för grundläggande saker: session-kontroll i varje fil, `require_once` överallt, PDO-frågor utspridda, manuell validering med `$errors[]` och `htmlspecialchars()` på varje utskrift. Applikationen fungerar – men mycket av koden handlar om infrastruktur, inte om applikationens logik.
+
+Det är här ett ramverk som Laravel kommer in. I de kommande delarna bygger vi samma bloggapplikation igen, och du får se hur Laravel ersätter mycket av den manuella koden.
 
 **Förutsättning:** Du har genomfört [CRUD-applikationen](crud-app.md) (alla fem delar).
 

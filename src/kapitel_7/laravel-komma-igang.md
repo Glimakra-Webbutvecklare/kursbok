@@ -1,6 +1,6 @@
 # Komma igång med Laravel
 
-I denna del får du ett Laravel-projekt igång och lär dig grundstrukturen. Vi bygger inte hela bloggen ännu – fokus är att förstå hur Laravel är uppbyggt.
+I denna del får du ett Laravel-projekt igång och lär dig grundstrukturen. Vi bygger inte hela bloggen ännu – fokus är att förstå hur Laravel är uppbyggt. Du kommer att känna igen många koncept från [CRUD-appen](crud-app.md) – routing, vyer och databas – men nu hanteras de av ramverket.
 
 **Förutsättning:** Du har läst [Introduktion till Laravel](laravel-intro.md).
 

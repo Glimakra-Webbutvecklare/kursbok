@@ -1,6 +1,6 @@
 # Del 3: Setup och autentisering
 
-I denna del sätter vi upp databasen och autentiseringen med Laravel – motsvarar [Del 1: Setup och databas](crud-app-1-setup.md) och [Del 2: Autentisering](crud-app-2-autentisering.md) i CRUD-appen.
+I denna del sätter vi upp databasen och autentiseringen med Laravel – motsvarar [Del 1: Setup och databas](crud-app-1-setup.md) och [Del 2: Autentisering](crud-app-2-autentisering.md) i CRUD-appen. Du fick skriva all den koden manuellt. Nu får du se hur Laravel hanterar mycket av det automatiskt.
 
 **Förutsättning:** Du har genomfört [Del 2: Komma igång](laravel-komma-igang.md) och har ett fungerande Laravel-projekt.
 

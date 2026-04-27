@@ -8,16 +8,13 @@ I denna del implementerar vi redigering och radering – motsvarar [Del 4: Uppda
 
 ## Steg 1: Policy för ägarskap
 
-**Jämförelse med CRUD-appen:** I CRUD-appens Del 4 skrev du:
-```php
-if ($post['user_id'] != $logged_in_user_id) {
-    $errors[] = "Du har inte behörighet att redigera detta inlägg.";
-    $post = null;
-}
-```
-Du upprepade denna kontroll i varje admin-fil (edit_post.php, delete_post.php). I Laravel samlar du behörighetslogiken i en Policy-klass – en enda plats att uppdatera istället för flera filer.
-
-I CRUD-appen kollade du `$post['user_id'] != $logged_in_user_id` i edit och delete. I Laravel använder vi en **Policy** – en klass som centraliserar behörighetslogik. Användaren får bara redigera och radera sina egna inlägg.
+> **Som i CRUD-appen:** I `edit_post.php` och `delete_post.php` skrev du:
+> ```php
+> if ($post['user_id'] != $logged_in_user_id) {
+>     $errors[] = "Du har inte behörighet att redigera detta inlägg.";
+> }
+> ```
+> Du upprepade denna kontroll i varje admin-fil. I Laravel samlar du behörighetslogiken i en Policy-klass – en enda plats att uppdatera.
 
 Skapa policyn:
 
@@ -28,7 +25,7 @@ php artisan make:policy PostPolicy --model=Post
 **Exempel på utdata:**
 
 ```
-  INFO  Policy [app/Policies/PostPolicy.php] created successfully.
+   INFO  Policy [app/Policies/PostPolicy.php] created successfully.
 ```
 
 Öppna `app/Policies/PostPolicy.php` och uppdatera metoderna `update` och `delete`:
@@ -49,9 +46,11 @@ Laravel registrerar automatiskt policyn för Post-modellen. Vi använder den i n
 
 ---
 
-## Steg 2: Edit-vyn och edit()-metoden
+## Steg 2: Redigera inlägg
 
-Skapa redigeringsformuläret och metoden som visar det.
+Redigering kräver två routes – en för att visa formuläret (GET) och en för att spara ändringar (POST). I CRUD-appen hade du `edit_post.php` som hanterade båda med `$_SERVER['REQUEST_METHOD']`.
+
+### Steg 2.1: Visningsrouten (GET)
 
 Lägg till i `PostController`:
 
@@ -63,7 +62,7 @@ public function edit(Post $post)
 }
 ```
 
-**`$this->authorize('update', $post)`** – Anropar Policy:n. Om användaren inte äger inlägget returneras 403 Forbidden automatiskt. Du behöver inte skriva `if ($user->id !== $post->user_id)` – policyn gör det.
+`$this->authorize('update', $post)` anropar Policy:n. Om användaren inte äger inlägget returneras 403 Forbidden automatiskt.
 
 Skapa `resources/views/posts/edit.blade.php`:
 
@@ -75,16 +74,15 @@ Skapa `resources/views/posts/edit.blade.php`:
 
 <form action="{{ route('posts.update', $post) }}" method="POST" enctype="multipart/form-data">
     @csrf
-    @method('PUT')
     <div>
         <label for="title">Titel:</label>
         <input type="text" id="title" name="title" value="{{ old('title', $post->title) }}" required>
-        @error('title') <span class="text-red-600">{{ $message }}</span> @enderror
+        @error('title') <span style="color:red">{{ $message }}</span> @enderror
     </div>
     <div>
         <label for="body">Innehåll:</label>
         <textarea id="body" name="body" required>{{ old('body', $post->body) }}</textarea>
-        @error('body') <span class="text-red-600">{{ $message }}</span> @enderror
+        @error('body') <span style="color:red">{{ $message }}</span> @enderror
     </div>
     @if($post->image_path)
         <div>
@@ -101,19 +99,19 @@ Skapa `resources/views/posts/edit.blade.php`:
 @endsection
 ```
 
-**OBS:** `@method('PUT')` – HTML-formulär stödjer bara GET och POST. Laravel använder detta dolda fält för att simulera PUT, så routen `Route::put(...)` matchar.
+> **Som i CRUD-appen:** I `edit_post.php` skickade du formuläret till samma sida (`edit_post.php?id=...`) och kollade `$_SERVER['REQUEST_METHOD'] === 'POST'`. I Laravel använder du separata routes: GET visar formuläret, POST sparar ändringen. Du behöver inte lägga in `?id=` i URL:en – route model binding skickar in rätt post automatiskt.
 
-**Jämförelse med CRUD-appen:** I `edit_post.php` skickade du formuläret till samma sida (`edit_post.php?id=...`) och kollade `$_SERVER['REQUEST_METHOD'] === 'POST'`. I Laravel skiljer du på GET (visa formuläret) och PUT (spara ändringar) med separata routes. Dessutom behöver du inte lägga in `?id=` i URL:en – route model binding skickar in rätt post automatiskt.
-
-**Kontrollera att det fungerar:** Gå till `/admin` och klicka "Redigera" på ett inlägg. Du ska se formuläret med befintlig titel och innehåll. Om du försöker redigera ett inlägg som tillhör en annan användare (skapa en annan användare först) ska du få 403 Forbidden.
+> **Notera:** Formuläret använder `method="POST"` – samma metod som i CRUD-appen. I standard Laravel används `@method('PUT')` för edit-formulär, men vi håller oss till POST för att minimera nya koncept.
 
 ![Redigeringsformuläret](./assets/laravel-crud/del-5/del-5-edit-formular.png)
 
+**Kontrollera att det fungerar:** Gå till `/admin` och klicka "Redigera" på ett inlägg. Du ska se formuläret med befintlig titel och innehåll. Om du försöker redigera ett inlägg som tillhör en annan användare ska du få 403 Forbidden.
+
 ---
 
-## Steg 3: update()-metoden
+### Steg 2.2: Spararouten (POST)
 
-Lägg till `update()` i PostController så att ändringar sparas:
+Lägg till `update()` i PostController:
 
 ```php
 public function update(Request $request, Post $post)
@@ -147,13 +145,17 @@ public function update(Request $request, Post $post)
 }
 ```
 
-**Jämförelse med CRUD-appen – bildhantering vid redigering:** I CRUD-appens `edit_post.php` skrev du ~50 rader för att hantera tre fall (behålla, ta bort, ersätta bild): `isset($_POST['delete_image'])`, `$_FILES['image']`, `file_exists()`, `unlink()`, `move_uploaded_file()` och städning vid databasfel. I Laravel gör `\Storage::disk('public')->delete($path)` samma sak som `unlink(UPLOAD_PATH . basename($path))`, och `$request->file('image')->store()` ersätter `move_uploaded_file()`. Validering av filtyp/storlek sköts av `'image' => 'nullable|image|max:5120'` i `$request->validate()`.
+> **Som i CRUD-appen – bildhantering:** I `edit_post.php` skrev du ~50 rader för att hantera tre fall (behålla, ta bort, ersätta bild): `isset($_POST['delete_image'])`, `$_FILES['image']`, `file_exists()`, `unlink()`, `move_uploaded_file()` och städning vid databasfel. I Laravel gör `\Storage::disk('public')->delete($path)` samma sak som `unlink(UPLOAD_PATH . basename($path))`, och `$request->file('image')->store()` ersätter `move_uploaded_file()`.
 
 ---
 
-## Steg 4: destroy() och radera-knapp
+## Steg 3: Radera inlägg
 
-Lägg till `destroy()` i PostController:
+> **Som i CRUD-appen:** I `delete_post.php` skickade du ett POST-formulär med ett dolt `post_id`-fält. Här gör vi samma sak – men Laravel hämtar rätt inlägg via route model binding istället för `$_POST['post_id']`.
+
+### Steg 3.1: destroy()-metoden
+
+Lägg till i `PostController`:
 
 ```php
 public function destroy(Post $post)
@@ -167,47 +169,45 @@ public function destroy(Post $post)
 }
 ```
 
-Uppdatera `resources/views/posts/admin.blade.php` – ersätt kommentaren `<!-- Radera-knapp kommer i Del 5 -->` med ett formulär:
+### Steg 3.2: Radera-knapp i admin-panelen
+
+Uppdatera `resources/views/posts/admin.blade.php` – ersätt kommentaren `<!-- Radera-knapp kommer i Del 5 -->` med:
 
 ```blade
-<form action="{{ route('posts.destroy', $post) }}" method="POST" style="display:inline;"
+<form action="{{ route('posts.destroy', $post) }}" method="POST"
       onsubmit="return confirm('Är du säker på att du vill radera detta inlägg?');">
     @csrf
-    @method('DELETE')
     <button type="submit">Radera</button>
 </form>
 ```
 
-Radering ska ske via **POST** (med `@method('DELETE')`), inte GET – samma princip som i CRUD-appen. GET ska inte ha sidoeffekter som radering.
+> **Som i CRUD-appen:** I `admin/index.php` hade du ett POST-formulär med `<input type="hidden" name="post_id">`. Här sköter route model binding det – inläggets ID finns redan i URL:en (`/admin/posts/3/delete`), så du behöver inget dolt fält. `@csrf` skyddar mot CSRF-attacker (något CRUD-appen saknade).
 
-**Kontrollera att det fungerar:** Klicka "Radera" på ett inlägg. Du ska få en bekräftelsedialog. Bekräfta – inlägget ska försvinna från listan. Om inlägget hade en bild ska filen också tas bort från `storage/app/public/posts/`.
+**Kontrollera att det fungerar:** Klicka "Radera" på ett inlägg. Du ska få en bekräftelsedialog. Bekräfta – inlägget ska försvinna från listan.
 
 ![Bekräftelsedialog innan radering av inlägg](./assets/laravel-crud/del-5/del-5-delete-bekraftelse.png)
 
 ---
 
-## Jämförelse: Plain PHP vs. Laravel
+## Jämförelse: Vanilla PHP vs. Laravel
 
-| Uppgift | CRUD-app (plain PHP) | Laravel |
+| Uppgift | CRUD-app (vanilla PHP) | Laravel |
 |---------|----------------------|---------|
-| **Autentisering** | register.php, login.php, logout.php, session-hantering, password_hash | Laravel Breeze – färdigt |
-| **Skydda admin-sidor** | `if (!isset($_SESSION['user_id']))` i varje fil | `Route::middleware('auth')` |
-| **Databasfrågor** | PDO, prepare, bindParam, fetch | Eloquent: `Post::with('user')->get()` |
-| **Hämta ett inlägg** | `filter_input` + `get_post_by_id()` | Route model binding: `show(Post $post)` |
-| **Validering** | Manuell `$errors[]`, empty(), filter_var | `$request->validate([...])` |
-| **Vyer** | PHP och HTML blandat, `htmlspecialchars()` | Blade: `&#123;&#123; $post->title &#125;&#125;` (escapas automatiskt) |
-| **Ägarskap (edit/delete)** | `$post['user_id'] != $logged_in_user_id` i varje fil | Policy: `$this->authorize('update', $post)` |
-| **Bilduppladdning** | `$_FILES`, `move_uploaded_file()`, `uniqid()`, filtyps-koll | `$request->file()->store('posts', 'public')`, validering `'image'` |
+| **Autentisering** | `register.php`, `login.php`, `logout.php`, `session_start`, `password_hash` | Laravel Breeze – färdigt |
+| **Skydda admin-sidor** | `if (!isset($_SESSION['user_id']))` i varje fil | `Route::middleware('auth')` – en rad |
+| **Databasfrågor** | PDO, `prepare`, `bindParam`, `fetch` | Eloquent: `Post::with('user')->get()` |
+| **Hämta ett inlägg** | `filter_input` + `$post_model->showOne($id)` | Route model binding: `show(Post $post)` |
+| **Validering** | `$errors[]`, `empty()`, `filter_var()` | `$request->validate([...])` |
+| **Vyer** | PHP och HTML blandat, `htmlspecialchars()` | Blade: `{{ $post->title }}` (escapas automatiskt) |
+| **Ägarskap** | `$post['user_id'] != $logged_in_user_id` i varje fil | Policy: `$this->authorize('update', $post)` |
+| **Bilduppladdning** | `$_FILES`, `move_uploaded_file()`, `uniqid()` | `$request->file()->store('posts', 'public')` |
 | **Ta bort bild** | `file_exists()` + `unlink()` | `\Storage::disk('public')->delete($path)` |
-| **CSRF-skydd** | Inte implementerat i CRUD-appen | `@csrf` i varje formulär (automatiskt) |
-| **Bild i vy** | `htmlspecialchars(BASE_URL . '/' . $post['image_path'])` | `asset('storage/' . $post->image_path)` |
-| **Formulärdata kvar vid fel** | `value="<?php echo htmlspecialchars($title); ?>"` | `value="&#123;&#123; old('title') &#125;&#125;"` (automatiskt escaped) |
-| **Radera via POST** | `<form method="post">` med dolt `post_id`-fält | `@method('DELETE')` + `@csrf` |
+| **CSRF-skydd** | Inte implementerat | `@csrf` i varje formulär |
+| **Formulärdata kvar vid fel** | `value="<?php echo htmlspecialchars($title); ?>"` | `{{ old('title') }}` (automatiskt escaped) |
+| **Radera via POST** | `<form method="post">` med dolt `post_id`-fält | `<form method="POST">` med route model binding |
 | **Sessionsmeddelanden** | `$_GET['created=success']` i URL:en | `->with('success', '...')` + `session('success')` |
-| **Modelklass vs PDO** | `class Post { showOne(), create(), updateOne() }` med PDO | `class Post extends Model` med Eloquent |
-| **Logout** | session_destroy + cookie-radering manuellt | Breeze POST `/logout` – automatiskt |
 
-I plain PHP skrev du hundratals rader för auth, routing och infrastruktur. I Laravel fokuserar du på applikationslogiken – ramverket löser resten.
+I vanilla PHP skrev du hundratals rader för auth, routing och infrastruktur. I Laravel fokuserar du på applikationslogiken – ramverket löser resten.
 
 ---
 
@@ -215,10 +215,10 @@ I plain PHP skrev du hundratals rader för auth, routing och infrastruktur. I La
 
 *   Att använda Policies för att centralisera behörighetslogik (ägarskap)
 *   Att anropa `$this->authorize('update', $post)` för att skydda edit/update/delete
-*   Att använda `@method('PUT')` och `@method('DELETE')` i formulär för RESTful routes
 *   Att uppdatera och radera poster med Eloquent, samt ta bort associerade filer från storage
-*   Hur CRUD-appens manuella ägarskapskontroll, filhantering och sessionsmeddelanden motsvaras av Laravel-funktioner (Policy, Storage, with()/session())
+*   Att använda POST-formulär för både uppdatering och radering
+*   Hur CRUD-appens manuella kod motsvaras av Laravel-funktioner
 
 ---
 
-**Föregående:** [Del 4: Skapa och läsa inlägg](laravel-crud-4-create-read.md) | **Nästa:** [Sessioner och cookies](sessions.md)
+**Föregående:** [Del 4: Skapa och läsa inlägg](laravel-crud-4-create-read.md) | **Nästa:** [Sessioner och cookies](../sessions.md)
