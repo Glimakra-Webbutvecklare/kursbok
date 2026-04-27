@@ -32,7 +32,7 @@ Du behöver inte uppfinna var saker ska ligga. Laravel har en tydlig struktur: C
 ### Inbyggd säkerhet
 
 *   **CSRF:** Laravel genererar och validerar automatiskt tokens för formulär – skyddar mot Cross-Site Request Forgery.
-*   **XSS:** Blade-mallar escap:ar utdata som standard (`{{ $variabel }}`).
+*   **XSS:** Blade-mallar escap:ar utdata som standard (`&#123;&#123; $variabel &#125;&#125;`).
 *   **SQL injection:** Eloquent (Laravels ORM) använder prepared statements under huven.
 
 Du behöver inte komma ihåg dessa saker varje gång – ramverket gör dem åt dig.

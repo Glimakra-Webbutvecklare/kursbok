@@ -12,40 +12,52 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
-        <link rel="icon" href="../favicon.svg">
-        <link rel="shortcut icon" href="../favicon.png">
-        <link rel="stylesheet" href="../css/variables.css">
-        <link rel="stylesheet" href="../css/general.css">
-        <link rel="stylesheet" href="../css/chrome.css">
-        <link rel="stylesheet" href="../css/print.css" media="print">
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
-        <link rel="stylesheet" href="../fonts/fonts.css">
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" href="../highlight.css">
-        <link rel="stylesheet" href="../tomorrow-night.css">
-        <link rel="stylesheet" href="../ayu-highlight.css">
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
 
         <!-- Custom theme stylesheets -->
 
 
-        <!-- Provide site root to javascript -->
+        <!-- Provide site root and default themes to javascript -->
         <script>
-            var path_to_root = "../";
-            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-85e3c6c1.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc.js"></script>
+        <script src="../toc-feb7936f.js"></script>
     </head>
     <body>
-    <div id="body-container">
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
             try {
-                var theme = localStorage.getItem('mdbook-theme');
-                var sidebar = localStorage.getItem('mdbook-sidebar');
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
 
                 if (theme.startsWith('"') && theme.endsWith('"')) {
                     localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
@@ -59,7 +71,8 @@
 
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script>
-            var theme;
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
             const html = document.documentElement;
@@ -68,55 +81,59 @@
             html.classList.add("js");
         </script>
 
-        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
-            var sidebar = null;
-            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
+                sidebar_toggle.checked = false;
             }
-            sidebar_toggle.checked = sidebar === 'visible';
-            html.classList.remove('sidebar-visible');
-            html.classList.add("sidebar-" + sidebar);
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
         </script>
 
-        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
             <!-- populated by js -->
             <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
             <noscript>
                 <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
             </noscript>
-            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
             </div>
         </nav>
 
-        <div id="page-wrapper" class="page-wrapper">
+        <div id="mdbook-page-wrapper" class="page-wrapper">
 
             <div class="page">
-                <div id="menu-bar-hover-placeholder"></div>
-                <div id="menu-bar" class="menu-bar sticky">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
-                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
-                            <i class="fa fa-bars"></i>
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
                         </label>
-                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
-                            <i class="fa fa-paint-brush"></i>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
                         </button>
-                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
-                            <i class="fa fa-search"></i>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
                         </button>
                     </div>
 
@@ -124,47 +141,50 @@
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
-                            <i id="print-button" class="fa fa-print"></i>
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
                         </a>
 
                     </div>
                 </div>
 
-                <div id="search-wrapper" class="hidden">
-                    <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
                     </form>
-                    <div id="searchresults-outer" class="searchresults-outer hidden">
-                        <div id="searchresults-header" class="searchresults-header"></div>
-                        <ul id="searchresults">
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
                         </ul>
                     </div>
                 </div>
 
                 <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
                 <script>
-                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
-                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
-                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
                         link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
                     });
                 </script>
 
-                <div id="content" class="content">
+                <div id="mdbook-content" class="content">
                     <main>
                         <h1 id="praktiska-övningar-javascript-och-interaktivitet"><a class="header" href="#praktiska-övningar-javascript-och-interaktivitet">Praktiska övningar: JavaScript och interaktivitet</a></h1>
 <p>Att läsa teori är viktigt, men det är genom att skriva och testa kod som du verkligen lär dig JavaScript. Här hittar du övningar som hjälper dig att befästa kunskaperna från kapitlet om JavaScript, DOM-manipulation och händelser.</p>
 <blockquote>
-<p><strong>Mål:</strong><br />
-Träna på att använda JavaScript för att skapa interaktivitet, manipulera DOM och hantera händelser på webbsidor.</p>
+<p><strong>Mål:</strong><br>Träna på att använda JavaScript för att skapa interaktivitet, manipulera DOM och hantera händelser på webbsidor.</p>
 </blockquote>
-<p><strong>Förutsättningar:</strong><br />
-Du har en HTML-fil att arbeta med och kan lägga till eller länka en JavaScript-fil. Du kan öppna sidan i en webbläsare och se resultatet av din kod.</p>
-<hr />
-<h2 id="Övning-1-skriv-ut-meddelande-i-konsolen"><a class="header" href="#Övning-1-skriv-ut-meddelande-i-konsolen">Övning 1: Skriv ut meddelande i konsolen</a></h2>
+<p><strong>Förutsättningar:</strong><br>Du har en HTML-fil att arbeta med och kan lägga till eller länka en JavaScript-fil. Du kan öppna sidan i en webbläsare och se resultatet av din kod.</p>
+<hr>
+<h2 id="övning-1-skriv-ut-meddelande-i-konsolen"><a class="header" href="#övning-1-skriv-ut-meddelande-i-konsolen">Övning 1: Skriv ut meddelande i konsolen</a></h2>
 <ol>
 <li>Skapa en fil <code>script.js</code> och koppla den till din HTML-fil med <code>&lt;script src="script.js"&gt;&lt;/script&gt;</code>.</li>
-<li>Skriv kod som skriver ut "Hello, JavaScript!" i webbläsarens konsol.</li>
+<li>Skriv kod som skriver ut “Hello, JavaScript!” i webbläsarens konsol.</li>
 <li>Öppna webbsidan och kontrollera i konsolen (F12) att meddelandet syns.</li>
 </ol>
 <details>
@@ -191,15 +211,15 @@ console.log("Hello, JavaScript!");
 <ul>
 <li><code>&lt;script src="script.js"&gt;&lt;/script&gt;</code> läser in JavaScript-filen när sidan laddas</li>
 <li><code>console.log()</code> är en funktion som skriver ut text i webbläsarens konsol</li>
-<li>Öppna konsolen med F12 (eller högerklicka → "Inspektera" → fliken "Console")</li>
-<li>Meddelandet "Hello, JavaScript!" kommer att synas i konsolen när sidan laddas</li>
+<li>Öppna konsolen med F12 (eller högerklicka → “Inspektera” → fliken “Console”)</li>
+<li>Meddelandet “Hello, JavaScript!” kommer att synas i konsolen när sidan laddas</li>
 </ul>
 </details>
-<hr />
-<h2 id="Övning-2-Ändra-text-på-sidan-med-javascript"><a class="header" href="#Övning-2-Ändra-text-på-sidan-med-javascript">Övning 2: Ändra text på sidan med JavaScript</a></h2>
+<hr>
+<h2 id="övning-2-ändra-text-på-sidan-med-javascript"><a class="header" href="#övning-2-ändra-text-på-sidan-med-javascript">Övning 2: Ändra text på sidan med JavaScript</a></h2>
 <ol>
 <li>Lägg till ett element i din HTML, t.ex. <code>&lt;p id="message"&gt;Detta ska ändras&lt;/p&gt;</code>.</li>
-<li>Skriv JavaScript som ändrar texten i paragrafen till "Texten är nu ändrad!" när sidan laddas.</li>
+<li>Skriv JavaScript som ändrar texten i paragrafen till “Texten är nu ändrad!” när sidan laddas.</li>
 </ol>
 <details>
 <summary>Lösningsförslag</summary>
@@ -227,15 +247,15 @@ messageElement.textContent = "Texten är nu ändrad!";
 </code></pre>
 <p><strong>Förklaring:</strong></p>
 <ul>
-<li><code>document.getElementById("message")</code> hämtar elementet med id="message" från sidan</li>
+<li><code>document.getElementById("message")</code> hämtar elementet med id=“message” från sidan</li>
 <li>Resultatet sparas i variabeln <code>messageElement</code></li>
 <li><code>textContent</code> är en egenskap som innehåller texten i elementet</li>
 <li>Genom att sätta <code>textContent = "Texten är nu ändrad!"</code> ändras texten i paragrafen</li>
 <li>Koden körs när sidan laddas eftersom script-taggen är längst ner i body</li>
 </ul>
 </details>
-<hr />
-<h2 id="Övning-3-byt-färg-på-ett-element-vid-knapptryck"><a class="header" href="#Övning-3-byt-färg-på-ett-element-vid-knapptryck">Övning 3: Byt färg på ett element vid knapptryck</a></h2>
+<hr>
+<h2 id="övning-3-byt-färg-på-ett-element-vid-knapptryck"><a class="header" href="#övning-3-byt-färg-på-ett-element-vid-knapptryck">Övning 3: Byt färg på ett element vid knapptryck</a></h2>
 <ol>
 <li>Lägg till en knapp: <code>&lt;button id="colorBtn"&gt;Byt färg&lt;/button&gt;</code> och ett text-element: <code>&lt;p id="colorText"&gt;Färgtest&lt;/p&gt;</code>.</li>
 <li>Skriv JavaScript som gör att texten i <code>colorText</code> byter färg (t.ex. till blå) när du klickar på knappen.</li>
@@ -277,11 +297,11 @@ colorBtn.addEventListener("click", function() {
 <li><code>addEventListener("click", function() {...})</code> lägger till en lyssnare som väntar på klick</li>
 <li>När knappen klickas, körs funktionen inuti <code>addEventListener</code></li>
 <li><code>style.color</code> ändrar textfärgen på elementet</li>
-<li>"blue" är en CSS-färg (kan också vara hex-kod som "#0000ff" eller rgb som "rgb(0, 0, 255)")</li>
+<li>“blue” är en CSS-färg (kan också vara hex-kod som “#0000ff” eller rgb som “rgb(0, 0, 255)”)</li>
 </ul>
 </details>
-<hr />
-<h2 id="Övning-4-lägg-till-nya-element-i-dom"><a class="header" href="#Övning-4-lägg-till-nya-element-i-dom">Övning 4: Lägg till nya element i DOM</a></h2>
+<hr>
+<h2 id="övning-4-lägg-till-nya-element-i-dom"><a class="header" href="#övning-4-lägg-till-nya-element-i-dom">Övning 4: Lägg till nya element i DOM</a></h2>
 <ol>
 <li>Lägg till en tom lista i HTML: <code>&lt;ul id="myList"&gt;&lt;/ul&gt;</code> och en knapp: <code>&lt;button id="addBtn"&gt;Lägg till punkt&lt;/button&gt;</code>.</li>
 <li>Skriv JavaScript som lägger till ett nytt <code>&lt;li&gt;</code>-element med valfri text i listan varje gång du klickar på knappen.</li>
@@ -337,8 +357,8 @@ addBtn.addEventListener("click", function() {
 <li>Varje gång knappen klickas, skapas ett nytt element och läggs till i listan</li>
 </ul>
 </details>
-<hr />
-<h2 id="Övning-5-enkel-räknare"><a class="header" href="#Övning-5-enkel-räknare">Övning 5: Enkel räknare</a></h2>
+<hr>
+<h2 id="övning-5-enkel-räknare"><a class="header" href="#övning-5-enkel-räknare">Övning 5: Enkel räknare</a></h2>
 <ol>
 <li>Lägg till en knapp: <code>&lt;button id="countBtn"&gt;Räkna&lt;/button&gt;</code> och ett element för att visa räknaren: <code>&lt;span id="counter"&gt;0&lt;/span&gt;</code>.</li>
 <li>Skriv JavaScript som ökar värdet i <code>counter</code> med 1 varje gång du klickar på knappen.</li>
@@ -388,8 +408,8 @@ countBtn.addEventListener("click", function() {
 <li>Variabeln <code>count</code> behåller sitt värde mellan klick eftersom den är deklarerad utanför funktionen</li>
 </ul>
 </details>
-<hr />
-<h2 id="Övning-6-formulär-och-validering"><a class="header" href="#Övning-6-formulär-och-validering">Övning 6: Formulär och validering</a></h2>
+<hr>
+<h2 id="övning-6-formulär-och-validering"><a class="header" href="#övning-6-formulär-och-validering">Övning 6: Formulär och validering</a></h2>
 <ol>
 <li>Lägg till ett enkelt formulär i HTML:
 <pre><code class="language-html">&lt;form id="myForm"&gt;
@@ -403,7 +423,7 @@ countBtn.addEventListener("click", function() {
 <ul>
 <li>Förhindrar att sidan laddas om när formuläret skickas.</li>
 <li>Läser av värdet i <code>nameInput</code>.</li>
-<li>Skriver ut ett meddelande i <code>formMessage</code>, t.ex. "Hej, [namn]!", om fältet inte är tomt. Om det är tomt, visa ett felmeddelande.</li>
+<li>Skriver ut ett meddelande i <code>formMessage</code>, t.ex. “Hej, [namn]!”, om fältet inte är tomt. Om det är tomt, visa ett felmeddelande.</li>
 </ul>
 </li>
 </ol>
@@ -467,9 +487,9 @@ myForm.addEventListener("submit", function(event) {
 <li><code>style.color</code> ändrar textfärgen på meddelandet</li>
 </ul>
 </details>
-<hr />
-<h2 id="Övning-7-enkel-funktion"><a class="header" href="#Övning-7-enkel-funktion">Övning 7: Enkel funktion</a></h2>
-<p>Skapa en funktion <code>createProduct</code> som tar emot ett namn och pris som parameter och skriver ut "Detta är: [productName]! Den kostar [price] SEK." i konsolen. Anropa funktionen med eget produktnamn och pris.</p>
+<hr>
+<h2 id="övning-7-enkel-funktion"><a class="header" href="#övning-7-enkel-funktion">Övning 7: Enkel funktion</a></h2>
+<p>Skapa en funktion <code>createProduct</code> som tar emot ett namn och pris som parameter och skriver ut “Detta är: [productName]! Den kostar [price] SEK.” i konsolen. Anropa funktionen med eget produktnamn och pris.</p>
 <details>
 <summary>Lösningsförslag</summary>
 <pre><code class="language-javascript">// Skapar en funktion som heter greet och tar emot en parameter 'name'
@@ -487,11 +507,11 @@ createProduct("Tesla Model S", 120000);
 <ul>
 <li><code>function createProduct(productName, price)</code> deklarerar en funktion med namnet <code>createProduct</code> som tar en parameter <code>productName</code> och <code>price</code></li>
 <li>Inuti funktionen används <code>console.log()</code> för att skriva ut meddelandet</li>
-<li>Funktionen anropas genom att skriva <code>createProduct("iPhone 13 Pro", 7500)</code> där "iPhone 13 Pro" och 7500 är argumenten som skickas in</li>
+<li>Funktionen anropas genom att skriva <code>createProduct("iPhone 13 Pro", 7500)</code> där “iPhone 13 Pro” och 7500 är argumenten som skickas in</li>
 </ul>
 </details>
-<hr />
-<h2 id="Övning-8-funktion-med-return"><a class="header" href="#Övning-8-funktion-med-return">Övning 8: Funktion med return</a></h2>
+<hr>
+<h2 id="övning-8-funktion-med-return"><a class="header" href="#övning-8-funktion-med-return">Övning 8: Funktion med return</a></h2>
 <p>Skapa en funktion <code>getDiscountedPrice</code> som tar två tal som parametrar och returnerar deras produkt. Använd funktionen för att beräkna 500 × 0.7 (70% rabatt) och skriv ut resultatet i konsolen.</p>
 <details>
 <summary>Lösningsförslag</summary>
@@ -515,12 +535,12 @@ console.log(newPrice); // Skriver ut: 350
 <li>Det returnerade värdet kan sparas i en variabel eller användas direkt</li>
 </ul>
 </details>
-<hr />
-<h2 id="Övning-9-if-else-med-ålder"><a class="header" href="#Övning-9-if-else-med-ålder">Övning 9: If-else med ålder</a></h2>
+<hr>
+<h2 id="övning-9-if-else-med-ålder"><a class="header" href="#övning-9-if-else-med-ålder">Övning 9: If-else med ålder</a></h2>
 <p>Skapa en variabel <code>age</code> med ett värde. Skriv en if-else-sats som:</p>
 <ul>
-<li>Skriver ut "Du är myndig" om åldern är 18 eller högre</li>
-<li>Skriver ut "Du är inte myndig" om åldern är under 18</li>
+<li>Skriver ut “Du är myndig” om åldern är 18 eller högre</li>
+<li>Skriver ut “Du är inte myndig” om åldern är under 18</li>
 </ul>
 <p>Testa med olika värden på <code>age</code>.</p>
 <details>
@@ -547,18 +567,18 @@ if (age &gt;= 18) {
 <li><code>age &gt;= 18</code> är ett villkor som kontrollerar om åldern är större än eller lika med 18</li>
 <li>Om villkoret är <code>true</code>, körs koden i if-blocket</li>
 <li>Om villkoret är <code>false</code>, körs koden i else-blocket</li>
-<li><code>&gt;=</code> betyder "större än eller lika med"</li>
+<li><code>&gt;=</code> betyder “större än eller lika med”</li>
 </ul>
 </details>
-<hr />
-<h2 id="Övning-10-if-else-if-med-betyg"><a class="header" href="#Övning-10-if-else-if-med-betyg">Övning 10: If-else-if med betyg</a></h2>
+<hr>
+<h2 id="övning-10-if-else-if-med-betyg"><a class="header" href="#övning-10-if-else-if-med-betyg">Övning 10: If-else-if med betyg</a></h2>
 <p>Skapa en variabel <code>score</code> med ett värde mellan 0 och 100. Skriv en if-else-if-sats som ger betyg baserat på poängen:</p>
 <ul>
-<li>90-100: "A"</li>
-<li>80-89: "B"</li>
-<li>70-79: "C"</li>
-<li>60-69: "D"</li>
-<li>Under 60: "F"</li>
+<li>90-100: “A”</li>
+<li>80-89: “B”</li>
+<li>70-79: “C”</li>
+<li>60-69: “D”</li>
+<li>Under 60: “F”</li>
 </ul>
 <p>Skriv ut betyget i konsolen.</p>
 <details>
@@ -599,8 +619,8 @@ if (score &gt;= 90) {
 <li><code>else</code> är sista alternativet om inget av villkoren är sanna</li>
 </ul>
 </details>
-<hr />
-<h2 id="Övning-11-for-loop-med-räkning"><a class="header" href="#Övning-11-for-loop-med-räkning">Övning 11: For-loop med räkning</a></h2>
+<hr>
+<h2 id="övning-11-for-loop-med-räkning"><a class="header" href="#övning-11-for-loop-med-räkning">Övning 11: For-loop med räkning</a></h2>
 <p>Använd en for-loop för att skriva ut talen 1 till 10 i konsolen.</p>
 <details>
 <summary>Lösningsförslag</summary>
@@ -630,9 +650,9 @@ for (let i = 1; i &lt;= 10; i++) {
 <li><code>console.log(i)</code> - Körs för varje varv och skriver ut värdet av i</li>
 </ul>
 </details>
-<hr />
-<h2 id="Övning-12-for-loop-med-array"><a class="header" href="#Övning-12-for-loop-med-array">Övning 12: For-loop med array</a></h2>
-<p>Skapa en array med namn: <code>["Anna", "Erik", "Sara", "Lars"]</code>. Använd en for-loop för att skriva ut varje namn i konsolen med texten "Hej, [namn]!".</p>
+<hr>
+<h2 id="övning-12-for-loop-med-array"><a class="header" href="#övning-12-for-loop-med-array">Övning 12: For-loop med array</a></h2>
+<p>Skapa en array med namn: <code>["Anna", "Erik", "Sara", "Lars"]</code>. Använd en for-loop för att skriva ut varje namn i konsolen med texten “Hej, [namn]!”.</p>
 <details>
 <summary>Lösningsförslag</summary>
 <pre><code class="language-javascript">// Skapar en array med namn
@@ -655,12 +675,12 @@ for (let i = 0; i &lt; names.length; i++) {
 <li><code>names.length</code> ger antalet element i arrayen (4 i detta fall)</li>
 <li><code>i &lt; names.length</code> betyder att loopen går från 0 till 3 (index 0, 1, 2, 3)</li>
 <li><code>names[i]</code> hämtar elementet på position i i arrayen</li>
-<li>Första varvet: i=0, names[0] = "Anna"</li>
-<li>Andra varvet: i=1, names[1] = "Erik", osv.</li>
+<li>Första varvet: i=0, names[0] = “Anna”</li>
+<li>Andra varvet: i=1, names[1] = “Erik”, osv.</li>
 </ul>
 </details>
-<hr />
-<h2 id="Övning-13-while-loop"><a class="header" href="#Övning-13-while-loop">Övning 13: While-loop</a></h2>
+<hr>
+<h2 id="övning-13-while-loop"><a class="header" href="#övning-13-while-loop">Övning 13: While-loop</a></h2>
 <p>Använd en while-loop för att räkna ner från 10 till 1 och skriva ut varje tal i konsolen.</p>
 <details>
 <summary>Lösningsförslag</summary>
@@ -696,14 +716,14 @@ while (count &gt;= 1) {
 <li>Viktigt: Utan <code>count--</code> skulle loopen köra för evigt (oändlig loop)!</li>
 </ul>
 </details>
-<hr />
-<h2 id="Övning-14-switch-med-veckodagar"><a class="header" href="#Övning-14-switch-med-veckodagar">Övning 14: Switch med veckodagar</a></h2>
-<p>Skapa en variabel <code>day</code> med en veckodag (t.ex. "måndag", "tisdag", etc.). Använd en switch-sats som skriver ut olika meddelanden beroende på vilken dag det är:</p>
+<hr>
+<h2 id="övning-14-switch-med-veckodagar"><a class="header" href="#övning-14-switch-med-veckodagar">Övning 14: Switch med veckodagar</a></h2>
+<p>Skapa en variabel <code>day</code> med en veckodag (t.ex. “måndag”, “tisdag”, etc.). Använd en switch-sats som skriver ut olika meddelanden beroende på vilken dag det är:</p>
 <ul>
-<li>"måndag": "Ny vecka börjar!"</li>
-<li>"fredag": "Snart helg!"</li>
-<li>"lördag" eller "söndag": "Helg!"</li>
-<li>Annat: "Vardag"</li>
+<li>“måndag”: “Ny vecka börjar!”</li>
+<li>“fredag”: “Snart helg!”</li>
+<li>“lördag” eller “söndag”: “Helg!”</li>
+<li>Annat: “Vardag”</li>
 </ul>
 <details>
 <summary>Lösningsförslag</summary>
@@ -742,19 +762,19 @@ switch (day) {
 <p><strong>Förklaring:</strong></p>
 <ul>
 <li><code>switch (day)</code> kontrollerar värdet på variabeln <code>day</code></li>
-<li><code>case "måndag":</code> matchar om day är exakt "måndag"</li>
+<li><code>case "måndag":</code> matchar om day är exakt “måndag”</li>
 <li><code>break;</code> avbryter switch-satsen så att inga fler case körs</li>
 <li>Flera case kan köra samma kod genom att hoppa över break (fall-through)</li>
 <li><code>default:</code> körs om inget case matchar</li>
 </ul>
 </details>
-<hr />
-<h2 id="Övning-15-kombinera-funktion-och-if-else"><a class="header" href="#Övning-15-kombinera-funktion-och-if-else">Övning 15: Kombinera funktion och if-else</a></h2>
+<hr>
+<h2 id="övning-15-kombinera-funktion-och-if-else"><a class="header" href="#övning-15-kombinera-funktion-och-if-else">Övning 15: Kombinera funktion och if-else</a></h2>
 <p>Skapa en funktion <code>checkNumber</code> som tar ett tal som parameter. Funktionen ska:</p>
 <ul>
-<li>Returnera "Positivt" om talet är större än 0</li>
-<li>Returnera "Negativt" om talet är mindre än 0</li>
-<li>Returnera "Noll" om talet är 0</li>
+<li>Returnera “Positivt” om talet är större än 0</li>
+<li>Returnera “Negativt” om talet är mindre än 0</li>
+<li>Returnera “Noll” om talet är 0</li>
 </ul>
 <p>Testa funktionen med olika tal och skriv ut resultatet.</p>
 <details>
@@ -789,8 +809,8 @@ console.log(checkNumber(0));    // Skriver ut: "Noll"
 <li><code>return</code> skickar tillbaka resultatet till den som anropade funktionen</li>
 </ul>
 </details>
-<hr />
-<h2 id="Övning-16-funktion-med-loop"><a class="header" href="#Övning-16-funktion-med-loop">Övning 16: Funktion med loop</a></h2>
+<hr>
+<h2 id="övning-16-funktion-med-loop"><a class="header" href="#övning-16-funktion-med-loop">Övning 16: Funktion med loop</a></h2>
 <p>Skapa en funktion <code>printNumbers</code> som tar två parametrar: <code>start</code> och <code>end</code>. Funktionen ska använda en for-loop för att skriva ut alla tal från <code>start</code> till <code>end</code> (inklusive båda) i konsolen.</p>
 <p>Anropa funktionen med <code>printNumbers(5, 10)</code> och kontrollera att den skriver ut 5, 6, 7, 8, 9, 10.</p>
 <details>
@@ -824,12 +844,12 @@ printNumbers(5, 10);
 <li>Funktionen kan användas med vilka tal som helst: <code>printNumbers(1, 5)</code> eller <code>printNumbers(10, 15)</code></li>
 </ul>
 </details>
-<hr />
-<h2 id="Övning-17-loop-med-if-else"><a class="header" href="#Övning-17-loop-med-if-else">Övning 17: Loop med if-else</a></h2>
+<hr>
+<h2 id="övning-17-loop-med-if-else"><a class="header" href="#övning-17-loop-med-if-else">Övning 17: Loop med if-else</a></h2>
 <p>Skapa en for-loop som går från 1 till 20. För varje tal ska du:</p>
 <ul>
-<li>Skriva ut "Jämnt" om talet är jämnt</li>
-<li>Skriva ut "Udda" om talet är udda</li>
+<li>Skriva ut “Jämnt” om talet är jämnt</li>
+<li>Skriva ut “Udda” om talet är udda</li>
 </ul>
 <p>Tips: Använd modulo-operatorn <code>%</code> för att kontrollera om ett tal är jämnt.</p>
 <details>
@@ -861,12 +881,12 @@ for (let i = 1; i &lt;= 20; i++) {
 <li>Exempel: 4 % 2 = 0 (jämnt), 5 % 2 = 1 (udda)</li>
 </ul>
 </details>
-<hr />
-<h2 id="Övning-18-funktion-med-switch"><a class="header" href="#Övning-18-funktion-med-switch">Övning 18: Funktion med switch</a></h2>
+<hr>
+<h2 id="övning-18-funktion-med-switch"><a class="header" href="#övning-18-funktion-med-switch">Övning 18: Funktion med switch</a></h2>
 <p>Skapa en funktion <code>getDayType</code> som tar en veckodag som parameter och returnerar:</p>
 <ul>
-<li>"Vardag" för måndag-fredag</li>
-<li>"Helg" för lördag-söndag</li>
+<li>“Vardag” för måndag-fredag</li>
+<li>“Helg” för lördag-söndag</li>
 </ul>
 <p>Använd en switch-sats inuti funktionen. Testa funktionen med olika veckodagar.</p>
 <details>
@@ -904,15 +924,15 @@ console.log(getDayType("söndag"));  // Skriver ut: "Helg"
 <ul>
 <li>Funktionen tar en parameter <code>day</code> (veckodagen)</li>
 <li>Switch-satsen kontrollerar värdet på <code>day</code></li>
-<li>Flera case kan köra samma kod genom att "falla igenom" (fall-through) utan break</li>
-<li>Alla vardagar (måndag-fredag) returnerar "Vardag"</li>
-<li>Helgdagar (lördag-söndag) returnerar "Helg"</li>
+<li>Flera case kan köra samma kod genom att “falla igenom” (fall-through) utan break</li>
+<li>Alla vardagar (måndag-fredag) returnerar “Vardag”</li>
+<li>Helgdagar (lördag-söndag) returnerar “Helg”</li>
 <li><code>return</code> avslutar funktionen och skickar tillbaka värdet</li>
 </ul>
 </details>
-<hr />
-<h2 id="Övning-19-nästlade-loopar"><a class="header" href="#Övning-19-nästlade-loopar">Övning 19: Nästlade loopar</a></h2>
-<p>Använd två nästlade for-loopar för att skapa en multiplikationstabell. Den yttre loopen ska gå från 1 till 5, och den inre loopen ska också gå från 1 till 5. För varje kombination, skriv ut "[tal1] × [tal2] = [resultat]" i konsolen.</p>
+<hr>
+<h2 id="övning-19-nästlade-loopar"><a class="header" href="#övning-19-nästlade-loopar">Övning 19: Nästlade loopar</a></h2>
+<p>Använd två nästlade for-loopar för att skapa en multiplikationstabell. Den yttre loopen ska gå från 1 till 5, och den inre loopen ska också gå från 1 till 5. För varje kombination, skriv ut “[tal1] × [tal2] = [resultat]” i konsolen.</p>
 <details>
 <summary>Lösningsförslag</summary>
 <pre><code class="language-javascript">// Yttre loop som går från 1 till 5
@@ -946,8 +966,8 @@ for (let i = 1; i &lt;= 5; i++) {
 <li>Varje kombination av i och j skrivs ut</li>
 </ul>
 </details>
-<hr />
-<h2 id="Övning-20-funktion-som-använder-loop-och-if-else"><a class="header" href="#Övning-20-funktion-som-använder-loop-och-if-else">Övning 20: Funktion som använder loop och if-else</a></h2>
+<hr>
+<h2 id="övning-20-funktion-som-använder-loop-och-if-else"><a class="header" href="#övning-20-funktion-som-använder-loop-och-if-else">Övning 20: Funktion som använder loop och if-else</a></h2>
 <p>Skapa en funktion <code>findMax</code> som tar en array med tal som parameter. Funktionen ska använda en loop för att hitta det största talet i arrayen och returnera det.</p>
 <p>Testa med: <code>findMax([3, 7, 2, 9, 1, 5])</code> – ska returnera 9.</p>
 <details>
@@ -989,7 +1009,7 @@ console.log(findMax([-5, -2, -10]));   // Skriver ut: -2
 <li>Algoritmen jämför varje tal med det största hittills och uppdaterar vid behov</li>
 </ul>
 </details>
-<hr />
+<hr>
 <h2 id="sammanfattning-och-nästa-steg"><a class="header" href="#sammanfattning-och-nästa-steg">Sammanfattning och nästa steg</a></h2>
 <p>Genom att göra dessa övningar får du praktisk erfarenhet av:</p>
 <ul>
@@ -1007,11 +1027,11 @@ console.log(findMax([-5, -2, -10]));   // Skriver ut: -2
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                             <a rel="prev" href="../kapitel_4/dom-manipulation-events.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
-                                <i class="fa fa-angle-left"></i>
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
                             <a rel="next prefetch" href="../kapitel_4/teknisk-intervju.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
                         <div style="clear: both"></div>
@@ -1021,17 +1041,38 @@ console.log(findMax([-5, -2, -10]));   // Skriver ut: -2
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                     <a rel="prev" href="../kapitel_4/dom-manipulation-events.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
-                        <i class="fa fa-angle-left"></i>
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
                     <a rel="next prefetch" href="../kapitel_4/teknisk-intervju.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>
 
         </div>
 
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
         <script>
@@ -1039,17 +1080,18 @@ console.log(findMax([-5, -2, -10]));   // Skriver ut: -2
         </script>
 
 
-        <script src="../elasticlunr.min.js"></script>
-        <script src="../mark.min.js"></script>
-        <script src="../searcher.js"></script>
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
 
-        <script src="../clipboard.min.js"></script>
-        <script src="../highlight.js"></script>
-        <script src="../book.js"></script>
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
 
         <!-- Custom JS scripts -->
-        <script src="../mermaid.min.js"></script>
-        <script src="../mermaid-init.js"></script>
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-025d9952.js"></script>
+
 
 
     </div>

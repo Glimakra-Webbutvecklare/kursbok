@@ -195,13 +195,13 @@ Radering ska ske via **POST** (med `@method('DELETE')`), inte GET – samma prin
 | **Databasfrågor** | PDO, prepare, bindParam, fetch | Eloquent: `Post::with('user')->get()` |
 | **Hämta ett inlägg** | `filter_input` + `get_post_by_id()` | Route model binding: `show(Post $post)` |
 | **Validering** | Manuell `$errors[]`, empty(), filter_var | `$request->validate([...])` |
-| **Vyer** | PHP och HTML blandat, `htmlspecialchars()` | Blade: `{{ $post->title }}` (escapas automatiskt) |
+| **Vyer** | PHP och HTML blandat, `htmlspecialchars()` | Blade: `&#123;&#123; $post->title &#125;&#125;` (escapas automatiskt) |
 | **Ägarskap (edit/delete)** | `$post['user_id'] != $logged_in_user_id` i varje fil | Policy: `$this->authorize('update', $post)` |
 | **Bilduppladdning** | `$_FILES`, `move_uploaded_file()`, `uniqid()`, filtyps-koll | `$request->file()->store('posts', 'public')`, validering `'image'` |
 | **Ta bort bild** | `file_exists()` + `unlink()` | `\Storage::disk('public')->delete($path)` |
 | **CSRF-skydd** | Inte implementerat i CRUD-appen | `@csrf` i varje formulär (automatiskt) |
 | **Bild i vy** | `htmlspecialchars(BASE_URL . '/' . $post['image_path'])` | `asset('storage/' . $post->image_path)` |
-| **Formulärdata kvar vid fel** | `value="<?php echo htmlspecialchars($title); ?>"` | `value="{{ old('title') }}"` (automatiskt escaped) |
+| **Formulärdata kvar vid fel** | `value="<?php echo htmlspecialchars($title); ?>"` | `value="&#123;&#123; old('title') &#125;&#125;"` (automatiskt escaped) |
 | **Radera via POST** | `<form method="post">` med dolt `post_id`-fält | `@method('DELETE')` + `@csrf` |
 | **Sessionsmeddelanden** | `$_GET['created=success']` i URL:en | `->with('success', '...')` + `session('success')` |
 | **Modelklass vs PDO** | `class Post { showOne(), create(), updateOne() }` med PDO | `class Post extends Model` med Eloquent |

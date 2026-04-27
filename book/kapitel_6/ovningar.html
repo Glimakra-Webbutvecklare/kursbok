@@ -12,40 +12,52 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
-        <link rel="icon" href="../favicon.svg">
-        <link rel="shortcut icon" href="../favicon.png">
-        <link rel="stylesheet" href="../css/variables.css">
-        <link rel="stylesheet" href="../css/general.css">
-        <link rel="stylesheet" href="../css/chrome.css">
-        <link rel="stylesheet" href="../css/print.css" media="print">
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
-        <link rel="stylesheet" href="../fonts/fonts.css">
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" href="../highlight.css">
-        <link rel="stylesheet" href="../tomorrow-night.css">
-        <link rel="stylesheet" href="../ayu-highlight.css">
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
 
         <!-- Custom theme stylesheets -->
 
 
-        <!-- Provide site root to javascript -->
+        <!-- Provide site root and default themes to javascript -->
         <script>
-            var path_to_root = "../";
-            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-85e3c6c1.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc.js"></script>
+        <script src="../toc-feb7936f.js"></script>
     </head>
     <body>
-    <div id="body-container">
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
             try {
-                var theme = localStorage.getItem('mdbook-theme');
-                var sidebar = localStorage.getItem('mdbook-sidebar');
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
 
                 if (theme.startsWith('"') && theme.endsWith('"')) {
                     localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
@@ -59,7 +71,8 @@
 
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script>
-            var theme;
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
             const html = document.documentElement;
@@ -68,55 +81,59 @@
             html.classList.add("js");
         </script>
 
-        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
-            var sidebar = null;
-            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
+                sidebar_toggle.checked = false;
             }
-            sidebar_toggle.checked = sidebar === 'visible';
-            html.classList.remove('sidebar-visible');
-            html.classList.add("sidebar-" + sidebar);
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
         </script>
 
-        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
             <!-- populated by js -->
             <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
             <noscript>
                 <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
             </noscript>
-            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
             </div>
         </nav>
 
-        <div id="page-wrapper" class="page-wrapper">
+        <div id="mdbook-page-wrapper" class="page-wrapper">
 
             <div class="page">
-                <div id="menu-bar-hover-placeholder"></div>
-                <div id="menu-bar" class="menu-bar sticky">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
-                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
-                            <i class="fa fa-bars"></i>
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
                         </label>
-                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
-                            <i class="fa fa-paint-brush"></i>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
                         </button>
-                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
-                            <i class="fa fa-search"></i>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
                         </button>
                     </div>
 
@@ -124,37 +141,42 @@
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
-                            <i id="print-button" class="fa fa-print"></i>
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
                         </a>
 
                     </div>
                 </div>
 
-                <div id="search-wrapper" class="hidden">
-                    <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
                     </form>
-                    <div id="searchresults-outer" class="searchresults-outer hidden">
-                        <div id="searchresults-header" class="searchresults-header"></div>
-                        <ul id="searchresults">
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
                         </ul>
                     </div>
                 </div>
 
                 <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
                 <script>
-                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
-                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
-                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
                         link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
                     });
                 </script>
 
-                <div id="content" class="content">
+                <div id="mdbook-content" class="content">
                     <main>
                         <h1 id="praktiska-övningar-och-projekt"><a class="header" href="#praktiska-övningar-och-projekt">Praktiska övningar och projekt</a></h1>
 <h2 id="docker-övningar"><a class="header" href="#docker-övningar">Docker-övningar</a></h2>
-<h3 id="Övning-1-kör-din-första-container"><a class="header" href="#Övning-1-kör-din-första-container">Övning 1: Kör din första container</a></h3>
+<h3 id="övning-1-kör-din-första-container"><a class="header" href="#övning-1-kör-din-första-container">Övning 1: Kör din första container</a></h3>
 <p>Kör <code>hello-world</code>-imagen för att verifiera att Docker fungerar på din dator.</p>
 <details>
 <summary>Lösningsförslag</summary>
@@ -162,8 +184,8 @@
 </code></pre>
 <p><strong>Förklaring:</strong> <code>docker run</code> hämtar imagen från Docker Hub (om den inte finns lokalt) och startar en container. Hello-world-imagen är minimal och skriver ut ett meddelande för att bekräfta att installationen fungerar.</p>
 </details>
-<hr />
-<h3 id="Övning-2-lista-containrar"><a class="header" href="#Övning-2-lista-containrar">Övning 2: Lista containrar</a></h3>
+<hr>
+<h3 id="övning-2-lista-containrar"><a class="header" href="#övning-2-lista-containrar">Övning 2: Lista containrar</a></h3>
 <p>Starta en Nginx-container i bakgrunden med <code>docker run -d nginx:latest</code>. Lista sedan alla körande containrar (både aktiva och stoppade).</p>
 <details>
 <summary>Lösningsförslag</summary>
@@ -172,8 +194,8 @@ docker ps -a
 </code></pre>
 <p><strong>Förklaring:</strong> <code>-d</code> kör containern i bakgrunden (detached). <code>docker ps</code> visar endast körande containrar; <code>-a</code> (all) visar även stoppade containrar.</p>
 </details>
-<hr />
-<h3 id="Övning-3-portmappning"><a class="header" href="#Övning-3-portmappning">Övning 3: Portmappning</a></h3>
+<hr>
+<h3 id="övning-3-portmappning"><a class="header" href="#övning-3-portmappning">Övning 3: Portmappning</a></h3>
 <p>Starta Nginx så att den är tillgänglig på port <strong>3000</strong> på localhost. Testa sedan i webbläsaren med <code>http://localhost:3000</code>.</p>
 <details>
 <summary>Lösningsförslag</summary>
@@ -181,8 +203,8 @@ docker ps -a
 </code></pre>
 <p><strong>Förklaring:</strong> <code>-p 3000:80</code> mappar värddatorns port 3000 till containerns port 80 (där Nginx lyssnar). Formatet är alltid <code>värdport:containerport</code>.</p>
 </details>
-<hr />
-<h3 id="Övning-4-volym--servera-egen-html"><a class="header" href="#Övning-4-volym--servera-egen-html">Övning 4: Volym – servera egen HTML</a></h3>
+<hr>
+<h3 id="övning-4-volym--servera-egen-html"><a class="header" href="#övning-4-volym--servera-egen-html">Övning 4: Volym – servera egen HTML</a></h3>
 <p>Skapa en mapp <code>min-sida</code> med en fil <code>index.html</code> som innehåller <code>&lt;h1&gt;Min första Docker-sida&lt;/h1&gt;</code>. Starta Nginx med en volym så att denna mapp serveras som document root.</p>
 <details>
 <summary>Lösningsförslag</summary>
@@ -192,8 +214,8 @@ docker run -d -p 8080:80 -v $(pwd)/min-sida:/usr/share/nginx/html:ro --name web 
 </code></pre>
 <p><strong>Förklaring:</strong> <code>-v $(pwd)/min-sida:/usr/share/nginx/html:ro</code> mappar din lokala mapp till Nginx document root. <code>:ro</code> gör volymen skrivskyddad för containern.</p>
 </details>
-<hr />
-<h3 id="Övning-5-stoppa-och-ta-bort-container"><a class="header" href="#Övning-5-stoppa-och-ta-bort-container">Övning 5: Stoppa och ta bort container</a></h3>
+<hr>
+<h3 id="övning-5-stoppa-och-ta-bort-container"><a class="header" href="#övning-5-stoppa-och-ta-bort-container">Övning 5: Stoppa och ta bort container</a></h3>
 <p>Stoppa containern med namnet <code>web</code> och ta sedan bort den helt.</p>
 <details>
 <summary>Lösningsförslag</summary>
@@ -202,8 +224,8 @@ docker rm web
 </code></pre>
 <p><strong>Förklaring:</strong> <code>docker stop</code> skickar SIGTERM och väntar på att containern avslutas. <code>docker rm</code> tar bort containern från systemet. Du kan kombinera med <code>docker rm -f web</code> för att tvinga bort en körande container.</p>
 </details>
-<hr />
-<h3 id="Övning-6-skapa-en-enkel-dockerfile"><a class="header" href="#Övning-6-skapa-en-enkel-dockerfile">Övning 6: Skapa en enkel Dockerfile</a></h3>
+<hr>
+<h3 id="övning-6-skapa-en-enkel-dockerfile"><a class="header" href="#övning-6-skapa-en-enkel-dockerfile">Övning 6: Skapa en enkel Dockerfile</a></h3>
 <p>Skapa en Dockerfile som bygger en image baserad på <code>node:20-alpine</code>. Kopiera en fil <code>app.js</code> till <code>/app/</code> och sätt arbetskatalogen till <code>/app</code>. (Du behöver inte ha en riktig app.js – skapa en tom fil eller en enkel <code>console.log('Hej!')</code>.)</p>
 <details>
 <summary>Lösningsförslag</summary>
@@ -214,8 +236,8 @@ CMD ["node", "app.js"]
 </code></pre>
 <p><strong>Förklaring:</strong> <code>FROM</code> anger basimagen. <code>COPY</code> kopierar filer från byggkontexten. <code>WORKDIR</code> sätter arbetskatalogen. <code>CMD</code> definierar kommandot som körs när containern startar.</p>
 </details>
-<hr />
-<h3 id="Övning-7-bygg-och-kör-egen-image"><a class="header" href="#Övning-7-bygg-och-kör-egen-image">Övning 7: Bygg och kör egen image</a></h3>
+<hr>
+<h3 id="övning-7-bygg-och-kör-egen-image"><a class="header" href="#övning-7-bygg-och-kör-egen-image">Övning 7: Bygg och kör egen image</a></h3>
 <p>Bygg imagen från övning 6 med taggnamnet <code>min-node-app</code>. Kör sedan containern.</p>
 <details>
 <summary>Lösningsförslag</summary>
@@ -224,8 +246,8 @@ docker run min-node-app
 </code></pre>
 <p><strong>Förklaring:</strong> <code>docker build -t min-node-app .</code> bygger imagen från Dockerfile i aktuell mapp (<code>.</code>) och ger den namnet <code>min-node-app</code>. Punkten anger byggkontexten – vilka filer som är tillgängliga för <code>COPY</code>.</p>
 </details>
-<hr />
-<h3 id="Övning-8-docker-compose--en-webbserver"><a class="header" href="#Övning-8-docker-compose--en-webbserver">Övning 8: Docker Compose – en webbserver</a></h3>
+<hr>
+<h3 id="övning-8-docker-compose--en-webbserver"><a class="header" href="#övning-8-docker-compose--en-webbserver">Övning 8: Docker Compose – en webbserver</a></h3>
 <p>Skapa en <code>docker-compose.yml</code> med en tjänst som heter <code>web</code>, använder <code>nginx:latest</code> och exponerar port 8080.</p>
 <details>
 <summary>Lösningsförslag</summary>
@@ -237,8 +259,8 @@ docker run min-node-app
 </code></pre>
 <p><strong>Förklaring:</strong> Under <code>services</code> definierar du varje container. <code>image</code> anger vilken image som ska användas. <code>ports</code> mappar värdens port 8080 till containerns port 80.</p>
 </details>
-<hr />
-<h3 id="Övning-9-docker-compose-med-volym"><a class="header" href="#Övning-9-docker-compose-med-volym">Övning 9: Docker Compose med volym</a></h3>
+<hr>
+<h3 id="övning-9-docker-compose-med-volym"><a class="header" href="#övning-9-docker-compose-med-volym">Övning 9: Docker Compose med volym</a></h3>
 <p>Utöka övning 8: lägg till en volym som mappar mappen <code>./html</code> till <code>/usr/share/nginx/html</code> i containern. Skapa sedan mappen och en <code>index.html</code>, starta med <code>docker compose up -d</code> och verifiera att sidan visas.</p>
 <details>
 <summary>Lösningsförslag</summary>
@@ -256,8 +278,8 @@ docker compose up -d
 </code></pre>
 <p><strong>Förklaring:</strong> <code>volumes</code> med <code>./html:/usr/share/nginx/html</code> är en bind mount – din lokala mapp mappas in i containern. Ändringar i <code>html/</code> syns direkt utan att starta om.</p>
 </details>
-<hr />
-<h3 id="Övning-10-stoppa-docker-compose"><a class="header" href="#Övning-10-stoppa-docker-compose">Övning 10: Stoppa Docker Compose</a></h3>
+<hr>
+<h3 id="övning-10-stoppa-docker-compose"><a class="header" href="#övning-10-stoppa-docker-compose">Övning 10: Stoppa Docker Compose</a></h3>
 <p>Du har startat tjänster med <code>docker compose up -d</code>. Stoppa nu alla containrar och ta bort dem (nätverk inkluderat). Namngivna volymer ska behållas.</p>
 <details>
 <summary>Lösningsförslag</summary>
@@ -265,14 +287,14 @@ docker compose up -d
 </code></pre>
 <p><strong>Förklaring:</strong> <code>docker compose down</code> stoppar och tar bort alla containrar samt det skapade nätverket. Namngivna volymer (t.ex. <code>dbdata</code>) behålls som standard. Använd <code>docker compose down -v</code> om du vill ta bort även volymerna.</p>
 </details>
-<hr />
+<hr>
 <h2 id="markdown-övningar"><a class="header" href="#markdown-övningar">Markdown-övningar</a></h2>
 <p>Installera verktyget <strong>marked</strong> för att konvertera Markdown till HTML och verifiera dina lösningar:</p>
 <pre><code class="language-bash">npm install -g marked
 </code></pre>
 <p>Använd sedan <code>marked fil.md</code> eller <code>echo "din markdown" | marked</code> för att se den genererade HTML:en.</p>
 <p>I varje övning får du se HTML-resultatet. Din uppgift är att skriva Markdown som ger samma HTML.</p>
-<hr />
+<hr>
 <h3 id="markdown-1-enkel-rubrik"><a class="header" href="#markdown-1-enkel-rubrik">Markdown 1: Enkel rubrik</a></h3>
 <p>Du ser följande HTML. Skriv Markdown som ger samma resultat.</p>
 <pre><code class="language-html">&lt;h1&gt;Välkommen till min sida&lt;/h1&gt;
@@ -283,7 +305,7 @@ docker compose up -d
 </code></pre>
 <p><strong>Förklaring:</strong> En <code>#</code> i Markdown genererar en <code>&lt;h1&gt;</code>-rubrik. Ju fler <code>#</code> desto mindre rubrik (h2, h3, osv.).</p>
 </details>
-<hr />
+<hr>
 <h3 id="markdown-2-stycke-med-fet-text"><a class="header" href="#markdown-2-stycke-med-fet-text">Markdown 2: Stycke med fet text</a></h3>
 <p>Du ser följande HTML. Skriv Markdown som ger samma resultat.</p>
 <pre><code class="language-html">&lt;p&gt;Detta är &lt;strong&gt;viktig&lt;/strong&gt; information.&lt;/p&gt;
@@ -294,7 +316,7 @@ docker compose up -d
 </code></pre>
 <p><strong>Förklaring:</strong> <code>**text**</code> eller <code>__text__</code> ger fet stil (<code>&lt;strong&gt;</code>). Tomma rader skapar nya stycken (<code>&lt;p&gt;</code>).</p>
 </details>
-<hr />
+<hr>
 <h3 id="markdown-3-punktlista"><a class="header" href="#markdown-3-punktlista">Markdown 3: Punktlista</a></h3>
 <p>Du ser följande HTML. Skriv Markdown som ger samma resultat.</p>
 <pre><code class="language-html">&lt;ul&gt;
@@ -311,7 +333,7 @@ docker compose up -d
 </code></pre>
 <p><strong>Förklaring:</strong> <code>-</code>, <code>*</code> eller <code>+</code> följt av mellanslag skapar en punktlista. Varje rad blir ett <code>&lt;li&gt;</code>-element.</p>
 </details>
-<hr />
+<hr>
 <h3 id="markdown-4-numrerad-lista"><a class="header" href="#markdown-4-numrerad-lista">Markdown 4: Numrerad lista</a></h3>
 <p>Du ser följande HTML. Skriv Markdown som ger samma resultat.</p>
 <pre><code class="language-html">&lt;ol&gt;
@@ -328,7 +350,7 @@ docker compose up -d
 </code></pre>
 <p><strong>Förklaring:</strong> <code>1.</code> följt av mellanslag skapar en numrerad lista. Markdown numrerar om automatiskt – du kan skriva <code>1.</code> på alla rader om du vill.</p>
 </details>
-<hr />
+<hr>
 <h3 id="markdown-5-länk"><a class="header" href="#markdown-5-länk">Markdown 5: Länk</a></h3>
 <p>Du ser följande HTML. Skriv Markdown som ger samma resultat.</p>
 <pre><code class="language-html">&lt;p&gt;Besök &lt;a href="https://github.com"&gt;GitHub&lt;/a&gt; för mer information.&lt;/p&gt;
@@ -339,7 +361,7 @@ docker compose up -d
 </code></pre>
 <p><strong>Förklaring:</strong> Syntax för länk är <code>[länktext](url)</code>. Länktexten står inom hakparenteser, URL:en inom vanliga parenteser.</p>
 </details>
-<hr />
+<hr>
 <h3 id="markdown-6-bild"><a class="header" href="#markdown-6-bild">Markdown 6: Bild</a></h3>
 <p>Du ser följande HTML. Skriv Markdown som ger samma resultat.</p>
 <pre><code class="language-html">&lt;p&gt;&lt;img src="logo.png" alt="Företagets logotyp"&gt;&lt;/p&gt;
@@ -350,7 +372,7 @@ docker compose up -d
 </code></pre>
 <p><strong>Förklaring:</strong> Bildsyntax liknar länk men börjar med <code>!</code>. Format: <code>![alt-text](url)</code>. Alt-texten är viktig för tillgänglighet.</p>
 </details>
-<hr />
+<hr>
 <h3 id="markdown-7-inline-kod-och-kodblock"><a class="header" href="#markdown-7-inline-kod-och-kodblock">Markdown 7: Inline-kod och kodblock</a></h3>
 <p>Du ser följande HTML. Skriv Markdown som ger samma resultat.</p>
 <pre><code class="language-html">&lt;p&gt;Använd kommandot &lt;code&gt;npm install&lt;/code&gt; för att installera paket.&lt;/p&gt;
@@ -365,12 +387,12 @@ docker compose up -d
 
 </code></pre>
 <p>function hello() {
-console.log("Hej!");
+console.log(“Hej!”);
 }</p>
 <pre><code></code></pre>
 <p><strong>Förklaring:</strong> Enkla backticks <code>`</code> ger inline-kod (<code>&lt;code&gt;</code>). Tre backticks (<code>) skapar ett kodblock (`&lt;pre&gt;&lt;code&gt;`). Du kan ange språk efter öppnande backticks, t.ex. </code>javascript.</p>
 </details>
-<hr />
+<hr>
 <h3 id="markdown-8-citat-blockquote"><a class="header" href="#markdown-8-citat-blockquote">Markdown 8: Citat (blockquote)</a></h3>
 <p>Du ser följande HTML. Skriv Markdown som ger samma resultat.</p>
 <pre><code class="language-html">&lt;blockquote&gt;
@@ -383,7 +405,7 @@ console.log("Hej!");
 </code></pre>
 <p><strong>Förklaring:</strong> <code>&gt;</code> i början av en rad skapar ett blockquote. Flera rader med <code>&gt;</code> blir ett längre citat.</p>
 </details>
-<hr />
+<hr>
 <h3 id="markdown-9-tabell"><a class="header" href="#markdown-9-tabell">Markdown 9: Tabell</a></h3>
 <p>Du ser följande HTML. Skriv Markdown som ger samma resultat.</p>
 <pre><code class="language-html">&lt;table&gt;
@@ -405,7 +427,7 @@ console.log("Hej!");
 </code></pre>
 <p><strong>Förklaring:</strong> Tabeller i Markdown (GFM) använder <code>|</code> som kolumnavgränsare. Den andra raden med <code>---</code> definierar headern. Minst tre bindestreck behövs per kolumn.</p>
 </details>
-<hr />
+<hr>
 <h3 id="markdown-10-kombination--rubrik-lista-och-länk"><a class="header" href="#markdown-10-kombination--rubrik-lista-och-länk">Markdown 10: Kombination – rubrik, lista och länk</a></h3>
 <p>Du ser följande HTML. Skriv Markdown som ger samma resultat.</p>
 <pre><code class="language-html">&lt;h2&gt;Snabbstart&lt;/h2&gt;
@@ -425,11 +447,11 @@ console.log("Hej!");
 </code></pre>
 <p><strong>Förklaring:</strong> Kombinera rubriker (<code>##</code>), listor (<code>-</code>) och inline-kod (<code>`</code>) samt länkar (<code>[]()</code>). Tom rad mellan rubrik och lista ger tydlig struktur.</p>
 </details>
-<hr />
+<hr>
 <h2 id="licensövningar"><a class="header" href="#licensövningar">Licensövningar</a></h2>
 <p>I varje övning beskrivs en kodbas och dess syfte. Välj vilken licens som passar bäst och motivera ditt val.</p>
-<hr />
-<h3 id="licens-1-Öppen-källkodsbibliotek"><a class="header" href="#licens-1-Öppen-källkodsbibliotek">Licens 1: Öppen källkodsbibliotek</a></h3>
+<hr>
+<h3 id="licens-1-öppen-källkodsbibliotek"><a class="header" href="#licens-1-öppen-källkodsbibliotek">Licens 1: Öppen källkodsbibliotek</a></h3>
 <p>Du har skapat ett JavaScript-bibliotek för datumformatering som du vill att så många som möjligt ska använda – inklusive företag med slutna produkter. Du vill ha cred (att du nämns) men inga andra krav.</p>
 <p><strong>Alternativ:</strong> A) MIT  B) GPL  C) Apache 2.0  D) Ingen licens (proprietär)</p>
 <details>
@@ -437,7 +459,7 @@ console.log("Hej!");
 <p><strong>Svar: A) MIT</strong> (eller C) Apache 2.0)</p>
 <p><strong>Förklaring:</strong> MIT är mycket permissiv – alla får använda, modifiera och distribuera koden, även i proprietära projekt. Enda kravet är att licensen följer med. Apache 2.0 är liknande men ger explicit patentlicens, vilket kan vara bra för företag. GPL skulle kräva att alla som använder biblioteket i sin app också gör sin app öppen källkod – det begränsar adoptionen. Proprietär licens ger ingen rätt att använda koden.</p>
 </details>
-<hr />
+<hr>
 <h3 id="licens-2-wordpress-tema-med-copyleft"><a class="header" href="#licens-2-wordpress-tema-med-copyleft">Licens 2: WordPress-tema med copyleft</a></h3>
 <p>Du har byggt ett WordPress-tema som du vill dela öppet. Du vill att förbättringar och varianter av temat också ska vara öppen källkod – ingen får ta ditt tema, ändra det och sälja det som stängt.</p>
 <p><strong>Alternativ:</strong> A) MIT  B) GPL  C) Proprietär  D) Unlicense</p>
@@ -446,16 +468,16 @@ console.log("Hej!");
 <p><strong>Svar: B) GPL</strong></p>
 <p><strong>Förklaring:</strong> GPL är en copyleft-licens – om någon modifierar och distribuerar din kod måste de göra det under samma licens (GPL). Det säkerställer att förbättringar förblir öppna. WordPress själv använder GPL, så teman som bygger på WordPress brukar också använda GPL. MIT och Unlicense tillåter att någon tar din kod och säljer den som proprietär. Proprietär licens skulle hindra andra från att använda temat överhuvudtaget.</p>
 </details>
-<hr />
+<hr>
 <h3 id="licens-3-intern-företagskod"><a class="header" href="#licens-3-intern-företagskod">Licens 3: Intern företagskod</a></h3>
 <p>Du utvecklar en webbapplikation åt ett företag. Koden är deras affärshemlighet – de vill inte att konkurrenter eller andra får tillgång till källkoden.</p>
 <p><strong>Alternativ:</strong> A) MIT  B) GPL  C) Apache 2.0  D) Ingen öppen licens</p>
 <details>
 <summary>Lösningsförslag</summary>
 <p><strong>Svar: D) Ingen öppen licens</strong></p>
-<p><strong>Förklaring:</strong> När koden ska vara hemlig använder man ingen öppen källkodslicens. Koden är då "all rights reserved" – endast rättighetshavaren (företaget) har rätt att använda, kopiera och modifiera. Avtalet mellan dig och företaget reglerar vem som äger koden. Öppna licenser (MIT, GPL, Apache) ger andra rättigheter – det strider mot målet att hålla koden sluten.</p>
+<p><strong>Förklaring:</strong> När koden ska vara hemlig använder man ingen öppen källkodslicens. Koden är då “all rights reserved” – endast rättighetshavaren (företaget) har rätt att använda, kopiera och modifiera. Avtalet mellan dig och företaget reglerar vem som äger koden. Öppna licenser (MIT, GPL, Apache) ger andra rättigheter – det strider mot målet att hålla koden sluten.</p>
 </details>
-<hr />
+<hr>
 <h3 id="licens-4-saas-med-öppen-kärna"><a class="header" href="#licens-4-saas-med-öppen-kärna">Licens 4: SaaS med öppen kärna</a></h3>
 <p>Du har byggt en projektverktyg-app som körs som SaaS (användare loggar in i webbläsaren). Du vill att kärnan ska vara öppen så att andra kan bygga vidare, men du vill att om någon hostar en klon av din app som tjänst måste de också dela sin modifierade kod.</p>
 <p><strong>Alternativ:</strong> A) MIT  B) GPL  C) AGPL  D) BSD</p>
@@ -464,17 +486,17 @@ console.log("Hej!");
 <p><strong>Svar: C) AGPL</strong></p>
 <p><strong>Förklaring:</strong> AGPL (Affero GPL) utökar GPL med ett viktigt tillägg: om du erbjuder tjänsten över nätverket (t.ex. SaaS) måste du erbjuda källkoden till användarna. Vanlig GPL täcker bara distribution av binärer/filer – någon som hostar din app som SaaS behöver inte dela koden. AGPL stänger den luckan. MIT och BSD tillåter att någon hostar en stängd klon utan att dela ändringar.</p>
 </details>
-<hr />
+<hr>
 <h3 id="licens-5-skolprojekt-för-portfolio"><a class="header" href="#licens-5-skolprojekt-för-portfolio">Licens 5: Skolprojekt för portfolio</a></h3>
 <p>Du har gjort ett examensprojekt – en React-app – som du vill visa på din portfolio. Du vill att arbetsgivare ska kunna titta på koden, men du bryr dig inte om att andra använder eller bygger vidare på den.</p>
 <p><strong>Alternativ:</strong> A) MIT  B) GPL  C) CC0 (public domain)  D) Ingen licens</p>
 <details>
 <summary>Lösningsförslag</summary>
 <p><strong>Svar: A) MIT</strong> (eller C) CC0 om du vill vara extra generös)</p>
-<p><strong>Förklaring:</strong> MIT är enkelt och välkänt – perfekt för portfolio. Det signalerar att du kan arbeta med öppen källkod och att du inte har något emot att andra använder koden. GPL fungerar också men kan kännas "tyngre" för ett enkelt skolprojekt. CC0 (public domain) ger bort allt – bra om du vill maximera friheten. "Ingen licens" är oklart – juridisk standard är då att du behåller alla rättigheter, vilket kan göra arbetsgivare osäkra på vad de får göra med koden.</p>
+<p><strong>Förklaring:</strong> MIT är enkelt och välkänt – perfekt för portfolio. Det signalerar att du kan arbeta med öppen källkod och att du inte har något emot att andra använder koden. GPL fungerar också men kan kännas “tyngre” för ett enkelt skolprojekt. CC0 (public domain) ger bort allt – bra om du vill maximera friheten. “Ingen licens” är oklart – juridisk standard är då att du behåller alla rättigheter, vilket kan göra arbetsgivare osäkra på vad de får göra med koden.</p>
 </details>
-<hr />
-<h2 id="Övriga-projekt"><a class="header" href="#Övriga-projekt">Övriga projekt</a></h2>
+<hr>
+<h2 id="övriga-projekt"><a class="header" href="#övriga-projekt">Övriga projekt</a></h2>
 <ul>
 <li>WordPress-site setup</li>
 <li>Custom theme development</li>
@@ -487,11 +509,11 @@ console.log("Hej!");
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                             <a rel="prev" href="../kapitel_6/jekyll.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
-                                <i class="fa fa-angle-left"></i>
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
                             <a rel="next prefetch" href="../kapitel_6/teknisk-intervju.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
                         <div style="clear: both"></div>
@@ -501,17 +523,38 @@ console.log("Hej!");
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                     <a rel="prev" href="../kapitel_6/jekyll.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
-                        <i class="fa fa-angle-left"></i>
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
                     <a rel="next prefetch" href="../kapitel_6/teknisk-intervju.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>
 
         </div>
 
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
         <script>
@@ -519,17 +562,18 @@ console.log("Hej!");
         </script>
 
 
-        <script src="../elasticlunr.min.js"></script>
-        <script src="../mark.min.js"></script>
-        <script src="../searcher.js"></script>
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
 
-        <script src="../clipboard.min.js"></script>
-        <script src="../highlight.js"></script>
-        <script src="../book.js"></script>
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
 
         <!-- Custom JS scripts -->
-        <script src="../mermaid.min.js"></script>
-        <script src="../mermaid-init.js"></script>
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-025d9952.js"></script>
+
 
 
     </div>

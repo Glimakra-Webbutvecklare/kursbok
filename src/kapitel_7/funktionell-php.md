@@ -290,7 +290,3 @@ echo $html;
 Workshop är markerad som inställd (`cancelled => true`) och filtreras därför bort. Resultatet blir endast Meetup och PHP-konferens. Du kan enkelt lägga till fler filter eller ändra sorteringen – varje steg är en tydlig, återanvändbar operation.
 
 Nästa steg: [PHP klasser](class.md) – objektorienterad programmering med egenskaper, metoder och inkapsling.
-</think>
-Kontrollerar om pipe-operatorn finns i PHP:
-<｜tool▁calls▁begin｜><｜tool▁call▁begin｜>
-WebSearch

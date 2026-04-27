@@ -12,40 +12,52 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
-        <link rel="icon" href="../favicon.svg">
-        <link rel="shortcut icon" href="../favicon.png">
-        <link rel="stylesheet" href="../css/variables.css">
-        <link rel="stylesheet" href="../css/general.css">
-        <link rel="stylesheet" href="../css/chrome.css">
-        <link rel="stylesheet" href="../css/print.css" media="print">
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
-        <link rel="stylesheet" href="../fonts/fonts.css">
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" href="../highlight.css">
-        <link rel="stylesheet" href="../tomorrow-night.css">
-        <link rel="stylesheet" href="../ayu-highlight.css">
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
 
         <!-- Custom theme stylesheets -->
 
 
-        <!-- Provide site root to javascript -->
+        <!-- Provide site root and default themes to javascript -->
         <script>
-            var path_to_root = "../";
-            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-85e3c6c1.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc.js"></script>
+        <script src="../toc-feb7936f.js"></script>
     </head>
     <body>
-    <div id="body-container">
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
             try {
-                var theme = localStorage.getItem('mdbook-theme');
-                var sidebar = localStorage.getItem('mdbook-sidebar');
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
 
                 if (theme.startsWith('"') && theme.endsWith('"')) {
                     localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
@@ -59,7 +71,8 @@
 
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script>
-            var theme;
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
             const html = document.documentElement;
@@ -68,55 +81,59 @@
             html.classList.add("js");
         </script>
 
-        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
-            var sidebar = null;
-            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
+                sidebar_toggle.checked = false;
             }
-            sidebar_toggle.checked = sidebar === 'visible';
-            html.classList.remove('sidebar-visible');
-            html.classList.add("sidebar-" + sidebar);
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
         </script>
 
-        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
             <!-- populated by js -->
             <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
             <noscript>
                 <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
             </noscript>
-            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
             </div>
         </nav>
 
-        <div id="page-wrapper" class="page-wrapper">
+        <div id="mdbook-page-wrapper" class="page-wrapper">
 
             <div class="page">
-                <div id="menu-bar-hover-placeholder"></div>
-                <div id="menu-bar" class="menu-bar sticky">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
-                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
-                            <i class="fa fa-bars"></i>
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
                         </label>
-                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
-                            <i class="fa fa-paint-brush"></i>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
                         </button>
-                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
-                            <i class="fa fa-search"></i>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
                         </button>
                     </div>
 
@@ -124,40 +141,45 @@
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
-                            <i id="print-button" class="fa fa-print"></i>
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
                         </a>
 
                     </div>
                 </div>
 
-                <div id="search-wrapper" class="hidden">
-                    <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
                     </form>
-                    <div id="searchresults-outer" class="searchresults-outer hidden">
-                        <div id="searchresults-header" class="searchresults-header"></div>
-                        <ul id="searchresults">
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
                         </ul>
                     </div>
                 </div>
 
                 <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
                 <script>
-                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
-                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
-                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
                         link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
                     });
                 </script>
 
-                <div id="content" class="content">
+                <div id="mdbook-content" class="content">
                     <main>
                         <h1 id="tekniska-intervjufrågor-javascript-och-dom-manipulation"><a class="header" href="#tekniska-intervjufrågor-javascript-och-dom-manipulation">Tekniska Intervjufrågor: JavaScript och DOM-manipulation</a></h1>
 <p>Detta avsnitt innehåller exempel på tekniska intervjufrågor som kan dyka upp gällande JavaScript och frontend-programmering. Frågorna är utformade för att testa både teoretisk förståelse och praktisk kunskap.</p>
 <p>Använd dessa frågor för att testa din kunskap och förbereda dig för tekniska intervjuer.</p>
-<hr />
+<hr>
 <h2 id="fråga-1-javascript-grundläggande-och-inkludering"><a class="header" href="#fråga-1-javascript-grundläggande-och-inkludering">Fråga 1: JavaScript Grundläggande och Inkludering</a></h2>
-<p><strong>Fråga:</strong> "Förklara skillnaden mellan att inkludera JavaScript inline, internt och externt. Varför placeras <code>&lt;script&gt;</code>-taggar oftast före <code>&lt;/body&gt;</code>?"</p>
+<p><strong>Fråga:</strong> “Förklara skillnaden mellan att inkludera JavaScript inline, internt och externt. Varför placeras <code>&lt;script&gt;</code>-taggar oftast före <code>&lt;/body&gt;</code>?”</p>
 <p><strong>Förslag till svar:</strong></p>
 <ul>
 <li><strong>Inline:</strong> <code>onclick="alert('Klick')"</code> - Bör undvikas, blandar struktur och beteende</li>
@@ -171,9 +193,9 @@
 <li><strong>Användarupplevelse:</strong> Undviker att script blockerar sidladdningen</li>
 </ul>
 <p><strong>Best practice:</strong> Extern JS-fil precis före <code>&lt;/body&gt;</code> för separation av concerns och bättre underhållbarhet.</p>
-<hr />
+<hr>
 <h2 id="fråga-2-variabler-och-deklarationer"><a class="header" href="#fråga-2-variabler-och-deklarationer">Fråga 2: Variabler och Deklarationer</a></h2>
-<p><strong>Fråga:</strong> "Vad är skillnaden mellan <code>let</code>, <code>const</code> och <code>var</code>? När skulle du använda respektive?"</p>
+<p><strong>Fråga:</strong> “Vad är skillnaden mellan <code>let</code>, <code>const</code> och <code>var</code>? När skulle du använda respektive?”</p>
 <p><strong>Förslag till svar:</strong></p>
 <ul>
 <li><strong><code>const</code>:</strong> Konstant värde, kan inte tilldelas om, block-scope
@@ -200,9 +222,9 @@ age = 26; // OK
 }
 // blockVar och blockConst är INTE synliga här
 </code></pre>
-<hr />
+<hr>
 <h2 id="fråga-3-datatyper-och-typomvandling"><a class="header" href="#fråga-3-datatyper-och-typomvandling">Fråga 3: Datatyper och Typomvandling</a></h2>
-<p><strong>Fråga:</strong> "Förklara JavaScripts primitiva datatyper. Vad händer i följande kod och varför?"</p>
+<p><strong>Fråga:</strong> “Förklara JavaScripts primitiva datatyper. Vad händer i följande kod och varför?”</p>
 <pre><code class="language-javascript">console.log("5" + 3);
 console.log("5" - 3);
 console.log(true + 1);
@@ -224,9 +246,9 @@ console.log("5" - 3);    // 2 - konverterar "5" till number
 console.log(true + 1);   // 2 - true blir 1
 </code></pre>
 <p><strong>Varför:</strong> JavaScript försöker automatiskt konvertera typer, vilket kan ge oväntade resultat. Var försiktig med operatorer på olika typer.</p>
-<hr />
+<hr>
 <h2 id="fråga-4-funktioner-och-syntax"><a class="header" href="#fråga-4-funktioner-och-syntax">Fråga 4: Funktioner och Syntax</a></h2>
-<p><strong>Fråga:</strong> "Visa tre olika sätt att skriva funktioner i JavaScript. Vad är skillnaderna mellan dem?"</p>
+<p><strong>Fråga:</strong> “Visa tre olika sätt att skriva funktioner i JavaScript. Vad är skillnaderna mellan dem?”</p>
 <p><strong>Förslag till svar:</strong></p>
 <pre><code class="language-javascript">// 1. Funktionsdeklaration
 function add(a, b) {
@@ -256,9 +278,9 @@ const square = x =&gt; x * x;
 <li><strong>Deklarationer:</strong> För huvudfunktioner i programmet</li>
 <li><strong>Uttryck:</strong> När du vill tilldela funktion till variabel</li>
 </ul>
-<hr />
+<hr>
 <h2 id="fråga-5-scope-och-synlighet"><a class="header" href="#fråga-5-scope-och-synlighet">Fråga 5: Scope och Synlighet</a></h2>
-<p><strong>Fråga:</strong> "Förklara skillnaden mellan globalt, lokalt och block-scope. Vad skrivs ut i denna kod?"</p>
+<p><strong>Fråga:</strong> “Förklara skillnaden mellan globalt, lokalt och block-scope. Vad skrivs ut i denna kod?”</p>
 <pre><code class="language-javascript">const global = "Jag är global";
 
 function testScope() {
@@ -289,9 +311,9 @@ console.log(block);  // "Jag är i block" - i samma block
 console.log(block);  // ReferenceError! block finns inte här
 </code></pre>
 <p><strong>Princip:</strong> Inre scope kan komma åt yttre scope, men inte tvärtom.</p>
-<hr />
+<hr>
 <h2 id="fråga-6-kontrollstrukturer"><a class="header" href="#fråga-6-kontrollstrukturer">Fråga 6: Kontrollstrukturer</a></h2>
-<p><strong>Fråga:</strong> "Skriv kod som kontrollerar en användares ålder och ger olika meddelanden. Använd både <code>if/else</code> och <code>switch</code> för att visa skillnaden."</p>
+<p><strong>Fråga:</strong> “Skriv kod som kontrollerar en användares ålder och ger olika meddelanden. Använd både <code>if/else</code> och <code>switch</code> för att visa skillnaden.”</p>
 <p><strong>Förslag till svar:</strong></p>
 <pre><code class="language-javascript">// Med if/else (för ranges/intervall)
 function checkAgeIf(age) {
@@ -329,9 +351,9 @@ function checkDayType(dayNumber) {
 <li><strong><code>switch</code>:</strong> För specifika värden, många exakta fall</li>
 <li><strong>Viktigt:</strong> Glöm inte <code>break;</code> i switch-case (om du inte returnar)!</li>
 </ul>
-<hr />
+<hr>
 <h2 id="fråga-7-loopar-och-iteration"><a class="header" href="#fråga-7-loopar-och-iteration">Fråga 7: Loopar och Iteration</a></h2>
-<p><strong>Fråga:</strong> "Visa olika sätt att iterera över en array. Vad är för- och nackdelarna med varje metod?"</p>
+<p><strong>Fråga:</strong> “Visa olika sätt att iterera över en array. Vad är för- och nackdelarna med varje metod?”</p>
 <p><strong>Förslag till svar:</strong></p>
 <pre><code class="language-javascript">const fruits = ["äpple", "banan", "apelsin"];
 
@@ -365,9 +387,9 @@ while (i &lt; fruits.length) {
 // Fördelar: Flexibel, bra för okänt antal iterationer
 // Nackdelar: Risk för oändlig loop om man glömmer öka i
 </code></pre>
-<hr />
+<hr>
 <h2 id="fråga-8-dom-och-element-selektion"><a class="header" href="#fråga-8-dom-och-element-selektion">Fråga 8: DOM och Element-selektion</a></h2>
-<p><strong>Fråga:</strong> "Vad är DOM? Visa olika sätt att välja element från DOM och när du skulle använda varje metod."</p>
+<p><strong>Fråga:</strong> “Vad är DOM? Visa olika sätt att välja element från DOM och när du skulle använda varje metod.”</p>
 <p><strong>Förslag till svar:</strong>
 <strong>DOM (Document Object Model):</strong></p>
 <ul>
@@ -393,9 +415,9 @@ const byTag = document.getElementsByTagName('p');
 <li><strong><code>getElementsByClass/Tag</code>:</strong> Returnerar HTMLCollection (live)</li>
 </ul>
 <p><strong>Best practice:</strong> Använd <code>querySelector</code>/<code>querySelectorAll</code> för flexibilitet.</p>
-<hr />
+<hr>
 <h2 id="fråga-9-dom-manipulation"><a class="header" href="#fråga-9-dom-manipulation">Fråga 9: DOM-manipulation</a></h2>
-<p><strong>Fråga:</strong> "Hur ändrar du innehållet, attribut och stilar på ett HTML-element med JavaScript? Visa exempel."</p>
+<p><strong>Fråga:</strong> “Hur ändrar du innehållet, attribut och stilar på ett HTML-element med JavaScript? Visa exempel.”</p>
 <p><strong>Förslag till svar:</strong></p>
 <pre><code class="language-javascript">const element = document.querySelector('#myElement');
 
@@ -424,9 +446,9 @@ newDiv.textContent = "Nytt element";
 document.body.appendChild(newDiv);
 </code></pre>
 <p><strong>Best practice:</strong> Använd <code>classList</code> för stiländringar istället för <code>style</code>.</p>
-<hr />
+<hr>
 <h2 id="fråga-10-event-handling"><a class="header" href="#fråga-10-event-handling">Fråga 10: Event Handling</a></h2>
-<p><strong>Fråga:</strong> "Förklara hur händelsehantering fungerar i JavaScript. Skriv kod som hanterar en knappklickning och visa vad event-objektet innehåller."</p>
+<p><strong>Fråga:</strong> “Förklara hur händelsehantering fungerar i JavaScript. Skriv kod som hanterar en knappklickning och visa vad event-objektet innehåller.”</p>
 <p><strong>Förslag till svar:</strong></p>
 <pre><code class="language-javascript">// HTML: &lt;button id="myButton"&gt;Klicka mig&lt;/button&gt;
 
@@ -458,9 +480,9 @@ button.addEventListener('click', (event) =&gt; {
 </code></pre>
 <p><strong>Vanliga events:</strong> <code>click</code>, <code>submit</code>, <code>input</code>, <code>mouseover</code>, <code>keydown</code>, <code>load</code></p>
 <p><strong>Viktigt:</strong> Använd <code>addEventListener</code> istället för <code>onclick</code>-attribut för separation of concerns.</p>
-<hr />
+<hr>
 <h2 id="fråga-11-formulärhantering-och-validering"><a class="header" href="#fråga-11-formulärhantering-och-validering">Fråga 11: Formulärhantering och Validering</a></h2>
-<p><strong>Fråga:</strong> "Hur hanterar du formulärinskickning med JavaScript? Visa hur du förhindrar standardbeteendet och validerar input."</p>
+<p><strong>Fråga:</strong> “Hur hanterar du formulärinskickning med JavaScript? Visa hur du förhindrar standardbeteendet och validerar input.”</p>
 <p><strong>Förslag till svar:</strong></p>
 <pre><code class="language-html">// HTML: 
 &lt;form id="myForm"&gt;
@@ -511,9 +533,9 @@ function showSuccess(message) {
 }
 </code></pre>
 <p><strong>Viktigt:</strong> Alltid validera på server också - klientvalidering är bara för användarupplevelse.</p>
-<hr />
+<hr>
 <h2 id="fråga-12-felsökning-och-debug-tekniker"><a class="header" href="#fråga-12-felsökning-och-debug-tekniker">Fråga 12: Felsökning och Debug-tekniker</a></h2>
-<p><strong>Fråga:</strong> "Vilka verktyg och tekniker använder du för att felsöka JavaScript-kod? Visa praktiska exempel."</p>
+<p><strong>Fråga:</strong> “Vilka verktyg och tekniker använder du för att felsöka JavaScript-kod? Visa praktiska exempel.”</p>
 <p><strong>Förslag till svar:</strong>
 <strong>Felsökningsverktyg:</strong></p>
 <ol>
@@ -566,7 +588,7 @@ function calculateTotal(price, tax) {
 }
 </code></pre>
 <p><strong>Best practices:</strong> Använd console.log strategiskt, lär dig utvecklarverktygen, skriv defensiv kod.</p>
-<hr />
+<hr>
 <h2 id="tips-för-tekniska-intervjuer"><a class="header" href="#tips-för-tekniska-intervjuer">Tips för Tekniska Intervjuer</a></h2>
 <ul>
 <li><strong>Skriv kod på whiteboard/papper</strong> - träna på att skriva JavaScript utan editor</li>
@@ -579,10 +601,9 @@ function calculateTotal(price, tax) {
 <h1 id="tekniska-intervjufrågor-css-och-responsiv-design"><a class="header" href="#tekniska-intervjufrågor-css-och-responsiv-design">Tekniska intervjufrågor: CSS och responsiv design</a></h1>
 <p>Detta avsnitt innehåller exempel på tekniska intervjufrågor som kan dyka upp gällande CSS och responsiv webbutveckling. Frågorna är utformade för att testa både teoretisk förståelse och praktisk kunskap.</p>
 <p>Använd dessa frågor för att testa din kunskap och förbereda dig för tekniska intervjuer.</p>
-<hr />
+<hr>
 <h2 id="fråga-1-css-grundsyntax-och-inkludering"><a class="header" href="#fråga-1-css-grundsyntax-och-inkludering">Fråga 1: CSS grundsyntax och inkludering</a></h2>
-<p><strong>Fråga:</strong><br />
-Förklara skillnaden mellan inline CSS, intern CSS och extern CSS. Vilken metod rekommenderas och varför?</p>
+<p><strong>Fråga:</strong><br>Förklara skillnaden mellan inline CSS, intern CSS och extern CSS. Vilken metod rekommenderas och varför?</p>
 <p><strong>Svar:</strong></p>
 <ul>
 <li><strong>Inline CSS:</strong> Skrivs direkt i HTML-elementets <code>style</code>-attribut, t.ex. <code>&lt;p style="color: red;"&gt;Text&lt;/p&gt;</code>.</li>
@@ -590,10 +611,9 @@ Förklara skillnaden mellan inline CSS, intern CSS och extern CSS. Vilken metod 
 <li><strong>Extern CSS:</strong> Skrivs i en separat <code>.css</code>-fil som länkas in med <code>&lt;link rel="stylesheet" href="style.css"&gt;</code>.</li>
 </ul>
 <p>Extern CSS rekommenderas eftersom det separerar struktur och utseende, gör det lättare att återanvända och underhålla stilar, samt förbättrar prestanda genom cache.</p>
-<hr />
+<hr>
 <h2 id="fråga-2-css-selektorer"><a class="header" href="#fråga-2-css-selektorer">Fråga 2: CSS-selektorer</a></h2>
-<p><strong>Fråga:</strong><br />
-Förklara skillnaden mellan dessa selektorer och ge exempel på när du skulle använda var och en:</p>
+<p><strong>Fråga:</strong><br>Förklara skillnaden mellan dessa selektorer och ge exempel på när du skulle använda var och en:</p>
 <pre><code class="language-css">p { }
 .highlight { }
 #header { }
@@ -606,10 +626,9 @@ nav ul li { }
 <li><code>#header</code> – ID-selektor: Väljer elementet med id <code>header</code>. Används för unika element.</li>
 <li><code>nav ul li</code> – Ättlingselektor: Väljer alla <code>&lt;li&gt;</code>-element inuti en <code>&lt;ul&gt;</code> som ligger i en <code>&lt;nav&gt;</code>. Används för att styla specifika strukturer.</li>
 </ul>
-<hr />
+<hr>
 <h2 id="fråga-3-specificitet-och-kaskaden"><a class="header" href="#fråga-3-specificitet-och-kaskaden">Fråga 3: Specificitet och kaskaden</a></h2>
-<p><strong>Fråga:</strong><br />
-Vilken färg får texten i detta exempel och varför?</p>
+<p><strong>Fråga:</strong><br>Vilken färg får texten i detta exempel och varför?</p>
 <pre><code class="language-html">&lt;p id="viktigt" class="highlight"&gt;Text&lt;/p&gt;
 </code></pre>
 <pre><code class="language-css">p { color: black; }
@@ -617,39 +636,32 @@ Vilken färg får texten i detta exempel och varför?</p>
 #viktigt { color: red; }
 p.highlight { color: green; }
 </code></pre>
-<p><strong>Svar:</strong><br />
-Texten blir <strong>röd</strong> eftersom ID-selektorn <code>#viktigt</code> har högst specificitet och därför vinner över de andra reglerna.</p>
-<hr />
+<p><strong>Svar:</strong><br>Texten blir <strong>röd</strong> eftersom ID-selektorn <code>#viktigt</code> har högst specificitet och därför vinner över de andra reglerna.</p>
+<hr>
 <h2 id="fråga-4-box-model"><a class="header" href="#fråga-4-box-model">Fråga 4: Box model</a></h2>
-<p><strong>Fråga:</strong><br />
-Förklara CSS box model. Om ett element har <code>width: 200px</code>, <code>padding: 20px</code>, <code>border: 5px solid black</code> och <code>margin: 10px</code>, vad blir elementets totala bredd?</p>
-<p><strong>Svar:</strong><br />
-Box model består av content, padding, border och margin.<br />
-Total bredd = width + (padding × 2) + (border × 2) = 200 + 40 + 10 = <strong>250px</strong> (margin räknas utanför detta).</p>
-<hr />
+<p><strong>Fråga:</strong><br>Förklara CSS box model. Om ett element har <code>width: 200px</code>, <code>padding: 20px</code>, <code>border: 5px solid black</code> och <code>margin: 10px</code>, vad blir elementets totala bredd?</p>
+<p><strong>Svar:</strong><br>Box model består av content, padding, border och margin.<br>Total bredd = width + (padding × 2) + (border × 2) = 200 + 40 + 10 = <strong>250px</strong> (margin räknas utanför detta).</p>
+<hr>
 <h2 id="fråga-5-display-egenskaper"><a class="header" href="#fråga-5-display-egenskaper">Fråga 5: Display-egenskaper</a></h2>
-<p><strong>Fråga:</strong><br />
-Vad är skillnaden mellan <code>display: block</code>, <code>display: inline</code> och <code>display: inline-block</code>?</p>
+<p><strong>Fråga:</strong><br>Vad är skillnaden mellan <code>display: block</code>, <code>display: inline</code> och <code>display: inline-block</code>?</p>
 <p><strong>Svar:</strong></p>
 <ul>
 <li><code>block</code>: Elementet tar hela raden, respekterar width/height, börjar på ny rad.</li>
 <li><code>inline</code>: Elementet tar bara så mycket plats som behövs, ignorerar width/height, bryter inte rad.</li>
 <li><code>inline-block</code>: Som inline, men respekterar width/height.</li>
 </ul>
-<hr />
+<hr>
 <h2 id="fråga-6-css-positionering"><a class="header" href="#fråga-6-css-positionering">Fråga 6: CSS-positionering</a></h2>
-<p><strong>Fråga:</strong><br />
-Förklara skillnaden mellan <code>position: relative</code>, <code>position: absolute</code> och <code>position: fixed</code>. Ge exempel på användningsfall.</p>
+<p><strong>Fråga:</strong><br>Förklara skillnaden mellan <code>position: relative</code>, <code>position: absolute</code> och <code>position: fixed</code>. Ge exempel på användningsfall.</p>
 <p><strong>Svar:</strong></p>
 <ul>
 <li><code>relative</code>: Elementet flyttas relativt sin ursprungliga plats, påverkar inte andra element.</li>
 <li><code>absolute</code>: Positioneras relativt närmaste positionerade förälder, tas ur flödet.</li>
 <li><code>fixed</code>: Positioneras relativt till fönstret, stannar kvar vid scroll.</li>
 </ul>
-<hr />
+<hr>
 <h2 id="fråga-7-färger-och-typografi"><a class="header" href="#fråga-7-färger-och-typografi">Fråga 7: Färger och typografi</a></h2>
-<p><strong>Fråga:</strong><br />
-Förklara skillnaden mellan dessa färgformat och när du skulle använda dem:</p>
+<p><strong>Fråga:</strong><br>Förklara skillnaden mellan dessa färgformat och när du skulle använda dem:</p>
 <pre><code class="language-css">color: red;
 color: #FF0000;
 color: rgb(255, 0, 0);
@@ -662,44 +674,35 @@ color: rgba(255, 0, 0, 0.5);
 <li><code>rgb(255, 0, 0)</code>: RGB, bra för exakta färger.</li>
 <li><code>rgba(255, 0, 0, 0.5)</code>: RGB med transparens (alpha).</li>
 </ul>
-<hr />
+<hr>
 <h2 id="fråga-8-responsiv-design--media-queries"><a class="header" href="#fråga-8-responsiv-design--media-queries">Fråga 8: Responsiv design – Media Queries</a></h2>
-<p><strong>Fråga:</strong><br />
-Vad är skillnaden mellan dessa två Media Queries och vilken strategi representerar de?</p>
+<p><strong>Fråga:</strong><br>Vad är skillnaden mellan dessa två Media Queries och vilken strategi representerar de?</p>
 <pre><code class="language-css">@media (max-width: 768px) { ... }
 @media (min-width: 768px) { ... }
 </code></pre>
 <p><strong>Svar:</strong></p>
 <ul>
 <li><code>max-width</code>: Desktop-first, ändrar stilar för mindre skärmar.</li>
-<li><code>min-width</code>: Mobile-first, lägger till/förbättrar stilar för större skärmar.<br />
-Mobile-first rekommenderas idag.</li>
+<li><code>min-width</code>: Mobile-first, lägger till/förbättrar stilar för större skärmar.<br>Mobile-first rekommenderas idag.</li>
 </ul>
-<hr />
+<hr>
 <h2 id="fråga-9-mobile-first-design"><a class="header" href="#fråga-9-mobile-first-design">Fråga 9: Mobile-first design</a></h2>
-<p><strong>Fråga:</strong><br />
-Varför rekommenderas mobile-first design och hur implementerar du det i CSS?</p>
-<p><strong>Svar:</strong><br />
-Mobile-first prioriterar prestanda och tillgänglighet för mobila användare.<br />
-Implementeras genom att skriva grundstilar utan media queries och lägga till förbättringar med <code>@media (min-width: ...)</code>.</p>
-<hr />
+<p><strong>Fråga:</strong><br>Varför rekommenderas mobile-first design och hur implementerar du det i CSS?</p>
+<p><strong>Svar:</strong><br>Mobile-first prioriterar prestanda och tillgänglighet för mobila användare.<br>Implementeras genom att skriva grundstilar utan media queries och lägga till förbättringar med <code>@media (min-width: ...)</code>.</p>
+<hr>
 <h2 id="fråga-10-flexibla-enheter"><a class="header" href="#fråga-10-flexibla-enheter">Fråga 10: Flexibla enheter</a></h2>
-<p><strong>Fråga:</strong><br />
-Förklara skillnaden mellan <code>px</code>, <code>em</code>, <code>rem</code> och <code>%</code>. När skulle du använda respektive enhet?</p>
+<p><strong>Fråga:</strong><br>Förklara skillnaden mellan <code>px</code>, <code>em</code>, <code>rem</code> och <code>%</code>. När skulle du använda respektive enhet?</p>
 <p><strong>Svar:</strong></p>
 <ul>
 <li><code>px</code>: Absolut, exakt storlek.</li>
 <li><code>em</code>: Relativ till förälderns font-size.</li>
 <li><code>rem</code>: Relativ till root-elementets font-size.</li>
-<li><code>%</code>: Relativ till förälderns storlek.<br />
-Använd <code>rem</code> för typografi, <code>%</code> för layouter, <code>px</code> för detaljer.</li>
+<li><code>%</code>: Relativ till förälderns storlek.<br>Använd <code>rem</code> för typografi, <code>%</code> för layouter, <code>px</code> för detaljer.</li>
 </ul>
-<hr />
+<hr>
 <h2 id="fråga-11-flexbox-layout"><a class="header" href="#fråga-11-flexbox-layout">Fråga 11: Flexbox layout</a></h2>
-<p><strong>Fråga:</strong><br />
-Förklara hur Flexbox fungerar. Vad är skillnaden mellan <code>justify-content</code> och <code>align-items</code>? Ge ett exempel.</p>
-<p><strong>Svar:</strong><br />
-Flexbox är för endimensionella layouter.</p>
+<p><strong>Fråga:</strong><br>Förklara hur Flexbox fungerar. Vad är skillnaden mellan <code>justify-content</code> och <code>align-items</code>? Ge ett exempel.</p>
+<p><strong>Svar:</strong><br>Flexbox är för endimensionella layouter.</p>
 <ul>
 <li><code>justify-content</code>: Justerar längs huvudaxeln (t.ex. horisontellt).</li>
 <li><code>align-items</code>: Justerar längs tväraxeln (t.ex. vertikalt).</li>
@@ -711,19 +714,16 @@ Flexbox är för endimensionella layouter.</p>
   align-items: center;
 }
 </code></pre>
-<hr />
+<hr>
 <h2 id="fråga-12-css-grid-layout"><a class="header" href="#fråga-12-css-grid-layout">Fråga 12: CSS Grid layout</a></h2>
-<p><strong>Fråga:</strong><br />
-Vad är skillnaden mellan CSS Grid och Flexbox? Visa hur du skapar en enkel 3-kolumns layout med Grid.</p>
-<p><strong>Svar:</strong><br />
-Grid är tvådimensionellt (rader och kolumner), Flexbox är endimensionellt.<br />
-Exempel:</p>
+<p><strong>Fråga:</strong><br>Vad är skillnaden mellan CSS Grid och Flexbox? Visa hur du skapar en enkel 3-kolumns layout med Grid.</p>
+<p><strong>Svar:</strong><br>Grid är tvådimensionellt (rader och kolumner), Flexbox är endimensionellt.<br>Exempel:</p>
 <pre><code class="language-css">.container {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
 }
 </code></pre>
-<hr />
+<hr>
 <h2 id="tips-för-tekniska-intervjuer-1"><a class="header" href="#tips-för-tekniska-intervjuer-1">Tips för tekniska intervjuer</a></h2>
 <ul>
 <li>Rita gärna box model eller layout-flöde.</li>
@@ -737,11 +737,11 @@ Exempel:</p>
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                             <a rel="prev" href="../kapitel_4/ovningar.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
-                                <i class="fa fa-angle-left"></i>
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
                             <a rel="next prefetch" href="../kapitel_5/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
                         <div style="clear: both"></div>
@@ -751,17 +751,38 @@ Exempel:</p>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                     <a rel="prev" href="../kapitel_4/ovningar.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
-                        <i class="fa fa-angle-left"></i>
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
                     <a rel="next prefetch" href="../kapitel_5/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>
 
         </div>
 
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
         <script>
@@ -769,17 +790,18 @@ Exempel:</p>
         </script>
 
 
-        <script src="../elasticlunr.min.js"></script>
-        <script src="../mark.min.js"></script>
-        <script src="../searcher.js"></script>
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
 
-        <script src="../clipboard.min.js"></script>
-        <script src="../highlight.js"></script>
-        <script src="../book.js"></script>
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
 
         <!-- Custom JS scripts -->
-        <script src="../mermaid.min.js"></script>
-        <script src="../mermaid-init.js"></script>
+        <script src="../mermaid-eefea253.min.js"></script>
+        <script src="../mermaid-init-025d9952.js"></script>
+
 
 
     </div>

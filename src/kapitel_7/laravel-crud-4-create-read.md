@@ -18,9 +18,9 @@ Innan vi börjar koda – här ser du hur koncepten från CRUD-appens Del 3 mots
 | `$_SERVER['REQUEST_METHOD'] === 'POST'` | Route: `Route::post(...)` |
 | `$_POST['title']` + `trim()` + `empty()` | `$request->validate(['title' => 'required'])` |
 | `$errors[] = 'Titel är obligatoriskt.'` + `foreach` i HTML | `@error('title')` + `$message` ( automatiskt) |
-| `htmlspecialchars($title)` i input-fält | `{{ old('title') }}` (escapas automatiskt ) |
+| `htmlspecialchars($title)` i input-fält | `&#123;&#123; old('title') &#125;&#125;` (escapas automatiskt ) |
 | `move_uploaded_file()` + `uniqid()` + validering av filtyp/storlek | `$request->file('image')->store('posts', 'public')` |
-| `<form action="create_post.php" method="post">` | `<form action="{{ route('posts.store') }}" method="POST">` + `@csrf` |
+| `<form action="create_post.php" method="post">` | `<form action="&#123;&#123; route('posts.store') &#125;&#125;" method="POST">` + `@csrf` |
 | `if (!isset($_SESSION['user_id']))` på varje admin-sida | `Route::middleware('auth')->group(...)` |
 
 När du nu bygger Del 4, tänk på dessa paralleller – varje steg motsvarar något du redan gjort i CRUD-appen.
@@ -219,7 +219,7 @@ Skapa `resources/views/posts/create.blade.php`:
     <?php endforeach; ?></ul>
 <?php endif; ?>
 ```
-I Blade blir detta mycket kortare: `{{ old('title') }}` återställer värdet (och escapas automatiskt, inget `htmlspecialchars`), `@error('title')` visar felmeddelandet för just det fältet.
+I Blade blir detta mycket kortare: `&#123;&#123; old('title') &#125;&#125;` återställer värdet (och escapas automatiskt, inget `htmlspecialchars`), `@error('title')` visar felmeddelandet för just det fältet.
 
 ![Formulär för att skapa nytt inlägg](./assets/laravel-crud/del-4/del-4-create-formular.png)
 
@@ -451,7 +451,7 @@ Breeze:s `routes/auth.php` inkluderas via `Route::middleware('auth')->group(...)
 *   Att validera formulär med `$request->validate()`
 *   Att använda Blade-direktiv som `@forelse`, `@error` och `old()` i formulär
 *   Att ladda upp filer med `$request->file()->store()` och `storage:link`
-*   Hur CRUD-appens manuella kod (filter_input, $_FILES, move_uploaded_file, htmlspecialchars) motsvaras av Laravel-funktioner (route model binding, validate, store, Blade {{ }})
+*   Hur CRUD-appens manuella kod (filter_input, $_FILES, move_uploaded_file, htmlspecialchars) motsvaras av Laravel-funktioner (route model binding, validate, store, Blade &#123;&#123; &#125;&#125;)
 
 ---
 

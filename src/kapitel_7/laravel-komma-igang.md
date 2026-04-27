@@ -202,7 +202,7 @@ Skapa en vy: `resources/views/hej.blade.php`:
 </html>
 ```
 
-`{{ $meddelande }}` skriver ut variabeln och escap:ar automatiskt (skyddar mot XSS). Jämför med `<?php echo htmlspecialchars($meddelande); ?>` i CRUD-appen.
+`&#123;&#123; $meddelande &#125;&#125;` skriver ut variabeln och escap:ar automatiskt (skyddar mot XSS). Jämför med `<?php echo htmlspecialchars($meddelande); ?>` i CRUD-appen.
 
 Uppdatera controllern för att skicka data till vyn:
 
@@ -219,12 +219,12 @@ Ladda om – du ska se rubriken med meddelandet.
 
 | Direktiv | Exempel | Betydelse |
 |----------|---------|-----------|
-| `{{ }}` | `{{ $namn }}` | Skriv ut och escap:a |
+| `&#123;&#123; &#125;&#125;` | `&#123;&#123; $namn &#125;&#125;` | Skriv ut och escap:a |
 | `@if` | `@if($inloggad) ... @endif` | Villkor |
 | `@foreach` | `@foreach($posts as $post) ... @endforeach` | Loop över en lista |
 | `@forelse` | `@forelse($posts as $post) ... @empty ... @endforelse` | Som foreach, men visar `@empty`-delen om listan är tom |
-| `@error` | `@error('title') {{ $message }} @enderror` | Visar valideringsfel för ett fält. `$message` innehåller felmeddelandet |
-| `old()` | `value="{{ old('title') }}"` | Återställer formulärvärde efter valideringsfel (så användaren inte behöver skriva om allt) |
+| `@error` | `@error('title') &#123;&#123; $message &#125;&#125; @enderror` | Visar valideringsfel för ett fält. `$message` innehåller felmeddelandet |
+| `old()` | `value="&#123;&#123; old('title') &#125;&#125;"` | Återställer formulärvärde efter valideringsfel (så användaren inte behöver skriva om allt) |
 | `@auth` | `@auth ... @endauth` | Visa bara om användaren är inloggad |
 | `@csrf` | `@csrf` | Måste finnas i alla POST-formulär – genererar skydd mot CSRF-attacker |
 
@@ -239,7 +239,7 @@ Ladda om – du ska se rubriken med meddelandet.
 *   Att konfigurera `.env` för databasanslutning
 *   Att använda Artisan (`serve`, `migrate`, `make:controller`, `make:model`)
 *   Att skapa routes och koppla dem till controllers
-*   Blade-grunderna: `{{ }}`, `@if`, `@foreach`, `@forelse`, `@error`, `old()`, `@csrf`
+*   Blade-grunderna: `&#123;&#123; &#125;&#125;`, `@if`, `@foreach`, `@forelse`, `@error`, `old()`, `@csrf`
 
 ---
 

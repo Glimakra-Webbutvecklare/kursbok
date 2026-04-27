@@ -118,12 +118,12 @@ author: Flisa
 
 **Hur fungerar det?**
 
-Du skapar en layout-fil i mappen `_layouts/` (t.ex. `post.html`). I denna definierar du HTML-strukturen med variabeln `{{ content }}` som platshållare för sidans innehål. När Jekyll bygger, ersätter den `{{ content }}` med innehållet från din Markdown-fil.
+Du skapar en layout-fil i mappen `_layouts/` (t.ex. `post.html`). I denna definierar du HTML-strukturen med variabeln `&#123;&#123; content &#125;&#125;` som platshållare för sidans innehål. När Jekyll bygger, ersätter den `&#123;&#123; content &#125;&#125;` med innehållet från din Markdown-fil.
 
 
 **Exempel med variabler i layout:**
 
-Variabler från Front Matter kan användas i layouten. Om du definierar `author` i Front Matter, kan du referera till den i layouten med `{{ page.author }}`:
+Variabler från Front Matter kan användas i layouten. Om du definierar `author` i Front Matter, kan du referera till den i layouten med `&#123;&#123; page.author &#125;&#125;`:
 
 ``` html
 <footer>
@@ -133,7 +133,7 @@ Variabler från Front Matter kan användas i layouten. Om du definierar `author`
 </footer>
 ```
 
-När Jekyll bygger sidan, ersätts `{{ page.author }}` med värdet från Front Matter. Om Front Matter innehåller `author: Flisa`, skrivs footern som:
+När Jekyll bygger sidan, ersätts `&#123;&#123; page.author &#125;&#125;` med värdet från Front Matter. Om Front Matter innehåller `author: Flisa`, skrivs footern som:
 
 Du kan använda Jekylls inbyggda variabel `site.time` för att få aktuellt år dynamiskt:
 
@@ -150,7 +150,7 @@ Variabeln `site.time` är byggdatum, och filtret `date: "%Y"` extraherar året. 
 Alternativt kan du haråkoda året i `_config.yml` och uppdatera det manuellt vid behov.
 
 
-Du kan också använda andra variabler som `{{ page.date }}`, `{{ page.title }}` och egna variabler som `{{ page.category }}` - så länge de är definierade i Front Matter.
+Du kan också använda andra variabler som `&#123;&#123; page.date &#125;&#125;`, `&#123;&#123; page.title &#125;&#125;` och egna variabler som `&#123;&#123; page.category &#125;&#125;` - så länge de är definierade i Front Matter.
 
 
 **Front Matter-konfiguration:**
