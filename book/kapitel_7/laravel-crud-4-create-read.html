@@ -35,7 +35,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-31827df8.js";
+            window.path_to_searchindex_js = "../searchindex-ddb7c7e4.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-feb7936f.js"></script>
@@ -250,28 +250,24 @@ class PostController extends Controller
 </code></pre>
 <p>Skapa mappen <code>resources/views/posts/</code> och två minimala vyer.</p>
 <p><code>index.blade.php</code>:</p>
-<pre><code class="language-blade">@extends('layouts.app')
-
-@section('content')
+<pre><code class="language-blade">&lt;x-layout&gt;
 &lt;h1&gt;Välkommen till Bloggen!&lt;/h1&gt;
 @forelse($posts as $post)
     &lt;p&gt;{{ $post-&gt;title }}&lt;/p&gt;
 @empty
     &lt;p&gt;Det finns inga blogginlägg ännu.&lt;/p&gt;
 @endforelse
-@endsection
+&lt;/x-layout&gt;
 </code></pre>
 <p><code>admin.blade.php</code>:</p>
-<pre><code class="language-blade">@extends('layouts.app')
-
-@section('content')
+<pre><code class="language-blade">&lt;x-layout&gt;
 &lt;h1&gt;Admin Dashboard&lt;/h1&gt;
 &lt;p&gt;Välkommen, {{ auth()-&gt;user()-&gt;name }}!&lt;/p&gt;
 &lt;a href="{{ route('posts.create') }}"&gt;Skapa nytt inlägg&lt;/a&gt;
 @foreach($posts as $post)
     &lt;p&gt;{{ $post-&gt;title }}&lt;/p&gt;
 @endforeach
-@endsection
+&lt;/x-layout&gt;
 </code></pre>
 <p><strong>Kontrollera att det fungerar:</strong> Gå till <code>/</code>. Om du har testinlägget från Del 3 (Tinker) ska du se det. Logga in och gå till <code>/admin</code> – du ska se admin-panelen.</p>
 <hr>
@@ -303,9 +299,7 @@ class PostController extends Controller
 <p>I Laravel gör <code>$request-&gt;validate(...)</code> samma sak – och mer: max-längd, XSS-skydd och automatisk felåtergivning.</p>
 </blockquote>
 <p>Skapa <code>resources/views/posts/create.blade.php</code>:</p>
-<pre><code class="language-blade">@extends('layouts.app')
-
-@section('content')
+<pre><code class="language-blade">&lt;x-layout&gt;
 &lt;h1&gt;Skapa nytt blogginlägg&lt;/h1&gt;
 
 &lt;form action="{{ route('posts.store') }}" method="POST"&gt;
@@ -322,7 +316,7 @@ class PostController extends Controller
     &lt;/div&gt;
     &lt;button type="submit"&gt;Spara inlägg&lt;/button&gt;
 &lt;/form&gt;
-@endsection
+&lt;/x-layout&gt;
 </code></pre>
 <blockquote>
 <p><strong>Som i CRUD-appen:</strong> I <code>create_post.php</code> skrev du <code>value="&lt;?php echo htmlspecialchars($title); ?&gt;"</code> för att behålla indata vid fel. I Blade gör <code>{{ old('title') }}</code> samma sak – och escapas automatiskt, inget <code>htmlspecialchars</code> behövs.</p>
@@ -337,9 +331,7 @@ class PostController extends Controller
 <hr>
 <h2 id="steg-3-admin-panel-och-lista"><a class="header" href="#steg-3-admin-panel-och-lista">Steg 3: Admin-panel och lista</a></h2>
 <p>Skapa admin-vyn med tabell över dina inlägg:</p>
-<pre><code class="language-blade">@extends('layouts.app')
-
-@section('content')
+<pre><code class="language-blade">&lt;x-layout&gt;
 &lt;h1&gt;Admin Dashboard&lt;/h1&gt;
 &lt;p&gt;Välkommen, {{ auth()-&gt;user()-&gt;name }}!&lt;/p&gt;
 
@@ -367,7 +359,7 @@ class PostController extends Controller
         @endforeach
     &lt;/tbody&gt;
 &lt;/table&gt;
-@endsection
+&lt;/x-layout&gt;
 </code></pre>
 <blockquote>
 <p><strong>Som i CRUD-appen:</strong> I <code>admin/index.php</code> visade du inlägg med <code>foreach ($posts as $post)</code> och <code>htmlspecialchars()</code> på varje utskrift. Här gör <code>{{ $post-&gt;title }}</code> samma sak – escapas automatiskt.</p>
@@ -376,9 +368,7 @@ class PostController extends Controller
 <hr>
 <h2 id="steg-4-förbättra-index-och-show"><a class="header" href="#steg-4-förbättra-index-och-show">Steg 4: Förbättra index och show</a></h2>
 <p>Uppdatera startsidan så att den visar mer information:</p>
-<pre><code class="language-blade">@extends('layouts.app')
-
-@section('content')
+<pre><code class="language-blade">&lt;x-layout&gt;
 &lt;h1&gt;Välkommen till Bloggen!&lt;/h1&gt;
 
 @forelse($posts as $post)
@@ -391,19 +381,17 @@ class PostController extends Controller
 @empty
     &lt;p&gt;Det finns inga blogginlägg ännu.&lt;/p&gt;
 @endforelse
-@endsection
+&lt;/x-layout&gt;
 </code></pre>
 <p>Skapa <code>resources/views/posts/show.blade.php</code>:</p>
-<pre><code class="language-blade">@extends('layouts.app')
-
-@section('content')
+<pre><code class="language-blade">&lt;x-layout&gt;
 &lt;article&gt;
     &lt;h1&gt;{{ $post-&gt;title }}&lt;/h1&gt;
     &lt;p&gt;Publicerad {{ $post-&gt;created_at-&gt;format('Y-m-d H:i') }} av {{ $post-&gt;user-&gt;name }}&lt;/p&gt;
     &lt;div&gt;{!! nl2br(e($post-&gt;body)) !!}&lt;/div&gt;
 &lt;/article&gt;
 &lt;a href="{{ route('posts.index') }}"&gt;&amp;laquo; Tillbaka&lt;/a&gt;
-@endsection
+&lt;/x-layout&gt;
 </code></pre>
 <blockquote>
 <p><strong>Som i CRUD-appen:</strong> I <code>post.php</code> skrev du <code>htmlspecialchars($post['title'])</code> och <code>nl2br()</code> för radbrytningar. Här gör <code>{{ $post-&gt;title }}</code> escaping automatiskt. För radbrytningar använder vi <code>nl2br(e($post-&gt;body))</code>.</p>

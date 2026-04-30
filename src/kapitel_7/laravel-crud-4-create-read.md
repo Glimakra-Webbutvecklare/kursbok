@@ -94,31 +94,27 @@ Skapa mappen `resources/views/posts/` och två minimala vyer.
 `index.blade.php`:
 
 ```blade
-@extends('layouts.app')
-
-@section('content')
+<x-layout>
 <h1>Välkommen till Bloggen!</h1>
 @forelse($posts as $post)
     <p>{{ $post->title }}</p>
 @empty
     <p>Det finns inga blogginlägg ännu.</p>
 @endforelse
-@endsection
+</x-layout>
 ```
 
 `admin.blade.php`:
 
 ```blade
-@extends('layouts.app')
-
-@section('content')
+<x-layout>
 <h1>Admin Dashboard</h1>
 <p>Välkommen, {{ auth()->user()->name }}!</p>
 <a href="{{ route('posts.create') }}">Skapa nytt inlägg</a>
 @foreach($posts as $post)
     <p>{{ $post->title }}</p>
 @endforeach
-@endsection
+</x-layout>
 ```
 
 **Kontrollera att det fungerar:** Gå till `/`. Om du har testinlägget från Del 3 (Tinker) ska du se det. Logga in och gå till `/admin` – du ska se admin-panelen.
@@ -160,9 +156,7 @@ public function store(Request $request)
 Skapa `resources/views/posts/create.blade.php`:
 
 ```blade
-@extends('layouts.app')
-
-@section('content')
+<x-layout>
 <h1>Skapa nytt blogginlägg</h1>
 
 <form action="{{ route('posts.store') }}" method="POST">
@@ -179,7 +173,7 @@ Skapa `resources/views/posts/create.blade.php`:
     </div>
     <button type="submit">Spara inlägg</button>
 </form>
-@endsection
+</x-layout>
 ```
 
 > **Som i CRUD-appen:** I `create_post.php` skrev du `value="<?php echo htmlspecialchars($title); ?>"` för att behålla indata vid fel. I Blade gör `{{ old('title') }}` samma sak – och escapas automatiskt, inget `htmlspecialchars` behövs.
@@ -199,9 +193,7 @@ Skapa `resources/views/posts/create.blade.php`:
 Skapa admin-vyn med tabell över dina inlägg:
 
 ```blade
-@extends('layouts.app')
-
-@section('content')
+<x-layout>
 <h1>Admin Dashboard</h1>
 <p>Välkommen, {{ auth()->user()->name }}!</p>
 
@@ -229,7 +221,7 @@ Skapa admin-vyn med tabell över dina inlägg:
         @endforeach
     </tbody>
 </table>
-@endsection
+</x-layout>
 ```
 
 > **Som i CRUD-appen:** I `admin/index.php` visade du inlägg med `foreach ($posts as $post)` och `htmlspecialchars()` på varje utskrift. Här gör `{{ $post->title }}` samma sak – escapas automatiskt.
@@ -243,9 +235,7 @@ Skapa admin-vyn med tabell över dina inlägg:
 Uppdatera startsidan så att den visar mer information:
 
 ```blade
-@extends('layouts.app')
-
-@section('content')
+<x-layout>
 <h1>Välkommen till Bloggen!</h1>
 
 @forelse($posts as $post)
@@ -258,22 +248,20 @@ Uppdatera startsidan så att den visar mer information:
 @empty
     <p>Det finns inga blogginlägg ännu.</p>
 @endforelse
-@endsection
+</x-layout>
 ```
 
 Skapa `resources/views/posts/show.blade.php`:
 
 ```blade
-@extends('layouts.app')
-
-@section('content')
+<x-layout>
 <article>
     <h1>{{ $post->title }}</h1>
     <p>Publicerad {{ $post->created_at->format('Y-m-d H:i') }} av {{ $post->user->name }}</p>
     <div>{!! nl2br(e($post->body)) !!}</div>
 </article>
 <a href="{{ route('posts.index') }}">&laquo; Tillbaka</a>
-@endsection
+</x-layout>
 ```
 
 > **Som i CRUD-appen:** I `post.php` skrev du `htmlspecialchars($post['title'])` och `nl2br()` för radbrytningar. Här gör `{{ $post->title }}` escaping automatiskt. För radbrytningar använder vi `nl2br(e($post->body))`.

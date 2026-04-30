@@ -52,8 +52,7 @@ I CRUD-appen skapade du tabellerna manuellt med `CREATE TABLE`. I Laravel använ
 Laravel Breeze ger dig registrering, inloggning och logout – motsvarar [Del 2: Autentisering](crud-app-2-autentisering.md) där du byggde `register.php`, `login.php` och `logout.php` manuellt.
 
 ```bash
-composer require laravel/breeze --dev
-php artisan breeze:install
+composer require laravel/breeze && php artisan breeze:install blade
 ```
 
 **Exempel på utdata** för `composer require`:
@@ -64,7 +63,7 @@ php artisan breeze:install
   - Installing laravel/breeze (v2.x): Extracting archive
 ```
 
-För `breeze:install` – välj **"Blade"** när du tillfrågas om vilken stack du vill använda. Breeze bygger sedan frontend-assets (npm, vite). Breeze skapar routes, controllers och vyer för auth. Kör sedan:
+Kommandot `breeze:install blade` talar om för Breeze att använda Blade-stacken. Breeze bygger sedan frontend-assets (npm, vite). Breeze skapar routes, controllers och vyer för auth. Kör sedan:
 
 ```bash
 php artisan migrate

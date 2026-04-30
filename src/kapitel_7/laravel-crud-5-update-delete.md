@@ -67,9 +67,7 @@ public function edit(Post $post)
 Skapa `resources/views/posts/edit.blade.php`:
 
 ```blade
-@extends('layouts.app')
-
-@section('content')
+<x-layout>
 <h1>Redigera blogginlägg</h1>
 
 <form action="{{ route('posts.update', $post) }}" method="POST" enctype="multipart/form-data">
@@ -96,7 +94,7 @@ Skapa `resources/views/posts/edit.blade.php`:
     </div>
     <button type="submit">Uppdatera inlägg</button>
 </form>
-@endsection
+</x-layout>
 ```
 
 > **Som i CRUD-appen:** I `edit_post.php` skickade du formuläret till samma sida (`edit_post.php?id=...`) och kollade `$_SERVER['REQUEST_METHOD'] === 'POST'`. I Laravel använder du separata routes: GET visar formuläret, POST sparar ändringen. Du behöver inte lägga in `?id=` i URL:en – route model binding skickar in rätt post automatiskt.

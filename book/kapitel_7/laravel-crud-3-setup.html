@@ -35,7 +35,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-31827df8.js";
+            window.path_to_searchindex_js = "../searchindex-ddb7c7e4.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-feb7936f.js"></script>
@@ -217,15 +217,14 @@
 <hr>
 <h2 id="steg-1-installera-laravel-breeze-och-verifiera-autentisering"><a class="header" href="#steg-1-installera-laravel-breeze-och-verifiera-autentisering">Steg 1: Installera Laravel Breeze och verifiera autentisering</a></h2>
 <p>Laravel Breeze ger dig registrering, inloggning och logout – motsvarar <a href="crud-app-2-autentisering.html">Del 2: Autentisering</a> där du byggde <code>register.php</code>, <code>login.php</code> och <code>logout.php</code> manuellt.</p>
-<pre><code class="language-bash">composer require laravel/breeze --dev
-php artisan breeze:install
+<pre><code class="language-bash">composer require laravel/breeze &amp;&amp; php artisan breeze:install blade
 </code></pre>
 <p><strong>Exempel på utdata</strong> för <code>composer require</code>:</p>
 <pre><code>  INFO  Running composer update laravel/breeze
   ...
   - Installing laravel/breeze (v2.x): Extracting archive
 </code></pre>
-<p>För <code>breeze:install</code> – välj <strong>“Blade”</strong> när du tillfrågas om vilken stack du vill använda. Breeze bygger sedan frontend-assets (npm, vite). Breeze skapar routes, controllers och vyer för auth. Kör sedan:</p>
+<p>Kommandot <code>breeze:install blade</code> talar om för Breeze att använda Blade-stacken. Breeze bygger sedan frontend-assets (npm, vite). Breeze skapar routes, controllers och vyer för auth. Kör sedan:</p>
 <pre><code class="language-bash">php artisan migrate
 </code></pre>
 <p><strong>Exempel på utdata:</strong></p>

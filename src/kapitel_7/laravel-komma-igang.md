@@ -23,14 +23,14 @@ Om du körde CRUD-appen med Docker kan du använda samma `mysql`-service för La
 Skapa ett nytt Laravel-projekt med Composer:
 
 ```bash
-composer create-project laravel/laravel blogg
-cd blogg
+composer create-project laravel/laravel app
+cd app
 ```
 
 **Exempel på utdata** (installationen tar några minuter):
 
 ```
-Creating a "laravel/laravel" project at "./blogg"
+Creating a "laravel/laravel" project at "./app"
 ...
 > @php artisan key:generate --ansi
   INFO  Application key set successfully.
@@ -41,15 +41,9 @@ Creating a "laravel/laravel" project at "./blogg"
   0001_01_01_000002_create_jobs_table .......... DONE
 ```
 
-Alternativt kan du installera Laravel Installer globalt och använda:
-
-```bash
-laravel new blogg
-```
-
 Projektet skapas med alla nödvändiga filer. Det tar några minuter första gången.
 
-**Kontrollera att det fungerar:** Efter installationen ska mappen `blogg` innehålla underkataloger som `app/`, `routes/`, `resources/` och `database/`.
+**Kontrollera att det fungerar:** Efter installationen ska mappen `app` innehålla underkataloger som `app/`, `routes/`, `resources/` och `database/`.
 
 ---
 
@@ -86,7 +80,7 @@ DB_PASSWORD=db_password
 
 Anpassa efter din miljö (t.ex. `DB_HOST=mysql` om du använder Docker). `APP_KEY` genereras automatiskt vid installation – den används för kryptering och sessioner.
 
-**Kontrollera att det fungerar:** Starta servern med `php artisan serve` och öppna `http://localhost:8000`. Om du får databasfel, kontrollera att `.env` har rätt uppgifter och att databasen finns.
+**Kontrollera att det fungerar:** Starta servern och öppna `http://localhost:8060`. Om du får databasfel, kontrollera att `.env` har rätt uppgifter och att databasen finns.
 
 ---
 
@@ -106,7 +100,7 @@ php artisan serve
   Press Ctrl+C to stop the server
 ```
 
-Startar en utvecklingsserver på `http://localhost:8000`. Öppna adressen i webbläsaren – du ska se Laravels välkomstsida.
+Startar en utvecklingsserver på `http://localhost:8060`. Öppna adressen i webbläsaren – du ska se Laravels välkomstsida.
 
 Andra användbara kommandon:
 
@@ -230,6 +224,45 @@ Ladda om – du ska se rubriken med meddelandet.
 
 **Tips:** Använd `@forelse` istället för `@foreach` när listan kan vara tom – då kan du visa ett meddelande som "Inga inlägg ännu". Använd `@error` och `old()` i formulär för att visa valideringsfel och behålla användarens input.
 
+### Blade-komponenter och layout med `$slot`
+
+Modern Laravel använder Blade-komponenter med `$slot` istället för `@extends` och `@section` för att bygga layouter. Det gör att vyer blir mer läsbara och liknar HTML.
+
+Börja med att skapa en layoutkomponent i `resources/views/components/layout.blade.php`:
+
+```blade
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ $title ?? 'Laravel' }}</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+<body>
+    <nav>
+        <a href="/">Hem</a>
+    </nav>
+    <main>
+        {{ $slot }}
+    </main>
+</body>
+</html>
+```
+
+Allt innehåll som placeras mellan `<x-layout>` och `</x-layout>` hamnar automatiskt i `{{ $slot }}` – ramverket hanterar detta. Eventuella extra variabler (som `$title`) skickas som attribut.
+
+Nu kan du använda layouten i dina vyer. Istället för att skriva hela HTML-strukturen i varje vy, wrappar du bara innehållet:
+
+```blade
+<x-layout title="Startsida">
+    <h1>Välkommen</h1>
+    <p>Det här är startsidan.</p>
+</x-layout>
+```
+
+Jämfört med CRUD-appens metod att upprepa HTML i varje vy, ger komponentlayouten en gemensam struktur som definieras på ett ställe.
+
 ---
 
 ## I denna del har du lärt dig
@@ -240,6 +273,7 @@ Ladda om – du ska se rubriken med meddelandet.
 *   Att använda Artisan (`serve`, `migrate`, `make:controller`, `make:model`)
 *   Att skapa routes och koppla dem till controllers
 *   Blade-grunderna: `&#123;&#123; &#125;&#125;`, `@if`, `@foreach`, `@forelse`, `@error`, `old()`, `@csrf`
+*   Blade-komponentlayout med `<x-layout>` och `$slot` istället för `@extends`/`@section`
 
 ---
 

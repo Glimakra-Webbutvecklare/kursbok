@@ -35,7 +35,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-31827df8.js";
+            window.path_to_searchindex_js = "../searchindex-ddb7c7e4.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-feb7936f.js"></script>
@@ -189,11 +189,11 @@
 <hr>
 <h2 id="installation"><a class="header" href="#installation">Installation</a></h2>
 <p>Skapa ett nytt Laravel-projekt med Composer:</p>
-<pre><code class="language-bash">composer create-project laravel/laravel blogg
-cd blogg
+<pre><code class="language-bash">composer create-project laravel/laravel app
+cd app
 </code></pre>
 <p><strong>Exempel på utdata</strong> (installationen tar några minuter):</p>
-<pre><code>Creating a "laravel/laravel" project at "./blogg"
+<pre><code>Creating a "laravel/laravel" project at "./app"
 ...
 &gt; @php artisan key:generate --ansi
   INFO  Application key set successfully.
@@ -203,11 +203,8 @@ cd blogg
   0001_01_01_000001_create_cache_table ........ DONE
   0001_01_01_000002_create_jobs_table .......... DONE
 </code></pre>
-<p>Alternativt kan du installera Laravel Installer globalt och använda:</p>
-<pre><code class="language-bash">laravel new blogg
-</code></pre>
 <p>Projektet skapas med alla nödvändiga filer. Det tar några minuter första gången.</p>
-<p><strong>Kontrollera att det fungerar:</strong> Efter installationen ska mappen <code>blogg</code> innehålla underkataloger som <code>app/</code>, <code>routes/</code>, <code>resources/</code> och <code>database/</code>.</p>
+<p><strong>Kontrollera att det fungerar:</strong> Efter installationen ska mappen <code>app</code> innehålla underkataloger som <code>app/</code>, <code>routes/</code>, <code>resources/</code> och <code>database/</code>.</p>
 <hr>
 <h2 id="projektstruktur-översikt"><a class="header" href="#projektstruktur-översikt">Projektstruktur (översikt)</a></h2>
 <p>Efter installationen ser du en mappstruktur. Här är de viktigaste delarna:</p>
@@ -239,7 +236,7 @@ DB_USERNAME=db_user
 DB_PASSWORD=db_password
 </code></pre>
 <p>Anpassa efter din miljö (t.ex. <code>DB_HOST=mysql</code> om du använder Docker). <code>APP_KEY</code> genereras automatiskt vid installation – den används för kryptering och sessioner.</p>
-<p><strong>Kontrollera att det fungerar:</strong> Starta servern med <code>php artisan serve</code> och öppna <code>http://localhost:8000</code>. Om du får databasfel, kontrollera att <code>.env</code> har rätt uppgifter och att databasen finns.</p>
+<p><strong>Kontrollera att det fungerar:</strong> Starta servern och öppna <code>http://localhost:8060</code>. Om du får databasfel, kontrollera att <code>.env</code> har rätt uppgifter och att databasen finns.</p>
 <hr>
 <h2 id="artisan--laravels-kommandorad"><a class="header" href="#artisan--laravels-kommandorad">Artisan – Laravels kommandorad</a></h2>
 <p>Laravel levereras med <strong>Artisan</strong>, ett verktyg för vanliga uppgifter:</p>
@@ -250,7 +247,7 @@ DB_PASSWORD=db_password
 
   Press Ctrl+C to stop the server
 </code></pre>
-<p>Startar en utvecklingsserver på <code>http://localhost:8000</code>. Öppna adressen i webbläsaren – du ska se Laravels välkomstsida.</p>
+<p>Startar en utvecklingsserver på <code>http://localhost:8060</code>. Öppna adressen i webbläsaren – du ska se Laravels välkomstsida.</p>
 <p>Andra användbara kommandon:</p>
 <pre><code class="language-bash">php artisan migrate          # Kör migrations (skapar/uppdaterar tabeller)
 php artisan make:controller  # Skapa en ny controller
@@ -337,6 +334,35 @@ Route::get('/', [HejController::class, 'index']);
 </table>
 </div>
 <p><strong>Tips:</strong> Använd <code>@forelse</code> istället för <code>@foreach</code> när listan kan vara tom – då kan du visa ett meddelande som “Inga inlägg ännu”. Använd <code>@error</code> och <code>old()</code> i formulär för att visa valideringsfel och behålla användarens input.</p>
+<h3 id="blade-komponenter-och-layout-med-slot"><a class="header" href="#blade-komponenter-och-layout-med-slot">Blade-komponenter och layout med <code>$slot</code></a></h3>
+<p>Modern Laravel använder Blade-komponenter med <code>$slot</code> istället för <code>@extends</code> och <code>@section</code> för att bygga layouter. Det gör att vyer blir mer läsbara och liknar HTML.</p>
+<p>Börja med att skapa en layoutkomponent i <code>resources/views/components/layout.blade.php</code>:</p>
+<pre><code class="language-blade">&lt;!DOCTYPE html&gt;
+&lt;html lang="{{ str_replace('_', '-', app()-&gt;getLocale()) }}"&gt;
+&lt;head&gt;
+    &lt;meta charset="utf-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+    &lt;title&gt;{{ $title ?? 'Laravel' }}&lt;/title&gt;
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;nav&gt;
+        &lt;a href="/"&gt;Hem&lt;/a&gt;
+    &lt;/nav&gt;
+    &lt;main&gt;
+        {{ $slot }}
+    &lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>Allt innehåll som placeras mellan <code>&lt;x-layout&gt;</code> och <code>&lt;/x-layout&gt;</code> hamnar automatiskt i <code>{{ $slot }}</code> – ramverket hanterar detta. Eventuella extra variabler (som <code>$title</code>) skickas som attribut.</p>
+<p>Nu kan du använda layouten i dina vyer. Istället för att skriva hela HTML-strukturen i varje vy, wrappar du bara innehållet:</p>
+<pre><code class="language-blade">&lt;x-layout title="Startsida"&gt;
+    &lt;h1&gt;Välkommen&lt;/h1&gt;
+    &lt;p&gt;Det här är startsidan.&lt;/p&gt;
+&lt;/x-layout&gt;
+</code></pre>
+<p>Jämfört med CRUD-appens metod att upprepa HTML i varje vy, ger komponentlayouten en gemensam struktur som definieras på ett ställe.</p>
 <hr>
 <h2 id="i-denna-del-har-du-lärt-dig"><a class="header" href="#i-denna-del-har-du-lärt-dig">I denna del har du lärt dig</a></h2>
 <ul>
@@ -346,6 +372,7 @@ Route::get('/', [HejController::class, 'index']);
 <li>Att använda Artisan (<code>serve</code>, <code>migrate</code>, <code>make:controller</code>, <code>make:model</code>)</li>
 <li>Att skapa routes och koppla dem till controllers</li>
 <li>Blade-grunderna: <code>&amp;#123;&amp;#123; &amp;#125;&amp;#125;</code>, <code>@if</code>, <code>@foreach</code>, <code>@forelse</code>, <code>@error</code>, <code>old()</code>, <code>@csrf</code></li>
+<li>Blade-komponentlayout med <code>&lt;x-layout&gt;</code> och <code>$slot</code> istället för <code>@extends</code>/<code>@section</code></li>
 </ul>
 <hr>
 <p><strong>Föregående:</strong> <a href="laravel-intro.html">Del 1: Varför ett ramverk?</a> | <strong>Nästa:</strong> <a href="laravel-crud-3-setup.html">Del 3: Setup och autentisering</a></p>

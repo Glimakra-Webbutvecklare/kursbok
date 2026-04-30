@@ -35,7 +35,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-31827df8.js";
+            window.path_to_searchindex_js = "../searchindex-ddb7c7e4.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-feb7936f.js"></script>
@@ -218,9 +218,7 @@ public function delete(User $user, Post $post): bool
 </code></pre>
 <p><code>$this-&gt;authorize('update', $post)</code> anropar Policy:n. Om användaren inte äger inlägget returneras 403 Forbidden automatiskt.</p>
 <p>Skapa <code>resources/views/posts/edit.blade.php</code>:</p>
-<pre><code class="language-blade">@extends('layouts.app')
-
-@section('content')
+<pre><code class="language-blade">&lt;x-layout&gt;
 &lt;h1&gt;Redigera blogginlägg&lt;/h1&gt;
 
 &lt;form action="{{ route('posts.update', $post) }}" method="POST" enctype="multipart/form-data"&gt;
@@ -247,7 +245,7 @@ public function delete(User $user, Post $post): bool
     &lt;/div&gt;
     &lt;button type="submit"&gt;Uppdatera inlägg&lt;/button&gt;
 &lt;/form&gt;
-@endsection
+&lt;/x-layout&gt;
 </code></pre>
 <blockquote>
 <p><strong>Som i CRUD-appen:</strong> I <code>edit_post.php</code> skickade du formuläret till samma sida (<code>edit_post.php?id=...</code>) och kollade <code>$_SERVER['REQUEST_METHOD'] === 'POST'</code>. I Laravel använder du separata routes: GET visar formuläret, POST sparar ändringen. Du behöver inte lägga in <code>?id=</code> i URL:en – route model binding skickar in rätt post automatiskt.</p>
