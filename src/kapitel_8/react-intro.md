@@ -36,7 +36,7 @@ React-applikationer byggs från isolerade UI-delar som kallas komponenter. Här 
 function Profil() {
   return (
     <img
-      src="https://i.imgur.com/MK3eW3As.jpg"
+      src="./assets/react-images/MK3eW3As.jpg"
       alt="Katherine Johnson"
     />
   );
@@ -63,7 +63,7 @@ Du kan deklarera många komponenter i en fil, men stora filer kan bli svåra att
 function Profil() {
   return (
     <img
-      src="https://i.imgur.com/MK3eW3As.jpg"
+      src="./assets/react-images/MK3eW3As.jpg"
       alt="Katherine Johnson"
     />
   );
@@ -286,7 +286,7 @@ function TodoLista() {
   return (
     <h1>Hedy Lamarrs Todos</h1>
     <img 
-      src="https://i.imgur.com/yXOvdOSs.jpg" 
+        src="./assets/react-images/yXOvdOSs.jpg"
       alt="Hedy Lamarr" 
       class="photo"
     >
@@ -307,7 +307,7 @@ function TodoLista() {
     <>
       <h1>Hedy Lamarrs Todos</h1>
       <img 
-        src="https://i.imgur.com/yXOvdOSs.jpg" 
+      src="./assets/react-images/yXOvdOSs.jpg"
         alt="Hedy Lamarr" 
         className="photo"
       />
@@ -340,7 +340,7 @@ function TodoLista() {
       <h1>{person.name}s Todos</h1>
       <img
         className="avatar"
-        src="https://i.imgur.com/7vQD0fPs.jpg"
+        src="./assets/react-images/7vQD0fPs.jpg"
         alt="Gregorio Y. Zara"
       />
       <ul>

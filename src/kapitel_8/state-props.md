@@ -31,7 +31,7 @@ function Profile() {
       size={100}
       person={{ 
         name: 'Katsuko Saruhashi', 
-        imageUrl: 'https://i.imgur.com/YfeOqp2s.jpg' 
+        imageUrl: './assets/react-images/YfeOqp2s.jpg'
       }}
     />
   );

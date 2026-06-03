@@ -224,4 +224,4 @@ export default App;
 - **Komponenter**: Använd Tailwind CSS för att snabbt styla React-komponenter.
 - **Best Practices**: Håll komponenterna små och återanvändbara, använd conditional classnames och dra nytta av Tailwinds plugins.
 
-För mer information, besök [Tailwind CSS Dokumentation](https://tailwindcss.com/docs) och [React Dokumentation](https://reactjs.org/).
+För mer information, besök [Tailwind CSS Dokumentation](https://tailwindcss.com/docs) och [React Dokumentation](https://react.dev/).

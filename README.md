@@ -34,7 +34,7 @@ Contributions from other teachers are welcome! Here's how you can add or modify 
     *   Clone this repository:
         ```bash
         git clone <repository-url>
-        cd boken # Or your repository directory name
+        cd kursbok # Or your repository directory name
         ```
     *   Initialize `mdbook-mermaid` (if not already done, checks `book.toml`):
         ```bash
