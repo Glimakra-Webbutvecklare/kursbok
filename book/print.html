@@ -29,6 +29,7 @@
         <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
 
         <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="theme/playground/playground-37884923.css">
 
 
         <!-- Provide site root and default themes to javascript -->
@@ -36,10 +37,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-97d3010e.js";
+            window.path_to_searchindex_js = "searchindex-39d1656f.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-5cc5f0ae.js"></script>
+        <script src="toc-1c6ab717.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -451,15 +452,11 @@ git config --global user.email "din.epost@example.com"
 <p>Du bör nu ha installerat och grundkonfigurerat <strong>Visual Studio Code</strong> för att skriva kod, <strong>Git</strong> för att hantera kodens historik, och ha tillgång till en <strong>Terminal</strong> för att köra kommandon. Dessa tre verktyg utgör grunden i vår utvecklingsmiljö för denna kurs.</p>
 <p>I nästa kapitel börjar vi använda dessa verktyg när vi dyker ner i HTML och lär oss grunderna i Git.</p>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="kapitel-2-html-och-git--webbens-byggstenar-och-kodens-historik"><a class="header" href="#kapitel-2-html-och-git--webbens-byggstenar-och-kodens-historik">Kapitel 2: HTML och Git – Webbens byggstenar och kodens historik</a></h1>
+<h1 id="html--webbens-byggstenar"><a class="header" href="#html--webbens-byggstenar">HTML – Webbens byggstenar</a></h1>
 <p>I det föregående kapitlet fick vi en överblick över webbutvecklingens värld. Nu är det dags att kavla upp ärmarna och börja bygga!</p>
-<p>Detta kapitel introducerar två fundamentala teknologier som <em>alla</em> webbutvecklare måste behärska:</p>
-<ol>
-<li><strong>HTML (HyperText Markup Language):</strong> Språket vi använder för att definiera strukturen och innehållet på en webbsida. Tänk på det som skelettet som håller allt på plats. Utan HTML finns det ingen webbsida.</li>
-<li><strong>Git:</strong> Systemet vi använder för att spara och hantera olika versioner av vår kod. Det är som en tidsmaskin och ett samarbetsverktyg i ett – helt avgörande när projekt växer eller när flera personer arbetar tillsammans.</li>
-</ol>
+<p>Detta kapitel introducerar <strong>HTML (HyperText Markup Language)</strong> – språket vi använder för att definiera strukturen och innehållet på en webbsida. Tänk på det som skelettet som håller allt på plats. Utan HTML finns det ingen webbsida.</p>
 <blockquote>
-<p><strong>Varför dessa två tillsammans?</strong><br>När du börjar skriva HTML-kod, även för enkla sidor, vill du kunna spara ditt arbete på ett säkert sätt, kunna gå tillbaka om något går fel och ha en metod för att dela din kod. Git ger dig den tryggheten och strukturen redan från början.</p>
+<p><strong>Bra att veta:</strong><br>När du börjar skriva HTML-kod vill du också kunna spara ditt arbete på ett säkert sätt och kunna gå tillbaka om något går fel. Det verktyget heter <strong>Git</strong> och har ett helt eget kapitel direkt efter detta.</p>
 </blockquote>
 <hr>
 <h2 id="vad-kommer-du-att-lära-dig-i-detta-kapitel"><a class="header" href="#vad-kommer-du-att-lära-dig-i-detta-kapitel">Vad kommer du att lära dig i detta kapitel?</a></h2>
@@ -467,10 +464,7 @@ git config --global user.email "din.epost@example.com"
 <li><strong>Grunderna i HTML5:</strong> De vanligaste taggarna för att skapa text, rubriker, listor, länkar och bilder.</li>
 <li><strong>Struktur och semantik:</strong> Varför det är viktigt att använda rätt HTML-element för rätt syfte – inte bara för utseendet, utan också för sökmotorer och tillgänglighet.</li>
 <li><strong>Tillgänglighet (accessibility):</strong> Hur HTML kan användas för att göra webbplatser användbara för fler människor, inklusive de med funktionsvariationer.</li>
-<li><strong>Introduktion till Git:</strong> Vad versionshantering är och varför det är så viktigt.</li>
-<li><strong>Grundläggande Git-kommandon:</strong> Hur du praktiskt kommer igång med att skapa ett repository, spara ändringar (commits) och se historik.</li>
-<li><strong>Arbeta med GitHub:</strong> Hur du använder en plattform som GitHub för att lagra din kod online och (senare) samarbeta med andra.</li>
-<li><strong>Praktiska övningar:</strong> Du får bygga enkla HTML-strukturer och hantera dem med Git.</li>
+<li><strong>Praktiska övningar:</strong> Du får bygga enkla HTML-strukturer.</li>
 </ul>
 <hr>
 <p>Låt oss börja med att lägga grunden för våra webbsidor med HTML!</p>
@@ -542,6 +536,13 @@ git config --global user.email "din.epost@example.com"
 <p>Skapar hyperlänkar till andra sidor eller resurser. <code>href</code> är obligatoriskt och anger destinationen.</p>
 <pre><code class="language-html">&lt;a href="https://www.google.com"&gt;Sök på Google&lt;/a&gt;
 &lt;a href="annan_sida.html"&gt;Länk till en lokal sida&lt;/a&gt;
+</code></pre>
+<p><strong>Prova själv:</strong> Redigera HTML-koden nedan och klicka på <strong>Kör</strong> för att se hur webbläsaren ritar upp elementen. Lägg gärna till en ny rubrik eller ett stycke.</p>
+<!-- playground -->
+<pre><code class="language-html">&lt;h1&gt;Min webbsida&lt;/h1&gt;
+&lt;h2&gt;En underrubrik&lt;/h2&gt;
+&lt;p&gt;Detta är ett stycke med text.&lt;/p&gt;
+&lt;a href="https://www.google.com"&gt;En länk till Google&lt;/a&gt;
 </code></pre>
 <h3 id="bilder-img"><a class="header" href="#bilder-img">Bilder (<code>&lt;img&gt;</code>)</a></h3>
 <p>Bäddar in bilder. Tomt element (ingen sluttagg). <code>src</code> anger bildens källa, <code>alt</code> är alternativ text.</p>
@@ -798,1070 +799,6 @@ git config --global user.email "din.epost@example.com"
 <h2 id="sammanfattning-6"><a class="header" href="#sammanfattning-6">Sammanfattning</a></h2>
 <p>Webbtillgänglighet handlar om att skapa webbplatser som fungerar för alla. Korrekt och semantisk HTML är grunden för detta. Genom att använda semantiska strukturelement, meningsfulla <code>alt</code>-texter för bilder, beskrivande länktexter, korrekta formuläretiketter (<code>&lt;label&gt;</code>), och ange språk (<code>lang</code>), skapar vi en mer robust och tillgänglig upplevelse. Att tänka på tillgänglighet från början är inte bara en god praxis, utan ofta också ett lagkrav och gynnar alla användare.</p>
 <p>Nu när vi har en god grund i HTML är det dags att titta på det andra viktiga verktyget i detta kapitel: Git.</p>
-<div style="break-before: page; page-break-before: always;"></div>
-<h1 id="introduktion-till-git-varför-versionshantering"><a class="header" href="#introduktion-till-git-varför-versionshantering">Introduktion till Git: Varför Versionshantering?</a></h1>
-<p>Föreställ dig att du arbetar på ett viktigt dokument. Du gör ändringar, sparar, gör fler ändringar… men så inser du att en ändring du gjorde för två timmar sedan var fel. Hur hittar du tillbaka till den versionen? Eller tänk dig att du vill prova en ny idé, men är rädd för att förstöra det du redan har. Eller ännu värre, tänk om flera personer behöver arbeta på samma dokument samtidigt?</p>
-<p>Det är här <strong>versionshantering</strong> (version control) kommer in. Ett versionshanteringssystem (Version Control System, VCS) är ett verktyg som hjälper dig att spåra och hantera ändringar i filer över tid.</p>
-<p><strong>Git</strong> är det absolut mest populära och dominerande distribuerade versionshanteringssystemet idag. Det utvecklades ursprungligen av Linus Torvalds (skaparen av Linux) för att hantera utvecklingen av Linux-kärnan.</p>
-<blockquote>
-<p><strong>Motivation:</strong><br>Git gör det möjligt att experimentera, samarbeta och alltid kunna återställa eller förstå vad som hänt i projektets historik. Det är en grundläggande färdighet för alla som arbetar med kod.</p>
-</blockquote>
-<hr>
-<h2 id="varför-är-git-så-viktigt-för-utvecklare"><a class="header" href="#varför-är-git-så-viktigt-för-utvecklare">Varför är Git så viktigt för utvecklare?</a></h2>
-<ol>
-<li>
-<p><strong>Historik och återställning:</strong><br>Git sparar ögonblicksbilder (kallade <em>commits</em>) av ditt projekt. Du kan se exakt vem som ändrade vad och när, och du kan enkelt återgå till vilken tidigare version som helst. Det är som en obegränsad “ångra”-knapp för hela ditt projekt.</p>
-</li>
-<li>
-<p><strong>Förgrening (branching):</strong><br>Git gör det otroligt enkelt att skapa separata “grenar” (branches) av ditt projekt. Du kan arbeta på en ny funktion eller experimentera på en egen gren utan att påverka huvudversionen (ofta kallad <code>main</code>). När du är klar kan du <em>sammanfoga</em> (merge) dina ändringar tillbaka till huvudgrenen.</p>
-</li>
-<li>
-<p><strong>Samarbete:</strong><br>Git är designat för distribuerat arbete. Varje utvecklare har en komplett kopia av projektets historik. Plattformar som GitHub, GitLab och Bitbucket bygger på Git och gör det enkelt att dela kod, granska varandras ändringar (Pull Requests) och arbeta tillsammans i team.</p>
-</li>
-<li>
-<p><strong>Trygghet:</strong><br>Genom att regelbundet spara dina ändringar (committa) och eventuellt skicka dem till en remote server (som GitHub), minskar du risken att förlora arbete på grund av hårddiskkrascher eller misstag.</p>
-</li>
-<li>
-<p><strong>Industristandard:</strong><br>Kunskap i Git är i princip ett krav för de flesta utvecklarjobb idag.</p>
-</li>
-</ol>
-<hr>
-<h2 id="installera-git"><a class="header" href="#installera-git">Installera Git</a></h2>
-<p>Börja med att kontrollera om Git redan finns installerat genom att köra <code>git --version</code> i en terminal (appen ‘terminal’ eller ‘powershell’ går bra).</p>
-<p>På macOS är Git ofta tillgängligt via Xcode Command Line Tools; om det saknas får du en dialogruta eller installerar med <code>xcode-select --install</code> (alternativt via Homebrew: <code>brew install git</code>).</p>
-<p>På Windows installerar du enklast via <a href="https://git-scm.com/download/win">Git for Windows</a>, vilket även inkluderar Git Bash.</p>
-<p>På Linux använder du din pakethanterare, till exempel Ubuntu/Debian: <code>sudo apt install git</code>.</p>
-<p>Verifiera installationen genom att öppna upp en terminal och köra <code>git --version</code> igen.</p>
-<h2 id="grundläggande-koncept-i-git"><a class="header" href="#grundläggande-koncept-i-git">Grundläggande koncept i Git</a></h2>
-<ul>
-<li><strong>Repository (repo):</strong> En “behållare” eller mapp som innehåller alla filer för ditt projekt samt hela dess ändringshistorik (i en dold mapp kallad <code>.git</code>).</li>
-<li><strong>Commit:</strong> En sparad ögonblicksbild av ditt projekts filer vid en viss tidpunkt. Varje commit har ett unikt ID och ett meddelande som beskriver ändringarna.</li>
-<li><strong>Branch:</strong> En oberoende utvecklingslinje. Standardgrenen heter ofta <code>main</code>.</li>
-<li><strong>Checkout:</strong> Processen att byta mellan olika branches eller återställa filer till en specifik commit.</li>
-<li><strong>Merge:</strong> Processen att kombinera ändringar från en branch till en annan.</li>
-<li><strong>Clone:</strong> Att skapa en lokal kopia av ett befintligt repository (ofta från en remote server som GitHub).</li>
-<li><strong>Push:</strong> Att skicka dina lokala commits till ett remote-repository (t.ex. på GitHub).</li>
-<li><strong>Pull:</strong> Att hämta ändringar från ett remote-repository och integrera dem i din lokala branch.</li>
-<li><strong>Working directory:</strong> De filer du ser i din projektmapp.</li>
-<li><strong>Staging area (index):</strong> Ett mellanläge där du förbereder vilka ändringar som ska inkluderas i nästa commit.</li>
-</ul>
-<hr>
-<h2 id="git-arbetsflöde-så-här-hänger-det-ihop"><a class="header" href="#git-arbetsflöde-så-här-hänger-det-ihop">Git-arbetsflöde: Så här hänger det ihop</a></h2>
-<pre class="mermaid">graph LR
-    subgraph "Lokalt Repository"
-        WD["Working Directory"] -- "git add" --&gt; SA["Staging Area"];
-        SA -- "git commit" --&gt; LH["Local History/.git"];
-    end
-
-    subgraph "Remote-Repository (t.ex. GitHub)"
-      RH["Remote History"]
-    end
-
-    LH -- "git push" --&gt; RH;
-    RH -- "git pull/fetch" --&gt; LH;
-    LH -- "git checkout" --&gt; WD;
-</pre>
-
-<p><em>Diagram: Förenklat arbetsflöde i Git.</em></p>
-<ul>
-<li><strong>Working Directory:</strong> Dina faktiska filer på datorn.</li>
-<li><strong>Staging Area:</strong> Här samlar du ihop de ändringar du vill spara i nästa commit.</li>
-<li><strong>Local History (.git):</strong> Här sparas alla commits och projektets historik.</li>
-<li><strong>Remote History:</strong> Remotekopian av projektet, t.ex. på GitHub.</li>
-</ul>
-<hr>
-<h2 id="sammanfattning-7"><a class="header" href="#sammanfattning-7">Sammanfattning</a></h2>
-<p>Git är ett kraftfullt versionshanteringssystem som är oumbärligt för modern mjukvaruutveckling. Det hjälper oss att spåra ändringar, samarbeta effektivt, experimentera säkert och undvika dataförlust. Att förstå grundläggande koncept som repository, commit, branch och staging area är nyckeln till att kunna använda Git effektivt.</p>
-<p>I nästa avsnitt går vi igenom de vanligaste Git-kommandona du behöver för att komma igång</p>
-<div style="break-before: page; page-break-before: always;"></div>
-<h1 id="grundläggande-git-kommandon-det-dagliga-arbetsflödet"><a class="header" href="#grundläggande-git-kommandon-det-dagliga-arbetsflödet">Grundläggande Git-kommandon: Det dagliga arbetsflödet</a></h1>
-<p>Nu när vi förstår <em>varför</em> Git är användbart och känner till de grundläggande koncepten, är det dags att se hur vi använder det i praktiken. Detta görs via <strong>kommandon</strong> som vi skriver i terminalen (som vi installerade i kapitel 1).</p>
-<blockquote>
-<p><strong>Mål:</strong><br>Lära oss och förstå de vanligaste Git-kommandona för att skapa ett repository, spåra filer, spara ändringar (commits) och se status och historik.</p>
-</blockquote>
-<p><strong>Förutsättning:</strong><br>Du har Git installerat och konfigurerat (med ditt namn och e-post, se kapitel 1).</p>
-<p><strong>Viktigt:</strong><br>Alla Git-kommandon börjar med <code>git</code>. Kommandona körs i terminalen <strong>inuti din projektmapp</strong>.</p>
-<hr>
-<h2 id="0-förstå-hur-man-använder-terminalen"><a class="header" href="#0-förstå-hur-man-använder-terminalen">0. Förstå hur man använder terminalen</a></h2>
-<p>Terminalen är ett textbaserat gränssnitt där du kör kommandon i den aktuella mappen. Här är grundkommandon du behöver:</p>
-<h3 id="grundläggande-kommandon"><a class="header" href="#grundläggande-kommandon">Grundläggande kommandon</a></h3>
-<ul>
-<li>
-<p><strong>pwd</strong> – visar din nuvarande mapp (path).</p>
-<pre><code>pwd
-</code></pre>
-</li>
-<li>
-<p><strong>cd</strong> – byt mapp (change directory).</p>
-<ul>
-<li><code>cd projekt</code> – gå in i mappen <code>projekt</code></li>
-<li><code>cd ..</code> – gå upp en nivå</li>
-<li><code>cd ~</code> – gå till hemkatalogen</li>
-<li><code>cd -</code> – hoppa till föregående mapp</li>
-</ul>
-</li>
-<li>
-<p><strong>ls</strong> – lista filer och mappar.</p>
-<ul>
-<li><code>ls</code> – enkel lista</li>
-<li><code>ls -la</code> – detaljerad lista, inkl. dolda filer</li>
-<li><code>ls -lh</code> – läsbar storlek</li>
-</ul>
-</li>
-<li>
-<p><strong>mkdir</strong> – skapa mapp.</p>
-<ul>
-<li><code>mkdir ny-mapp</code></li>
-<li><code>mkdir -p a/b/c</code> – skapa kedjade undermappar</li>
-</ul>
-</li>
-<li>
-<p><strong>touch</strong> – skapa tom fil eller uppdatera tidsstämpel.</p>
-<ul>
-<li><code>touch index.html</code></li>
-</ul>
-</li>
-<li>
-<p><strong>clear</strong> – rensa terminalfönstret.</p>
-<ul>
-<li><code>clear</code> eller Ctrl+L</li>
-</ul>
-</li>
-<li>
-<p><strong>rm</strong> – ta bort filer/mappar (var försiktig!).</p>
-<ul>
-<li><code>rm fil.txt</code></li>
-<li><code>rm -r mapp/</code> – ta bort mapp rekursivt</li>
-</ul>
-</li>
-<li>
-<p><strong>mv</strong> – flytta eller byta namn.</p>
-<ul>
-<li><code>mv gammalt.txt nytt.txt</code></li>
-<li><code>mv fil.txt mapp/</code></li>
-</ul>
-</li>
-<li>
-<p><strong>cp</strong> – kopiera filer eller mappar.</p>
-<ul>
-<li><code>cp fil.txt kopia.txt</code></li>
-<li><code>cp -r src/ backup-src/</code></li>
-</ul>
-</li>
-<li>
-<p><strong>cat</strong> – visa innehåll i en fil.</p>
-<ul>
-<li><code>cat README.md</code></li>
-</ul>
-</li>
-</ul>
-<h3 id="snabb-övning"><a class="header" href="#snabb-övning">Snabb övning</a></h3>
-<pre><code class="language-bash">mkdir demo        # Skapa en ny mapp som heter 'demo'
-cd demo          # Gå in i demo-mappen
-pwd              # Visa nuvarande sökväg/mapp
-touch index.html # Skapa en tom fil som heter 'index.html'
-ls -la          # Lista alla filer (även dolda) med detaljerad information
-mkdir -p src/components  # Skapa mapparna 'src' och 'components' på en gång
-mv index.html src/      # Flytta index.html till src-mappen
-cp -r src src-backup   # Kopiera hela src-mappen rekursivt till en backup
-clear                  # Rensa terminalfönstret
-</code></pre>
-<h3 id="windows-notis"><a class="header" href="#windows-notis">Windows-notis</a></h3>
-<ul>
-<li>I Git Bash på Windows fungerar kommandona ovan som i macOS/Linux.</li>
-<li>I PowerShell: <code>ls</code> fungerar (alias), <code>pwd</code> fungerar, <code>clear</code> kan skrivas <code>cls</code>, <code>touch</code> kan ersättas med <code>New-Item filnamn</code>.</li>
-</ul>
-<p>Tips: Använd Tab för autocompletion, pilar upp/ner för historik och Ctrl+C för att avbryta.</p>
-<h2 id="1-skapa-ett-repository-git-init"><a class="header" href="#1-skapa-ett-repository-git-init">1. Skapa ett repository: <code>git init</code></a></h2>
-<p>Det allra första steget för ett <em>nytt</em> projekt är att initiera ett Git-repository.</p>
-<ul>
-<li><strong>Kommando:</strong><br><code>git init</code></li>
-<li><strong>Vad det gör:</strong><br>Skapar en ny, dold undermapp <code>.git</code> i din nuvarande mapp. Denna <code>.git</code>-mapp innehåller all information och historik för ditt repository. Detta behöver bara göras <em>en gång</em> per projekt.</li>
-</ul>
-<p><strong>Så här gör du:</strong></p>
-<ol>
-<li>Skapa en ny mapp för ditt projekt (t.ex. <code>mitt-projekt</code>).</li>
-<li>Navigera in i mappen i din terminal (<code>cd mitt-projekt</code>).</li>
-<li>Kör kommandot:
-<pre><code>git init
-</code></pre>
-Du bör se ett meddelande som liknar:<br><code>Initialized empty Git repository in /path/to/your/mitt-projekt/.git/</code></li>
-</ol>
-<hr>
-<h2 id="2-kontrollera-status-git-status"><a class="header" href="#2-kontrollera-status-git-status">2. Kontrollera status: <code>git status</code></a></h2>
-<p>Detta är ett av de viktigaste och mest använda kommandona. Det visar det aktuella tillståndet för ditt repository.</p>
-<ul>
-<li><strong>Kommando:</strong><br><code>git status</code></li>
-<li><strong>Vad det gör:</strong><br>Talar om:
-<ul>
-<li>Vilken branch du är på.</li>
-<li>Om det finns ändringar i Working Directory som <em>inte</em> är i Staging Area.</li>
-<li>Om det finns filer i Staging Area som väntar på att committas.</li>
-<li>Om det finns filer som Git inte spårar alls (untracked files).</li>
-</ul>
-</li>
-</ul>
-<p><strong>Så här gör du:</strong></p>
-<ol>
-<li>Skapa en ny fil i din projektmapp, t.ex. <code>index.html</code>.</li>
-<li>Kör <code>git status</code> i terminalen.
-Du kommer se att <code>index.html</code> listas under “Untracked files”, eftersom Git ser filen men inte spårar ändringar i den än.</li>
-</ol>
-<hr>
-<h2 id="3-lägga-till-filer-i-staging-area-git-add"><a class="header" href="#3-lägga-till-filer-i-staging-area-git-add">3. Lägga till filer i Staging Area: <code>git add</code></a></h2>
-<p>Innan du kan spara en ändring (committa) måste du tala om för Git <em>vilka</em> ändringar som ska inkluderas. Detta görs genom att lägga till dem i Staging Area.</p>
-<ul>
-<li><strong>Kommandon:</strong>
-<ul>
-<li><code>git add &lt;filnamn&gt;</code>: Lägger till en specifik fil (t.ex. <code>git add index.html</code>).</li>
-<li><code>git add .</code> : Lägger till <strong>alla</strong> nya och ändrade filer i den nuvarande mappen och dess undermappar till Staging Area. (Punkten <code>.</code> representerar nuvarande mapp). <strong>Används ofta.</strong></li>
-</ul>
-</li>
-<li><strong>Vad det gör:</strong><br>Flyttar ändringarna från Working Directory till Staging Area, redo för nästa commit.</li>
-</ul>
-<p><strong>Så här gör du:</strong></p>
-<ol>
-<li>Se till att du har skapat <code>index.html</code>.</li>
-<li>Kör <code>git add index.html</code> (eller <code>git add .</code>).</li>
-<li>Kör <code>git status</code> igen.
-Nu bör du se <code>index.html</code> listad under “Changes to be committed”.</li>
-</ol>
-<hr>
-<h2 id="4-spara-ändringar-git-commit"><a class="header" href="#4-spara-ändringar-git-commit">4. Spara ändringar: <code>git commit</code></a></h2>
-<p>När du har lagt till de ändringar du vill spara i Staging Area, skapar du en commit.</p>
-<ul>
-<li><strong>Kommando:</strong><br><code>git commit -m "Ditt commit-meddelande"</code></li>
-<li><strong>Vad det gör:</strong><br>Tar en ögonblicksbild av alla filer som finns i Staging Area och sparar den permanent i <code>.git</code>-mappens historik. Varje commit måste ha ett <strong>commit-meddelande</strong> (efter <code>-m</code>) som kortfattat beskriver <em>vad</em> ändringen handlar om (t.ex. “Skapa grundläggande HTML-struktur”, “Lägg till bildlänk”).
-<ul>
-<li><strong>Bra commit-meddelanden är viktiga!</strong> De ska vara korta, beskrivande och skrivna i imperativ (t.ex. “Lägg till bild…” istället för “Lade till bilden…”).</li>
-</ul>
-</li>
-</ul>
-<p><strong>Så här gör du:</strong></p>
-<ol>
-<li>Se till att du har kört <code>git add</code>.</li>
-<li>Kör
-<pre><code>git commit -m "Skapa tom index.html-fil"
-</code></pre>
-</li>
-<li>Kör <code>git status</code> igen.
-Nu bör det stå något i stil med “nothing to commit, working tree clean”, vilket betyder att alla spårade ändringar är sparade.</li>
-</ol>
-<hr>
-<h2 id="5-visa-historik-git-log"><a class="header" href="#5-visa-historik-git-log">5. Visa historik: <code>git log</code></a></h2>
-<p>För att se listan över alla commits som gjorts i projektet.</p>
-<ul>
-<li><strong>Kommando:</strong><br><code>git log</code></li>
-<li><strong>Vad det gör:</strong><br>Visar historiken med den senaste committen överst. För varje commit visas dess unika ID (en lång hash-sträng), författaren, datumet och commit-meddelandet.
-<ul>
-<li>Tryck <code>q</code> för att avsluta loggvisningen om den är lång.</li>
-<li><code>git log --oneline</code>: Visar en mer kompakt vy med bara commit-ID och meddelande.</li>
-</ul>
-</li>
-</ul>
-<p><strong>Så här gör du:</strong></p>
-<ol>
-<li>Gör en ändring i <code>index.html</code> (lägg till lite text).</li>
-<li>Kör <code>git add .</code></li>
-<li>Kör
-<pre><code>git commit -m "Lägg till innehåll i index.html"
-</code></pre>
-</li>
-<li>Kör <code>git log</code> (eller <code>git log --oneline</code>).
-Du bör nu se dina två commits i historiken.</li>
-</ol>
-<hr>
-<h2 id="6-ångra-dig-git-reset"><a class="header" href="#6-ångra-dig-git-reset">6. Ångra dig: <code>git reset</code></a></h2>
-<p>Ibland behöver du ångra ändringar eller återställa ditt repository till ett tidigare tillstånd. <code>git reset</code> är ett kraftfullt verktyg för detta.</p>
-<blockquote>
-<p><strong>Varning:</strong> <code>git reset</code> kan ta bort ändringar permanent. Var försiktig, särskilt med <code>--hard</code> flaggan.</p>
-</blockquote>
-<h3 id="återställa-filer-från-staging-area"><a class="header" href="#återställa-filer-från-staging-area">Återställa filer från Staging Area</a></h3>
-<p>Om du har lagt till en fil i Staging Area med <code>git add</code> men vill ta bort den därifrån:</p>
-<pre><code class="language-bash"># Ta bort specifik fil från Staging Area (behåll ändringar i Working Directory)
-git reset index.html
-
-# Ta bort alla filer från Staging Area
-git reset
-</code></pre>
-<p><strong>Användningsfall:</strong> Du addade fel fil eller vill inte committa alla ändringar än.</p>
-<h3 id="återställa-till-en-tidigare-commit"><a class="header" href="#återställa-till-en-tidigare-commit">Återställa till en tidigare commit</a></h3>
-<pre><code class="language-bash"># Visa commit-historik för att hitta rätt commit
-git log --oneline
-
-# Återställ till en specifik commit (behåll ändringar som ostaged)
-git reset abc1234
-
-# Återställ till en specifik commit och ta bort alla ändringar (FÖRSIKTIGT!)
-git reset --hard abc1234
-
-# Återställ till föregående commit
-git reset HEAD~1
-
-# Återställ till 3 commits bakåt
-git reset HEAD~3
-</code></pre>
-<h3 id="återställa-en-specifik-fil-till-tidigare-version"><a class="header" href="#återställa-en-specifik-fil-till-tidigare-version">Återställa en specifik fil till tidigare version</a></h3>
-<pre><code class="language-bash"># Återställ en fil till senaste committed version
-git checkout HEAD -- index.html
-
-# Återställ en fil till en specifik commit
-git checkout abc1234 -- index.html
-</code></pre>
-<h3 id="de-tre-reset-lägena"><a class="header" href="#de-tre-reset-lägena">De tre reset-lägena</a></h3>
-<pre><code class="language-bash"># --soft: Flyttar bara HEAD, behåller Staging Area och Working Directory
-git reset --soft HEAD~1
-
-# --mixed (default): Återställer Staging Area, behåller Working Directory  
-git reset HEAD~1
-git reset --mixed HEAD~1  # samma som ovan
-
-# --hard: Återställer allt - RADERAR ändringar i Working Directory
-git reset --hard HEAD~1
-</code></pre>
-<p><strong>Minnesregel:</strong></p>
-<ul>
-<li><code>--soft</code>: Ångrar bara commit, behåller allt annat</li>
-<li><code>--mixed</code>: Ångrar commit + staging, behåller filer</li>
-<li><code>--hard</code>: Ångrar allt, raderar ändringar</li>
-</ul>
-<h3 id="praktiska-exempel"><a class="header" href="#praktiska-exempel">Praktiska exempel</a></h3>
-<p><strong>Scenario 1:</strong> Du committade för tidigt och vill lägga till mer:</p>
-<pre><code class="language-bash"># Ångra senaste commit men behåll ändringar
-git reset --soft HEAD~1
-
-# Lägg till fler ändringar
-git add ny-fil.js
-
-# Committa igen med allt
-git commit -m "Komplett feature med alla filer"
-</code></pre>
-<p><strong>Scenario 2:</strong> Du vill kasta bort alla ändringar och börja om:</p>
-<pre><code class="language-bash"># Kasta bort allt och återgå till senaste commit
-git reset --hard HEAD
-
-# Återgå till en specifik commit och kasta allt
-git reset --hard abc1234
-</code></pre>
-<p><strong>Scenario 3:</strong> Du råkade lägga till fel fil i staging:</p>
-<pre><code class="language-bash"># Ta bort specifik fil från staging
-git reset config/secret.txt
-
-# Filen finns kvar men är inte längre staged för commit
-</code></pre>
-<h2 id="sammanfattning-det-grundläggande-arbetsflödet"><a class="header" href="#sammanfattning-det-grundläggande-arbetsflödet">Sammanfattning: Det grundläggande arbetsflödet</a></h2>
-<p>Det typiska arbetsflödet när du arbetar med Git lokalt ser ut så här:</p>
-<ol>
-<li><strong>Gör ändringar</strong> i dina projektfiler.</li>
-<li><strong>Kontrollera status</strong> med <code>git status</code> för att se vilka filer som ändrats.</li>
-<li><strong>Lägg till ändringar</strong> i Staging Area med <code>git add &lt;filnamn&gt;</code> eller <code>git add .</code>.</li>
-<li><strong>Spara ändringarna</strong> permanent med <code>git commit -m "Beskrivande meddelande"</code>.</li>
-<li>(Upprepa)</li>
-</ol>
-<p>Du kan när som helst använda <code>git log</code> för att se historiken och <code>git status</code> för att se det aktuella läget.</p>
-<p>Dessa kommandon (<code>init</code>, <code>status</code>, <code>add</code>, <code>commit</code>, <code>log</code>) utgör grunden för att arbeta med Git. I nästa avsnitt tittar vi på hur vi kan koppla vårt lokala repository till en remote server som GitHub.</p>
-<div style="break-before: page; page-break-before: always;"></div>
-<h1 id="arbeta-med-github-ditt-projekt-i-molnet"><a class="header" href="#arbeta-med-github-ditt-projekt-i-molnet">Arbeta med GitHub: Ditt projekt i molnet</a></h1>
-<p>Vi har lärt oss hur Git fungerar lokalt på vår dator för att spåra ändringar. Men den verkliga styrkan med Git, särskilt för samarbete och säkerhetskopiering, kommer när vi kopplar vårt lokala repository till en <strong>remoteserver</strong>. Den mest populära plattformen för detta är <strong>GitHub</strong>.</p>
-<blockquote>
-<p><strong>Mål:</strong><br>Förstå hur du kopplar ett lokalt Git-repository till GitHub och använder de grundläggande kommandona för att skicka (<code>push</code>) och hämta (<code>pull</code>) ändringar.</p>
-</blockquote>
-<p><strong>Förutsättning:</strong><br>Du har ett gratis konto på <a href="https://github.com/">GitHub</a>. Om inte, skapa ett nu.</p>
-<hr>
-<h2 id="vad-är-github"><a class="header" href="#vad-är-github">Vad är GitHub?</a></h2>
-<p>GitHub är en webbaserad plattform för att lagra och hantera Git-repositories i molnet. Utöver lagring erbjuder GitHub:</p>
-<ul>
-<li><strong>Kodbackup:</strong> Säkert lagra dina projekt online.</li>
-<li><strong>Samarbete:</strong> Arbeta tillsammans i team, granska kod (Pull Requests) och diskutera ändringar.</li>
-<li><strong>Projekthantering:</strong> Hantera ärenden (Issues), projekt-tavlor (Projects) och wikis.</li>
-<li><strong>Versionshantering:</strong> Grafiskt gränssnitt för att se historik, jämföra versioner och utforska koden.</li>
-<li><strong>Open Source:</strong> Hem för miljontals öppen källkods-projekt.</li>
-</ul>
-<hr>
-<h2 id="skapa-ett-remote-repository-på-github"><a class="header" href="#skapa-ett-remote-repository-på-github">Skapa ett Remote-repository på GitHub</a></h2>
-<ol>
-<li>Logga in på ditt GitHub-konto.</li>
-<li>Klicka på “+”-ikonen uppe till höger och välj <strong>New repository</strong>.</li>
-<li>Ge repositoryt ett namn (t.ex. <code>mitt-projekt</code>). Det är praktiskt om det matchar din lokala mapp, men det är inget krav.</li>
-<li>Lägg till en kort beskrivning (valfritt).</li>
-<li>Välj om det ska vara <strong>Public</strong> (synligt för alla) eller <strong>Private</strong> (endast för dig och inbjudna).</li>
-<li><strong>Viktigt:</strong> Om du redan har ett lokalt repository, <strong>bocka INTE i</strong> rutorna för “Add a README file”, “Add .gitignore” eller “Choose a license”. Om du skapar ett helt nytt projekt direkt på GitHub kan du bocka i dessa.</li>
-<li>Klicka på <strong>Create repository</strong>.</li>
-</ol>
-<hr>
-<h2 id="koppla-ditt-lokala-repo-till-github"><a class="header" href="#koppla-ditt-lokala-repo-till-github">Koppla ditt lokala repo till GitHub</a></h2>
-<p>När du har skapat repositoryt på GitHub visas instruktioner. Leta efter avsnittet “…or push an existing repository from the command line”.</p>
-<h3 id="steg-1-lägg-till-remote-repository"><a class="header" href="#steg-1-lägg-till-remote-repository">Steg 1: Lägg till remote-repository</a></h3>
-<pre><code class="language-bash">git remote add origin https://github.com/ditt-anvandarnamn/mitt-projekt.git
-</code></pre>
-<ul>
-<li><code>origin</code> är standardnamnet för din remoteserver.</li>
-<li>Byt ut URL:en mot den du får från GitHub.</li>
-</ul>
-<h3 id="steg-2-byt-namn-på-huvudbranch-om-nödvändigt"><a class="header" href="#steg-2-byt-namn-på-huvudbranch-om-nödvändigt">Steg 2: Byt namn på huvudbranch (om nödvändigt)</a></h3>
-<pre><code class="language-bash">git branch -M main
-</code></pre>
-<ul>
-<li>Byter namn på din huvudbranch till <code>main</code> (standard på GitHub).</li>
-</ul>
-<h3 id="steg-3-skicka-upp-din-kod"><a class="header" href="#steg-3-skicka-upp-din-kod">Steg 3: Skicka upp din kod</a></h3>
-<pre><code class="language-bash">git push -u origin main
-</code></pre>
-<ul>
-<li>Skickar dina commits till GitHub.</li>
-<li><code>-u</code> kopplar din lokala branch till remote-branchen, så att du senare kan använda bara <code>git push</code> och <code>git pull</code>.</li>
-</ul>
-<p>Du kan behöva logga in eller autentisera dig mot GitHub (t.ex. med en personlig access token).</p>
-<hr>
-<h2 id="skicka-fler-ändringar-git-push"><a class="header" href="#skicka-fler-ändringar-git-push">Skicka fler ändringar: <code>git push</code></a></h2>
-<p>När du gjort nya ändringar och committat dem:</p>
-<pre><code class="language-bash">git push
-</code></pre>
-<ul>
-<li>Skickar alla nya commits på din nuvarande branch till GitHub.</li>
-</ul>
-<hr>
-<h2 id="hämta-ändringar-git-pull"><a class="header" href="#hämta-ändringar-git-pull">Hämta ändringar: <code>git pull</code></a></h2>
-<p>Om någon annan (eller du själv från en annan dator) har pushat ändringar till GitHub, hämta dem så här:</p>
-<pre><code class="language-bash">git pull
-</code></pre>
-<ul>
-<li>Hämtar och försöker automatiskt sammanfoga (<code>merge</code>) ändringarna från GitHub till din lokala kod.</li>
-<li>Kör gärna <code>git pull</code> innan du börjar arbeta och innan du pushar egna ändringar.</li>
-</ul>
-<hr>
-<h2 id="klona-ett-repository-git-clone"><a class="header" href="#klona-ett-repository-git-clone">Klona ett repository: <code>git clone</code></a></h2>
-<p>Om du vill börja arbeta med ett projekt som redan finns på GitHub:</p>
-<pre><code class="language-bash">git clone https://github.com/anvandarnamn/projekt.git
-</code></pre>
-<ul>
-<li>Laddar ner hela repositoryt (alla filer och historik) till en ny mapp på din dator.</li>
-<li>Sätter automatiskt upp <code>origin</code> så att du kan använda <code>git push</code> och <code>git pull</code>.</li>
-</ul>
-<hr>
-<h2 id="sammanfattning-8"><a class="header" href="#sammanfattning-8">Sammanfattning</a></h2>
-<p>GitHub är en plattform för att lagra och samarbeta kring Git-repositories i molnet. Genom att koppla ditt lokala repo till GitHub kan du:</p>
-<ul>
-<li>Skicka ändringar till GitHub med <code>git push</code>.</li>
-<li>Hämta ändringar från GitHub med <code>git pull</code>.</li>
-<li>Klona befintliga projekt med <code>git clone</code>.</li>
-</ul>
-<p>Att använda Git tillsammans med GitHub är standard inom modern webbutveckling och gör det enkelt att samarbeta, säkerhetskopiera och visa upp dina projekt.</p>
-<p>Nu är det dags att öva på dessa HTML- och Git-färdigheter!</p>
-<div style="break-before: page; page-break-before: always;"></div>
-<h1 id="mer-git-kommandon"><a class="header" href="#mer-git-kommandon">Mer Git-kommandon</a></h1>
-<h2 id="introduktion-till-avancerade-git-tekniker"><a class="header" href="#introduktion-till-avancerade-git-tekniker">Introduktion till avancerade Git-tekniker</a></h2>
-<p>Nu när du behärskar grunderna i Git är det dags att utforska mer avancerade kommandon och tekniker. Dessa verktyg ger dig större kontroll över ditt versionshanteringssystem och gör dig till en mer effektiv utvecklare.</p>
-<pre class="mermaid">graph TD
-    A[Git Grundläggande] --&gt; B[Branching &amp; Checkout]
-    A --&gt; C[Merge &amp; Rebase]
-    A --&gt; D[Konflikthantering]
-    A --&gt; E[Konfiguration]
-    
-    B --&gt; B1[git checkout]
-    B --&gt; B2[git switch]
-    B --&gt; B3[Detached HEAD]
-    
-    C --&gt; C1[git merge]
-    C --&gt; C2[git rebase]
-    C --&gt; C3[Fast-forward]
-    
-    D --&gt; D1[Merge conflicts]
-    D --&gt; D2[Konfliktlösning]
-    D --&gt; D3[Merge tools]
-    
-    E --&gt; E1[git config]
-    E --&gt; E2[Globala inställningar]
-    E --&gt; E3[SSH-nycklar]
-</pre>
-
-<h2 id="git-checkout---navigera-mellan-brancher-och-commits"><a class="header" href="#git-checkout---navigera-mellan-brancher-och-commits">Git Checkout - Navigera mellan brancher och commits</a></h2>
-<p><code>git checkout</code> är ett mångsidigt kommando som låter dig “hoppa” mellan olika versioner av ditt projekt.</p>
-<h3 id="växla-mellan-brancher"><a class="header" href="#växla-mellan-brancher">Växla mellan brancher</a></h3>
-<pre><code class="language-bash"># Visa alla brancher
-git branch
-
-# Skapa och växla till ny branch
-git checkout -b ny-funktion
-
-# Växla till befintlig branch
-git checkout main
-git checkout utveckling
-
-# Kort för att skapa branch från specifik commit
-git checkout -b bugfix-123 abc1234
-</code></pre>
-<h3 id="checkout-till-specifika-commits"><a class="header" href="#checkout-till-specifika-commits">Checkout till specifika commits</a></h3>
-<pre><code class="language-bash"># Visa commit-historik
-git log --oneline
-
-# Gå till specifik commit (skapar "detached HEAD")
-git checkout abc1234
-
-# Gå tillbaka till senaste commit på current branch
-git checkout main
-</code></pre>
-<h3 id="detached-head-state"><a class="header" href="#detached-head-state">Detached HEAD State</a></h3>
-<p>När du gör <code>checkout</code> till en specifik commit hamnar du i “detached HEAD” tillstånd:</p>
-<pre class="mermaid">graph LR
-    A[Commit A] --&gt; B[Commit B]
-    B --&gt; C[Commit C]
-    C --&gt; D[Commit D]
-    
-    HEAD --&gt;|Normal| D
-    HEAD2[HEAD detached] --&gt;|git checkout B| B
-    
-    subgraph "Normal state"
-        HEAD
-        D
-    end
-    
-    subgraph "Detached HEAD"
-        HEAD2
-        B
-    end
-</pre>
-
-<pre><code class="language-bash"># Om du är i detached HEAD och vill behålla ändringar
-git switch -c ny-branch-namn
-
-# Eller gå tillbaka utan att spara ändringar
-git switch main
-</code></pre>
-<h3 id="återställa-filer-med-checkout"><a class="header" href="#återställa-filer-med-checkout">Återställa filer med checkout</a></h3>
-<pre><code class="language-bash"># Återställ en specifik fil till senaste commit
-git checkout -- fil.txt
-
-# Återställ fil till specifik commit
-git checkout abc1234 -- fil.txt
-
-# Återställ alla filer i katalog
-git checkout -- .
-</code></pre>
-<h2 id="git-switch---modernare-sätt-att-växla-branches"><a class="header" href="#git-switch---modernare-sätt-att-växla-branches">Git Switch - Modernare sätt att växla branches</a></h2>
-<p><code>git switch</code> introducerades i Git 2.23 som ett tydligare alternativ till <code>git checkout</code> för branch-hantering:</p>
-<pre><code class="language-bash"># Växla till befintlig branch
-git switch main
-git switch utveckling
-
-# Skapa och växla till ny branch
-git switch -c ny-funktion
-
-# Växla tillbaka till föregående branch
-git switch -
-
-# Återgå till main från detached HEAD
-git switch main
-</code></pre>
-<p><strong>Fördelar med <code>git switch</code>:</strong></p>
-<ul>
-<li>Tydligare syfte (endast för brancher)</li>
-<li>Säkrare (mindre risk för misstag)</li>
-<li>Modernare syntax</li>
-</ul>
-<h2 id="merge-och-rebase---kombinera-ändringar"><a class="header" href="#merge-och-rebase---kombinera-ändringar">Merge och Rebase - Kombinera ändringar</a></h2>
-<h3 id="git-merge---traditionell-sammanfogning"><a class="header" href="#git-merge---traditionell-sammanfogning">Git Merge - Traditionell sammanfogning</a></h3>
-<pre><code class="language-bash"># Gå till target branch (oftast main)
-git switch main
-
-# Hämta senaste ändringar
-git pull origin main
-
-# Merge in branch
-git merge funktions-branch
-
-# Push merged result
-git push origin main
-</code></pre>
-<h4 id="merge-strategier-visualiserade"><a class="header" href="#merge-strategier-visualiserade">Merge-strategier visualiserade</a></h4>
-<pre class="mermaid">graph LR
-    A[Commit A] --&gt; B[Commit B]
-    B --&gt; C[Commit C]
-    
-    A --&gt; D[Commit D]
-    D --&gt; E[Commit E]
-    
-    C --&gt; F[Merge Commit]
-    E --&gt; F
-    
-    subgraph "main branch"
-        A
-        B
-        C
-        F
-    end
-    
-    subgraph "feature branch"
-        D
-        E
-    end
-</pre>
-
-<h4 id="fast-forward-merge"><a class="header" href="#fast-forward-merge">Fast-forward merge</a></h4>
-<p>När target branch inte har nya commits:</p>
-<pre><code class="language-bash"># Main branch har inga nya commits sedan branch skapades
-git merge funktions-branch
-# Resulterar i fast-forward (ingen merge commit)
-</code></pre>
-<pre class="mermaid">graph LR
-    A[Commit A] --&gt; B[Commit B]
-    B --&gt; C[Commit C]
-    C --&gt; D[Commit D]
-    
-    subgraph "Före merge"
-        A
-        B
-        MAIN[main] --&gt; B
-        C
-        D
-        FEATURE[feature] --&gt; D
-    end
-    
-    subgraph "Efter fast-forward"
-        A2[Commit A] --&gt; B2[Commit B]
-        B2 --&gt; C2[Commit C]
-        C2 --&gt; D2[Commit D]
-        MAIN2[main] --&gt; D2
-    end
-</pre>
-
-<h3 id="git-rebase---omskrivning-av-historik"><a class="header" href="#git-rebase---omskrivning-av-historik">Git Rebase - Omskrivning av historik</a></h3>
-<p>Rebase “flyttar” dina commits till toppen av target branch:</p>
-<pre><code class="language-bash"># Gå till din feature branch
-git switch funktions-branch
-
-# Rebase mot main
-git rebase main
-
-# Om inga konflikter: push (kan kräva force)
-git push --force-with-lease origin funktions-branch
-</code></pre>
-<h4 id="rebase-vs-merge-visualiserat"><a class="header" href="#rebase-vs-merge-visualiserat">Rebase vs Merge visualiserat</a></h4>
-<pre class="mermaid">graph TD
-    subgraph "Original state"
-        A1[A] --&gt; B1[B]
-        A1 --&gt; C1[C]
-        C1 --&gt; D1[D]
-    end
-    
-    subgraph "Efter Merge"
-        A2[A] --&gt; B2[B]
-        A2 --&gt; C2[C] 
-        C2 --&gt; D2[D]
-        B2 --&gt; M[Merge commit]
-        D2 --&gt; M
-    end
-    
-    subgraph "Efter Rebase"
-        A3[A] --&gt; B3[B]
-        B3 --&gt; C3[C']
-        C3 --&gt; D3[D']
-    end
-</pre>
-
-<h4 id="interaktiv-rebase"><a class="header" href="#interaktiv-rebase">Interaktiv rebase</a></h4>
-<pre><code class="language-bash"># Redigera de senaste 3 commits
-git rebase -i HEAD~3
-
-# Öppnar editor med alternativ:
-# pick = använd commit
-# reword = ändra commit-meddelande  
-# edit = redigera commit
-# squash = kombinera med föregående commit
-# drop = ta bort commit
-</code></pre>
-<p><strong>När ska du använda vad?</strong></p>
-<ul>
-<li><strong>Merge</strong>: Bevarar historik, säkrare, bra för publika branches</li>
-<li><strong>Rebase</strong>: Renare historik, linjär utveckling, bra för feature branches</li>
-</ul>
-<h2 id="konflikthantering-merge-conflicts"><a class="header" href="#konflikthantering-merge-conflicts">Konflikthantering (Merge Conflicts)</a></h2>
-<p>Konflikter uppstår när Git inte kan automatiskt kombinera ändringar.</p>
-<h3 id="förstå-konflikter"><a class="header" href="#förstå-konflikter">Förstå konflikter</a></h3>
-<pre><code class="language-bash"># När merge skapar konflikter
-git merge funktions-branch
-# Output: CONFLICT (content): Merge conflict in fil.txt
-</code></pre>
-<h3 id="konfliktmarkering-i-filer"><a class="header" href="#konfliktmarkering-i-filer">Konfliktmarkering i filer</a></h3>
-<pre><code class="language-javascript">// fil.txt efter konflikt
-function calculateTotal(items) {
-&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
-    return items.reduce((sum, item) =&gt; sum + item.price, 0);
-=======
-    return items.reduce((total, item) =&gt; total + item.cost, 0);
-&gt;&gt;&gt;&gt;&gt;&gt;&gt; funktions-branch
-}
-</code></pre>
-<p><strong>Förklaring:</strong></p>
-<ul>
-<li><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code>: Början på dina ändringar (current branch)</li>
-<li><code>=======</code>: Skiljelinje mellan versioner</li>
-<li><code>&gt;&gt;&gt;&gt;&gt;&gt;&gt; branch-name</code>: Slut på den andra branchens ändringar</li>
-</ul>
-<h3 id="lösa-konflikter"><a class="header" href="#lösa-konflikter">Lösa konflikter</a></h3>
-<h4 id="manuell-lösning"><a class="header" href="#manuell-lösning">Manuell lösning</a></h4>
-<pre><code class="language-bash"># 1. Öppna fil och redigera manuellt
-# Ta bort konfliktmarkeringar och välj önskad version
-
-# 2. Lägg till den lösta filen
-git add fil.txt
-
-# 3. Slutför merge
-git commit
-# (eller för rebase: git rebase --continue)
-</code></pre>
-<h4 id="använda-merge-tools"><a class="header" href="#använda-merge-tools">Använda merge tools</a></h4>
-<pre><code class="language-bash"># Konfigurera merge tool (en gång)
-git config --global merge.tool vimdiff
-# eller: vscode, meld, kdiff3, etc.
-
-# Starta merge tool vid konflikt
-git mergetool
-
-# Efter lösning av alla konflikter
-git commit
-</code></pre>
-<h3 id="förebygga-konflikter"><a class="header" href="#förebygga-konflikter">Förebygga konflikter</a></h3>
-<pre><code class="language-bash"># Håll din branch uppdaterad
-git switch main
-git pull origin main
-git switch funktions-branch
-git rebase main  # eller git merge main
-
-# Små, frekventa commits
-# Kommunicera med teamet om stora ändringar
-# Använd .gitattributes för specifika filtyper
-</code></pre>
-<h2 id="git-config---anpassa-din-git-miljö"><a class="header" href="#git-config---anpassa-din-git-miljö">Git Config - Anpassa din Git-miljö</a></h2>
-<h3 id="nivåer-av-konfiguration"><a class="header" href="#nivåer-av-konfiguration">Nivåer av konfiguration</a></h3>
-<p>Git har tre nivåer av konfiguration:</p>
-<pre><code class="language-bash"># System-nivå (alla användare)
-git config --system
-
-# Global nivå (din användare)
-git config --global
-
-# Repository-nivå (endast detta projekt)
-git config --local
-</code></pre>
-<h3 id="grundläggande-konfiguration"><a class="header" href="#grundläggande-konfiguration">Grundläggande konfiguration</a></h3>
-<pre><code class="language-bash"># Sätt användarinfo (obligatoriskt)
-git config --global user.name "Ditt Namn"
-git config --global user.email "din.email@example.com"
-
-# Standardeditor
-git config --global core.editor "code --wait"  # VS Code
-git config --global core.editor "vim"          # Vim
-git config --global core.editor "nano"         # Nano
-
-# Standardbranch-namn
-git config --global init.defaultBranch main
-
-# Radslut-hantering (viktigt för Windows/Mac/Linux)
-git config --global core.autocrlf input     # Mac/Linux
-git config --global core.autocrlf true      # Windows
-</code></pre>
-<h3 id="alias-för-vanliga-kommandon"><a class="header" href="#alias-för-vanliga-kommandon">Alias för vanliga kommandon</a></h3>
-<pre><code class="language-bash"># Skapa användbara alias
-git config --global alias.st status
-git config --global alias.co checkout
-git config --global alias.br branch
-git config --global alias.ci commit
-
-# Avancerade alias
-git config --global alias.unstage 'reset HEAD --'
-git config --global alias.last 'log -1 HEAD'
-git config --global alias.visual '!gitk'
-
-# Vacker log output
-git config --global alias.lg "log --oneline --decorate --graph --all"
-
-# Använd alias
-git st        # istället för git status
-git lg        # vacker log output
-</code></pre>
-<h3 id="konfigurationsfil"><a class="header" href="#konfigurationsfil">Konfigurationsfil</a></h3>
-<pre><code class="language-bash"># Visa all konfiguration
-git config --list
-
-# Visa var konfiguration kommer ifrån
-git config --list --show-origin
-
-# Redigera global konfiguration direkt
-git config --global --edit
-</code></pre>
-<p>Exempel på <code>.gitconfig</code> fil:</p>
-<pre><code class="language-ini">[user]
-    name = Ditt Namn
-    email = din.email@example.com
-
-[core]
-    editor = code --wait
-    autocrlf = input
-
-[init]
-    defaultBranch = main
-
-[alias]
-    st = status
-    co = checkout
-    br = branch
-    ci = commit
-    lg = log --oneline --decorate --graph --all
-
-[push]
-    default = simple
-
-[pull]
-    rebase = false
-</code></pre>
-<h2 id="ssh-nycklar-för-githubgitlab"><a class="header" href="#ssh-nycklar-för-githubgitlab">SSH-nycklar för GitHub/GitLab</a></h2>
-<h3 id="generera-ssh-nyckel"><a class="header" href="#generera-ssh-nyckel">Generera SSH-nyckel</a></h3>
-<pre><code class="language-bash"># Generera ny SSH-nyckel
-ssh-keygen -t ed25519 -C "din.email@example.com"
-
-# För äldre system som inte stödjer ed25519
-ssh-keygen -t rsa -b 4096 -C "din.email@example.com"
-
-# Starta SSH agent
-eval "$(ssh-agent -s)"
-
-# Lägg till nyckel till agent
-ssh-add ~/.ssh/id_ed25519
-</code></pre>
-<h3 id="konfiguration-för-github"><a class="header" href="#konfiguration-för-github">Konfiguration för GitHub</a></h3>
-<pre><code class="language-bash"># Kopiera publik nyckel (Mac)
-pbcopy &lt; ~/.ssh/id_ed25519.pub
-
-# Linux
-cat ~/.ssh/id_ed25519.pub
-
-# Lägg till i GitHub under Settings &gt; SSH and GPG keys
-
-# Testa anslutningen
-ssh -T git@github.com
-</code></pre>
-<h2 id="avancerade-git-kommandon-för-nyfikna"><a class="header" href="#avancerade-git-kommandon-för-nyfikna">Avancerade Git-kommandon för nyfikna</a></h2>
-<h3 id="git-cherry-pick"><a class="header" href="#git-cherry-pick">Git Cherry-pick</a></h3>
-<p>Välj specifika commits från andra branches:</p>
-<pre><code class="language-bash"># Applicera en specifik commit på current branch
-git cherry-pick abc1234
-
-# Cherry-pick flera commits
-git cherry-pick abc1234 def5678
-
-# Cherry-pick ett intervall
-git cherry-pick abc1234..def5678
-</code></pre>
-<pre class="mermaid">graph LR
-    A[A] --&gt; B[B]
-    A --&gt; C[C]
-    C --&gt; D[D]
-    D --&gt; E[E]
-    
-    B --&gt; F[F]
-    F --&gt; G[G]
-    
-    G --&gt; H[D']
-    
-    subgraph "main branch"
-        A
-        B
-        F
-        G
-        H
-    end
-    
-    subgraph "feature branch"
-        C
-        D
-        E
-    end
-</pre>
-
-<h3 id="git-stash---temporär-lagring"><a class="header" href="#git-stash---temporär-lagring">Git Stash - Temporär lagring</a></h3>
-<pre><code class="language-bash"># Spara ändringar temporärt
-git stash
-
-# Spara med meddelande
-git stash push -m "Work in progress på login"
-
-# Lista alla stashes
-git stash list
-
-# Applicera senaste stash
-git stash pop
-
-# Applicera specifik stash
-git stash apply stash@{2}
-
-# Ta bort stash utan att applicera
-git stash drop stash@{1}
-</code></pre>
-<h3 id="git-worktree---flera-arbetsytor"><a class="header" href="#git-worktree---flera-arbetsytor">Git Worktree - Flera arbetsytor</a></h3>
-<pre><code class="language-bash"># Skapa ny worktree för branch
-git worktree add ../projekt-hotfix hotfix-branch
-
-# Lista alla worktrees
-git worktree list
-
-# Ta bort worktree
-git worktree remove ../projekt-hotfix
-</code></pre>
-<h3 id="git-reflog---återhämtning"><a class="header" href="#git-reflog---återhämtning">Git Reflog - Återhämtning</a></h3>
-<pre><code class="language-bash"># Visa vad som hänt med HEAD
-git reflog
-
-# Återställ till tidigare state
-git reset --hard HEAD@{2}
-
-# Hitta "förlorade" commits
-git reflog --all
-</code></pre>
-<h3 id="git-bisect---hitta-buggar"><a class="header" href="#git-bisect---hitta-buggar">Git Bisect - Hitta buggar</a></h3>
-<pre><code class="language-bash"># Starta bisect-session
-git bisect start
-
-# Markera aktuell commit som dålig
-git bisect bad
-
-# Markera tidigare bra commit
-git bisect good abc1234
-
-# Git checkar ut commit i mitten - testa och markera
-git bisect bad    # eller git bisect good
-
-# Fortsätt tills Git hittar problematisk commit
-git bisect reset  # avsluta
-</code></pre>
-<h3 id="git-hooks---automatisering"><a class="header" href="#git-hooks---automatisering">Git Hooks - Automatisering</a></h3>
-<pre><code class="language-bash"># Navigera till hooks-mappen
-cd .git/hooks
-
-# Skapa pre-commit hook
-nano pre-commit
-
-# Exempel: Kör tests innan commit
-#!/bin/bash
-npm test
-if [ $? -ne 0 ]; then
-    echo "Tests failed, commit aborted"
-    exit 1
-fi
-
-# Gör executable
-chmod +x pre-commit
-</code></pre>
-<h2 id="git-submodules---externa-repositories"><a class="header" href="#git-submodules---externa-repositories">Git Submodules - Externa repositories</a></h2>
-<pre><code class="language-bash"># Lägg till submodule
-git submodule add https://github.com/user/repo.git libs/external
-
-# Klona projekt med submodules
-git clone --recurse-submodules https://github.com/user/project.git
-
-# Uppdatera submodules
-git submodule update --remote
-</code></pre>
-<h2 id="bästa-praxis-och-tips"><a class="header" href="#bästa-praxis-och-tips">Bästa praxis och tips</a></h2>
-<h3 id="commit-meddelanden"><a class="header" href="#commit-meddelanden">Commit-meddelanden</a></h3>
-<pre><code class="language-bash"># Bra struktur för commit-meddelanden
-# &lt;typ&gt;: &lt;kort beskrivning&gt;
-# 
-# &lt;längre beskrivning vid behov&gt;
-# 
-# &lt;referenser till issues&gt;
-
-# Exempel:
-feat: add user authentication system
-
-Implement login/logout functionality with JWT tokens.
-Includes password hashing and session management.
-
-Fixes #123
-</code></pre>
-<h3 id="branch-namngivning"><a class="header" href="#branch-namngivning">Branch-namngivning</a></h3>
-<pre><code class="language-bash"># Bra branch-namns konventioner
-feature/user-authentication
-bugfix/login-error-handling
-hotfix/security-vulnerability
-release/v2.1.0
-</code></pre>
-<h3 id="git-flow-vs-github-flow"><a class="header" href="#git-flow-vs-github-flow">Git Flow vs GitHub Flow</a></h3>
-<p><strong>Git Flow</strong> - Komplexare, strukturerad:</p>
-<ul>
-<li><code>main</code> - produktionskod</li>
-<li><code>develop</code> - utvecklingsbranch</li>
-<li><code>feature/*</code> - nya funktioner</li>
-<li><code>release/*</code> - release förberedelser</li>
-<li><code>hotfix/*</code> - kritiska fixes</li>
-</ul>
-<p><strong>GitHub Flow</strong> - Enklare, snabbare:</p>
-<ul>
-<li><code>main</code> - alltid deploybar</li>
-<li><code>feature/*</code> - korta feature branches</li>
-<li>Pull requests för review</li>
-<li>Deploy direkt från main</li>
-</ul>
-<h2 id="felsökning-och-problemlösning"><a class="header" href="#felsökning-och-problemlösning">Felsökning och problemlösning</a></h2>
-<h3 id="vanliga-problem-och-lösningar"><a class="header" href="#vanliga-problem-och-lösningar">Vanliga problem och lösningar</a></h3>
-<h4 id="undo-senaste-commit-behåll-ändringar"><a class="header" href="#undo-senaste-commit-behåll-ändringar">Undo senaste commit (behåll ändringar)</a></h4>
-<pre><code class="language-bash">git reset --soft HEAD~1
-</code></pre>
-<h4 id="undo-senaste-commit-ta-bort-ändringar"><a class="header" href="#undo-senaste-commit-ta-bort-ändringar">Undo senaste commit (ta bort ändringar)</a></h4>
-<pre><code class="language-bash">git reset --hard HEAD~1
-</code></pre>
-<h4 id="ändra-senaste-commit-meddelande"><a class="header" href="#ändra-senaste-commit-meddelande">Ändra senaste commit-meddelande</a></h4>
-<pre><code class="language-bash">git commit --amend -m "Nytt meddelande"
-</code></pre>
-<h4 id="lägg-till-fil-till-senaste-commit"><a class="header" href="#lägg-till-fil-till-senaste-commit">Lägg till fil till senaste commit</a></h4>
-<pre><code class="language-bash">git add glömd-fil.txt
-git commit --amend --no-edit
-</code></pre>
-<h4 id="återställa-fil-till-specifik-version"><a class="header" href="#återställa-fil-till-specifik-version">Återställa fil till specifik version</a></h4>
-<pre><code class="language-bash">git checkout abc1234 -- fil.txt
-</code></pre>
-<h4 id="push-refuseras-diverged-history"><a class="header" href="#push-refuseras-diverged-history">Push refuseras (diverged history)</a></h4>
-<pre><code class="language-bash"># Se vad som skiljer
-git log --oneline origin/main..main
-
-# Option 1: Pull och merge
-git pull origin main
-
-# Option 2: Pull och rebase
-git pull --rebase origin main
-
-# Option 3: Force push (FARLIGT - använd bara på egna branches)
-git push --force-with-lease origin main
-</code></pre>
-<h3 id="debug-git-kommandon"><a class="header" href="#debug-git-kommandon">Debug Git-kommandon</a></h3>
-<pre><code class="language-bash"># Visa vad Git gör
-export GIT_TRACE=1
-git status
-
-# Debug merge
-export GIT_MERGE_VERBOSITY=2
-git merge branch-name
-
-# Visa konfiguration
-git config --list --show-origin
-</code></pre>
-<h2 id="sammanfattning-9"><a class="header" href="#sammanfattning-9">Sammanfattning</a></h2>
-<p>Du har nu lärt dig avancerade Git-tekniker som gör dig till en mer kompetent utvecklare:</p>
-<ul>
-<li><strong>Checkout och Switch</strong>: Navigera mellan branches och commits säkert</li>
-<li><strong>Merge vs Rebase</strong>: Förstå när och hur du ska kombinera ändringar</li>
-<li><strong>Konflikthantering</strong>: Lösa merge conflicts effektivt</li>
-<li><strong>Konfiguration</strong>: Anpassa Git för din arbetsrutation</li>
-<li><strong>Avancerade verktyg</strong>: Cherry-pick, stash, reflog och mer</li>
-</ul>
-<h3 id="nästa-steg"><a class="header" href="#nästa-steg">Nästa steg</a></h3>
-<ul>
-<li>Experimentera med dessa kommandon i test-repositories</li>
-<li>Lär dig Git hooks för automatisering</li>
-<li>Utforska Git GUIs som Sourcetree eller GitKraken</li>
-<li>Fördjupa dig i Git internals för ännu djupare förståelse</li>
-</ul>
-<p>Git är ett kraftfullt verktyg - med dessa kunskaper kan du hantera även komplexa utvecklingsprojekt med självförtroende!</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="praktiska-övningar-html-och-git"><a class="header" href="#praktiska-övningar-html-och-git">Praktiska övningar: HTML och Git</a></h1>
 <p>Teori är bra, men det bästa sättet att lära sig HTML och Git är att använda dem! Här är några övningar för att befästa kunskaperna från detta kapitel.</p>
@@ -2202,6 +1139,1002 @@ dist/
 <li><strong>Ställ följdfrågor</strong> för att förtydliga vad intervjuaren söker</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div>
+<h1 id="git-och-versionshantering"><a class="header" href="#git-och-versionshantering">Git och versionshantering</a></h1>
+<p>Föreställ dig att du arbetar på ett projekt i flera veckor. En dag råkar du ändra något som förstör halva sidan – men du minns inte vad det var, och din enda sparade version är den trasiga. Eller så vill du prova en ny idé utan att riskera det som redan fungerar. Eller så ska ni vara tre personer som jobbar i samma kod samtidigt.</p>
+<p>Alla dessa problem löser <strong>Git</strong> – verktyget som låter dig spara, återställa och samarbeta kring kod på ett säkert och strukturerat sätt. Git är en av de mest grundläggande färdigheterna för en webbutvecklare, och det används på i princip alla arbetsplatser i branschen.</p>
+<blockquote>
+<p><strong>Så här lär du dig Git i den här boken</strong><br>Varje lektion innehåller en <strong>simulerad terminal</strong> där du skriver kommandona själv och ser vad de förväntas göra. Efter varje övning finns en uppmaning att <strong>köra samma sak i din riktiga terminal</strong> – det är där kunskapen fastnar. Simuleringen är uppvärmning, inte slutmålet.</p>
+</blockquote>
+<hr>
+<h2 id="vårt-exempelprojekt-portfolio-site"><a class="header" href="#vårt-exempelprojekt-portfolio-site">Vårt exempelprojekt: <code>portfolio-site</code></a></h2>
+<p>Genom hela kapitlet följer vi samma tänkta projekt: en enkel portfoliosida med filer som <code>index.html</code> och <code>about.html</code>. Du behöver inte bygga sidan på riktigt – det viktiga är att du versionshanterar <em>samma</em> mapp steg för steg, så att kommandona hänger ihop.</p>
+<hr>
+<h2 id="vad-du-kommer-att-lära-dig"><a class="header" href="#vad-du-kommer-att-lära-dig">Vad du kommer att lära dig</a></h2>
+<ul>
+<li><strong>Vad är Git?</strong> – grundbegreppen (repository, commit, branch, staging) och hur du installerar och ställer in Git.</li>
+<li><strong>Dina första commits</strong> – terminalens grunder och kärnflödet <code>init → status → add → commit → log</code>.</li>
+<li><strong>Ångra och rätta till</strong> – hur du tar tillbaka misstag på ett säkert sätt.</li>
+<li><strong>Brancher och merge</strong> – arbeta parallellt och slå ihop ändringar, med en visuell sandlåda.</li>
+<li><strong>Git och GitHub</strong> – koppla ditt projekt till molnet och dela det med andra.</li>
+<li><strong>Övningar och intervjufrågor</strong> – för att befästa kunskaperna.</li>
+</ul>
+<p>Vi börjar lugnt med <em>vad</em> Git är och <em>varför</em> det behövs, innan vi skriver det första kommandot.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="vad-är-git"><a class="header" href="#vad-är-git">Vad är Git?</a></h1>
+<p>Innan vi skriver ett enda kommando ska vi förstå <em>vad</em> Git egentligen är och vilka ord som används. Då blir kommandona i nästa lektion mycket lättare att förstå.</p>
+<blockquote>
+<p><strong>Mål:</strong><br>Förstå vad versionshantering är, lära dig Gits viktigaste begrepp, samt installera och ställa in Git på din dator.</p>
+</blockquote>
+<hr>
+<h2 id="versionshantering--en-tidsmaskin-för-din-kod"><a class="header" href="#versionshantering--en-tidsmaskin-för-din-kod">Versionshantering – en tidsmaskin för din kod</a></h2>
+<p><strong>Versionshantering</strong> (version control) betyder att ett verktyg håller reda på alla ändringar i dina filer över tid. I stället för att spara <code>index_slutgiltig_v2_NY.html</code> kan du jobba i en enda fil och låta Git komma ihåg varje sparad version åt dig.</p>
+<p>Tänk dig att du spelar ett tv-spel och sparar på olika ställen. Går något fel kan du alltid ladda en tidigare sparpunkt. Git är dina sparpunkter – fast för kod, och med obegränsat antal.</p>
+<p><strong>Git</strong> är det mest använda versionshanteringssystemet i världen. Det skapades av Linus Torvalds (mannen bakom Linux) och är <em>distribuerat</em>, vilket betyder att varje dator har en komplett kopia av hela projektets historik.</p>
+<hr>
+<h2 id="viktiga-begrepp"><a class="header" href="#viktiga-begrepp">Viktiga begrepp</a></h2>
+<p>Det räcker att känna igen dessa ord till att börja med – vi använder dem praktiskt i kommande lektioner.</p>
+<ul>
+<li><strong>Repository (repo):</strong> Projektets “hem” – en mapp där Git sparar både dina filer och hela historiken (i en dold undermapp som heter <code>.git</code>).</li>
+<li><strong>Commit:</strong> En sparad ögonblicksbild av projektet vid en viss tidpunkt, med ett meddelande som beskriver ändringen. Som ett foto av projektets tillstånd.</li>
+<li><strong>Working directory (arbetsmapp):</strong> De filer du faktiskt ser och redigerar i din projektmapp just nu.</li>
+<li><strong>Staging area (mellanlager):</strong> Ett mellanläge där du samlar ihop <em>exakt</em> de ändringar som ska med i nästa commit.</li>
+<li><strong>Branch (gren):</strong> En egen utvecklingslinje där du kan jobba utan att påverka huvudversionen (oftast kallad <code>main</code>).</li>
+</ul>
+<hr>
+<h2 id="så-hänger-det-ihop"><a class="header" href="#så-hänger-det-ihop">Så hänger det ihop</a></h2>
+<p>En ändring reser genom tre steg: från din arbetsmapp, via staging, in i historiken.</p>
+<pre class="mermaid">graph LR
+    WD["Working Directory&lt;br/&gt;(dina filer)"] -- "git add" --&gt; SA["Staging Area&lt;br/&gt;(förbered commit)"]
+    SA -- "git commit" --&gt; H["Historik (.git)&lt;br/&gt;(sparade commits)"]
+</pre>
+
+<p><em>Diagram: Förenklat arbetsflöde i Git.</em></p>
+<p>Liknelsen med ett paket: i <strong>working directory</strong> lägger du saker på bordet, i <strong>staging area</strong> packar du ner det du faktiskt vill skicka, och <strong>commit</strong> är när du förseglar och daterar paketet. Allt som inte hamnade i lådan ligger kvar på bordet tills nästa gång.</p>
+<blockquote>
+<p><strong>Lägeskollen – var befinner sig en ändring?</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Plats</th><th>Vad betyder det?</th><th>Exempel</th></tr>
+</thead>
+<tbody>
+<tr><td>Working directory</td><td>Du har redigerat en fil, men Git har inte förberett den än</td><td>Du skrev ny text i <code>index.html</code></td></tr>
+<tr><td>Staging area</td><td>Ändringen är vald och väntar på nästa commit</td><td>Du körde <code>git add index.html</code></td></tr>
+<tr><td>Historik</td><td>Ändringen är sparad som en commit</td><td>Du körde <code>git commit -m "..."</code></td></tr>
+</tbody>
+</table>
+</div>
+<p><code>git status</code> berättar alltid var du befinner dig i tabellen ovan. Det är därför det kommandot är så viktigt.</p>
+</blockquote>
+<hr>
+<h2 id="installera-git"><a class="header" href="#installera-git">Installera Git</a></h2>
+<p>Kontrollera först om Git redan finns genom att öppna en terminal och köra <code>git --version</code>.</p>
+<ul>
+<li><strong>Windows:</strong> Installera <a href="https://git-scm.com/download/win">Git for Windows</a>. Det inkluderar även <strong>Git Bash</strong>, en terminal där kommandona i den här boken fungerar precis som på macOS och Linux.</li>
+<li><strong>macOS:</strong> Git följer ofta med Xcode Command Line Tools. Saknas det kör du <code>xcode-select --install</code>, eller installerar via Homebrew: <code>brew install git</code>.</li>
+<li><strong>Linux (Ubuntu/Debian):</strong> <code>sudo apt install git</code>.</li>
+</ul>
+<p>Kör <code>git --version</code> igen för att verifiera att det fungerar.</p>
+<blockquote>
+<p><strong>Kör nu i din riktiga terminal:</strong> Öppna terminalen och skriv <code>git --version</code>. Om du får ett versionsnummer är du redo för nästa lektion.</p>
+</blockquote>
+<hr>
+<h2 id="ställ-in-git-görs-en-gång"><a class="header" href="#ställ-in-git-görs-en-gång">Ställ in Git (görs en gång)</a></h2>
+<p>Innan din första commit behöver Git veta vem du är. Namnet och e-posten knyts till varje commit du gör.</p>
+<pre><code class="language-bash">git config --global user.name "Ditt Namn"
+git config --global user.email "din.epost@example.com"
+</code></pre>
+<ul>
+<li><code>--global</code> betyder att inställningen gäller för alla dina projekt på den här datorn.</li>
+<li>Du behöver bara göra detta en gång.</li>
+</ul>
+<blockquote>
+<p><strong>Säkerhet:</strong> E-postadressen du anger blir synlig i alla publika commits du gör (t.ex. på GitHub). Använd en adress du är bekväm med att visa offentligt – GitHub erbjuder även en särskild “noreply”-adress om du vill dölja din riktiga e-post.</p>
+</blockquote>
+<blockquote>
+<p><strong>Kör nu i din riktiga terminal:</strong> Ställ in namn och e-post med kommandona ovan (byt ut mot dina egna uppgifter).</p>
+</blockquote>
+<blockquote>
+<p><strong>Vanliga misstag</strong></p>
+<ul>
+<li><strong>Glömmer ställa in namn/e-post</strong> → Git varnar vid första commit, eller commits får fel författare. Åtgärd: kör <code>git config --global user.name</code> och <code>user.email</code> som ovan.</li>
+<li><strong>Kör <code>git config</code> utan <code>--global</code> i fel mapp</strong> → inställningen gäller bara den mappen. För kursen räcker <code>--global</code>.</li>
+</ul>
+</blockquote>
+<hr>
+<h2 id="checkpoint"><a class="header" href="#checkpoint">Checkpoint</a></h2>
+<p>Innan du går vidare, kontrollera att du kan:</p>
+<ul>
+<li><input disabled="" type="checkbox"> Förklara med egna ord vad en <strong>commit</strong> är.</li>
+<li><input disabled="" type="checkbox"> Beskriva skillnaden mellan <strong>working directory</strong>, <strong>staging area</strong> och <strong>historik</strong>.</li>
+<li><input disabled="" type="checkbox"> Köra <code>git --version</code> och se ett versionsnummer.</li>
+<li><input disabled="" type="checkbox"> Ha ställt in <code>user.name</code> och <code>user.email</code>.</li>
+</ul>
+<hr>
+<h2 id="sammanfattning-7"><a class="header" href="#sammanfattning-7">Sammanfattning</a></h2>
+<p>Git är ett versionshanteringssystem som låter dig spara ögonblicksbilder (commits) av ditt projekt, gå tillbaka i tiden och samarbeta tryggt. De centrala begreppen är <strong>repository</strong>, <strong>commit</strong>, <strong>working directory</strong>, <strong>staging area</strong> och <strong>branch</strong>. När Git är installerat och inställt med ditt namn och din e-post är du redo att göra din första commit i projektet <code>portfolio-site</code> – det gör vi i nästa lektion.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="dina-första-commits"><a class="header" href="#dina-första-commits">Dina första commits</a></h1>
+<p>Det här är lektionen där allt klickar. Vi fortsätter med exempelprojektet <strong><code>portfolio-site</code></strong> och går igenom Gits kärnflöde steg för steg: <code>init → status → add → commit → log</code>. Efter varje steg får du prova själv i en simulerad terminal – och sedan i din riktiga.</p>
+<blockquote>
+<p><strong>Mål:</strong><br>Kunna skapa ett repository, se dess status, lägga till filer i staging och spara din första commit – och förstå vad varje steg gör.</p>
+</blockquote>
+<p><strong>Förutsättning:</strong> Du har installerat och ställt in Git (se <a href="#vad-är-git">Vad är Git?</a>).</p>
+<blockquote>
+<p><strong>Notera:</strong> Terminalerna nedan är <em>guidade simuleringar</em> – kommandona körs inte på riktigt. Efter varje övning ska du göra samma sak i din egen terminal.</p>
+</blockquote>
+<hr>
+<h2 id="steg-0-hitta-rätt-i-terminalen"><a class="header" href="#steg-0-hitta-rätt-i-terminalen">Steg 0: Hitta rätt i terminalen</a></h2>
+<p>Git körs i terminalen, alltid <strong>inuti din projektmapp</strong>. Du behöver bara en handfull kommandon för att ta dig dit:</p>
+<ul>
+<li><strong><code>pwd</code></strong> – visar var du är (<em>print working directory</em>).</li>
+<li><strong><code>ls</code></strong> – listar filer och mappar. <code>ls -la</code> visar även dolda filer (som <code>.git</code>).</li>
+<li><strong><code>cd mapp</code></strong> – går in i en mapp. <code>cd ..</code> går upp en nivå.</li>
+<li><strong><code>mkdir namn</code></strong> – skapar en ny mapp (<em>make directory</em>).</li>
+<li><strong><code>touch fil</code></strong> – skapar en tom fil.</li>
+</ul>
+<p>Liknelse: terminalen är som att gå runt i ett hus utan att se rummen. <code>pwd</code> säger vilket rum du står i, <code>ls</code> visar vad som finns där, och <code>cd</code> är dörren till nästa rum.</p>
+<p><strong>Prova själv:</strong> Skapa mappen <code>portfolio-site</code>, gå in i den och lägg en tom <code>index.html</code> där. Klicka <strong>Tips</strong> om du fastnar.</p>
+<!-- terminal -->
+<pre><code class="language-bash">$ mkdir portfolio-site
+$ cd portfolio-site
+$ pwd
+/home/elev/portfolio-site
+$ touch index.html
+$ ls
+index.html
+</code></pre>
+<blockquote>
+<p><strong>Kör nu i din riktiga terminal:</strong> Skapa mappen <code>portfolio-site</code> på din dator och kör samma kommandon. Kontrollera med <code>pwd</code> att du står i rätt mapp.</p>
+</blockquote>
+<blockquote>
+<p><strong>Windows:</strong> I <strong>Git Bash</strong> fungerar kommandona ovan precis som här. I PowerShell kan <code>touch index.html</code> ersättas med <code>New-Item index.html</code>.</p>
+</blockquote>
+<blockquote>
+<p><strong>Vanliga misstag</strong></p>
+<ul>
+<li><strong>Skriver <code>git</code> i fel mapp</strong> → <code>fatal: not a git repository</code>. Åtgärd: <code>cd portfolio-site</code> innan du kör Git-kommandon.</li>
+<li><strong>Glömmer <code>cd</code> efter <code>mkdir</code></strong> → du skapar mappen men står kvar utanför den. Åtgärd: kör alltid <code>cd portfolio-site</code> direkt efter <code>mkdir</code>.</li>
+</ul>
+</blockquote>
+<hr>
+<h2 id="steg-1-skapa-ett-repository--git-init"><a class="header" href="#steg-1-skapa-ett-repository--git-init">Steg 1: Skapa ett repository – <code>git init</code></a></h2>
+<p>Det första du gör i ett <em>nytt</em> projekt är att starta ett Git-repository.</p>
+<pre><code class="language-bash">git init
+</code></pre>
+<p>Detta skapar en dold mapp <code>.git</code> i din projektmapp. Där sparar Git all historik. Du behöver bara köra <code>git init</code> <strong>en gång</strong> per projekt.</p>
+<blockquote>
+<p><strong>Lägeskollen efter <code>git init</code>:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Working directory</th><th>Staging area</th><th>Historik</th></tr>
+</thead>
+<tbody>
+<tr><td><code>index.html</code> finns här</td><td>Tom</td><td>Inga commits än</td></tr>
+</tbody>
+</table>
+</div>
+</blockquote>
+<p><strong>Prova själv:</strong></p>
+<!-- terminal -->
+<pre><code class="language-bash">$ git init
+Initialized empty Git repository in /home/elev/portfolio-site/.git/
+</code></pre>
+<blockquote>
+<p><strong>Kör nu i din riktiga terminal:</strong> Stå i <code>portfolio-site</code> och kör <code>git init</code>. Kör sedan <code>ls -la</code> – du ska se mappen <code>.git</code>.</p>
+</blockquote>
+<hr>
+<h2 id="steg-2-se-läget--git-status"><a class="header" href="#steg-2-se-läget--git-status">Steg 2: Se läget – <code>git status</code></a></h2>
+<p><code>git status</code> är det kommando du kommer använda mest. Det svarar på frågan “var står jag just nu?”.</p>
+<pre><code class="language-bash">git status
+</code></pre>
+<p>Det visar vilken branch du är på, vilka filer som ändrats men inte sparats, och vilka filer Git ännu inte spårar (<em>untracked</em>). Just nu ser Git din <code>index.html</code>, men spårar den inte än.</p>
+<blockquote>
+<p><strong>Lägeskollen efter <code>git status</code>:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Working directory</th><th>Staging area</th><th>Historik</th></tr>
+</thead>
+<tbody>
+<tr><td><code>index.html</code> (untracked)</td><td>Tom</td><td>Inga commits än</td></tr>
+</tbody>
+</table>
+</div>
+<p><em>Untracked</em> betyder: Git ser filen men väntar på att du säger <code>git add</code>.</p>
+</blockquote>
+<p><strong>Prova själv:</strong></p>
+<!-- terminal -->
+<pre><code class="language-bash">$ git status
+On branch main
+
+No commits yet
+
+Untracked files:
+  (use "git add &lt;file&gt;..." to include in what will be committed)
+        index.html
+
+nothing added to commit but untracked files present (use "git add" to track)
+</code></pre>
+<blockquote>
+<p><strong>Kör nu i din riktiga terminal:</strong> Kör <code>git status</code> i <code>portfolio-site</code>. Du ska se <code>index.html</code> under “Untracked files”.</p>
+</blockquote>
+<hr>
+<h2 id="steg-3-förbered-ändringen--git-add"><a class="header" href="#steg-3-förbered-ändringen--git-add">Steg 3: Förbered ändringen – <code>git add</code></a></h2>
+<p>Innan du sparar måste du tala om <em>vilka</em> ändringar som ska med. Du lägger dem i <strong>staging area</strong>.</p>
+<pre><code class="language-bash">git add index.html
+</code></pre>
+<ul>
+<li><code>git add index.html</code> lägger till en specifik fil.</li>
+<li><code>git add .</code> lägger till <strong>alla</strong> ändrade och nya filer (punkten betyder “den här mappen”). Mycket vanligt.</li>
+</ul>
+<p>Kör du <code>git status</code> igen ligger filen nu under “Changes to be committed” – den är redo att sparas.</p>
+<blockquote>
+<p><strong>Lägeskollen efter <code>git add</code>:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Working directory</th><th>Staging area</th><th>Historik</th></tr>
+</thead>
+<tbody>
+<tr><td>Filen finns kvar här</td><td><code>index.html</code> väntar på commit</td><td>Oförändrad</td></tr>
+</tbody>
+</table>
+</div>
+</blockquote>
+<p><strong>Prova själv:</strong></p>
+<!-- terminal -->
+<pre><code class="language-bash">$ git add index.html
+$ git status
+On branch main
+
+No commits yet
+
+Changes to be committed:
+  (use "git rm --cached &lt;file&gt;..." to unstage)
+        new file:   index.html
+</code></pre>
+<blockquote>
+<p><strong>Kör nu i din riktiga terminal:</strong> Kör <code>git add index.html</code> och sedan <code>git status</code> igen. Filen ska nu ligga under “Changes to be committed”.</p>
+</blockquote>
+<blockquote>
+<p><strong>Vanliga misstag</strong></p>
+<ul>
+<li><strong>Committar utan <code>git add</code></strong> → <code>nothing to commit</code>. Åtgärd: lägg till filerna med <code>git add</code> först.</li>
+<li><strong>Lägger till fel fil med <code>git add .</code></strong> → för många filer i staging. Åtgärd: använd <code>git add filnamn</code> när du bara vill ha vissa filer (mer om det i <a href="#ångra-och-rätta-till">Ångra och rätta till</a>).</li>
+</ul>
+</blockquote>
+<hr>
+<h2 id="steg-4-spara--git-commit"><a class="header" href="#steg-4-spara--git-commit">Steg 4: Spara – <code>git commit</code></a></h2>
+<p>Nu förseglar du ögonblicksbilden. Varje commit måste ha ett <strong>meddelande</strong> som beskriver ändringen.</p>
+<pre><code class="language-bash">git commit -m "Skapa index.html"
+</code></pre>
+<ul>
+<li><code>-m</code> står för <em>message</em>. Skriv kort och beskrivande, gärna i imperativ: “Lägg till startsida”, inte “Lade till startsidan”.</li>
+<li>Ett bra meddelande hjälper både dig och andra att förstå historiken senare.</li>
+</ul>
+<blockquote>
+<p><strong>Lägeskollen efter <code>git commit</code>:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Working directory</th><th>Staging area</th><th>Historik</th></tr>
+</thead>
+<tbody>
+<tr><td>Ren (inga osparade ändringar)</td><td>Tom</td><td>Ny commit sparad</td></tr>
+</tbody>
+</table>
+</div>
+</blockquote>
+<p><strong>Prova själv:</strong></p>
+<!-- terminal -->
+<pre><code class="language-bash">$ git commit -m "Skapa index.html"
+[main (root-commit) a1b2c3d] Skapa index.html
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 index.html
+</code></pre>
+<blockquote>
+<p><strong>Kör nu i din riktiga terminal:</strong> Committa med ett eget meddelande. Kör <code>git status</code> – det ska stå <em>working tree clean</em>.</p>
+</blockquote>
+<hr>
+<h2 id="steg-5-se-historiken--git-log"><a class="header" href="#steg-5-se-historiken--git-log">Steg 5: Se historiken – <code>git log</code></a></h2>
+<p>För att se alla commits du gjort:</p>
+<pre><code class="language-bash">git log --oneline
+</code></pre>
+<ul>
+<li><code>git log</code> visar full historik (tryck <code>q</code> för att avsluta om den är lång).</li>
+<li><code>git log --oneline</code> ger en kompakt vy med commit-ID och meddelande – perfekt för en snabb överblick.</li>
+</ul>
+<p><strong>Prova själv:</strong></p>
+<!-- terminal -->
+<pre><code class="language-bash">$ git log --oneline
+a1b2c3d Skapa index.html
+</code></pre>
+<blockquote>
+<p><strong>Kör nu i din riktiga terminal:</strong> Kör <code>git log --oneline</code> och bekräfta att din commit syns.</p>
+</blockquote>
+<hr>
+<h2 id="hela-flödet-på-en-gång"><a class="header" href="#hela-flödet-på-en-gång">Hela flödet på en gång</a></h2>
+<p>Det dagliga arbetsflödet ser alltid likadant ut:</p>
+<pre class="mermaid">graph LR
+    A["Gör ändringar"] --&gt; B["git status"]
+    B --&gt; C["git add"]
+    C --&gt; D["git commit -m '...'"]
+    D --&gt; A
+</pre>
+
+<ol>
+<li><strong>Gör ändringar</strong> i filerna.</li>
+<li><strong><code>git status</code></strong> – se vad som ändrats.</li>
+<li><strong><code>git add</code></strong> – välj vad som ska med.</li>
+<li><strong><code>git commit -m "..."</code></strong> – spara.</li>
+<li>Upprepa. Använd <code>git log</code> när du vill se historiken.</li>
+</ol>
+<p><strong>Prova själv:</strong> Kör hela flödet från tomt repository till första committen.</p>
+<!-- terminal -->
+<pre><code class="language-bash">$ git init
+Initialized empty Git repository in /home/elev/portfolio-site/.git/
+$ git add index.html
+$ git commit -m "Skapa index.html"
+[main (root-commit) a1b2c3d] Skapa index.html
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 index.html
+$ git log --oneline
+a1b2c3d Skapa index.html
+</code></pre>
+<hr>
+<h2 id="checkpoint-1"><a class="header" href="#checkpoint-1">Checkpoint</a></h2>
+<p>Innan du går vidare, kontrollera att du kan:</p>
+<ul>
+<li><input disabled="" type="checkbox"> Skapa mappen <code>portfolio-site</code> och initiera Git där.</li>
+<li><input disabled="" type="checkbox"> Förklara vad <code>git status</code> visar efter <code>git add</code> respektive efter <code>git commit</code>.</li>
+<li><input disabled="" type="checkbox"> Göra en commit med ett tydligt meddelande i imperativ form.</li>
+<li><input disabled="" type="checkbox"> Visa historiken med <code>git log --oneline</code>.</li>
+</ul>
+<p><strong>Bonus:</strong> Lägg till lite text i <code>index.html</code>, kör hela flödet igen (<code>status</code> → <code>add</code> → <code>commit</code> → <code>log</code>) och bekräfta att du nu har <strong>två</strong> commits.</p>
+<hr>
+<h2 id="sammanfattning-8"><a class="header" href="#sammanfattning-8">Sammanfattning</a></h2>
+<p>Du behärskar nu Gits kärna: <code>init</code> startar ett repo, <code>status</code> visar läget, <code>add</code> förbereder ändringar, <code>commit</code> sparar dem och <code>log</code> visar historiken. Det här flödet kommer du upprepa hundratals gånger i <code>portfolio-site</code> och alla framtida projekt. I nästa lektion lär vi oss hur man <strong>ångrar</strong> när något blev fel.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="ångra-och-rätta-till"><a class="header" href="#ångra-och-rätta-till">Ångra och rätta till</a></h1>
+<p>Alla gör misstag – ändrar fel fil, glömmer något i en commit, eller skriver fel commit-meddelande. Det fina med Git är att nästan allt går att rätta till. Vi fortsätter i <strong><code>portfolio-site</code></strong> och tittar på de vanligaste och tryggaste sätten att ångra.</p>
+<blockquote>
+<p><strong>Mål:</strong><br>Kunna ångra ändringar på fyra nivåer: i arbetsmappen, i staging, i senaste committen, och i ett commit-meddelande.</p>
+</blockquote>
+<p><strong>Förutsättning:</strong> Du kan kärnflödet <code>add</code>/<code>commit</code> från <a href="#dina-första-commits">Dina första commits</a> och har minst en commit i <code>portfolio-site</code>.</p>
+<hr>
+<h2 id="fyra-vanliga-oj-situationer"><a class="header" href="#fyra-vanliga-oj-situationer">Fyra vanliga “oj”-situationer</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Situation</th><th>Kommando</th><th>Var ändringen rullas tillbaka</th></tr>
+</thead>
+<tbody>
+<tr><td>Ändrade en fil men vill ha tillbaka senast sparade version</td><td><code>git restore &lt;fil&gt;</code></td><td>Working directory</td></tr>
+<tr><td>Lade till en fil i staging av misstag</td><td><code>git restore --staged &lt;fil&gt;</code></td><td>Staging area</td></tr>
+<tr><td>Committade för tidigt, vill lägga till mer</td><td><code>git reset --soft HEAD~1</code></td><td>Senaste committen</td></tr>
+<tr><td>Skrev fel i commit-meddelandet</td><td><code>git commit --amend -m "..."</code></td><td>Commit-meddelandet</td></tr>
+</tbody>
+</table>
+</div>
+<p>Vi går igenom dem en i taget.</p>
+<hr>
+<h2 id="1-ångra-ändringar-i-en-fil--git-restore"><a class="header" href="#1-ångra-ändringar-i-en-fil--git-restore">1. Ångra ändringar i en fil – <code>git restore</code></a></h2>
+<p>Du har redigerat <code>index.html</code> men ångrar dig och vill ha tillbaka den senast committade versionen.</p>
+<pre><code class="language-bash">git restore index.html
+</code></pre>
+<p>Detta kastar dina <em>osparade</em> ändringar i den filen och återställer den till hur den såg ut i senaste committen.</p>
+<blockquote>
+<p><strong>Lägeskollen efter <code>git restore index.html</code>:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Working directory</th><th>Staging area</th><th>Historik</th></tr>
+</thead>
+<tbody>
+<tr><td>Filen matchar senaste commit</td><td>Oförändrad</td><td>Oförändrad</td></tr>
+</tbody>
+</table>
+</div>
+</blockquote>
+<blockquote>
+<p><strong>Varning:</strong> Ändringar du kastar med <code>git restore</code> är borta – de fanns aldrig i någon commit, så Git kan inte få tillbaka dem. Använd bara när du är säker.</p>
+</blockquote>
+<blockquote>
+<p><strong>Kör nu i din riktiga terminal:</strong> Ändra något i <code>index.html</code> utan att committa. Kör <code>git restore index.html</code> och öppna filen – ändringen ska vara borta.</p>
+</blockquote>
+<hr>
+<h2 id="2-ta-bort-en-fil-från-staging--git-restore---staged"><a class="header" href="#2-ta-bort-en-fil-från-staging--git-restore---staged">2. Ta bort en fil från staging – <code>git restore --staged</code></a></h2>
+<p>Du körde <code>git add</code> men inser att filen inte borde vara med i nästa commit. Du vill ta ut den ur staging – men <em>behålla</em> dina ändringar i filen.</p>
+<pre><code class="language-bash">git restore --staged secret.txt
+</code></pre>
+<p>Filen ligger nu kvar i din arbetsmapp precis som den var, men är inte längre förberedd för commit. Inga ändringar går förlorade.</p>
+<blockquote>
+<p><strong>Lägeskollen efter <code>git restore --staged secret.txt</code>:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Working directory</th><th>Staging area</th><th>Historik</th></tr>
+</thead>
+<tbody>
+<tr><td><code>secret.txt</code> finns kvar</td><td>Filen borttagen härifrån</td><td>Oförändrad</td></tr>
+</tbody>
+</table>
+</div>
+</blockquote>
+<p><strong>Prova själv:</strong> Lägg till två filer, ångra den ena ur staging, och se hur statusen ändras.</p>
+<!-- terminal -->
+<pre><code class="language-bash">$ git add index.html secret.txt
+$ git status
+On branch main
+Changes to be committed:
+  (use "git restore --staged &lt;file&gt;..." to unstage)
+        new file:   index.html
+        new file:   secret.txt
+$ git restore --staged secret.txt
+$ git status
+On branch main
+Changes to be committed:
+  (use "git restore --staged &lt;file&gt;..." to unstage)
+        new file:   index.html
+
+Untracked files:
+        secret.txt
+</code></pre>
+<blockquote>
+<p><strong>Kör nu i din riktiga terminal:</strong> Skapa en fil <code>temp.txt</code>, kör <code>git add temp.txt</code>, sedan <code>git restore --staged temp.txt</code>. Kör <code>git status</code> – filen ska finnas kvar men inte ligga i staging.</p>
+</blockquote>
+<blockquote>
+<p><strong>Vanliga misstag</strong></p>
+<ul>
+<li><strong>Blandar ihop <code>git restore</code> och <code>git restore --staged</code></strong> → den ena raderar filändringar, den andra tar bara bort från staging. Läs tabellen i början av lektionen innan du kör.</li>
+<li><strong>Committar en hemlig fil av misstag</strong> → t.ex. <code>.env</code> eller lösenord. Åtgärd: ta bort från staging med <code>git restore --staged</code> <em>innan</em> du committar. Har du redan committat lokalt: <code>git reset --soft HEAD~1</code> och lägg till filen i <code>.gitignore</code>.</li>
+</ul>
+</blockquote>
+<hr>
+<h2 id="3-ångra-senaste-committen-men-behåll-arbetet--git-reset---soft"><a class="header" href="#3-ångra-senaste-committen-men-behåll-arbetet--git-reset---soft">3. Ångra senaste committen men behåll arbetet – <code>git reset --soft</code></a></h2>
+<p>Du committade men inser att du glömde <code>about.html</code>, eller vill dela upp committen. <code>git reset --soft HEAD~1</code> tar bort den <em>senaste</em> committen men låter alla ändringar ligga kvar i staging, redo att committas om.</p>
+<pre><code class="language-bash">git reset --soft HEAD~1
+</code></pre>
+<ul>
+<li><code>HEAD</code> betyder “den commit du står på just nu”. <code>HEAD~1</code> betyder “en commit bakåt”.</li>
+<li><code>--soft</code> rör inte dina filer – bara själva committen tas bort.</li>
+</ul>
+<blockquote>
+<p><strong>Lägeskollen efter <code>git reset --soft HEAD~1</code>:</strong></p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Working directory</th><th>Staging area</th><th>Historik</th></tr>
+</thead>
+<tbody>
+<tr><td>Oförändrad</td><td>Allt från committen ligger kvar här</td><td>Senaste committen borttagen</td></tr>
+</tbody>
+</table>
+</div>
+</blockquote>
+<p><strong>Prova själv:</strong> Ångra senaste committen, lägg till en till fil och committa allt på nytt.</p>
+<!-- terminal -->
+<pre><code class="language-bash">$ git reset --soft HEAD~1
+$ git add about.html
+$ git commit -m "Lägg till startsida och om-sida"
+[main e5f6a7b] Lägg till startsida och om-sida
+ 2 files changed, 10 insertions(+)
+</code></pre>
+<blockquote>
+<p><strong>Kör nu i din riktiga terminal:</strong> Committa något i <code>portfolio-site</code>, kör <code>git reset --soft HEAD~1</code>, och kontrollera med <code>git status</code> att ändringarna fortfarande ligger i staging.</p>
+</blockquote>
+<h3 id="de-tre-reset-lägena-kort"><a class="header" href="#de-tre-reset-lägena-kort">De tre reset-lägena (kort)</a></h3>
+<p><code>git reset</code> finns i tre varianter. Skillnaden är <em>hur långt</em> tillbaka ändringarna rullas:</p>
+<ul>
+<li><strong><code>--soft</code></strong> – tar bort committen, <strong>behåller</strong> staging och filer. (Tryggast.)</li>
+<li><strong><code>--mixed</code></strong> (standard) – tar bort committen och tömmer staging, men <strong>behåller</strong> dina filer.</li>
+<li><strong><code>--hard</code></strong> – tar bort committen <strong>och raderar</strong> alla ändringar i filerna.</li>
+</ul>
+<blockquote>
+<p><strong>⚠️ Säkerhet – <code>--hard</code> raderar arbete permanent:</strong><br><code>git reset --hard</code> kastar dina ändringar utan att fråga, och osparat arbete går då inte att få tillbaka. Som nybörjare ska du i princip alltid använda <code>--soft</code> eller <code>--mixed</code>. Rör bara <code>--hard</code> när du är <em>helt</em> säker på att du vill slänga allt.</p>
+</blockquote>
+<hr>
+<h2 id="4-rätta-commit-meddelandet--git-commit---amend"><a class="header" href="#4-rätta-commit-meddelandet--git-commit---amend">4. Rätta commit-meddelandet – <code>git commit --amend</code></a></h2>
+<p>Du råkade stava fel i ditt senaste commit-meddelande. Så länge du <strong>inte har pushat</strong> committen kan du skriva om den:</p>
+<pre><code class="language-bash">git commit --amend -m "Lägg till startsida"
+</code></pre>
+<p>Detta ersätter den senaste committen med en ny som har rätt meddelande.</p>
+<blockquote>
+<p><strong>Viktigt:</strong> Ändra bara commits som du <em>inte</em> har delat med andra (pushat till GitHub). Att skriva om historik som andra redan hämtat skapar förvirring. Mer om det i <a href="#git-och-github">Git och GitHub</a>.</p>
+</blockquote>
+<blockquote>
+<p><strong>Kör nu i din riktiga terminal:</strong> Gör en commit med ett medvetet dåligt meddelande (t.ex. “asdf”). Kör <code>git commit --amend -m "Bättre meddelande"</code> och kontrollera med <code>git log --oneline</code> att det uppdaterades.</p>
+</blockquote>
+<hr>
+<h2 id="checkpoint-2"><a class="header" href="#checkpoint-2">Checkpoint</a></h2>
+<p>Innan du går vidare, kontrollera att du kan:</p>
+<ul>
+<li><input disabled="" type="checkbox"> Förklara skillnaden mellan <code>git restore</code> och <code>git restore --staged</code>.</li>
+<li><input disabled="" type="checkbox"> Ta bort en fil ur staging utan att radera filen.</li>
+<li><input disabled="" type="checkbox"> Ångra en lokal commit med <code>--soft</code> och committa om med fler filer.</li>
+<li><input disabled="" type="checkbox"> Rätta ett commit-meddelande med <code>--amend</code> (utan att ha pushat).</li>
+</ul>
+<hr>
+<h2 id="sammanfattning-9"><a class="header" href="#sammanfattning-9">Sammanfattning</a></h2>
+<p>Git ger dig flera trygga sätt att ångra: <code>git restore</code> tar tillbaka filer, <code>git restore --staged</code> tömmer staging, <code>git reset --soft</code> ångrar en commit men behåller arbetet, och <code>git commit --amend</code> rättar senaste meddelandet. Det enda kommandot du behöver vara rädd för är <code>git reset --hard</code> – det raderar arbete på riktigt. I nästa lektion lär vi oss arbeta parallellt med <strong>brancher</strong> (grenar) och <strong>merge</strong> (sammanfogning).</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="brancher-och-merge"><a class="header" href="#brancher-och-merge">Brancher och merge</a></h1>
+<p>Hittills har vi jobbat på en enda linje i <strong><code>portfolio-site</code></strong>. Men tänk om du vill prova en ny funktion utan att röra det som fungerar? Eller jobba på två saker parallellt? Det är vad <strong>brancher</strong> (grenar) är till för – och när du är klar slår du ihop dem med <strong>merge</strong> (sammanfogning).</p>
+<blockquote>
+<p><strong>Mål:</strong><br>Förstå vad en branch är, kunna skapa och byta branch, slå ihop ändringar med merge och hantera en enkel konflikt.</p>
+</blockquote>
+<p><strong>Förutsättning:</strong> Du kan kärnflödet från <a href="#dina-första-commits">Dina första commits</a> och har minst en commit i <code>portfolio-site</code>.</p>
+<hr>
+<h2 id="vad-är-en-branch"><a class="header" href="#vad-är-en-branch">Vad är en branch?</a></h2>
+<p>En <strong>branch</strong> (gren) är en egen utvecklingslinje. Standardbranchen heter <code>main</code>. När du skapar en ny branch får du en separat linje där du kan committa fritt utan att påverka <code>main</code>. När funktionen är klar <strong>mergar</strong> (sammanfogar) du tillbaka.</p>
+<p>Liknelse: tänk dig en bok där huvudberättelsen är <code>main</code>. En branch är ett sidospår där du provar en alternativ handling. Blir den bra väver du in den i huvudberättelsen (merge); blir den dålig slänger du bara sidospåret – huvudboken är orörd.</p>
+<pre class="mermaid">gitGraph
+    commit id: "start"
+    commit id: "andra"
+    branch feature
+    commit id: "ny-funktion"
+    checkout main
+    merge feature
+</pre>
+
+<p><em>Diagram: en branch <code>feature</code> skapas, får en commit och mergas tillbaka till <code>main</code>.</em></p>
+<hr>
+<h2 id="skapa-och-byta-branch--git-switch"><a class="header" href="#skapa-och-byta-branch--git-switch">Skapa och byta branch – <code>git switch</code></a></h2>
+<pre><code class="language-bash">git switch -c feature
+</code></pre>
+<ul>
+<li><code>git switch -c feature</code> skapar en ny branch <code>feature</code> och byter till den (<code>-c</code> = <em>create</em>).</li>
+<li><code>git switch main</code> byter tillbaka till <code>main</code>.</li>
+<li><code>git branch</code> listar alla brancher och visar med en <code>*</code> vilken du står på.</li>
+</ul>
+<blockquote>
+<p>Du kommer även se det äldre <code>git checkout -b feature</code> i guider på nätet. Det gör samma sak; <code>git switch</code> är den nyare, tydligare varianten.</p>
+</blockquote>
+<p><strong>Prova själv:</strong> Skapa en branch, kontrollera att du bytt, och committa en ändring där.</p>
+<!-- terminal -->
+<pre><code class="language-bash">$ git switch -c feature
+Switched to a new branch 'feature'
+$ git branch
+* feature
+  main
+$ git add about.html
+$ git commit -m "Lägg till om-sidan"
+[feature 9a8b7c6] Lägg till om-sidan
+ 1 file changed, 5 insertions(+)
+</code></pre>
+<blockquote>
+<p><strong>Kör nu i din riktiga terminal:</strong> I <code>portfolio-site</code>, kör <code>git switch -c about-page</code>, skapa filen <code>about.html</code>, committa den, och kör <code>git branch</code> för att se att du står på rätt branch.</p>
+</blockquote>
+<blockquote>
+<p><strong>Vanliga misstag</strong></p>
+<ul>
+<li><strong>Committar på fel branch</strong> → ändringen hamnar på <code>main</code> i stället för din feature-branch. Åtgärd: kör <code>git branch</code> <em>innan</em> du committar och kontrollera vilken branch som har <code>*</code>.</li>
+<li><strong>Glömmer byta tillbaka till <code>main</code> före merge</strong> → du försöker merga från fel håll. Åtgärd: <code>git switch main</code> först, sedan <code>git merge feature</code>.</li>
+</ul>
+</blockquote>
+<hr>
+<h2 id="slå-ihop--git-merge"><a class="header" href="#slå-ihop--git-merge">Slå ihop – <code>git merge</code></a></h2>
+<p>När funktionen är klar går du tillbaka till <code>main</code> och slår ihop branchen dit.</p>
+<pre><code class="language-bash">git switch main
+git merge feature
+</code></pre>
+<p>Om <code>main</code> inte ändrats under tiden gör Git en <strong>fast-forward</strong> – <code>main</code> flyttas helt enkelt fram till samma punkt som <code>feature</code>. Om båda brancherna har egna commits skapar Git i stället en <strong>merge-commit</strong> som binder ihop dem.</p>
+<p><strong>Prova själv:</strong> Byt till main och merga in din feature-branch.</p>
+<!-- terminal -->
+<pre><code class="language-bash">$ git switch main
+Switched to branch 'main'
+$ git merge feature
+Updating a1b2c3d..9a8b7c6
+Fast-forward
+ about.html | 5 +++++
+ 1 file changed, 5 insertions(+)
+</code></pre>
+<p>När en branch är mergad och inte behövs mer kan du ta bort den: <code>git branch -d feature</code>.</p>
+<blockquote>
+<p><strong>Kör nu i din riktiga terminal:</strong> Byt till <code>main</code>, merga in <code>about-page</code>, och kör <code>git log --oneline --graph</code> för att se hur historiken ser ut.</p>
+</blockquote>
+<hr>
+<h2 id="när-det-krockar-merge-konflikt"><a class="header" href="#när-det-krockar-merge-konflikt">När det krockar: merge-konflikt</a></h2>
+<p>En <strong>merge-konflikt</strong> uppstår när två brancher ändrat <em>samma rader</em> i samma fil. Git kan inte gissa vilken version som är rätt, så den ber dig välja.</p>
+<p>Filen får då konfliktmarkeringar:</p>
+<pre><code class="language-html">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+&lt;h1&gt;Välkommen till min portfolio&lt;/h1&gt;
+=======
+&lt;h1&gt;Hej och välkommen!&lt;/h1&gt;
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature
+</code></pre>
+<ul>
+<li>Allt mellan <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code> och <code>=======</code> är versionen från din nuvarande branch (<code>main</code>).</li>
+<li>Allt mellan <code>=======</code> och <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature</code> är versionen från branchen du mergar in.</li>
+</ul>
+<p><strong>Så här löser du konflikten:</strong></p>
+<ol>
+<li>Öppna filen och bestäm vilken text som ska vara kvar (en av dem, eller en kombination).</li>
+<li>Ta bort markeringarna <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>, <code>=======</code> och <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code>.</li>
+<li>Spara, <code>git add</code> filen och <code>git commit</code> för att slutföra mergen.</li>
+</ol>
+<p><strong>Prova själv:</strong> Slutför en merge efter att du löst konflikten i filen.</p>
+<!-- terminal -->
+<pre><code class="language-bash">$ git merge feature
+Auto-merging index.html
+CONFLICT (content): Merge conflict in index.html
+Automatic merge failed; fix conflicts and then commit the result.
+$ git add index.html
+$ git commit -m "Slå ihop feature och lös konflikt i index.html"
+[main 1c2d3e4] Slå ihop feature och lös konflikt i index.html
+</code></pre>
+<blockquote>
+<p>Konflikter ser läskiga ut första gången, men de är helt normala och ofarliga – Git stannar och låter dig välja lugnt. Inget går förlorat.</p>
+</blockquote>
+<h3 id="miniövning-skapa-och-lös-en-konflikt-i-din-riktiga-terminal"><a class="header" href="#miniövning-skapa-och-lös-en-konflikt-i-din-riktiga-terminal">Miniövning: skapa och lös en konflikt (i din riktiga terminal)</a></h3>
+<p>Gör detta i <code>portfolio-site</code> för att öva på riktigt:</p>
+<ol>
+<li>På <code>main</code>: öppna <code>index.html</code> och skriv <code>&lt;h1&gt;Min portfolio&lt;/h1&gt;</code>. Committa.</li>
+<li>Skapa branch: <code>git switch -c rubrik-andring</code>.</li>
+<li>På branchen: ändra rubriken till <code>&lt;h1&gt;Hej! Jag heter Anna&lt;/h1&gt;</code>. Committa.</li>
+<li>Byt till <code>main</code>: <code>git switch main</code>.</li>
+<li>På <code>main</code>: ändra <em>samma rad</em> till <code>&lt;h1&gt;Välkommen till min sida&lt;/h1&gt;</code>. Committa.</li>
+<li>Försök merga: <code>git merge rubrik-andring</code> → du får en konflikt.</li>
+<li>Öppna <code>index.html</code>, välj en rubrik (eller kombinera), ta bort alla <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code> / <code>=======</code> / <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code>.</li>
+<li>Slutför: <code>git add index.html</code> och <code>git commit -m "Lös konflikt i rubrik"</code>.</li>
+</ol>
+<p><strong>Förväntat resultat:</strong> <code>git status</code> visar <em>working tree clean</em> och <code>git log --oneline</code> visar din merge-commit.</p>
+<hr>
+<h2 id="prova-brancher-visuellt"><a class="header" href="#prova-brancher-visuellt">Prova brancher visuellt</a></h2>
+<p>Det bästa sättet att förstå brancher är att <em>se</em> dem. Nedan är <a href="https://learngitbranching.js.org/">Learn Git Branching</a>, en interaktiv sandlåda. Kommandona nedan körs automatiskt så du ser hur en branch skapas och mergas – skriv gärna egna kommandon direkt i rutan.</p>
+<!-- learngit -->
+<pre><code class="language-bash">git commit
+git checkout -b feature
+git commit
+git checkout main
+git merge feature
+</code></pre>
+<hr>
+<h2 id="en-blick-framåt-rebase"><a class="header" href="#en-blick-framåt-rebase">En blick framåt: rebase</a></h2>
+<p>Det finns ett alternativ till merge som heter <strong>rebase</strong>, som flyttar dina commits så historiken blir en rak linje i stället för att skapa en merge-commit. Det är kraftfullt men har fallgropar, så vi nöjer oss med att veta att det finns – vi håller oss till <strong>merge</strong> i den här kursen.</p>
+<hr>
+<h2 id="checkpoint-3"><a class="header" href="#checkpoint-3">Checkpoint</a></h2>
+<p>Innan du går vidare, kontrollera att du kan:</p>
+<ul>
+<li><input disabled="" type="checkbox"> Skapa en branch med <code>git switch -c</code> och se vilken branch du står på med <code>git branch</code>.</li>
+<li><input disabled="" type="checkbox"> Merga en branch tillbaka till <code>main</code> (fast-forward eller merge-commit).</li>
+<li><input disabled="" type="checkbox"> Förklara vad konfliktmarkeringarna <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>, <code>=======</code> och <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code> betyder.</li>
+<li><input disabled="" type="checkbox"> Lösa en enkel konflikt genom att redigera filen, <code>git add</code> och <code>git commit</code>.</li>
+</ul>
+<hr>
+<h2 id="sammanfattning-10"><a class="header" href="#sammanfattning-10">Sammanfattning</a></h2>
+<p>En branch låter dig arbeta parallellt utan risk. Du skapar och byter med <code>git switch -c</code>/<code>git switch</code>, slår ihop med <code>git merge</code>, och löser en eventuell konflikt genom att redigera filen, <code>git add</code> och <code>git commit</code>. Med Learn Git Branching kan du öva visuellt. I nästa lektion kopplar vi <code>portfolio-site</code> till molnet med <strong>GitHub</strong>.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="git-och-github"><a class="header" href="#git-och-github">Git och GitHub</a></h1>
+<p>Hittills har allt skett lokalt i <strong><code>portfolio-site</code></strong> på din dator. Men Gits verkliga styrka – säkerhetskopiering och samarbete – kommer när du kopplar ditt repository till en <strong>remote</strong> (fjärrserver) i molnet. Den vanligaste plattformen för det är <strong>GitHub</strong>.</p>
+<blockquote>
+<p><strong>Mål:</strong><br>Kunna koppla ett lokalt repository till GitHub samt skicka (<code>push</code>), hämta (<code>pull</code>) och klona (<code>clone</code>) kod.</p>
+</blockquote>
+<p><strong>Förutsättning:</strong> Du har ett gratiskonto på <a href="https://github.com/">GitHub</a> och ett lokalt repository med minst en commit i <code>portfolio-site</code>.</p>
+<hr>
+<h2 id="vad-är-github"><a class="header" href="#vad-är-github">Vad är GitHub?</a></h2>
+<p>GitHub är en webbplats där du lagrar dina Git-repositories online. Det ger dig:</p>
+<ul>
+<li><strong>Backup:</strong> koden finns säkert i molnet även om din dator går sönder.</li>
+<li><strong>Samarbete:</strong> flera personer kan jobba i samma projekt och granska varandras kod.</li>
+<li><strong>Synlighet:</strong> du kan visa upp dina projekt – en viktig portfölj när du söker jobb.</li>
+</ul>
+<p>Viktigt att skilja på: <strong>Git</strong> är verktyget, <strong>GitHub</strong> är en tjänst som lagrar Git-repositories. Det finns liknande tjänster som GitLab och Bitbucket.</p>
+<pre class="mermaid">graph LR
+    L["Lokalt repository&lt;br/&gt;(din dator)"] -- "git push" --&gt; R["Remote repository&lt;br/&gt;(GitHub)"]
+    R -- "git pull" --&gt; L
+</pre>
+
+<p><em>Diagram: push skickar upp dina commits, pull hämtar ner andras.</em></p>
+<hr>
+<h2 id="skapa-ett-tomt-repo-på-github"><a class="header" href="#skapa-ett-tomt-repo-på-github">Skapa ett tomt repo på GitHub</a></h2>
+<ol>
+<li>Logga in på GitHub och klicka på <strong>+</strong> uppe till höger → <strong>New repository</strong>.</li>
+<li>Ge det ett namn, t.ex. <code>portfolio-site</code> (samma som din lokala mapp underlättar).</li>
+<li>Välj <strong>Public</strong> (synligt för alla) eller <strong>Private</strong> (bara du och inbjudna).</li>
+<li><strong>Viktigt:</strong> har du redan ett lokalt repo – bocka <strong>inte</strong> i “Add a README”, “.gitignore” eller “license”. Du vill ha ett tomt repo att koppla till.</li>
+<li>Klicka <strong>Create repository</strong>.</li>
+</ol>
+<hr>
+<h2 id="koppla-ihop-och-pusha-första-gången"><a class="header" href="#koppla-ihop-och-pusha-första-gången">Koppla ihop och pusha första gången</a></h2>
+<p>GitHub visar nu instruktioner under “…or push an existing repository from the command line”. De består av tre kommandon:</p>
+<pre><code class="language-bash">git remote add origin https://github.com/ditt-anvandarnamn/portfolio-site.git
+git branch -M main
+git push -u origin main
+</code></pre>
+<ul>
+<li><strong><code>git remote add origin &lt;url&gt;</code></strong> – kopplar ditt lokala repo till GitHub. <code>origin</code> är standardnamnet på remoten.</li>
+<li><strong><code>git branch -M main</code></strong> – ser till att din huvudbranch heter <code>main</code> (GitHubs standard).</li>
+<li><strong><code>git push -u origin main</code></strong> – skickar upp dina commits. <code>-u</code> kopplar ihop din lokala branch med remoten, så att du senare bara behöver skriva <code>git push</code>.</li>
+</ul>
+<p><strong>Prova själv:</strong> Kör hela kopplingsflödet för <code>portfolio-site</code>.</p>
+<!-- terminal -->
+<pre><code class="language-bash">$ git remote add origin https://github.com/elev/portfolio-site.git
+$ git branch -M main
+$ git push -u origin main
+Enumerating objects: 3, done.
+Counting objects: 100% (3/3), done.
+Writing objects: 100% (3/3), 230 bytes, done.
+To https://github.com/elev/portfolio-site.git
+ * [new branch]      main -&gt; main
+branch 'main' set up to track 'origin/main'.
+</code></pre>
+<blockquote>
+<p><strong>Säkerhet – autentisering:</strong> GitHub tillåter inte lösenord i terminalen. När du pushar första gången loggar du in via webbläsaren, eller skapar en <strong>personlig access token</strong> (Settings → Developer settings) som du använder i stället för lösenord. Dela aldrig din token – den ger åtkomst till dina repon.</p>
+</blockquote>
+<blockquote>
+<p><strong>Kör nu i din riktiga terminal:</strong> Skapa ett tomt repo på GitHub, koppla <code>portfolio-site</code> och pusha. Öppna repot i webbläsaren och bekräfta att dina commits syns.</p>
+</blockquote>
+<hr>
+<h2 id="första-hjälpen-vid-push-problem"><a class="header" href="#första-hjälpen-vid-push-problem">Första hjälpen vid push-problem</a></h2>
+<p>När push misslyckas är det nästan alltid ett av dessa problem:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Felmeddelande / symptom</th><th>Trolig orsak</th><th>Åtgärd</th></tr>
+</thead>
+<tbody>
+<tr><td><code>Authentication failed</code> / <code>403</code></td><td>Fel inloggning eller utgången token</td><td>Logga in igen via webbläsaren, eller skapa en ny personal access token på GitHub</td></tr>
+<tr><td><code>remote origin already exists</code></td><td>Du har redan lagt till <code>origin</code></td><td>Kör <code>git remote -v</code> för att se URL:en. Behöver du byta: <code>git remote set-url origin &lt;ny-url&gt;</code></td></tr>
+<tr><td><code>failed to push some refs</code> / <code>rejected</code></td><td>GitHub har commits du saknar lokalt (t.ex. du skapade README på GitHub)</td><td>Kör <code>git pull --rebase origin main</code> (eller skapa repot tomt från början)</td></tr>
+<tr><td><code>fatal: not a git repository</code></td><td>Du står i fel mapp</td><td><code>cd portfolio-site</code> och försök igen</td></tr>
+<tr><td><code>Repository not found</code></td><td>Fel URL eller inga rättigheter till repot</td><td>Kontrollera att URL:en matchar ditt användarnamn och reponamn exakt</td></tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p><strong>Tips:</strong> Kör <code>git remote -v</code> när något strular – det visar exakt vilken GitHub-URL ditt lokala repo är kopplat till.</p>
+</blockquote>
+<hr>
+<h2 id="det-dagliga-molnflödet"><a class="header" href="#det-dagliga-molnflödet">Det dagliga molnflödet</a></h2>
+<p>När repot väl är kopplat blir vardagen enkel:</p>
+<pre><code class="language-bash">git push
+</code></pre>
+<p>Skickar upp dina nya commits till GitHub.</p>
+<pre><code class="language-bash">git pull
+</code></pre>
+<p>Hämtar ner ändringar som någon annan (eller du själv från en annan dator) lagt upp, och slår ihop dem med din lokala kod.</p>
+<blockquote>
+<p><strong>Tips:</strong> Kör <code>git pull</code> <em>innan</em> du börjar arbeta och innan du pushar. Då minskar du risken för konflikter (se <a href="#brancher-och-merge">Brancher och merge</a>).</p>
+</blockquote>
+<blockquote>
+<p><strong>Vanliga misstag</strong></p>
+<ul>
+<li><strong>Skapar README på GitHub trots befintligt lokalt repo</strong> → första pushen misslyckas. Åtgärd: skapa repot tomt, eller kör <code>git pull</code> innan push.</li>
+<li><strong>Pushar innan första commit</strong> → inget att skicka. Åtgärd: gör minst en lokal commit först.</li>
+<li><strong>Committar hemligheter och pushar</strong> → synliga för alla på publika repon. Åtgärd: använd <code>.gitignore</code> <em>innan</em> första push (se nedan).</li>
+</ul>
+</blockquote>
+<hr>
+<h2 id="börja-från-ett-befintligt-projekt--git-clone"><a class="header" href="#börja-från-ett-befintligt-projekt--git-clone">Börja från ett befintligt projekt – <code>git clone</code></a></h2>
+<p>Vill du jobba med ett projekt som redan finns på GitHub laddar du ner det med:</p>
+<pre><code class="language-bash">git clone https://github.com/anvandarnamn/projekt.git
+</code></pre>
+<p>Detta skapar en lokal mapp med alla filer och hela historiken, och kopplar automatiskt upp <code>origin</code> – så <code>git push</code> och <code>git pull</code> fungerar direkt.</p>
+<blockquote>
+<p><strong>Kör nu i din riktiga terminal (valfritt):</strong> Klona ett publikt repo du gillar (t.ex. ett litet öppet kursprojekt) och kör <code>git log --oneline</code> i den nya mappen för att se hur andra strukturerar commits.</p>
+</blockquote>
+<hr>
+<h2 id="säkerhet-committa-aldrig-hemligheter"><a class="header" href="#säkerhet-committa-aldrig-hemligheter">Säkerhet: committa aldrig hemligheter</a></h2>
+<p>När du pushar till ett publikt repo blir allt synligt för hela världen – även av misstag uppladdade lösenord och API-nycklar. Skydda dig genom att lägga känsliga filer i en <code>.gitignore</code>-fil, så att Git ignorerar dem:</p>
+<pre><code>.env
+*.log
+node_modules/
+</code></pre>
+<p>Skulle en hemlighet ändå hamna på GitHub: byt ut/återkalla den direkt. Att radera filen i en ny commit räcker inte – den finns kvar i historiken.</p>
+<hr>
+<h2 id="checkpoint-4"><a class="header" href="#checkpoint-4">Checkpoint</a></h2>
+<p>Innan du går vidare, kontrollera att du kan:</p>
+<ul>
+<li><input disabled="" type="checkbox"> Skapa ett tomt repo på GitHub och koppla det med <code>git remote add origin</code>.</li>
+<li><input disabled="" type="checkbox"> Pusha <code>portfolio-site</code> och se dina commits på GitHub.</li>
+<li><input disabled="" type="checkbox"> Förklara skillnaden mellan <code>git push</code> och <code>git pull</code>.</li>
+<li><input disabled="" type="checkbox"> Veta vad du gör vid <code>Authentication failed</code> eller <code>remote origin already exists</code>.</li>
+</ul>
+<p><strong>Bonus:</strong> Gör en liten ändring lokalt, committa, pusha, och uppdatera GitHub-sidan tills du ser ändringen.</p>
+<hr>
+<h2 id="sammanfattning-11"><a class="header" href="#sammanfattning-11">Sammanfattning</a></h2>
+<p>GitHub lagrar ditt Git-repository i molnet för backup och samarbete. Du kopplar ihop med <code>git remote add origin</code>, skickar upp med <code>git push</code>, hämtar med <code>git pull</code> och laddar ner befintliga projekt med <code>git clone</code>. Tänk på autentisering med token, kolla felsöknings-tabellen om push strular, och lägg aldrig upp hemligheter – använd <code>.gitignore</code>. Nu har du allt du behöver för att versionshantera <code>portfolio-site</code>; dags att öva!</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="praktiska-övningar-git"><a class="header" href="#praktiska-övningar-git">Praktiska övningar: Git</a></h1>
+<p>Bästa sättet att lära sig Git är att använda det på riktigt. Gör övningarna nedan <strong>i din egen terminal</strong> på datorn – simuleringarna i lektionerna var uppvärmning, här sker det på riktigt.</p>
+<p>Vi fortsätter med <strong><code>portfolio-site</code></strong> om du redan följt lektionerna. Annars skapar du projektet här från början.</p>
+<blockquote>
+<p><strong>Mål:</strong><br>Versionshantera <code>portfolio-site</code> från första committen till push på GitHub, samt öva på brancher och merge.</p>
+</blockquote>
+<p><strong>Förutsättningar:</strong> Git installerat och inställt (namn + e-post), samt ett GitHub-konto.</p>
+<hr>
+<h2 id="övning-1-versionera-portfolio-site"><a class="header" href="#övning-1-versionera-portfolio-site">Övning 1: Versionera portfolio-site</a></h2>
+<ol>
+<li>Skapa projektmappen (hoppa över om du redan har den från lektionerna):
+<pre><code class="language-bash">mkdir portfolio-site
+cd portfolio-site
+</code></pre>
+</li>
+<li>Initiera Git och skapa en fil:
+<pre><code class="language-bash">git init
+touch index.html
+</code></pre>
+</li>
+<li>Skriv några rader HTML i <code>index.html</code> (i din editor).</li>
+<li>Kontrollera läget, lägg till filen och gör din första commit:
+<pre><code class="language-bash">git status
+git add index.html
+git commit -m "Lägg till startsida"
+</code></pre>
+</li>
+<li>Gör en ändring i filen och committa igen med ett beskrivande meddelande.</li>
+<li>Visa historiken:
+<pre><code class="language-bash">git log --oneline
+</code></pre>
+Du bör nu se minst två commits.</li>
+</ol>
+<p><strong>Checkpoint:</strong> <code>git status</code> visar <em>working tree clean</em> och <code>git log --oneline</code> visar dina commits.</p>
+<hr>
+<h2 id="övning-2-öva-på-att-ångra"><a class="header" href="#övning-2-öva-på-att-ångra">Övning 2: Öva på att ångra</a></h2>
+<ol>
+<li>Gör en ändring i <code>index.html</code> som du <em>inte</em> vill behålla.</li>
+<li>Ångra ändringen och återställ filen:
+<pre><code class="language-bash">git restore index.html
+</code></pre>
+</li>
+<li>Skapa en ny fil, lägg till den i staging och ta sedan ut den igen:
+<pre><code class="language-bash">touch temp.txt
+git add temp.txt
+git restore --staged temp.txt
+</code></pre>
+</li>
+<li>Committa något, och ångra sedan committen men behåll ändringarna:
+<pre><code class="language-bash">git reset --soft HEAD~1
+</code></pre>
+Kontrollera med <code>git status</code> att ändringarna ligger kvar i staging.</li>
+</ol>
+<p><strong>Checkpoint:</strong> Du kan förklara skillnaden mellan <code>git restore</code> och <code>git restore --staged</code> med ett konkret exempel från övningen.</p>
+<hr>
+<h2 id="övning-3-brancher-och-merge"><a class="header" href="#övning-3-brancher-och-merge">Övning 3: Brancher och merge</a></h2>
+<ol>
+<li>Skapa och byt till en ny branch:
+<pre><code class="language-bash">git switch -c about-page
+</code></pre>
+</li>
+<li>Skapa <code>about.html</code> (eller ändra <code>index.html</code>) och committa på branchen.</li>
+<li>Byt tillbaka till <code>main</code> och slå ihop:
+<pre><code class="language-bash">git switch main
+git merge about-page
+</code></pre>
+</li>
+<li>Lista historiken och se att ändringen från branchen nu finns i <code>main</code>:
+<pre><code class="language-bash">git log --oneline --graph
+</code></pre>
+</li>
+</ol>
+<p><strong>Bonus – skapa en konflikt med flit:</strong> Följ miniövningen i <a href="#brancher-och-merge">Brancher och merge</a>: ändra samma rad på <code>main</code> och en ny branch, merga, redigera bort konfliktmarkeringarna, och slutför med <code>git add</code> + <code>git commit</code>.</p>
+<p><strong>Checkpoint:</strong> Du har löst minst en merge-konflikt, eller kan förklara steg-för-steg hur du skulle göra det.</p>
+<hr>
+<h2 id="övning-4-koppla-till-github"><a class="header" href="#övning-4-koppla-till-github">Övning 4: Koppla till GitHub</a></h2>
+<ol>
+<li>Skapa ett nytt, <strong>tomt</strong> repository på GitHub med namnet <code>portfolio-site</code> (utan README/.gitignore/license).</li>
+<li>Koppla ditt lokala repo och pusha (byt ut URL:en mot din egen):
+<pre><code class="language-bash">git remote add origin https://github.com/ditt-anvandarnamn/portfolio-site.git
+git branch -M main
+git push -u origin main
+</code></pre>
+</li>
+<li>Gå till repot på GitHub och verifiera att dina filer och commits syns.</li>
+<li>Gör en ny ändring lokalt, committa och pusha:
+<pre><code class="language-bash">git add .
+git commit -m "Uppdatera portfolio"
+git push
+</code></pre>
+</li>
+<li>Uppdatera GitHub-sidan och kontrollera att ändringen kom upp.</li>
+</ol>
+<p><strong>Checkpoint:</strong> Du ser samma commits på GitHub som i <code>git log --oneline</code> lokalt.</p>
+<hr>
+<h2 id="sammanfattning-12"><a class="header" href="#sammanfattning-12">Sammanfattning</a></h2>
+<p>Du har nu versionshanterat <code>portfolio-site</code> lokalt, övat på att ångra, jobbat med brancher och merge, och synkroniserat med GitHub. Det här arbetsflödet kommer du använda i varje kommande projekt i kursen. Fortsätt att committa ofta och med tydliga meddelanden – det blir en vana som lönar sig.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="tekniska-intervjufrågor-git"><a class="header" href="#tekniska-intervjufrågor-git">Tekniska intervjufrågor: Git</a></h1>
+<p>Frågor om Git är mycket vanliga på intervjuer för utvecklarjobb. Nedan finns exempel som testar både förståelse och praktisk kunskap. Använd dem för att repetera kapitlet och förbereda dig.</p>
+<hr>
+<h2 id="fråga-1-grundläggande-begrepp"><a class="header" href="#fråga-1-grundläggande-begrepp">Fråga 1: Grundläggande begrepp</a></h2>
+<p><strong>Fråga:</strong> “Förklara skillnaden mellan en <em>commit</em>, en <em>branch</em> och ett <em>repository</em>. Ge ett exempel på när du använder var och en.”</p>
+<p><strong>Förslag till svar:</strong></p>
+<ul>
+<li><strong>Repository:</strong> En mapp som innehåller alla filer och hela versionshistoriken för ett projekt – projektets “hem”.</li>
+<li><strong>Commit:</strong> En sparad ögonblicksbild av projektet vid en viss tidpunkt, med ett beskrivande meddelande. Som ett foto av tillståndet.</li>
+<li><strong>Branch:</strong> En parallell utvecklingslinje där du kan arbeta utan att påverka huvudkoden.</li>
+</ul>
+<p><strong>Exempel:</strong> I ett repository för en webbsida skapar du en branch för en ny funktion, gör flera commits medan du utvecklar, och mergar tillbaka till <code>main</code> när du är klar.</p>
+<hr>
+<h2 id="fråga-2-arbetsflödet"><a class="header" href="#fråga-2-arbetsflödet">Fråga 2: Arbetsflödet</a></h2>
+<p><strong>Fråga:</strong> “Beskriv steg för steg vad som händer när du kör <code>git add .</code>, <code>git commit -m "Fix bug"</code> och <code>git push</code>.”</p>
+<p><strong>Förslag till svar:</strong></p>
+<ol>
+<li><strong><code>git add .</code></strong> – lägger alla ändrade filer i staging area, förberedda för commit (men inte sparade än).</li>
+<li><strong><code>git commit -m "Fix bug"</code></strong> – sparar ändringarna från staging som en ny commit i den lokala historiken.</li>
+<li><strong><code>git push</code></strong> – skickar de nya commitsen till remote-repositoryt (t.ex. GitHub) så andra kan se dem.</li>
+</ol>
+<hr>
+<h2 id="fråga-3-staging-area-1"><a class="header" href="#fråga-3-staging-area-1">Fråga 3: Staging area</a></h2>
+<p><strong>Fråga:</strong> “Varför finns staging area? Vad är skillnaden mellan working directory, staging area och repository?”</p>
+<p><strong>Förslag till svar:</strong>
+Staging area låter dig välja <em>exakt</em> vilka ändringar som ska med i nästa commit, vilket ger kontroll.</p>
+<ul>
+<li><strong>Working directory:</strong> Filerna du ser och redigerar.</li>
+<li><strong>Staging area:</strong> Mellanlagret där du förbereder ändringar.</li>
+<li><strong>Repository:</strong> Den sparade historiken i <code>.git</code>-mappen.</li>
+</ul>
+<p><strong>Fördel:</strong> Du kan jobba på flera saker samtidigt men committa dem separat genom att bara stagea relevanta filer.</p>
+<hr>
+<h2 id="fråga-4-ångra-ändringar"><a class="header" href="#fråga-4-ångra-ändringar">Fråga 4: Ångra ändringar</a></h2>
+<p><strong>Fråga:</strong> “Du har råkat committa fel kod lokalt men inte pushat än. Hur ångrar du senaste committen, och vad skiljer de olika sätten?”</p>
+<p><strong>Förslag till svar:</strong></p>
+<ul>
+<li><strong><code>git reset --soft HEAD~1</code></strong> – ångrar committen, behåller ändringarna i staging.</li>
+<li><strong><code>git reset --mixed HEAD~1</code></strong> (standard) – ångrar committen och tömmer staging, behåller filerna.</li>
+<li><strong><code>git reset --hard HEAD~1</code></strong> – ångrar committen och raderar ändringarna helt (farligt!).</li>
+<li><strong><code>git revert HEAD</code></strong> – skapar en ny commit som upphäver den förra (säkrast om committen redan är pushad).</li>
+</ul>
+<p><strong>Regel:</strong> Använd <code>reset</code> för lokala commits, <code>revert</code> för commits som redan delats med andra.</p>
+<hr>
+<h2 id="fråga-5-merge-konflikt"><a class="header" href="#fråga-5-merge-konflikt">Fråga 5: Merge-konflikt</a></h2>
+<p><strong>Fråga:</strong> “Du gör <code>git merge</code> (eller <code>git pull</code>) och får ‘merge conflict’. Vad har hänt och hur löser du det?”</p>
+<p><strong>Förslag till svar:</strong>
+<strong>Vad som hänt:</strong> Två brancher har ändrat samma rader i samma fil, så Git vet inte vilken version som ska behållas.</p>
+<p><strong>Lösning:</strong></p>
+<ol>
+<li>Öppna den konfliktmarkerade filen.</li>
+<li>Leta efter markeringarna <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>, <code>=======</code> och <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code>.</li>
+<li>Bestäm vilken kod som ska vara kvar (eller kombinera dem).</li>
+<li>Ta bort konfliktmarkeringarna.</li>
+<li><code>git add</code> den fixade filen.</li>
+<li><code>git commit</code> för att slutföra mergen.</li>
+</ol>
+<hr>
+<h2 id="fråga-6-branch-och-merge"><a class="header" href="#fråga-6-branch-och-merge">Fråga 6: Branch och merge</a></h2>
+<p><strong>Fråga:</strong> “Varför arbetar man med brancher? Beskriv ett typiskt flöde för att utveckla en ny funktion.”</p>
+<p><strong>Förslag till svar:</strong>
+Brancher låter dig utveckla nytt utan att riskera den fungerande koden i <code>main</code>, och gör det möjligt för flera personer att jobba parallellt.</p>
+<p><strong>Typiskt flöde:</strong></p>
+<pre><code class="language-bash">git switch -c ny-funktion   # skapa och byt till branch
+# ... gör ändringar och committa ...
+git switch main             # gå tillbaka till main
+git merge ny-funktion       # slå ihop
+git branch -d ny-funktion   # ta bort branchen
+</code></pre>
+<hr>
+<h2 id="fråga-7-gitignore-1"><a class="header" href="#fråga-7-gitignore-1">Fråga 7: .gitignore</a></h2>
+<p><strong>Fråga:</strong> “Du märker att <code>node_modules</code>-mappen committas av misstag. Hur fixar du det och förhindrar att det händer igen?”</p>
+<p><strong>Förslag till svar:</strong></p>
+<ol>
+<li>Skapa en <code>.gitignore</code>-fil i projektets root.</li>
+<li>Lägg till <code>node_modules/</code> i den.</li>
+<li>Ta bort mappen från Git utan att radera den lokalt:
+<pre><code class="language-bash">git rm -r --cached node_modules/
+git commit -m "Sluta spåra node_modules"
+</code></pre>
+</li>
+</ol>
+<p>Vanliga mönster i <code>.gitignore</code>:</p>
+<pre><code>node_modules/
+.env
+*.log
+dist/
+.DS_Store
+</code></pre>
+<p><code>.gitignore</code> ska committas så hela teamet har samma regler. Detta är även en <strong>säkerhetsfråga</strong> – <code>.env</code> med lösenord och nycklar ska aldrig hamna i ett repo.</p>
+<hr>
+<h2 id="tips-för-tekniska-intervjuer-1"><a class="header" href="#tips-för-tekniska-intervjuer-1">Tips för tekniska intervjuer</a></h2>
+<ul>
+<li><strong>Förklara din tankeprocess</strong> medan du svarar.</li>
+<li><strong>Använd konkreta exempel</strong> från egna projekt när du kan.</li>
+<li><strong>Erkänn om du inte vet</strong> – och beskriv hur du skulle ta reda på svaret.</li>
+<li><strong>Ställ följdfrågor</strong> för att förstå vad intervjuaren är ute efter.</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div>
 <h1 id="kapitel-3-grundläggande-css--ge-stil-åt-webbens-struktur"><a class="header" href="#kapitel-3-grundläggande-css--ge-stil-åt-webbens-struktur">Kapitel 3: Grundläggande CSS – Ge Stil åt Webbens Struktur</a></h1>
 <p>I det föregående kapitlet lade vi grunden med HTML, webbsidornas skelett, och lärde oss hantera koden med Git. Men enbart HTML ger oss ganska tråkiga och ostrukturerade sidor. Hur får vi dem att se bra ut? Hur kontrollerar vi färger, typsnitt, layout och anpassar utseendet för olika skärmstorlekar?</p>
 <p>Svaret är <strong>CSS (Cascading Style Sheets)</strong>. CSS är språket vi använder för att beskriva presentationen och stilen för HTML-dokument. Om HTML är skelettet, är CSS kläderna, sminket och frisyren – det som ger sidan dess visuella identitet.</p>
@@ -2423,7 +2356,7 @@ p {
 </code></pre>
 <p>Texten blir orange, eftersom CSS-regeln med <code>!important</code> överskrider inline-stilen.</p>
 <h2 id="obsöveranvänd-inte-important-det-är-bättre-att-strukturera-cssen-så-att-specificitet-och-ordning-räcker-för-att-styra-vilka-regler-som-gäller"><a class="header" href="#obsöveranvänd-inte-important-det-är-bättre-att-strukturera-cssen-så-att-specificitet-och-ordning-räcker-för-att-styra-vilka-regler-som-gäller"><strong>Obs:</strong><br>Överanvänd inte <code>!important</code>. Det är bättre att strukturera CSS:en så att specificitet och ordning räcker för att styra vilka regler som gäller.</a></h2>
-<h2 id="sammanfattning-10"><a class="header" href="#sammanfattning-10">Sammanfattning</a></h2>
+<h2 id="sammanfattning-13"><a class="header" href="#sammanfattning-13">Sammanfattning</a></h2>
 <ul>
 <li>CSS används för att definiera utseendet på HTML-element.</li>
 <li>Grundsyntaxen är <code>selektor { egenskap: värde; }</code>.</li>
@@ -2593,7 +2526,7 @@ a:hover { text-decoration: underline; }
 </li>
 </ul>
 <hr>
-<h2 id="praktiska-exempel-1"><a class="header" href="#praktiska-exempel-1">Praktiska exempel</a></h2>
+<h2 id="praktiska-exempel"><a class="header" href="#praktiska-exempel">Praktiska exempel</a></h2>
 <h3 id="exempel-kombinera-selektorer-och-färg"><a class="header" href="#exempel-kombinera-selektorer-och-färg">Exempel: Kombinera selektorer och färg</a></h3>
 <pre><code class="language-html">&lt;ul&gt;
   &lt;li class="important"&gt;Viktigt&lt;/li&gt;
@@ -2623,7 +2556,7 @@ a:hover { text-decoration: underline; }
 }
 </code></pre>
 <hr>
-<h2 id="sammanfattning-11"><a class="header" href="#sammanfattning-11">Sammanfattning</a></h2>
+<h2 id="sammanfattning-14"><a class="header" href="#sammanfattning-14">Sammanfattning</a></h2>
 <ul>
 <li>CSS-selektorer (element, klass, ID, attribut, kombinatorer) låter dig välja vilka HTML-element du vill styla.</li>
 <li>Färger kan anges med namn, HEX, RGB(A) eller HSL(A).</li>
@@ -3176,7 +3109,7 @@ html {
 }
 </code></pre>
 <hr>
-<h2 id="sammanfattning-12"><a class="header" href="#sammanfattning-12">Sammanfattning</a></h2>
+<h2 id="sammanfattning-15"><a class="header" href="#sammanfattning-15">Sammanfattning</a></h2>
 <ul>
 <li><strong>Absoluta enheter</strong> (<code>px</code>) är bäst för exakta detaljer som borders, skuggor och små justeringar.</li>
 <li><strong>Relativa enheter</strong> (<code>rem</code>, <code>%</code>, <code>vw/vh</code>) skapar flexibla, responsiva och tillgängliga designer.</li>
@@ -3258,6 +3191,21 @@ html {
   Detta är en enkel box med padding, border och margin.
 &lt;/div&gt;
 </code></pre>
+<p><strong>Prova själv:</strong> Ändra <code>padding</code>, <code>border</code> eller <code>margin</code> och klicka på <strong>Kör</strong> för att se hur lådan förändras.</p>
+<!-- playground:start -->
+<pre><code class="language-html">&lt;div class="box"&gt;
+  Detta är en enkel box med padding, border och margin.
+&lt;/div&gt;
+</code></pre>
+<pre><code class="language-css">.box {
+  width: 200px;
+  padding: 16px;
+  border: 2px solid #333;
+  margin: 24px;
+  background-color: #eef;
+}
+</code></pre>
+<!-- playground:end -->
 <hr>
 <h2 id="exempel-2-jämförelse-mellan-content-box-och-border-box"><a class="header" href="#exempel-2-jämförelse-mellan-content-box-och-border-box">Exempel 2: Jämförelse mellan content-box och border-box</a></h2>
 <pre><code class="language-css">.box-content {
@@ -3345,7 +3293,7 @@ html {
 <li><strong>Margin:</strong> Luft mellan kartongen och andra kartonger.</li>
 </ul>
 <hr>
-<h2 id="sammanfattning-13"><a class="header" href="#sammanfattning-13">Sammanfattning</a></h2>
+<h2 id="sammanfattning-16"><a class="header" href="#sammanfattning-16">Sammanfattning</a></h2>
 <ul>
 <li>Box model styr hur HTML-element tar plats och placeras på sidan.</li>
 <li>Den består av margin, border, padding och content.</li>
@@ -3688,7 +3636,7 @@ body {
 </pre>
 
 <hr>
-<h2 id="sammanfattning-14"><a class="header" href="#sammanfattning-14">Sammanfattning</a></h2>
+<h2 id="sammanfattning-17"><a class="header" href="#sammanfattning-17">Sammanfattning</a></h2>
 <ul>
 <li>Responsiv design handlar om att skapa webbplatser som fungerar bra på alla enheter.</li>
 <li>Detta uppnås genom flexibla layouter, flexibla bilder och framför allt <strong>Media Queries</strong>.</li>
@@ -3807,7 +3755,7 @@ nav li {
 <li>Vid <code>768px</code> (<code>min-width</code>) introduceras Flexbox för att skapa en tvåkolumnslayout (<code>main</code> och <code>sidebar</code>), navigeringslänkarna placeras bredvid varandra, och containern centreras.</li>
 <li>Vid <code>1200px</code> (<code>min-width</code>) justeras textstorleken ytterligare.</li>
 </ul>
-<h2 id="sammanfattning-15"><a class="header" href="#sammanfattning-15">Sammanfattning</a></h2>
+<h2 id="sammanfattning-18"><a class="header" href="#sammanfattning-18">Sammanfattning</a></h2>
 <p>Mobile-first design är en strategi där man designar och kodar för den minsta skärmen först och sedan använder <code>min-width</code> i Media Queries för att progressivt förbättra och anpassa layouten för större skärmar. Detta leder ofta till bättre prestanda på mobilen, renare kod och ett större fokus på kärninnehållet. Det är den rekommenderade metoden för att bygga responsiva webbplatser idag.</p>
 <p>Nu är det dags att praktisera dessa CSS-koncept!</p>
 <div style="break-before: page; page-break-before: always;"></div>
@@ -4284,7 +4232,7 @@ color: rgba(255, 0, 0, 0.5);
 </ul>
 <p><strong>Användningsfall:</strong> Sidlayouter, kort-layouts, komplexa responsiva designs.</p>
 <hr>
-<h2 id="tips-för-tekniska-intervjuer-1"><a class="header" href="#tips-för-tekniska-intervjuer-1">Tips för tekniska intervjuer</a></h2>
+<h2 id="tips-för-tekniska-intervjuer-2"><a class="header" href="#tips-för-tekniska-intervjuer-2">Tips för tekniska intervjuer</a></h2>
 <ul>
 <li><strong>Visa dina kunskaper visuellt</strong> – rita box model eller beskriv layout-flöde.</li>
 <li><strong>Förklara trade-offs</strong> – diskutera för- och nackdelar med olika tillvägagångssätt.</li>
@@ -4423,8 +4371,19 @@ let alder = 25;
 <li><strong>Till konsolen:</strong><br><code>console.log("Hej!");</code></li>
 <li><strong>Som popup:</strong><br><code>alert("Varning!");</code></li>
 </ul>
+<p><strong>Prova själv:</strong> Klicka på <strong>Kör</strong> för att köra koden. Utskriften från <code>console.log</code> visas under editorn. Ändra gärna texten och kör igen.</p>
+<!-- playground -->
+<pre><code class="language-js">console.log("Hej!");
+
+const namn = "Världen";
+console.log("Hej, " + namn + "!");
+
+for (let i = 1; i &lt;= 3; i++) {
+  console.log("Räknar: " + i);
+}
+</code></pre>
 <hr>
-<h2 id="sammanfattning-16"><a class="header" href="#sammanfattning-16">Sammanfattning</a></h2>
+<h2 id="sammanfattning-19"><a class="header" href="#sammanfattning-19">Sammanfattning</a></h2>
 <ul>
 <li>JavaScript gör webbsidor interaktiva och dynamiska.</li>
 <li>Det kan läggas till direkt i HTML eller i en extern fil.</li>
@@ -4510,7 +4469,7 @@ let unknown;
 console.log("Hello, " + firstName + "!");
 </code></pre>
 <hr>
-<h2 id="sammanfattning-17"><a class="header" href="#sammanfattning-17">Sammanfattning</a></h2>
+<h2 id="sammanfattning-20"><a class="header" href="#sammanfattning-20">Sammanfattning</a></h2>
 <ul>
 <li>Variabler används för att lagra och hantera data i JavaScript.</li>
 <li>Använd <code>let</code> för variabler som kan ändras, <code>const</code> för konstanter.</li>
@@ -4834,7 +4793,7 @@ processNumber(5, (x) =&gt; console.log(x * 2)); // Skriver ut: 10
 </code></pre>
 </details>
 <hr>
-<h2 id="sammanfattning-18"><a class="header" href="#sammanfattning-18">Sammanfattning</a></h2>
+<h2 id="sammanfattning-21"><a class="header" href="#sammanfattning-21">Sammanfattning</a></h2>
 <ul>
 <li>Funktioner gör det möjligt att återanvända och strukturera kod.</li>
 <li>Du kan skapa funktioner med <code>function</code>-syntax, funktionella uttryck eller arrow functions.</li>
@@ -5458,7 +5417,7 @@ while (count &lt; 3) {
 </code></pre>
 </details>
 <hr>
-<h2 id="sammanfattning-19"><a class="header" href="#sammanfattning-19">Sammanfattning</a></h2>
+<h2 id="sammanfattning-22"><a class="header" href="#sammanfattning-22">Sammanfattning</a></h2>
 <ul>
 <li>Kontrollstrukturer styr flödet i programmet.</li>
 <li>Använd <code>if</code>, <code>else if</code>, <code>else</code> och <code>switch</code> för att fatta beslut.</li>
@@ -5805,6 +5764,19 @@ newItem.textContent = "Ny punkt";
 const list = document.querySelector('#myList');
 list.appendChild(newItem);
 </code></pre>
+<p><strong>Prova själv:</strong> Ändra texten eller skapa fler element och klicka på <strong>Kör</strong> för att se resultatet direkt.</p>
+<!-- playground:start -->
+<pre><code class="language-html">&lt;ul id="myList"&gt;
+  &lt;li&gt;Första punkten&lt;/li&gt;
+&lt;/ul&gt;
+</code></pre>
+<pre><code class="language-js">const newItem = document.createElement('li');
+newItem.textContent = "Ny punkt";
+
+const list = document.querySelector('#myList');
+list.appendChild(newItem);
+</code></pre>
+<!-- playground:end -->
 <hr>
 <h2 id="hantera-händelser"><a class="header" href="#hantera-händelser">Hantera händelser</a></h2>
 <p>Events är händelser som inträffar i webbläsaren, oftast initierade av användaren (klick, tangenttryck, musrörelser) men också av webbläsaren själv (t.ex. att sidan laddats klart).</p>
@@ -5828,6 +5800,18 @@ anotherButton.addEventListener('click', (event) =&gt; {
   event.target.classList.toggle('active');
 });
 </code></pre>
+<p><strong>Prova själv:</strong> Klicka på knappen i förhandsvisningen. Försök sedan ändra texten eller färgen i koden.</p>
+<!-- playground:start -->
+<pre><code class="language-html">&lt;button id="myButton"&gt;Klicka på mig&lt;/button&gt;
+</code></pre>
+<pre><code class="language-js">const myButton = document.querySelector('#myButton');
+
+myButton.addEventListener('click', (event) =&gt; {
+  event.target.textContent = "Klickad!";
+  event.target.style.backgroundColor = 'lightgreen';
+});
+</code></pre>
+<!-- playground:end -->
 <h3 id="vanliga-händelsetyper"><a class="header" href="#vanliga-händelsetyper">Vanliga händelsetyper</a></h3>
 <ul>
 <li><strong>Mus-händelser:</strong> <code>click</code>, <code>dblclick</code>, <code>mouseover</code>, <code>mouseout</code>, <code>mousedown</code>, <code>mouseup</code>, <code>mousemove</code></li>
@@ -5847,7 +5831,38 @@ myForm.addEventListener('submit', (event) =&gt; {
 });
 </code></pre>
 <hr>
-<h2 id="sammanfattning-20"><a class="header" href="#sammanfattning-20">Sammanfattning</a></h2>
+<h2 id="spara-data-med-localstorage"><a class="header" href="#spara-data-med-localstorage">Spara data med localStorage</a></h2>
+<p>Ofta vill vi att data ska finnas kvar även efter att användaren laddar om sidan. Då kan vi använda <strong>localStorage</strong>, ett enkelt nyckel-värde-lager (key-value store) som webbläsaren sparar på användarens dator.</p>
+<ul>
+<li><code>localStorage.setItem('nyckel', 'värde')</code> – Sparar ett värde.</li>
+<li><code>localStorage.getItem('nyckel')</code> – Hämtar ett värde (eller <code>null</code> om det saknas).</li>
+<li><code>localStorage.removeItem('nyckel')</code> – Tar bort ett värde.</li>
+</ul>
+<p>Värden sparas alltid som <strong>text (string)</strong>. Vill du spara ett objekt använder du <code>JSON.stringify</code> när du sparar och <code>JSON.parse</code> när du läser.</p>
+<p><strong>Prova själv:</strong> Skriv ett meddelande, klicka <strong>Spara</strong> och ladda sedan om förhandsvisningen (klicka <strong>Kör</strong> igen) - texten finns kvar tack vare localStorage.</p>
+<!-- playground:start storage -->
+<pre><code class="language-html">&lt;input id="msg" type="text" placeholder="Skriv något..."&gt;
+&lt;button id="save"&gt;Spara&lt;/button&gt;
+&lt;p&gt;Sparat meddelande: &lt;strong id="output"&gt;&lt;/strong&gt;&lt;/p&gt;
+</code></pre>
+<pre><code class="language-js">const input = document.querySelector('#msg');
+const saveButton = document.querySelector('#save');
+const output = document.querySelector('#output');
+
+// Visa det som redan finns sparat när sidan laddas
+output.textContent = localStorage.getItem('meddelande') || '(inget än)';
+
+saveButton.addEventListener('click', () =&gt; {
+  localStorage.setItem('meddelande', input.value);
+  output.textContent = input.value;
+});
+</code></pre>
+<!-- playground:end -->
+<blockquote>
+<p><strong>Notera:</strong> I den här interaktiva rutan körs koden i en isolerad (sandboxad) ram. För att <code>localStorage</code> ska fungera körs just det här exemplet med extra rättigheter. På en riktig webbsida behövs inget sådant.</p>
+</blockquote>
+<hr>
+<h2 id="sammanfattning-23"><a class="header" href="#sammanfattning-23">Sammanfattning</a></h2>
 <p>DOM är webbläsarens representation av HTML-sidan som ett träd av objekt. JavaScript kan interagera med DOM för att:</p>
 <ul>
 <li><strong>Välja element:</strong> Med <code>querySelector</code> (första matchningen) och <code>querySelectorAll</code> (alla matchningar) baserat på CSS-selektorer.</li>
@@ -7120,7 +7135,7 @@ function calculateTotal(price, tax) {
 </code></pre>
 <p><strong>Best practices:</strong> Använd console.log strategiskt, lär dig utvecklarverktygen, skriv defensiv kod.</p>
 <hr>
-<h2 id="tips-för-tekniska-intervjuer-2"><a class="header" href="#tips-för-tekniska-intervjuer-2">Tips för Tekniska Intervjuer</a></h2>
+<h2 id="tips-för-tekniska-intervjuer-3"><a class="header" href="#tips-för-tekniska-intervjuer-3">Tips för Tekniska Intervjuer</a></h2>
 <ul>
 <li><strong>Skriv kod på whiteboard/papper</strong> - träna på att skriva JavaScript utan editor</li>
 <li><strong>Förklara din tankeprocess</strong> - prata igenom vad du gör steg för steg</li>
@@ -8778,7 +8793,7 @@ function displayUsersFallback(users) {
 <li><strong>User-friendly error messages</strong> - inte bara console.error</li>
 </ul>
 <hr>
-<h2 id="tips-för-tekniska-intervjuer-3"><a class="header" href="#tips-för-tekniska-intervjuer-3">Tips för Tekniska Intervjuer</a></h2>
+<h2 id="tips-för-tekniska-intervjuer-4"><a class="header" href="#tips-för-tekniska-intervjuer-4">Tips för Tekniska Intervjuer</a></h2>
 <ul>
 <li><strong>Tänk högt</strong> - förklara ditt approach innan du kodar</li>
 <li><strong>Börja enkelt</strong> - implementera basic funktionalitet först</li>
@@ -8990,7 +9005,7 @@ function displayUsersFallback(users) {
 <li><a href="https://www.netflix.com/">Netflix</a> – rekommendationer och innehåll baserat på användare</li>
 </ul>
 <p>I kommande lektioner ska vi titta på vad som krävs för att hosta en <strong>PHP-applikation</strong> – alltså dynamiskt innehåll – och hur Docker kan förenkla processen.</p>
-<h2 id="sammanfattning-21"><a class="header" href="#sammanfattning-21">Sammanfattning</a></h2>
+<h2 id="sammanfattning-24"><a class="header" href="#sammanfattning-24">Sammanfattning</a></h2>
 <p>Här är de viktigaste begreppen från denna lektion:</p>
 <div class="table-wrapper">
 <table>
@@ -9419,7 +9434,7 @@ service php8.1-fpm status
 </table>
 </div>
 <p><strong>Exempel:</strong> För en statisk sida eller en byggd React-app behöver du bara Nginx – ingen PHP, ingen databas. Nginx pekar på mappen med dina färdiga filer. För Node.js installerar du Node istället för PHP, startar appen (t.ex. med <code>node server.js</code> eller PM2) och konfigurerar Nginx att proxya förfrågningar till den port där Node lyssnar.</p>
-<h2 id="sammanfattning-22"><a class="header" href="#sammanfattning-22">Sammanfattning</a></h2>
+<h2 id="sammanfattning-25"><a class="header" href="#sammanfattning-25">Sammanfattning</a></h2>
 <div class="table-wrapper">
 <table>
 <thead>
@@ -9817,7 +9832,7 @@ volumes:
 <li><strong>Namngiven volym</strong> (<code>dbdata</code>): Docker hanterar lagringsplatsen. Data överlever <code>docker compose down</code>.</li>
 <li><strong>Bind mount</strong> (<code>./app:/var/www/html</code>): En mapp på värddatorn mappas in i containern. Bra för utveckling – ändringar i koden syns direkt.</li>
 </ul>
-<h2 id="sammanfattning-23"><a class="header" href="#sammanfattning-23">Sammanfattning</a></h2>
+<h2 id="sammanfattning-26"><a class="header" href="#sammanfattning-26">Sammanfattning</a></h2>
 <h3 id="jämförelse-hosting-utan-docker-vs-med-docker"><a class="header" href="#jämförelse-hosting-utan-docker-vs-med-docker">Jämförelse: Hosting utan Docker vs med Docker</a></h3>
 <p>I förra lektionen installerade vi Nginx, PHP-FPM och MariaDB direkt på servern med <code>apt install</code> och <code>systemctl</code>. Med Docker paketeras samma komponenter i isolerade containrar:</p>
 <pre class="mermaid">flowchart TB
@@ -10219,7 +10234,7 @@ loadArticles();
 <li>Sakna tydlig innehållsstruktur från början.</li>
 <li>Glömma plan för underhåll och uppdateringar.</li>
 </ol>
-<h2 id="sammanfattning-24"><a class="header" href="#sammanfattning-24">Sammanfattning</a></h2>
+<h2 id="sammanfattning-27"><a class="header" href="#sammanfattning-27">Sammanfattning</a></h2>
 <p>CMS gör innehållsarbete snabbare och mer skalbart i team. Traditionella CMS är ofta enklare att starta med, medan headless CMS ger större frihet i frontend. Plattformar som Wix, Webflow och Squarespace ger snabb leverans med mindre driftansvar, men med lägre teknisk frihet. Rätt val beror på projektets krav, teamets kompetens och hur innehållet ska publiceras.</p>
 <h2 id="reflektionsfrågor"><a class="header" href="#reflektionsfrågor">Reflektionsfrågor</a></h2>
 <ol>
@@ -10450,7 +10465,7 @@ add_action( 'after_setup_theme', 'school_theme_setup' );
 <li>Egen sidlayout → tema</li>
 <li>Eget post type (innehållstyp) för “Kurser” → plugin</li>
 </ul>
-<h2 id="sammanfattning-25"><a class="header" href="#sammanfattning-25">Sammanfattning</a></h2>
+<h2 id="sammanfattning-28"><a class="header" href="#sammanfattning-28">Sammanfattning</a></h2>
 <p>WordPress är uppbyggt i lager där kärnan hanterar grunden, databasen lagrar innehåll, temat visar innehållet och plugins utökar funktionerna. När du håller isär de delarna blir projektet enklare att utveckla, underhålla och säkra.</p>
 <h2 id="reflektionsfrågor-2"><a class="header" href="#reflektionsfrågor-2">Reflektionsfrågor</a></h2>
 <ol>
@@ -10536,7 +10551,7 @@ add_action( 'after_setup_theme', 'school_theme_setup' );
 </ul>
 </li>
 </ol>
-<h2 id="vanliga-problem-och-lösningar-1"><a class="header" href="#vanliga-problem-och-lösningar-1">Vanliga problem och lösningar</a></h2>
+<h2 id="vanliga-problem-och-lösningar"><a class="header" href="#vanliga-problem-och-lösningar">Vanliga problem och lösningar</a></h2>
 <h3 id="porten-är-upptagen"><a class="header" href="#porten-är-upptagen">Porten är upptagen</a></h3>
 <p>Om sajten inte startar kan Local visa att en port redan används.</p>
 <ul>
@@ -10554,7 +10569,7 @@ add_action( 'after_setup_theme', 'school_theme_setup' );
 <li>Använd länken <strong>Glömt lösenord?</strong> på inloggningssidan.</li>
 <li>Du kan också uppdatera användaruppgifter via Local om mejl inte fungerar lokalt.</li>
 </ul>
-<h2 id="sammanfattning-26"><a class="header" href="#sammanfattning-26">Sammanfattning</a></h2>
+<h2 id="sammanfattning-29"><a class="header" href="#sammanfattning-29">Sammanfattning</a></h2>
 <p>Du har nu:</p>
 <ul>
 <li>Installerat Local</li>
@@ -10656,7 +10671,7 @@ add_action( 'after_setup_theme', 'school_theme_setup' );
 <li>Uppdatera WordPress, teman och plugins regelbundet.</li>
 <li>Ta backup innan större ändringar.</li>
 </ul>
-<h2 id="sammanfattning-27"><a class="header" href="#sammanfattning-27">Sammanfattning</a></h2>
+<h2 id="sammanfattning-30"><a class="header" href="#sammanfattning-30">Sammanfattning</a></h2>
 <p>Adminpanelen är navet för allt redaktionellt arbete i WordPress. Med tydligt arbetsflöde, rätt behörigheter och goda säkerhetsrutiner blir arbetet både snabbare och säkrare.</p>
 <h2 id="reflektionsfrågor-3"><a class="header" href="#reflektionsfrågor-3">Reflektionsfrågor</a></h2>
 <ol>
@@ -10749,7 +10764,7 @@ echo '&lt;h1&gt;' . esc_html( $page_title ) . '&lt;/h1&gt;';
 <li>Göra stora ändringar direkt i produktion istället för lokalt.</li>
 <li>Glömma att testa tema med olika innehållslängder och skärmstorlekar.</li>
 </ol>
-<h2 id="sammanfattning-28"><a class="header" href="#sammanfattning-28">Sammanfattning</a></h2>
+<h2 id="sammanfattning-31"><a class="header" href="#sammanfattning-31">Sammanfattning</a></h2>
 <p>WordPress-teman styr presentationen av innehållet. Med rätt tema och rätt arbetsflöde (lokal testning, tydlig struktur och säker output) blir webbplatsen lättare att underhålla och vidareutveckla.</p>
 <h2 id="nästa-lektion-1"><a class="header" href="#nästa-lektion-1">Nästa lektion</a></h2>
 <ul>
@@ -10933,7 +10948,7 @@ if (
 <li>Hårdkoda URL:er och texter istället för WordPress-funktioner</li>
 <li>Glömma att testa templates för tomma listor och 404-sidor</li>
 </ul>
-<h2 id="sammanfattning-29"><a class="header" href="#sammanfattning-29">Sammanfattning</a></h2>
+<h2 id="sammanfattning-32"><a class="header" href="#sammanfattning-32">Sammanfattning</a></h2>
 <p>Med <code>_s</code> får du en stabil och enkel grund för att skapa ett helt eget WordPress-tema. Fokus bör vara att bygga små delar i taget, hålla strukturen tydlig och testa ofta i lokal miljö.</p>
 <h2 id="nästa-lektioner-1"><a class="header" href="#nästa-lektioner-1">Nästa lektioner</a></h2>
 <p>Om du vill repetera eller bygga progression:</p>
@@ -11057,7 +11072,7 @@ add_action( 'wp_footer', 'school_site_notice' );
 <li>Avinstallera plugins du inte använder.</li>
 <li>Begränsa vem som får installera nya plugins.</li>
 </ul>
-<h2 id="sammanfattning-30"><a class="header" href="#sammanfattning-30">Sammanfattning</a></h2>
+<h2 id="sammanfattning-33"><a class="header" href="#sammanfattning-33">Sammanfattning</a></h2>
 <p>Plugins gör WordPress kraftfullt och flexibelt. Med en liten, genomtänkt plugin-bas och bra underhållsrutiner får du en snabbare, säkrare och mer stabil webbplats.</p>
 <p>Vill du bygga ett plugin själv? Fortsätt med <a href="#skapa-eget-wordpress-plugin-content-slider">Skapa eget WordPress-plugin: Content Slider</a>.</p>
 <h2 id="reflektionsfrågor-6"><a class="header" href="#reflektionsfrågor-6">Reflektionsfrågor</a></h2>
@@ -11582,7 +11597,7 @@ add_action( 'wp_enqueue_scripts', 'school_slider_enqueue_assets' );
 <li><code>esc_html()</code> och <code>esc_url()</code> vid utskrift</li>
 </ul>
 <p>Detta minskar risk för XSS (cross-site scripting) och felaktig indata.</p>
-<h2 id="sammanfattning-31"><a class="header" href="#sammanfattning-31">Sammanfattning</a></h2>
+<h2 id="sammanfattning-34"><a class="header" href="#sammanfattning-34">Sammanfattning</a></h2>
 <p>Du har byggt ett komplett plugin med egen datamodell (post type), egna fält, shortcode, styling och JavaScript-navigering. Det är en bra mall för många andra plugin-idéer, till exempel testimonials, teamkort eller kundcase.</p>
 <h2 id="reflektionsfrågor-7"><a class="header" href="#reflektionsfrågor-7">Reflektionsfrågor</a></h2>
 <ol>
@@ -11717,7 +11732,7 @@ add_shortcode( 'school_box', 'school_box_shortcode' );
 <li>Lägg till egen CSS-klass i HTML-strängen och styla boxen i temat.</li>
 <li>Förklara varför <code>esc_html()</code> är viktig i båda exemplen.</li>
 </ol>
-<h2 id="nästa-steg-1"><a class="header" href="#nästa-steg-1">Nästa steg</a></h2>
+<h2 id="nästa-steg"><a class="header" href="#nästa-steg">Nästa steg</a></h2>
 <p>När du kan shortcodes är nästa naturliga steg att:</p>
 <ul>
 <li>skapa en egen post type som visas med shortcode</li>
@@ -12072,7 +12087,7 @@ get_footer();
 </ul>
 </li>
 </ol>
-<h2 id="sammanfattning-32"><a class="header" href="#sammanfattning-32">Sammanfattning</a></h2>
+<h2 id="sammanfattning-35"><a class="header" href="#sammanfattning-35">Sammanfattning</a></h2>
 <p>Du har nu byggt en egen innehållstyp och en återanvändbar shortcode. Det är en vanlig och viktig grund i WordPress-utveckling: först modellera innehållet (post type), sedan visa det där redaktören behöver det (shortcode).</p>
 <h2 id="praktisk-övning-1"><a class="header" href="#praktisk-övning-1">Praktisk övning</a></h2>
 <ol>
@@ -12167,7 +12182,7 @@ get_footer();
 <li>Blandning av flera page builders i samma projekt.</li>
 <li>Ingen plan för hur innehåll ska flyttas om builder byts.</li>
 </ol>
-<h2 id="sammanfattning-33"><a class="header" href="#sammanfattning-33">Sammanfattning</a></h2>
+<h2 id="sammanfattning-36"><a class="header" href="#sammanfattning-36">Sammanfattning</a></h2>
 <p>Page builders kan vara ett effektivt verktyg för snabb visuell produktion i WordPress. Med tydliga riktlinjer för prestanda, struktur och uppdateringar kan de fungera bra i både små och medelstora projekt.</p>
 <h2 id="reflektionsfrågor-8"><a class="header" href="#reflektionsfrågor-8">Reflektionsfrågor</a></h2>
 <ol>
@@ -12264,7 +12279,7 @@ get_footer();
 <li>Sakna tydlig kategori-struktur för inlägg.</li>
 <li>Otydlig meny där viktiga sidor är svåra att hitta.</li>
 </ol>
-<h2 id="sammanfattning-34"><a class="header" href="#sammanfattning-34">Sammanfattning</a></h2>
+<h2 id="sammanfattning-37"><a class="header" href="#sammanfattning-37">Sammanfattning</a></h2>
 <ul>
 <li><strong>Post (inlägg)</strong> passar för löpande, datumstyrt innehåll.</li>
 <li><strong>Page (sida)</strong> passar för stabilt innehåll i webbplatsens grundstruktur.</li>
@@ -12535,7 +12550,7 @@ Hur andra kan bidra (om öppen källkod).
 <li><strong>Konsekvent terminologi</strong> – minskar missförstånd</li>
 <li><strong>Exempel i kod</strong> – AI kan bättre förstå och generera liknande kod</li>
 </ul>
-<h3 id="sammanfattning-35"><a class="header" href="#sammanfattning-35">Sammanfattning</a></h3>
+<h3 id="sammanfattning-38"><a class="header" href="#sammanfattning-38">Sammanfattning</a></h3>
 <p>En bra dokumentationsstruktur gör projektet lättare att förstå, bidra till och underhålla – både för människor och för AI-verktyg som används i utvecklingsprocessen.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="static-site-generators-med-jekyll"><a class="header" href="#static-site-generators-med-jekyll">Static Site Generators med Jekyll</a></h1>
@@ -12914,7 +12929,7 @@ flowchart LR
 </pre>
 
 <hr>
-<h2 id="sammanfattning-36"><a class="header" href="#sammanfattning-36">Sammanfattning</a></h2>
+<h2 id="sammanfattning-39"><a class="header" href="#sammanfattning-39">Sammanfattning</a></h2>
 <ul>
 <li>Static Site Generators är snabba och säkra</li>
 <li>Jekyll är enkelt och kraftfullt</li>
@@ -18520,7 +18535,7 @@ session.cookie_samesite = "Lax"
 ; session.sid_entropy_length = 32 (eller högre)
 ; session.sid_bits_per_character = 5 (eller 6)
 </code></pre>
-<h2 id="sammanfattning-37"><a class="header" href="#sammanfattning-37">Sammanfattning</a></h2>
+<h2 id="sammanfattning-40"><a class="header" href="#sammanfattning-40">Sammanfattning</a></h2>
 <p>Cookies och sessioner är avgörande verktyg för att skapa dynamiska och användarvänliga webbapplikationer genom att överbrygga HTTP:s tillståndslösa natur. Cookies lagrar data på klienten och är bra för icke-känsliga preferenser, medan sessioner lagrar data på servern och är standardmetoden för att hantera inloggningsstatus och annan känslig temporär data. Att förstå hur man använder dem säkert, särskilt genom att skydda session-ID:t och konfigurera cookie-attribut korrekt, är fundamentalt för säker webbutveckling med PHP.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="webbsäkerhet-i-php-vanliga-hot-och-skydd"><a class="header" href="#webbsäkerhet-i-php-vanliga-hot-och-skydd">Webbsäkerhet i PHP: Vanliga Hot och Skydd</a></h1>
@@ -20338,7 +20353,7 @@ try {
 <p><strong>Förklaring:</strong> Sidan ansvarar för HTTP-flöde och felmeddelanden, medan modellen ansvarar för SQL. Det gör varje fil tydligare och lättare att underhålla.</p>
 </details>
 <hr>
-<h2 id="sammanfattning-38"><a class="header" href="#sammanfattning-38">Sammanfattning</a></h2>
+<h2 id="sammanfattning-41"><a class="header" href="#sammanfattning-41">Sammanfattning</a></h2>
 <p>Dessa övningar täcker:</p>
 <ul>
 <li><strong>PHP intro</strong>: Server vs klient, Docker-miljö</li>
@@ -21082,7 +21097,7 @@ ob_end_flush();
 </ul>
 <p><strong>Intervjutips:</strong> Diskutera olika nivåer av optimering - från kod-nivå till infrastruktur (load balancers, database replicas etc.).</p>
 <hr>
-<h2 id="sammanfattning-39"><a class="header" href="#sammanfattning-39">Sammanfattning</a></h2>
+<h2 id="sammanfattning-42"><a class="header" href="#sammanfattning-42">Sammanfattning</a></h2>
 <p>Dessa frågor täcker de viktigaste aspekterna av fullstack-utveckling med PHP:</p>
 <ul>
 <li><strong>Grundläggande PHP:</strong> Syntax, variabler, funktioner</li>
@@ -22169,7 +22184,7 @@ const isLoading = true;
 function LoadingSpinner() { }  // Bättre än Spinner()
 function ErrorMessage() { }   // Bättre än Error()
 </code></pre>
-<h2 id="sammanfattning-40"><a class="header" href="#sammanfattning-40">Sammanfattning</a></h2>
+<h2 id="sammanfattning-43"><a class="header" href="#sammanfattning-43">Sammanfattning</a></h2>
 <p>Komponenter är byggstenen i React-applikationer:</p>
 <ul>
 <li><strong>Komponenter</strong> är JavaScript-funktioner som returnerar JSX</li>
@@ -22945,7 +22960,7 @@ const [state, setState] = useState({
   comments: { 1: { id: 1, text: 'Bra inlägg!', authorId: 2 } }
 });
 </code></pre>
-<h2 id="sammanfattning-41"><a class="header" href="#sammanfattning-41">Sammanfattning</a></h2>
+<h2 id="sammanfattning-44"><a class="header" href="#sammanfattning-44">Sammanfattning</a></h2>
 <p>Nu kan du skapa interaktiva React-komponenter:</p>
 <ul>
 <li><strong>Props</strong> skickar data från föräldra- till barnkomponenter</li>
@@ -23489,7 +23504,7 @@ function ProductDetail() {
   // ...
 }
 </code></pre>
-<h2 id="sammanfattning-42"><a class="header" href="#sammanfattning-42">Sammanfattning</a></h2>
+<h2 id="sammanfattning-45"><a class="header" href="#sammanfattning-45">Sammanfattning</a></h2>
 <p>React Router är kraftfullt verktyg för navigation i React-applikationer:</p>
 <ul>
 <li><strong>BrowserRouter</strong> ger rena URLs och är bästa valet för de flesta applikationer</li>
@@ -24565,7 +24580,7 @@ VITE_APP_NAME=Min App
 <li><strong>Monitoring</strong>-fliken: Prestanda och resursanvändning</li>
 <li><strong>Deployments</strong>-fliken: Historik över deployments</li>
 </ol>
-<h2 id="vanliga-problem-och-lösningar-2"><a class="header" href="#vanliga-problem-och-lösningar-2">Vanliga problem och lösningar</a></h2>
+<h2 id="vanliga-problem-och-lösningar-1"><a class="header" href="#vanliga-problem-och-lösningar-1">Vanliga problem och lösningar</a></h2>
 <h3 id="problem-build-failed"><a class="header" href="#problem-build-failed">Problem: “Build failed”</a></h3>
 <p><strong>Orsak</strong>: Fel i koden eller missing dependencies</p>
 <p><strong>Lösning</strong>:</p>
@@ -24610,7 +24625,7 @@ const API_KEY = import.meta.env.VITE_API_KEY;
 <li>Testa ändringar lokalt innan deployment</li>
 <li>Använd versionshantering (Git tags) för viktiga releases</li>
 </ul>
-<h2 id="sammanfattning-43"><a class="header" href="#sammanfattning-43">Sammanfattning</a></h2>
+<h2 id="sammanfattning-46"><a class="header" href="#sammanfattning-46">Sammanfattning</a></h2>
 <p>Deployment med Dokploy gör det enkelt att få din React-applikation live på internet:</p>
 <ol>
 <li><strong>Förbered</strong> din kod och pusha till GitHub</li>
@@ -24621,7 +24636,7 @@ const API_KEY = import.meta.env.VITE_API_KEY;
 <li><strong>Uppdatera</strong> genom att pusha ändringar</li>
 </ol>
 <p>Med Dokploy kan du fokusera på att utveckla fantastiska applikationer medan plattformen hanterar infrastrukturen åt dig!</p>
-<h2 id="nästa-steg-2"><a class="header" href="#nästa-steg-2">Nästa steg</a></h2>
+<h2 id="nästa-steg-1"><a class="header" href="#nästa-steg-1">Nästa steg</a></h2>
 <p>Nu när du kan deploya React-applikationer, utforska:</p>
 <ul>
 <li><strong>Databaser</strong>: Lägg till PostgreSQL eller MongoDB</li>
@@ -25226,7 +25241,7 @@ class ErrorTracker {
 
 export default ErrorTracker;
 </code></pre>
-<h2 id="sammanfattning-44"><a class="header" href="#sammanfattning-44">Sammanfattning</a></h2>
+<h2 id="sammanfattning-47"><a class="header" href="#sammanfattning-47">Sammanfattning</a></h2>
 <p>Single Page Applications erbjuder många fördelar för moderna webbapplikationer:</p>
 <ul>
 <li><strong>Smidig användarupplevelse</strong> med snabb navigering</li>
@@ -26241,7 +26256,7 @@ function App() {
 <li>Ha fallback UI för kritiska komponenter</li>
 </ul>
 <hr>
-<h2 id="sammanfattning-45"><a class="header" href="#sammanfattning-45">Sammanfattning</a></h2>
+<h2 id="sammanfattning-48"><a class="header" href="#sammanfattning-48">Sammanfattning</a></h2>
 <p>Dessa frågor täcker de viktigaste aspekterna av React-utveckling:</p>
 <ul>
 <li><strong>React Fundamentals:</strong> JSX, Virtual DOM, komponenter</li>
@@ -27825,7 +27840,7 @@ async function processMultipleFiles() {
   }
 }
 </code></pre>
-<h2 id="sammanfattning-46"><a class="header" href="#sammanfattning-46">Sammanfattning</a></h2>
+<h2 id="sammanfattning-49"><a class="header" href="#sammanfattning-49">Sammanfattning</a></h2>
 <p>I denna introduktion har vi gått igenom grunderna i Node.js och fokuserat på moderna utvecklingsmetoder:</p>
 <p><strong>Vad vi har lärt oss:</strong></p>
 <ul>
@@ -28318,7 +28333,7 @@ document.getElementById('userForm').addEventListener('submit', async (e) =&gt; {
 <li><strong>Säkerhetsfeatures</strong> och best practices</li>
 <li><strong>Plugin-ekosystem</strong> för utökad funktionalitet</li>
 </ul>
-<h2 id="nästa-steg-3"><a class="header" href="#nästa-steg-3">Nästa steg</a></h2>
+<h2 id="nästa-steg-2"><a class="header" href="#nästa-steg-2">Nästa steg</a></h2>
 <p>Nu förstår du hur HTTP-servrar fungerar under huven! Detta ger dig en solid grund för att:</p>
 <ol>
 <li><strong>Uppskatta Express.js</strong> - Du vet nu vad det abstraherar bort</li>
@@ -30071,7 +30086,7 @@ app.use(express.json({ limit: '10mb' })); // Begränsa request size
 <li><strong>Glömma validering:</strong> Validera alltid användarinput</li>
 <li><strong>Sakna rate limiting:</strong> Låt inte en användare överbelasta ditt API</li>
 </ol>
-<h2 id="sammanfattning-47"><a class="header" href="#sammanfattning-47">Sammanfattning</a></h2>
+<h2 id="sammanfattning-50"><a class="header" href="#sammanfattning-50">Sammanfattning</a></h2>
 <p>RESTful API:er ger dig en solid grund för att bygga skalbara och underhållbara backend-tjänster. Genom att följa REST-principerna skapar du API:er som är intuitiva för utvecklare att använda och enkla att underhålla över tid.</p>
 <h3 id="viktiga-takeaways-1"><a class="header" href="#viktiga-takeaways-1">Viktiga takeaways:</a></h3>
 <ul>
@@ -30081,7 +30096,7 @@ app.use(express.json({ limit: '10mb' })); // Begränsa request size
 <li><strong>Validering och felhantering</strong> är kritiskt för robusthet</li>
 <li><strong>Best practices</strong> (rate limiting, CORS, säkerhet) gör API:et produktionsklart</li>
 </ul>
-<h3 id="nästa-steg-4"><a class="header" href="#nästa-steg-4">Nästa steg:</a></h3>
+<h3 id="nästa-steg-3"><a class="header" href="#nästa-steg-3">Nästa steg:</a></h3>
 <ul>
 <li>Lär dig om <strong>autentisering och säkerhet</strong> för att skydda dina API:er</li>
 <li>Implementera <strong>testning</strong> för dina API-endpoints</li>
@@ -31723,7 +31738,7 @@ export function sendEmail() {
   console.log('Skickar email...');
 }
 </code></pre>
-<h2 id="vanliga-problem-och-lösningar-3"><a class="header" href="#vanliga-problem-och-lösningar-3">Vanliga problem och lösningar</a></h2>
+<h2 id="vanliga-problem-och-lösningar-2"><a class="header" href="#vanliga-problem-och-lösningar-2">Vanliga problem och lösningar</a></h2>
 <h3 id="problem-cannot-find-module"><a class="header" href="#problem-cannot-find-module">Problem: “Cannot find module”</a></h3>
 <p><strong>Orsak</strong>: ES6-moduler kräver att filer har <code>.js</code>-ändelse i imports.</p>
 <p><strong>Lösning</strong>:</p>
@@ -31743,10 +31758,10 @@ import { add } from './math';
   // Standard timeout är 5000ms, öka om nödvändigt
 }, 10000); // 10 sekunder
 </code></pre>
-<h2 id="sammanfattning-48"><a class="header" href="#sammanfattning-48">Sammanfattning</a></h2>
+<h2 id="sammanfattning-51"><a class="header" href="#sammanfattning-51">Sammanfattning</a></h2>
 <p>I denna lektion har du lärt dig:</p>
 <p>✅ <strong>Varför testa</strong>: Säkerhet vid ändringar, dokumentation, snabbare utveckling<br>✅ <strong>Jest setup</strong>: Installera och konfigurera Jest med ES6-moduler<br>✅ <strong>Grundläggande test</strong>: <code>describe</code>, <code>test</code>, <code>expect</code> och olika matchers<br>✅ <strong>Teststruktur</strong>: Organisera test med Arrange-Act-Assert mönstret<br>✅ <strong>Setup/Teardown</strong>: Använda <code>beforeEach</code>, <code>afterEach</code>, <code>beforeAll</code>, <code>afterAll</code><br>✅ <strong>API-testning</strong>: Testa Express-routes med Supertest<br>✅ <strong>Best practices</strong>: Hur du skriver bra test</p>
-<h3 id="nästa-steg-5"><a class="header" href="#nästa-steg-5">Nästa steg</a></h3>
+<h3 id="nästa-steg-4"><a class="header" href="#nästa-steg-4">Nästa steg</a></h3>
 <ul>
 <li>Öva på att skriva test för dina egna funktioner</li>
 <li>Lär dig om mocks (låtsaskod) för att isolera test</li>
@@ -35632,7 +35647,7 @@ class InventoryService {
 module.exports = InventoryService;
 </code></pre>
 <hr>
-<h2 id="sammanfattning-49"><a class="header" href="#sammanfattning-49">Sammanfattning</a></h2>
+<h2 id="sammanfattning-52"><a class="header" href="#sammanfattning-52">Sammanfattning</a></h2>
 <p>Dessa fyra övningar tar dig från grundläggande Express-applikationer till avancerade real-time system. Varje projekt bygger på kunskaperna från föregående och introducerar nya koncept:</p>
 <ol>
 <li><strong>Todo API</strong>: Grundläggande CRUD, MongoDB, felhantering</li>
@@ -35640,7 +35655,7 @@ module.exports = InventoryService;
 <li><strong>E-handel API</strong>: Komplex datamodellering, transaktioner, inventoriehantering</li>
 </ol>
 <p>Efter att ha genomfört dessa projekt har du en solid grund i modern backend-utveckling med Node.js!</p>
-<h2 id="nästa-steg-6"><a class="header" href="#nästa-steg-6">Nästa steg</a></h2>
+<h2 id="nästa-steg-5"><a class="header" href="#nästa-steg-5">Nästa steg</a></h2>
 <ul>
 <li><strong>Deploiera till produktion</strong> med Docker och cloud services</li>
 <li><strong>Implementera CI/CD</strong> för automatisk testning och deployment</li>
@@ -37357,7 +37372,7 @@ wss.on('connection', (ws) =&gt; {
 <h3 id="installation-2"><a class="header" href="#installation-2">Installation</a></h3>
 <pre><code class="language-bash">npm install ws
 </code></pre>
-<h3 id="grundläggande-konfiguration-1"><a class="header" href="#grundläggande-konfiguration-1">Grundläggande konfiguration</a></h3>
+<h3 id="grundläggande-konfiguration"><a class="header" href="#grundläggande-konfiguration">Grundläggande konfiguration</a></h3>
 <pre><code class="language-javascript">// Server (Node.js med ws library)
 const WebSocket = require('ws');
 const wss = new WebSocket.Server({ port: 3000 });
@@ -38399,7 +38414,7 @@ class BulletManager {
   }
 }
 </code></pre>
-<h2 id="sammanfattning-50"><a class="header" href="#sammanfattning-50">Sammanfattning</a></h2>
+<h2 id="sammanfattning-53"><a class="header" href="#sammanfattning-53">Sammanfattning</a></h2>
 <p>OOP i spelutveckling handlar om att:</p>
 <p><strong>Strukturera kod effektivt</strong>:</p>
 <ul>
@@ -38878,7 +38893,7 @@ this.socket.onopen = () =&gt; {
 <li>Servern köar kommandona och kör dem i turordning</li>
 <li><strong>Uppgift</strong>: Skapa ett enkelt commands-system där spelare kan skicka kommandon som servern kör asynkront</li>
 </ul>
-<h2 id="sammanfattning-51"><a class="header" href="#sammanfattning-51">Sammanfattning</a></h2>
+<h2 id="sammanfattning-54"><a class="header" href="#sammanfattning-54">Sammanfattning</a></h2>
 <p>I detta kapitel har vi byggt en enkel multiplayer-server steg för steg:</p>
 <ol>
 <li><strong>Grundstruktur</strong>: Servern är auktoritativ - den validerar och uppdaterar allt spelstatus</li>
@@ -40605,7 +40620,7 @@ module.exports = {
 <li>Gör kortet klickbart genom att lägga till en länk runt hela kortet.</li>
 </ul>
 <hr>
-<h2 id="sammanfattning-52"><a class="header" href="#sammanfattning-52">Sammanfattning</a></h2>
+<h2 id="sammanfattning-55"><a class="header" href="#sammanfattning-55">Sammanfattning</a></h2>
 <ul>
 <li><strong>Färger</strong>: Använd fördefinierade eller anpassade färger för att skapa en konsekvent design.</li>
 <li><strong>Typografi</strong>: Hantera textstorlekar, typsnitt och andra textrelaterade egenskaper med utility-klasser.</li>
@@ -40717,7 +40732,7 @@ module.exports = {
 <li>Lägg till en responsiv grid-layout som visar flera produktkort bredvid varandra på större skärmar.</li>
 </ul>
 <hr>
-<h2 id="sammanfattning-53"><a class="header" href="#sammanfattning-53">Sammanfattning</a></h2>
+<h2 id="sammanfattning-56"><a class="header" href="#sammanfattning-56">Sammanfattning</a></h2>
 <ul>
 <li><strong>Breakpoints</strong>: Använd Tailwinds inbyggda breakpoints för att skapa responsiva layouter.</li>
 <li><strong>Responsivitet</strong>: Anpassa layout, typografi och andra stilar för olika skärmstorlekar.</li>
@@ -40863,7 +40878,7 @@ module.exports = {
 <li>Gör menyn sticky så att den alltid är synlig högst upp på sidan.</li>
 </ul>
 <hr>
-<h2 id="sammanfattning-54"><a class="header" href="#sammanfattning-54">Sammanfattning</a></h2>
+<h2 id="sammanfattning-57"><a class="header" href="#sammanfattning-57">Sammanfattning</a></h2>
 <ul>
 <li><strong>Pseudo-klasser</strong>: Använd <code>hover:</code>, <code>focus:</code>, <code>active:</code>, och <code>disabled:</code> för att hantera olika tillstånd.</li>
 <li><strong>Gruppbaserade effekter</strong>: Använd <code>group</code> och <code>group-hover:</code> för att skapa interaktivitet mellan element.</li>
@@ -41046,7 +41061,7 @@ export default {
 <li>Lägg till en animation som gör att hover-effekten övergångar mjukt.</li>
 </ul>
 <hr>
-<h2 id="sammanfattning-55"><a class="header" href="#sammanfattning-55">Sammanfattning</a></h2>
+<h2 id="sammanfattning-58"><a class="header" href="#sammanfattning-58">Sammanfattning</a></h2>
 <ul>
 <li><strong>Konfiguration</strong>: Använd <code>tailwind.config.js</code> för att anpassa Tailwind CSS.</li>
 <li><strong>Anpassningar</strong>: Lägg till egna färger, typsnitt, spacing och breakpoints.</li>
@@ -41243,7 +41258,7 @@ export default {
 <li>Lägg till en hover-effekt på sidomenyns länkar.</li>
 </ul>
 <hr>
-<h2 id="sammanfattning-56"><a class="header" href="#sammanfattning-56">Sammanfattning</a></h2>
+<h2 id="sammanfattning-59"><a class="header" href="#sammanfattning-59">Sammanfattning</a></h2>
 <ul>
 <li><strong>Planering</strong>: Definiera syftet och prioritera innehållet.</li>
 <li><strong>Element</strong>: Inkludera sidhuvud, sidomeny, KPI-kort, tabeller och grafer.</li>
@@ -41411,7 +41426,7 @@ export default {
 }
 </code></pre>
 <hr>
-<h2 id="sammanfattning-57"><a class="header" href="#sammanfattning-57">Sammanfattning</a></h2>
+<h2 id="sammanfattning-60"><a class="header" href="#sammanfattning-60">Sammanfattning</a></h2>
 <ul>
 <li><strong>Best Practices</strong>: Använd återanvändbara komponenter, håll HTML-strukturen ren och dra nytta av Tailwinds konfigurationsfil.</li>
 <li><strong>Komponentbibliotek</strong>: Utforska bibliotek som Tailwind UI, Flowbite och DaisyUI för att snabba upp utvecklingen.</li>
@@ -41615,7 +41630,7 @@ function App() {
 export default App;
 </code></pre>
 <hr>
-<h2 id="sammanfattning-58"><a class="header" href="#sammanfattning-58">Sammanfattning</a></h2>
+<h2 id="sammanfattning-61"><a class="header" href="#sammanfattning-61">Sammanfattning</a></h2>
 <ul>
 <li><strong>Installation</strong>: Installera och konfigurera Tailwind CSS i ditt React-projekt med Vite.</li>
 <li><strong>Komponenter</strong>: Använd Tailwind CSS för att snabbt styla React-komponenter.</li>
@@ -42055,7 +42070,7 @@ $colors-dark: (
 <li><a href="#design-tokens-och-css-custom-properties">Design tokens och CSS custom properties</a> – hur maps kan exporteras som CSS-variabler</li>
 <li><a href="#theming-ljust-och-mörkt-tema">Theming: ljust och mörkt tema</a> – hur maps används för att bygga tema-system</li>
 </ul>
-<h2 id="sammanfattning-59"><a class="header" href="#sammanfattning-59">Sammanfattning</a></h2>
+<h2 id="sammanfattning-62"><a class="header" href="#sammanfattning-62">Sammanfattning</a></h2>
 <ul>
 <li>SCSS-variabler deklareras med <code>$namn: värde</code> och gör koden lätt att underhålla.</li>
 <li>Variabler har scope: globala variabler kan användas överallt, lokala bara inom sin selektor.</li>
@@ -42360,7 +42375,7 @@ $strawberry-filling: #ff6b9d;
   // $align-items får sitt standardvärde: center
 }
 </code></pre>
-<h2 id="praktiska-exempel-2"><a class="header" href="#praktiska-exempel-2">Praktiska exempel</a></h2>
+<h2 id="praktiska-exempel-1"><a class="header" href="#praktiska-exempel-1">Praktiska exempel</a></h2>
 <h3 id="breakpoint-mixin"><a class="header" href="#breakpoint-mixin">Breakpoint-mixin</a></h3>
 <p>Mediafrågor (media queries) är ett vanligt tillfälle för mixins. Istället för att skriva <code>@media (min-width: 768px)</code> varje gång skapar vi ett mixin:</p>
 <pre><code class="language-scss">$breakpoints: (
@@ -42523,7 +42538,7 @@ $strawberry-filling: #ff6b9d;
 <li><a href="#responsiv-scss-med-breakpoints">Responsiv SCSS med breakpoints</a> – breakpoint-mixins i praktiken</li>
 <li><a href="#nesting-och-selektorstrategi">Nesting och selektorstrategi</a> – ofta kombineras med nesting</li>
 </ul>
-<h2 id="sammanfattning-60"><a class="header" href="#sammanfattning-60">Sammanfattning</a></h2>
+<h2 id="sammanfattning-63"><a class="header" href="#sammanfattning-63">Sammanfattning</a></h2>
 <ul>
 <li>Mixins definieras med <code>@mixin namn { }</code> och inkluderas med <code>@include namn</code>.</li>
 <li>Parametrar med standardvärden gör mixins flexibla och återanvändbara.</li>
@@ -42677,7 +42692,7 @@ h3 { font-size: type-scale(2); }
 </code></pre>
 <h2 id="säkerhet-och-robusthet-1"><a class="header" href="#säkerhet-och-robusthet-1">Säkerhet och robusthet</a></h2>
 <p>SCSS körs vid build (bygge), men felaktiga antaganden kan ändå ge trasig CSS i produktion. Begränsa därför indata till funktioner och undvik att bygga selektorer från okontrollerade strängar.</p>
-<h2 id="sammanfattning-61"><a class="header" href="#sammanfattning-61">Sammanfattning</a></h2>
+<h2 id="sammanfattning-64"><a class="header" href="#sammanfattning-64">Sammanfattning</a></h2>
 <ul>
 <li>Funktioner används för återanvändbara beräkningar.</li>
 <li>@return skickar tillbaka ett värde till en CSS-egenskap.</li>
@@ -42831,7 +42846,7 @@ h3 { font-size: type-scale(2); }
 <p>Den bättre strukturen ger lägre specificitet och enklare återanvändning.</p>
 <h2 id="säkerhet-och-robusthet-2"><a class="header" href="#säkerhet-och-robusthet-2">Säkerhet och robusthet</a></h2>
 <p>Hög specificitet är inte en säkerhetsrisk i sig, men den ökar risken för oavsiktliga visuella fel. I gränssnitt för inloggning, betalning eller varningar kan sådana fel påverka användarens beslut.</p>
-<h2 id="sammanfattning-62"><a class="header" href="#sammanfattning-62">Sammanfattning</a></h2>
+<h2 id="sammanfattning-65"><a class="header" href="#sammanfattning-65">Sammanfattning</a></h2>
 <ul>
 <li>Nesting förbättrar läsbarhet när den hålls kort och lokal.</li>
 <li>För djup nesting skapar svåröverskådlig CSS med hög specificitet.</li>
@@ -43014,7 +43029,7 @@ $radius-md: 0.5rem;
 <p><strong>Rekommendation:</strong> Undvik <code>as *</code> i större projekt. Det gör koden svårare att förstå och underhålla. Det är bättre att alltid använda ett tydligt namespace så att det är klart varifrån varje symbol kommer.</p>
 <h2 id="säkerhet-och-robusthet-3"><a class="header" href="#säkerhet-och-robusthet-3">Säkerhet och robusthet</a></h2>
 <p>Tydliga moduler minskar risken för oavsiktliga stilkrockar i kritiska komponenter, till exempel formulär för inloggning. Mindre överraskningar i CSS minskar risken för regressionsfel vid release.</p>
-<h2 id="sammanfattning-63"><a class="header" href="#sammanfattning-63">Sammanfattning</a></h2>
+<h2 id="sammanfattning-66"><a class="header" href="#sammanfattning-66">Sammanfattning</a></h2>
 <ul>
 <li>@use ersätter @import i modern Sass.</li>
 <li>Namespace gör beroenden tydliga.</li>
@@ -43101,7 +43116,7 @@ body {
 </ol>
 <h2 id="säkerhet-och-robusthet-4"><a class="header" href="#säkerhet-och-robusthet-4">Säkerhet och robusthet</a></h2>
 <p>Låt inte användardata skriva direkt till stil-attribut utan validering. Felaktiga eller oväntade värden kan ge trasad layout och i vissa fall påverka användbarhet på kritiska sidor.</p>
-<h2 id="sammanfattning-64"><a class="header" href="#sammanfattning-64">Sammanfattning</a></h2>
+<h2 id="sammanfattning-67"><a class="header" href="#sammanfattning-67">Sammanfattning</a></h2>
 <ul>
 <li>Design tokens ger konsekvens och skalar bra i team.</li>
 <li>SCSS hanterar struktur vid kompilering.</li>
@@ -43212,7 +43227,7 @@ $breakpoints: (
 </ol>
 <h2 id="tillgänglighet-och-robusthet"><a class="header" href="#tillgänglighet-och-robusthet">Tillgänglighet och robusthet</a></h2>
 <p>Responsiv design handlar också om läsbarhet. Kontrollera radlängd, textstorlek och klickytor på små skärmar så att sidan fungerar för fler användare.</p>
-<h2 id="sammanfattning-65"><a class="header" href="#sammanfattning-65">Sammanfattning</a></h2>
+<h2 id="sammanfattning-68"><a class="header" href="#sammanfattning-68">Sammanfattning</a></h2>
 <ul>
 <li>Mobile first ger en stabil grund.</li>
 <li>Maps och mixins gör breakpoints konsekventa.</li>
@@ -43308,7 +43323,7 @@ $breakpoints: (
 </ol>
 <h2 id="säkerhet-och-robusthet-5"><a class="header" href="#säkerhet-och-robusthet-5">Säkerhet och robusthet</a></h2>
 <p>Generera inte klassnamn från okontrollerad användardata. Håll klassnamn till fördefinierade tokens så att du inte får oförutsägbar CSS-output.</p>
-<h2 id="sammanfattning-66"><a class="header" href="#sammanfattning-66">Sammanfattning</a></h2>
+<h2 id="sammanfattning-69"><a class="header" href="#sammanfattning-69">Sammanfattning</a></h2>
 <ul>
 <li>Loopar sparar tid och minskar repetitiv kod.</li>
 <li>@each passar för maps med tokens.</li>
@@ -43635,7 +43650,7 @@ $radius-lg: 0.75rem;
 </ol>
 <h2 id="säkerhet-och-robusthet-6"><a class="header" href="#säkerhet-och-robusthet-6">Säkerhet och robusthet</a></h2>
 <p>Tema-byte ska inte påverka funktionalitet. Om fokusmarkeringar försvinner i ett tema kan användaren missa viktiga interaktioner i formulär och dialoger.</p>
-<h2 id="sammanfattning-67"><a class="header" href="#sammanfattning-67">Sammanfattning</a></h2>
+<h2 id="sammanfattning-70"><a class="header" href="#sammanfattning-70">Sammanfattning</a></h2>
 <ul>
 <li>Theming byggs bäst med semantiska tokens.</li>
 <li>CSS custom properties gör tema-byte möjligt utan ny build.</li>
@@ -43713,7 +43728,7 @@ $sizes: (
 </code></pre>
 <h2 id="säkerhet-och-robusthet-7"><a class="header" href="#säkerhet-och-robusthet-7">Säkerhet och robusthet</a></h2>
 <p>För stor CSS kan leda till att kritiska stilar laddas sent på långsamma enheter. Det kan ge visuellt trasiga vyer i till exempel formulärflöden där tydlig feedback är viktig.</p>
-<h2 id="sammanfattning-68"><a class="header" href="#sammanfattning-68">Sammanfattning</a></h2>
+<h2 id="sammanfattning-71"><a class="header" href="#sammanfattning-71">Sammanfattning</a></h2>
 <ul>
 <li>Optimera SCSS efter faktisk användning.</li>
 <li>Begränsa loopar och varianter till tydliga behov.</li>
@@ -43791,7 +43806,7 @@ body {
 <p>Färg ensam räcker inte för att kommunicera fel eller framgång. Kombinera färg med text och ikoner i gränssnittet.</p>
 <h2 id="säkerhet-och-robusthet-8"><a class="header" href="#säkerhet-och-robusthet-8">Säkerhet och robusthet</a></h2>
 <p>God tillgänglighet minskar risken att användare missar kritisk information, till exempel varningar, felmeddelanden eller bekräftelser i viktiga flöden.</p>
-<h2 id="sammanfattning-69"><a class="header" href="#sammanfattning-69">Sammanfattning</a></h2>
+<h2 id="sammanfattning-72"><a class="header" href="#sammanfattning-72">Sammanfattning</a></h2>
 <ul>
 <li>Kontrast och fokus är grundläggande tillgänglighet.</li>
 <li>Klickytor och typografi påverkar användbarheten direkt.</li>
@@ -43927,7 +43942,7 @@ $space-lg: 1.5rem;
 </ol>
 <h2 id="utmaning-5"><a class="header" href="#utmaning-5">Utmaning</a></h2>
 <p>Bygg även en badge-komponent med tre varianter: info, success och danger. Använd tokens och loop för att undvika duplicerad kod.</p>
-<h2 id="sammanfattning-70"><a class="header" href="#sammanfattning-70">Sammanfattning</a></h2>
+<h2 id="sammanfattning-73"><a class="header" href="#sammanfattning-73">Sammanfattning</a></h2>
 <p>Detta mini-projekt samlar hela SCSS-spåret i en praktisk leverans. Samma arbetssätt går att använda i större frontend-projekt med flera utvecklare.</p>
 <h2 id="se-även--alla-tidigare-scss-kapitel"><a class="header" href="#se-även--alla-tidigare-scss-kapitel">Se även – alla tidigare SCSS-kapitel</a></h2>
 <ul>
@@ -43973,6 +43988,22 @@ $space-lg: 1.5rem;
         <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
         <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
         <script>
@@ -43991,6 +44022,8 @@ $space-lg: 1.5rem;
         <!-- Custom JS scripts -->
         <script src="mermaid-eefea253.min.js"></script>
         <script src="mermaid-init-025d9952.js"></script>
+        <script src="theme/playground/playground-317b5c70.js"></script>
+        <script src="theme/playground/terminal-867e90fc.js"></script>
 
         <script>
         window.addEventListener('load', function() {

@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Arbeta med GitHub - Glimåkra Webbutvecklare - Kursbok</title>
+        <title>Brancher och merge - Glimåkra Webbutvecklare - Kursbok</title>
 
 
         <!-- Custom HTML head -->
@@ -28,6 +28,7 @@
         <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
 
         <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/playground/playground-37884923.css">
 
 
         <!-- Provide site root and default themes to javascript -->
@@ -35,10 +36,10 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-97d3010e.js";
+            window.path_to_searchindex_js = "../searchindex-39d1656f.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc-5cc5f0ae.js"></script>
+        <script src="../toc-1c6ab717.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -174,103 +175,162 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="arbeta-med-github-ditt-projekt-i-molnet"><a class="header" href="#arbeta-med-github-ditt-projekt-i-molnet">Arbeta med GitHub: Ditt projekt i molnet</a></h1>
-<p>Vi har lärt oss hur Git fungerar lokalt på vår dator för att spåra ändringar. Men den verkliga styrkan med Git, särskilt för samarbete och säkerhetskopiering, kommer när vi kopplar vårt lokala repository till en <strong>remoteserver</strong>. Den mest populära plattformen för detta är <strong>GitHub</strong>.</p>
+                        <h1 id="brancher-och-merge"><a class="header" href="#brancher-och-merge">Brancher och merge</a></h1>
+<p>Hittills har vi jobbat på en enda linje i <strong><code>portfolio-site</code></strong>. Men tänk om du vill prova en ny funktion utan att röra det som fungerar? Eller jobba på två saker parallellt? Det är vad <strong>brancher</strong> (grenar) är till för – och när du är klar slår du ihop dem med <strong>merge</strong> (sammanfogning).</p>
 <blockquote>
-<p><strong>Mål:</strong><br>Förstå hur du kopplar ett lokalt Git-repository till GitHub och använder de grundläggande kommandona för att skicka (<code>push</code>) och hämta (<code>pull</code>) ändringar.</p>
+<p><strong>Mål:</strong><br>Förstå vad en branch är, kunna skapa och byta branch, slå ihop ändringar med merge och hantera en enkel konflikt.</p>
 </blockquote>
-<p><strong>Förutsättning:</strong><br>Du har ett gratis konto på <a href="https://github.com/">GitHub</a>. Om inte, skapa ett nu.</p>
+<p><strong>Förutsättning:</strong> Du kan kärnflödet från <a href="./forsta-commits.html">Dina första commits</a> och har minst en commit i <code>portfolio-site</code>.</p>
 <hr>
-<h2 id="vad-är-github"><a class="header" href="#vad-är-github">Vad är GitHub?</a></h2>
-<p>GitHub är en webbaserad plattform för att lagra och hantera Git-repositories i molnet. Utöver lagring erbjuder GitHub:</p>
+<h2 id="vad-är-en-branch"><a class="header" href="#vad-är-en-branch">Vad är en branch?</a></h2>
+<p>En <strong>branch</strong> (gren) är en egen utvecklingslinje. Standardbranchen heter <code>main</code>. När du skapar en ny branch får du en separat linje där du kan committa fritt utan att påverka <code>main</code>. När funktionen är klar <strong>mergar</strong> (sammanfogar) du tillbaka.</p>
+<p>Liknelse: tänk dig en bok där huvudberättelsen är <code>main</code>. En branch är ett sidospår där du provar en alternativ handling. Blir den bra väver du in den i huvudberättelsen (merge); blir den dålig slänger du bara sidospåret – huvudboken är orörd.</p>
+<pre class="mermaid">gitGraph
+    commit id: "start"
+    commit id: "andra"
+    branch feature
+    commit id: "ny-funktion"
+    checkout main
+    merge feature
+</pre>
+
+<p><em>Diagram: en branch <code>feature</code> skapas, får en commit och mergas tillbaka till <code>main</code>.</em></p>
+<hr>
+<h2 id="skapa-och-byta-branch--git-switch"><a class="header" href="#skapa-och-byta-branch--git-switch">Skapa och byta branch – <code>git switch</code></a></h2>
+<pre><code class="language-bash">git switch -c feature
+</code></pre>
 <ul>
-<li><strong>Kodbackup:</strong> Säkert lagra dina projekt online.</li>
-<li><strong>Samarbete:</strong> Arbeta tillsammans i team, granska kod (Pull Requests) och diskutera ändringar.</li>
-<li><strong>Projekthantering:</strong> Hantera ärenden (Issues), projekt-tavlor (Projects) och wikis.</li>
-<li><strong>Versionshantering:</strong> Grafiskt gränssnitt för att se historik, jämföra versioner och utforska koden.</li>
-<li><strong>Open Source:</strong> Hem för miljontals öppen källkods-projekt.</li>
+<li><code>git switch -c feature</code> skapar en ny branch <code>feature</code> och byter till den (<code>-c</code> = <em>create</em>).</li>
+<li><code>git switch main</code> byter tillbaka till <code>main</code>.</li>
+<li><code>git branch</code> listar alla brancher och visar med en <code>*</code> vilken du står på.</li>
 </ul>
+<blockquote>
+<p>Du kommer även se det äldre <code>git checkout -b feature</code> i guider på nätet. Det gör samma sak; <code>git switch</code> är den nyare, tydligare varianten.</p>
+</blockquote>
+<p><strong>Prova själv:</strong> Skapa en branch, kontrollera att du bytt, och committa en ändring där.</p>
+<!-- terminal -->
+<pre><code class="language-bash">$ git switch -c feature
+Switched to a new branch 'feature'
+$ git branch
+* feature
+  main
+$ git add about.html
+$ git commit -m "Lägg till om-sidan"
+[feature 9a8b7c6] Lägg till om-sidan
+ 1 file changed, 5 insertions(+)
+</code></pre>
+<blockquote>
+<p><strong>Kör nu i din riktiga terminal:</strong> I <code>portfolio-site</code>, kör <code>git switch -c about-page</code>, skapa filen <code>about.html</code>, committa den, och kör <code>git branch</code> för att se att du står på rätt branch.</p>
+</blockquote>
+<blockquote>
+<p><strong>Vanliga misstag</strong></p>
+<ul>
+<li><strong>Committar på fel branch</strong> → ändringen hamnar på <code>main</code> i stället för din feature-branch. Åtgärd: kör <code>git branch</code> <em>innan</em> du committar och kontrollera vilken branch som har <code>*</code>.</li>
+<li><strong>Glömmer byta tillbaka till <code>main</code> före merge</strong> → du försöker merga från fel håll. Åtgärd: <code>git switch main</code> först, sedan <code>git merge feature</code>.</li>
+</ul>
+</blockquote>
 <hr>
-<h2 id="skapa-ett-remote-repository-på-github"><a class="header" href="#skapa-ett-remote-repository-på-github">Skapa ett Remote-repository på GitHub</a></h2>
+<h2 id="slå-ihop--git-merge"><a class="header" href="#slå-ihop--git-merge">Slå ihop – <code>git merge</code></a></h2>
+<p>När funktionen är klar går du tillbaka till <code>main</code> och slår ihop branchen dit.</p>
+<pre><code class="language-bash">git switch main
+git merge feature
+</code></pre>
+<p>Om <code>main</code> inte ändrats under tiden gör Git en <strong>fast-forward</strong> – <code>main</code> flyttas helt enkelt fram till samma punkt som <code>feature</code>. Om båda brancherna har egna commits skapar Git i stället en <strong>merge-commit</strong> som binder ihop dem.</p>
+<p><strong>Prova själv:</strong> Byt till main och merga in din feature-branch.</p>
+<!-- terminal -->
+<pre><code class="language-bash">$ git switch main
+Switched to branch 'main'
+$ git merge feature
+Updating a1b2c3d..9a8b7c6
+Fast-forward
+ about.html | 5 +++++
+ 1 file changed, 5 insertions(+)
+</code></pre>
+<p>När en branch är mergad och inte behövs mer kan du ta bort den: <code>git branch -d feature</code>.</p>
+<blockquote>
+<p><strong>Kör nu i din riktiga terminal:</strong> Byt till <code>main</code>, merga in <code>about-page</code>, och kör <code>git log --oneline --graph</code> för att se hur historiken ser ut.</p>
+</blockquote>
+<hr>
+<h2 id="när-det-krockar-merge-konflikt"><a class="header" href="#när-det-krockar-merge-konflikt">När det krockar: merge-konflikt</a></h2>
+<p>En <strong>merge-konflikt</strong> uppstår när två brancher ändrat <em>samma rader</em> i samma fil. Git kan inte gissa vilken version som är rätt, så den ber dig välja.</p>
+<p>Filen får då konfliktmarkeringar:</p>
+<pre><code class="language-html">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+&lt;h1&gt;Välkommen till min portfolio&lt;/h1&gt;
+=======
+&lt;h1&gt;Hej och välkommen!&lt;/h1&gt;
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature
+</code></pre>
+<ul>
+<li>Allt mellan <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code> och <code>=======</code> är versionen från din nuvarande branch (<code>main</code>).</li>
+<li>Allt mellan <code>=======</code> och <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature</code> är versionen från branchen du mergar in.</li>
+</ul>
+<p><strong>Så här löser du konflikten:</strong></p>
 <ol>
-<li>Logga in på ditt GitHub-konto.</li>
-<li>Klicka på “+”-ikonen uppe till höger och välj <strong>New repository</strong>.</li>
-<li>Ge repositoryt ett namn (t.ex. <code>mitt-projekt</code>). Det är praktiskt om det matchar din lokala mapp, men det är inget krav.</li>
-<li>Lägg till en kort beskrivning (valfritt).</li>
-<li>Välj om det ska vara <strong>Public</strong> (synligt för alla) eller <strong>Private</strong> (endast för dig och inbjudna).</li>
-<li><strong>Viktigt:</strong> Om du redan har ett lokalt repository, <strong>bocka INTE i</strong> rutorna för “Add a README file”, “Add .gitignore” eller “Choose a license”. Om du skapar ett helt nytt projekt direkt på GitHub kan du bocka i dessa.</li>
-<li>Klicka på <strong>Create repository</strong>.</li>
+<li>Öppna filen och bestäm vilken text som ska vara kvar (en av dem, eller en kombination).</li>
+<li>Ta bort markeringarna <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>, <code>=======</code> och <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code>.</li>
+<li>Spara, <code>git add</code> filen och <code>git commit</code> för att slutföra mergen.</li>
 </ol>
+<p><strong>Prova själv:</strong> Slutför en merge efter att du löst konflikten i filen.</p>
+<!-- terminal -->
+<pre><code class="language-bash">$ git merge feature
+Auto-merging index.html
+CONFLICT (content): Merge conflict in index.html
+Automatic merge failed; fix conflicts and then commit the result.
+$ git add index.html
+$ git commit -m "Slå ihop feature och lös konflikt i index.html"
+[main 1c2d3e4] Slå ihop feature och lös konflikt i index.html
+</code></pre>
+<blockquote>
+<p>Konflikter ser läskiga ut första gången, men de är helt normala och ofarliga – Git stannar och låter dig välja lugnt. Inget går förlorat.</p>
+</blockquote>
+<h3 id="miniövning-skapa-och-lös-en-konflikt-i-din-riktiga-terminal"><a class="header" href="#miniövning-skapa-och-lös-en-konflikt-i-din-riktiga-terminal">Miniövning: skapa och lös en konflikt (i din riktiga terminal)</a></h3>
+<p>Gör detta i <code>portfolio-site</code> för att öva på riktigt:</p>
+<ol>
+<li>På <code>main</code>: öppna <code>index.html</code> och skriv <code>&lt;h1&gt;Min portfolio&lt;/h1&gt;</code>. Committa.</li>
+<li>Skapa branch: <code>git switch -c rubrik-andring</code>.</li>
+<li>På branchen: ändra rubriken till <code>&lt;h1&gt;Hej! Jag heter Anna&lt;/h1&gt;</code>. Committa.</li>
+<li>Byt till <code>main</code>: <code>git switch main</code>.</li>
+<li>På <code>main</code>: ändra <em>samma rad</em> till <code>&lt;h1&gt;Välkommen till min sida&lt;/h1&gt;</code>. Committa.</li>
+<li>Försök merga: <code>git merge rubrik-andring</code> → du får en konflikt.</li>
+<li>Öppna <code>index.html</code>, välj en rubrik (eller kombinera), ta bort alla <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code> / <code>=======</code> / <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code>.</li>
+<li>Slutför: <code>git add index.html</code> och <code>git commit -m "Lös konflikt i rubrik"</code>.</li>
+</ol>
+<p><strong>Förväntat resultat:</strong> <code>git status</code> visar <em>working tree clean</em> och <code>git log --oneline</code> visar din merge-commit.</p>
 <hr>
-<h2 id="koppla-ditt-lokala-repo-till-github"><a class="header" href="#koppla-ditt-lokala-repo-till-github">Koppla ditt lokala repo till GitHub</a></h2>
-<p>När du har skapat repositoryt på GitHub visas instruktioner. Leta efter avsnittet “…or push an existing repository from the command line”.</p>
-<h3 id="steg-1-lägg-till-remote-repository"><a class="header" href="#steg-1-lägg-till-remote-repository">Steg 1: Lägg till remote-repository</a></h3>
-<pre><code class="language-bash">git remote add origin https://github.com/ditt-anvandarnamn/mitt-projekt.git
+<h2 id="prova-brancher-visuellt"><a class="header" href="#prova-brancher-visuellt">Prova brancher visuellt</a></h2>
+<p>Det bästa sättet att förstå brancher är att <em>se</em> dem. Nedan är <a href="https://learngitbranching.js.org/">Learn Git Branching</a>, en interaktiv sandlåda. Kommandona nedan körs automatiskt så du ser hur en branch skapas och mergas – skriv gärna egna kommandon direkt i rutan.</p>
+<!-- learngit -->
+<pre><code class="language-bash">git commit
+git checkout -b feature
+git commit
+git checkout main
+git merge feature
 </code></pre>
-<ul>
-<li><code>origin</code> är standardnamnet för din remoteserver.</li>
-<li>Byt ut URL:en mot den du får från GitHub.</li>
-</ul>
-<h3 id="steg-2-byt-namn-på-huvudbranch-om-nödvändigt"><a class="header" href="#steg-2-byt-namn-på-huvudbranch-om-nödvändigt">Steg 2: Byt namn på huvudbranch (om nödvändigt)</a></h3>
-<pre><code class="language-bash">git branch -M main
-</code></pre>
-<ul>
-<li>Byter namn på din huvudbranch till <code>main</code> (standard på GitHub).</li>
-</ul>
-<h3 id="steg-3-skicka-upp-din-kod"><a class="header" href="#steg-3-skicka-upp-din-kod">Steg 3: Skicka upp din kod</a></h3>
-<pre><code class="language-bash">git push -u origin main
-</code></pre>
-<ul>
-<li>Skickar dina commits till GitHub.</li>
-<li><code>-u</code> kopplar din lokala branch till remote-branchen, så att du senare kan använda bara <code>git push</code> och <code>git pull</code>.</li>
-</ul>
-<p>Du kan behöva logga in eller autentisera dig mot GitHub (t.ex. med en personlig access token).</p>
 <hr>
-<h2 id="skicka-fler-ändringar-git-push"><a class="header" href="#skicka-fler-ändringar-git-push">Skicka fler ändringar: <code>git push</code></a></h2>
-<p>När du gjort nya ändringar och committat dem:</p>
-<pre><code class="language-bash">git push
-</code></pre>
-<ul>
-<li>Skickar alla nya commits på din nuvarande branch till GitHub.</li>
-</ul>
+<h2 id="en-blick-framåt-rebase"><a class="header" href="#en-blick-framåt-rebase">En blick framåt: rebase</a></h2>
+<p>Det finns ett alternativ till merge som heter <strong>rebase</strong>, som flyttar dina commits så historiken blir en rak linje i stället för att skapa en merge-commit. Det är kraftfullt men har fallgropar, så vi nöjer oss med att veta att det finns – vi håller oss till <strong>merge</strong> i den här kursen.</p>
 <hr>
-<h2 id="hämta-ändringar-git-pull"><a class="header" href="#hämta-ändringar-git-pull">Hämta ändringar: <code>git pull</code></a></h2>
-<p>Om någon annan (eller du själv från en annan dator) har pushat ändringar till GitHub, hämta dem så här:</p>
-<pre><code class="language-bash">git pull
-</code></pre>
+<h2 id="checkpoint"><a class="header" href="#checkpoint">Checkpoint</a></h2>
+<p>Innan du går vidare, kontrollera att du kan:</p>
 <ul>
-<li>Hämtar och försöker automatiskt sammanfoga (<code>merge</code>) ändringarna från GitHub till din lokala kod.</li>
-<li>Kör gärna <code>git pull</code> innan du börjar arbeta och innan du pushar egna ändringar.</li>
-</ul>
-<hr>
-<h2 id="klona-ett-repository-git-clone"><a class="header" href="#klona-ett-repository-git-clone">Klona ett repository: <code>git clone</code></a></h2>
-<p>Om du vill börja arbeta med ett projekt som redan finns på GitHub:</p>
-<pre><code class="language-bash">git clone https://github.com/anvandarnamn/projekt.git
-</code></pre>
-<ul>
-<li>Laddar ner hela repositoryt (alla filer och historik) till en ny mapp på din dator.</li>
-<li>Sätter automatiskt upp <code>origin</code> så att du kan använda <code>git push</code> och <code>git pull</code>.</li>
+<li><input disabled="" type="checkbox"> Skapa en branch med <code>git switch -c</code> och se vilken branch du står på med <code>git branch</code>.</li>
+<li><input disabled="" type="checkbox"> Merga en branch tillbaka till <code>main</code> (fast-forward eller merge-commit).</li>
+<li><input disabled="" type="checkbox"> Förklara vad konfliktmarkeringarna <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>, <code>=======</code> och <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code> betyder.</li>
+<li><input disabled="" type="checkbox"> Lösa en enkel konflikt genom att redigera filen, <code>git add</code> och <code>git commit</code>.</li>
 </ul>
 <hr>
 <h2 id="sammanfattning"><a class="header" href="#sammanfattning">Sammanfattning</a></h2>
-<p>GitHub är en plattform för att lagra och samarbeta kring Git-repositories i molnet. Genom att koppla ditt lokala repo till GitHub kan du:</p>
-<ul>
-<li>Skicka ändringar till GitHub med <code>git push</code>.</li>
-<li>Hämta ändringar från GitHub med <code>git pull</code>.</li>
-<li>Klona befintliga projekt med <code>git clone</code>.</li>
-</ul>
-<p>Att använda Git tillsammans med GitHub är standard inom modern webbutveckling och gör det enkelt att samarbeta, säkerhetskopiera och visa upp dina projekt.</p>
-<p>Nu är det dags att öva på dessa HTML- och Git-färdigheter!</p>
+<p>En branch låter dig arbeta parallellt utan risk. Du skapar och byter med <code>git switch -c</code>/<code>git switch</code>, slår ihop med <code>git merge</code>, och löser en eventuell konflikt genom att redigera filen, <code>git add</code> och <code>git commit</code>. Med Learn Git Branching kan du öva visuellt. I nästa lektion kopplar vi <code>portfolio-site</code> till molnet med <strong>GitHub</strong>.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../kapitel_2/git-kommandon.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../git/angra-andringar.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="../kapitel_2/mer-git-kommandon.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../git/github.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -280,11 +340,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../kapitel_2/git-kommandon.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../git/angra-andringar.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="../kapitel_2/mer-git-kommandon.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../git/github.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>
@@ -297,6 +357,22 @@
         <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
         <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
         <script>
@@ -315,6 +391,8 @@
         <!-- Custom JS scripts -->
         <script src="../mermaid-eefea253.min.js"></script>
         <script src="../mermaid-init-025d9952.js"></script>
+        <script src="../theme/playground/playground-317b5c70.js"></script>
+        <script src="../theme/playground/terminal-867e90fc.js"></script>
 
 
 

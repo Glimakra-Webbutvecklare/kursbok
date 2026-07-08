@@ -125,6 +125,20 @@ let alder = 25;
 - **Som popup:**  
   `alert("Varning!");`
 
+**Prova själv:** Klicka på **Kör** för att köra koden. Utskriften från `console.log` visas under editorn. Ändra gärna texten och kör igen.
+
+<!-- playground -->
+```js
+console.log("Hej!");
+
+const namn = "Världen";
+console.log("Hej, " + namn + "!");
+
+for (let i = 1; i <= 3; i++) {
+  console.log("Räknar: " + i);
+}
+```
+
 ---
 
 ## Sammanfattning

@@ -79,6 +79,16 @@ Skapar hyperlänkar till andra sidor eller resurser. `href` är obligatoriskt oc
 <a href="annan_sida.html">Länk till en lokal sida</a>
 ```
 
+**Prova själv:** Redigera HTML-koden nedan och klicka på **Kör** för att se hur webbläsaren ritar upp elementen. Lägg gärna till en ny rubrik eller ett stycke.
+
+<!-- playground -->
+```html
+<h1>Min webbsida</h1>
+<h2>En underrubrik</h2>
+<p>Detta är ett stycke med text.</p>
+<a href="https://www.google.com">En länk till Google</a>
+```
+
 ### Bilder (`<img>`)
 
 Bäddar in bilder. Tomt element (ingen sluttagg). `src` anger bildens källa, `alt` är alternativ text.

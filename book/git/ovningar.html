@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Grundläggande Git-kommandon - Glimåkra Webbutvecklare - Kursbok</title>
+        <title>Praktiska övningar - Glimåkra Webbutvecklare - Kursbok</title>
 
 
         <!-- Custom HTML head -->
@@ -28,6 +28,7 @@
         <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
 
         <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/playground/playground-37884923.css">
 
 
         <!-- Provide site root and default themes to javascript -->
@@ -35,10 +36,10 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-97d3010e.js";
+            window.path_to_searchindex_js = "../searchindex-39d1656f.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc-5cc5f0ae.js"></script>
+        <script src="../toc-1c6ab717.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -174,302 +175,113 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="grundläggande-git-kommandon-det-dagliga-arbetsflödet"><a class="header" href="#grundläggande-git-kommandon-det-dagliga-arbetsflödet">Grundläggande Git-kommandon: Det dagliga arbetsflödet</a></h1>
-<p>Nu när vi förstår <em>varför</em> Git är användbart och känner till de grundläggande koncepten, är det dags att se hur vi använder det i praktiken. Detta görs via <strong>kommandon</strong> som vi skriver i terminalen (som vi installerade i kapitel 1).</p>
+                        <h1 id="praktiska-övningar-git"><a class="header" href="#praktiska-övningar-git">Praktiska övningar: Git</a></h1>
+<p>Bästa sättet att lära sig Git är att använda det på riktigt. Gör övningarna nedan <strong>i din egen terminal</strong> på datorn – simuleringarna i lektionerna var uppvärmning, här sker det på riktigt.</p>
+<p>Vi fortsätter med <strong><code>portfolio-site</code></strong> om du redan följt lektionerna. Annars skapar du projektet här från början.</p>
 <blockquote>
-<p><strong>Mål:</strong><br>Lära oss och förstå de vanligaste Git-kommandona för att skapa ett repository, spåra filer, spara ändringar (commits) och se status och historik.</p>
+<p><strong>Mål:</strong><br>Versionshantera <code>portfolio-site</code> från första committen till push på GitHub, samt öva på brancher och merge.</p>
 </blockquote>
-<p><strong>Förutsättning:</strong><br>Du har Git installerat och konfigurerat (med ditt namn och e-post, se kapitel 1).</p>
-<p><strong>Viktigt:</strong><br>Alla Git-kommandon börjar med <code>git</code>. Kommandona körs i terminalen <strong>inuti din projektmapp</strong>.</p>
+<p><strong>Förutsättningar:</strong> Git installerat och inställt (namn + e-post), samt ett GitHub-konto.</p>
 <hr>
-<h2 id="0-förstå-hur-man-använder-terminalen"><a class="header" href="#0-förstå-hur-man-använder-terminalen">0. Förstå hur man använder terminalen</a></h2>
-<p>Terminalen är ett textbaserat gränssnitt där du kör kommandon i den aktuella mappen. Här är grundkommandon du behöver:</p>
-<h3 id="grundläggande-kommandon"><a class="header" href="#grundläggande-kommandon">Grundläggande kommandon</a></h3>
-<ul>
-<li>
-<p><strong>pwd</strong> – visar din nuvarande mapp (path).</p>
-<pre><code>pwd
-</code></pre>
-</li>
-<li>
-<p><strong>cd</strong> – byt mapp (change directory).</p>
-<ul>
-<li><code>cd projekt</code> – gå in i mappen <code>projekt</code></li>
-<li><code>cd ..</code> – gå upp en nivå</li>
-<li><code>cd ~</code> – gå till hemkatalogen</li>
-<li><code>cd -</code> – hoppa till föregående mapp</li>
-</ul>
-</li>
-<li>
-<p><strong>ls</strong> – lista filer och mappar.</p>
-<ul>
-<li><code>ls</code> – enkel lista</li>
-<li><code>ls -la</code> – detaljerad lista, inkl. dolda filer</li>
-<li><code>ls -lh</code> – läsbar storlek</li>
-</ul>
-</li>
-<li>
-<p><strong>mkdir</strong> – skapa mapp.</p>
-<ul>
-<li><code>mkdir ny-mapp</code></li>
-<li><code>mkdir -p a/b/c</code> – skapa kedjade undermappar</li>
-</ul>
-</li>
-<li>
-<p><strong>touch</strong> – skapa tom fil eller uppdatera tidsstämpel.</p>
-<ul>
-<li><code>touch index.html</code></li>
-</ul>
-</li>
-<li>
-<p><strong>clear</strong> – rensa terminalfönstret.</p>
-<ul>
-<li><code>clear</code> eller Ctrl+L</li>
-</ul>
-</li>
-<li>
-<p><strong>rm</strong> – ta bort filer/mappar (var försiktig!).</p>
-<ul>
-<li><code>rm fil.txt</code></li>
-<li><code>rm -r mapp/</code> – ta bort mapp rekursivt</li>
-</ul>
-</li>
-<li>
-<p><strong>mv</strong> – flytta eller byta namn.</p>
-<ul>
-<li><code>mv gammalt.txt nytt.txt</code></li>
-<li><code>mv fil.txt mapp/</code></li>
-</ul>
-</li>
-<li>
-<p><strong>cp</strong> – kopiera filer eller mappar.</p>
-<ul>
-<li><code>cp fil.txt kopia.txt</code></li>
-<li><code>cp -r src/ backup-src/</code></li>
-</ul>
-</li>
-<li>
-<p><strong>cat</strong> – visa innehåll i en fil.</p>
-<ul>
-<li><code>cat README.md</code></li>
-</ul>
-</li>
-</ul>
-<h3 id="snabb-övning"><a class="header" href="#snabb-övning">Snabb övning</a></h3>
-<pre><code class="language-bash">mkdir demo        # Skapa en ny mapp som heter 'demo'
-cd demo          # Gå in i demo-mappen
-pwd              # Visa nuvarande sökväg/mapp
-touch index.html # Skapa en tom fil som heter 'index.html'
-ls -la          # Lista alla filer (även dolda) med detaljerad information
-mkdir -p src/components  # Skapa mapparna 'src' och 'components' på en gång
-mv index.html src/      # Flytta index.html till src-mappen
-cp -r src src-backup   # Kopiera hela src-mappen rekursivt till en backup
-clear                  # Rensa terminalfönstret
-</code></pre>
-<h3 id="windows-notis"><a class="header" href="#windows-notis">Windows-notis</a></h3>
-<ul>
-<li>I Git Bash på Windows fungerar kommandona ovan som i macOS/Linux.</li>
-<li>I PowerShell: <code>ls</code> fungerar (alias), <code>pwd</code> fungerar, <code>clear</code> kan skrivas <code>cls</code>, <code>touch</code> kan ersättas med <code>New-Item filnamn</code>.</li>
-</ul>
-<p>Tips: Använd Tab för autocompletion, pilar upp/ner för historik och Ctrl+C för att avbryta.</p>
-<h2 id="1-skapa-ett-repository-git-init"><a class="header" href="#1-skapa-ett-repository-git-init">1. Skapa ett repository: <code>git init</code></a></h2>
-<p>Det allra första steget för ett <em>nytt</em> projekt är att initiera ett Git-repository.</p>
-<ul>
-<li><strong>Kommando:</strong><br><code>git init</code></li>
-<li><strong>Vad det gör:</strong><br>Skapar en ny, dold undermapp <code>.git</code> i din nuvarande mapp. Denna <code>.git</code>-mapp innehåller all information och historik för ditt repository. Detta behöver bara göras <em>en gång</em> per projekt.</li>
-</ul>
-<p><strong>Så här gör du:</strong></p>
+<h2 id="övning-1-versionera-portfolio-site"><a class="header" href="#övning-1-versionera-portfolio-site">Övning 1: Versionera portfolio-site</a></h2>
 <ol>
-<li>Skapa en ny mapp för ditt projekt (t.ex. <code>mitt-projekt</code>).</li>
-<li>Navigera in i mappen i din terminal (<code>cd mitt-projekt</code>).</li>
-<li>Kör kommandot:
-<pre><code>git init
+<li>Skapa projektmappen (hoppa över om du redan har den från lektionerna):
+<pre><code class="language-bash">mkdir portfolio-site
+cd portfolio-site
 </code></pre>
-Du bör se ett meddelande som liknar:<br><code>Initialized empty Git repository in /path/to/your/mitt-projekt/.git/</code></li>
+</li>
+<li>Initiera Git och skapa en fil:
+<pre><code class="language-bash">git init
+touch index.html
+</code></pre>
+</li>
+<li>Skriv några rader HTML i <code>index.html</code> (i din editor).</li>
+<li>Kontrollera läget, lägg till filen och gör din första commit:
+<pre><code class="language-bash">git status
+git add index.html
+git commit -m "Lägg till startsida"
+</code></pre>
+</li>
+<li>Gör en ändring i filen och committa igen med ett beskrivande meddelande.</li>
+<li>Visa historiken:
+<pre><code class="language-bash">git log --oneline
+</code></pre>
+Du bör nu se minst två commits.</li>
 </ol>
+<p><strong>Checkpoint:</strong> <code>git status</code> visar <em>working tree clean</em> och <code>git log --oneline</code> visar dina commits.</p>
 <hr>
-<h2 id="2-kontrollera-status-git-status"><a class="header" href="#2-kontrollera-status-git-status">2. Kontrollera status: <code>git status</code></a></h2>
-<p>Detta är ett av de viktigaste och mest använda kommandona. Det visar det aktuella tillståndet för ditt repository.</p>
-<ul>
-<li><strong>Kommando:</strong><br><code>git status</code></li>
-<li><strong>Vad det gör:</strong><br>Talar om:
-<ul>
-<li>Vilken branch du är på.</li>
-<li>Om det finns ändringar i Working Directory som <em>inte</em> är i Staging Area.</li>
-<li>Om det finns filer i Staging Area som väntar på att committas.</li>
-<li>Om det finns filer som Git inte spårar alls (untracked files).</li>
-</ul>
-</li>
-</ul>
-<p><strong>Så här gör du:</strong></p>
+<h2 id="övning-2-öva-på-att-ångra"><a class="header" href="#övning-2-öva-på-att-ångra">Övning 2: Öva på att ångra</a></h2>
 <ol>
-<li>Skapa en ny fil i din projektmapp, t.ex. <code>index.html</code>.</li>
-<li>Kör <code>git status</code> i terminalen.
-Du kommer se att <code>index.html</code> listas under “Untracked files”, eftersom Git ser filen men inte spårar ändringar i den än.</li>
+<li>Gör en ändring i <code>index.html</code> som du <em>inte</em> vill behålla.</li>
+<li>Ångra ändringen och återställ filen:
+<pre><code class="language-bash">git restore index.html
+</code></pre>
+</li>
+<li>Skapa en ny fil, lägg till den i staging och ta sedan ut den igen:
+<pre><code class="language-bash">touch temp.txt
+git add temp.txt
+git restore --staged temp.txt
+</code></pre>
+</li>
+<li>Committa något, och ångra sedan committen men behåll ändringarna:
+<pre><code class="language-bash">git reset --soft HEAD~1
+</code></pre>
+Kontrollera med <code>git status</code> att ändringarna ligger kvar i staging.</li>
 </ol>
+<p><strong>Checkpoint:</strong> Du kan förklara skillnaden mellan <code>git restore</code> och <code>git restore --staged</code> med ett konkret exempel från övningen.</p>
 <hr>
-<h2 id="3-lägga-till-filer-i-staging-area-git-add"><a class="header" href="#3-lägga-till-filer-i-staging-area-git-add">3. Lägga till filer i Staging Area: <code>git add</code></a></h2>
-<p>Innan du kan spara en ändring (committa) måste du tala om för Git <em>vilka</em> ändringar som ska inkluderas. Detta görs genom att lägga till dem i Staging Area.</p>
-<ul>
-<li><strong>Kommandon:</strong>
-<ul>
-<li><code>git add &lt;filnamn&gt;</code>: Lägger till en specifik fil (t.ex. <code>git add index.html</code>).</li>
-<li><code>git add .</code> : Lägger till <strong>alla</strong> nya och ändrade filer i den nuvarande mappen och dess undermappar till Staging Area. (Punkten <code>.</code> representerar nuvarande mapp). <strong>Används ofta.</strong></li>
-</ul>
-</li>
-<li><strong>Vad det gör:</strong><br>Flyttar ändringarna från Working Directory till Staging Area, redo för nästa commit.</li>
-</ul>
-<p><strong>Så här gör du:</strong></p>
+<h2 id="övning-3-brancher-och-merge"><a class="header" href="#övning-3-brancher-och-merge">Övning 3: Brancher och merge</a></h2>
 <ol>
-<li>Se till att du har skapat <code>index.html</code>.</li>
-<li>Kör <code>git add index.html</code> (eller <code>git add .</code>).</li>
-<li>Kör <code>git status</code> igen.
-Nu bör du se <code>index.html</code> listad under “Changes to be committed”.</li>
+<li>Skapa och byt till en ny branch:
+<pre><code class="language-bash">git switch -c about-page
+</code></pre>
+</li>
+<li>Skapa <code>about.html</code> (eller ändra <code>index.html</code>) och committa på branchen.</li>
+<li>Byt tillbaka till <code>main</code> och slå ihop:
+<pre><code class="language-bash">git switch main
+git merge about-page
+</code></pre>
+</li>
+<li>Lista historiken och se att ändringen från branchen nu finns i <code>main</code>:
+<pre><code class="language-bash">git log --oneline --graph
+</code></pre>
+</li>
 </ol>
+<p><strong>Bonus – skapa en konflikt med flit:</strong> Följ miniövningen i <a href="./brancher-och-merge.html">Brancher och merge</a>: ändra samma rad på <code>main</code> och en ny branch, merga, redigera bort konfliktmarkeringarna, och slutför med <code>git add</code> + <code>git commit</code>.</p>
+<p><strong>Checkpoint:</strong> Du har löst minst en merge-konflikt, eller kan förklara steg-för-steg hur du skulle göra det.</p>
 <hr>
-<h2 id="4-spara-ändringar-git-commit"><a class="header" href="#4-spara-ändringar-git-commit">4. Spara ändringar: <code>git commit</code></a></h2>
-<p>När du har lagt till de ändringar du vill spara i Staging Area, skapar du en commit.</p>
-<ul>
-<li><strong>Kommando:</strong><br><code>git commit -m "Ditt commit-meddelande"</code></li>
-<li><strong>Vad det gör:</strong><br>Tar en ögonblicksbild av alla filer som finns i Staging Area och sparar den permanent i <code>.git</code>-mappens historik. Varje commit måste ha ett <strong>commit-meddelande</strong> (efter <code>-m</code>) som kortfattat beskriver <em>vad</em> ändringen handlar om (t.ex. “Skapa grundläggande HTML-struktur”, “Lägg till bildlänk”).
-<ul>
-<li><strong>Bra commit-meddelanden är viktiga!</strong> De ska vara korta, beskrivande och skrivna i imperativ (t.ex. “Lägg till bild…” istället för “Lade till bilden…”).</li>
-</ul>
-</li>
-</ul>
-<p><strong>Så här gör du:</strong></p>
+<h2 id="övning-4-koppla-till-github"><a class="header" href="#övning-4-koppla-till-github">Övning 4: Koppla till GitHub</a></h2>
 <ol>
-<li>Se till att du har kört <code>git add</code>.</li>
-<li>Kör
-<pre><code>git commit -m "Skapa tom index.html-fil"
+<li>Skapa ett nytt, <strong>tomt</strong> repository på GitHub med namnet <code>portfolio-site</code> (utan README/.gitignore/license).</li>
+<li>Koppla ditt lokala repo och pusha (byt ut URL:en mot din egen):
+<pre><code class="language-bash">git remote add origin https://github.com/ditt-anvandarnamn/portfolio-site.git
+git branch -M main
+git push -u origin main
 </code></pre>
 </li>
-<li>Kör <code>git status</code> igen.
-Nu bör det stå något i stil med “nothing to commit, working tree clean”, vilket betyder att alla spårade ändringar är sparade.</li>
+<li>Gå till repot på GitHub och verifiera att dina filer och commits syns.</li>
+<li>Gör en ny ändring lokalt, committa och pusha:
+<pre><code class="language-bash">git add .
+git commit -m "Uppdatera portfolio"
+git push
+</code></pre>
+</li>
+<li>Uppdatera GitHub-sidan och kontrollera att ändringen kom upp.</li>
 </ol>
+<p><strong>Checkpoint:</strong> Du ser samma commits på GitHub som i <code>git log --oneline</code> lokalt.</p>
 <hr>
-<h2 id="5-visa-historik-git-log"><a class="header" href="#5-visa-historik-git-log">5. Visa historik: <code>git log</code></a></h2>
-<p>För att se listan över alla commits som gjorts i projektet.</p>
-<ul>
-<li><strong>Kommando:</strong><br><code>git log</code></li>
-<li><strong>Vad det gör:</strong><br>Visar historiken med den senaste committen överst. För varje commit visas dess unika ID (en lång hash-sträng), författaren, datumet och commit-meddelandet.
-<ul>
-<li>Tryck <code>q</code> för att avsluta loggvisningen om den är lång.</li>
-<li><code>git log --oneline</code>: Visar en mer kompakt vy med bara commit-ID och meddelande.</li>
-</ul>
-</li>
-</ul>
-<p><strong>Så här gör du:</strong></p>
-<ol>
-<li>Gör en ändring i <code>index.html</code> (lägg till lite text).</li>
-<li>Kör <code>git add .</code></li>
-<li>Kör
-<pre><code>git commit -m "Lägg till innehåll i index.html"
-</code></pre>
-</li>
-<li>Kör <code>git log</code> (eller <code>git log --oneline</code>).
-Du bör nu se dina två commits i historiken.</li>
-</ol>
-<hr>
-<h2 id="6-ångra-dig-git-reset"><a class="header" href="#6-ångra-dig-git-reset">6. Ångra dig: <code>git reset</code></a></h2>
-<p>Ibland behöver du ångra ändringar eller återställa ditt repository till ett tidigare tillstånd. <code>git reset</code> är ett kraftfullt verktyg för detta.</p>
-<blockquote>
-<p><strong>Varning:</strong> <code>git reset</code> kan ta bort ändringar permanent. Var försiktig, särskilt med <code>--hard</code> flaggan.</p>
-</blockquote>
-<h3 id="återställa-filer-från-staging-area"><a class="header" href="#återställa-filer-från-staging-area">Återställa filer från Staging Area</a></h3>
-<p>Om du har lagt till en fil i Staging Area med <code>git add</code> men vill ta bort den därifrån:</p>
-<pre><code class="language-bash"># Ta bort specifik fil från Staging Area (behåll ändringar i Working Directory)
-git reset index.html
-
-# Ta bort alla filer från Staging Area
-git reset
-</code></pre>
-<p><strong>Användningsfall:</strong> Du addade fel fil eller vill inte committa alla ändringar än.</p>
-<h3 id="återställa-till-en-tidigare-commit"><a class="header" href="#återställa-till-en-tidigare-commit">Återställa till en tidigare commit</a></h3>
-<pre><code class="language-bash"># Visa commit-historik för att hitta rätt commit
-git log --oneline
-
-# Återställ till en specifik commit (behåll ändringar som ostaged)
-git reset abc1234
-
-# Återställ till en specifik commit och ta bort alla ändringar (FÖRSIKTIGT!)
-git reset --hard abc1234
-
-# Återställ till föregående commit
-git reset HEAD~1
-
-# Återställ till 3 commits bakåt
-git reset HEAD~3
-</code></pre>
-<h3 id="återställa-en-specifik-fil-till-tidigare-version"><a class="header" href="#återställa-en-specifik-fil-till-tidigare-version">Återställa en specifik fil till tidigare version</a></h3>
-<pre><code class="language-bash"># Återställ en fil till senaste committed version
-git checkout HEAD -- index.html
-
-# Återställ en fil till en specifik commit
-git checkout abc1234 -- index.html
-</code></pre>
-<h3 id="de-tre-reset-lägena"><a class="header" href="#de-tre-reset-lägena">De tre reset-lägena</a></h3>
-<pre><code class="language-bash"># --soft: Flyttar bara HEAD, behåller Staging Area och Working Directory
-git reset --soft HEAD~1
-
-# --mixed (default): Återställer Staging Area, behåller Working Directory  
-git reset HEAD~1
-git reset --mixed HEAD~1  # samma som ovan
-
-# --hard: Återställer allt - RADERAR ändringar i Working Directory
-git reset --hard HEAD~1
-</code></pre>
-<p><strong>Minnesregel:</strong></p>
-<ul>
-<li><code>--soft</code>: Ångrar bara commit, behåller allt annat</li>
-<li><code>--mixed</code>: Ångrar commit + staging, behåller filer</li>
-<li><code>--hard</code>: Ångrar allt, raderar ändringar</li>
-</ul>
-<h3 id="praktiska-exempel"><a class="header" href="#praktiska-exempel">Praktiska exempel</a></h3>
-<p><strong>Scenario 1:</strong> Du committade för tidigt och vill lägga till mer:</p>
-<pre><code class="language-bash"># Ångra senaste commit men behåll ändringar
-git reset --soft HEAD~1
-
-# Lägg till fler ändringar
-git add ny-fil.js
-
-# Committa igen med allt
-git commit -m "Komplett feature med alla filer"
-</code></pre>
-<p><strong>Scenario 2:</strong> Du vill kasta bort alla ändringar och börja om:</p>
-<pre><code class="language-bash"># Kasta bort allt och återgå till senaste commit
-git reset --hard HEAD
-
-# Återgå till en specifik commit och kasta allt
-git reset --hard abc1234
-</code></pre>
-<p><strong>Scenario 3:</strong> Du råkade lägga till fel fil i staging:</p>
-<pre><code class="language-bash"># Ta bort specifik fil från staging
-git reset config/secret.txt
-
-# Filen finns kvar men är inte längre staged för commit
-</code></pre>
-<h2 id="sammanfattning-det-grundläggande-arbetsflödet"><a class="header" href="#sammanfattning-det-grundläggande-arbetsflödet">Sammanfattning: Det grundläggande arbetsflödet</a></h2>
-<p>Det typiska arbetsflödet när du arbetar med Git lokalt ser ut så här:</p>
-<ol>
-<li><strong>Gör ändringar</strong> i dina projektfiler.</li>
-<li><strong>Kontrollera status</strong> med <code>git status</code> för att se vilka filer som ändrats.</li>
-<li><strong>Lägg till ändringar</strong> i Staging Area med <code>git add &lt;filnamn&gt;</code> eller <code>git add .</code>.</li>
-<li><strong>Spara ändringarna</strong> permanent med <code>git commit -m "Beskrivande meddelande"</code>.</li>
-<li>(Upprepa)</li>
-</ol>
-<p>Du kan när som helst använda <code>git log</code> för att se historiken och <code>git status</code> för att se det aktuella läget.</p>
-<p>Dessa kommandon (<code>init</code>, <code>status</code>, <code>add</code>, <code>commit</code>, <code>log</code>) utgör grunden för att arbeta med Git. I nästa avsnitt tittar vi på hur vi kan koppla vårt lokala repository till en remote server som GitHub.</p>
+<h2 id="sammanfattning"><a class="header" href="#sammanfattning">Sammanfattning</a></h2>
+<p>Du har nu versionshanterat <code>portfolio-site</code> lokalt, övat på att ångra, jobbat med brancher och merge, och synkroniserat med GitHub. Det här arbetsflödet kommer du använda i varje kommande projekt i kursen. Fortsätt att committa ofta och med tydliga meddelanden – det blir en vana som lönar sig.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../kapitel_2/git-intro.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../git/github.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="../kapitel_2/github.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../git/teknisk-intervju.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -479,11 +291,11 @@ git reset config/secret.txt
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../kapitel_2/git-intro.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../git/github.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="../kapitel_2/github.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../git/teknisk-intervju.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>
@@ -496,6 +308,22 @@ git reset config/secret.txt
         <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
         <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
 
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
 
 
         <script>
@@ -514,6 +342,8 @@ git reset config/secret.txt
         <!-- Custom JS scripts -->
         <script src="../mermaid-eefea253.min.js"></script>
         <script src="../mermaid-init-025d9952.js"></script>
+        <script src="../theme/playground/playground-317b5c70.js"></script>
+        <script src="../theme/playground/terminal-867e90fc.js"></script>
 
 
 

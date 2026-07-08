@@ -80,6 +80,25 @@ block-beta
 </div>
 ```
 
+**Prova själv:** Ändra `padding`, `border` eller `margin` och klicka på **Kör** för att se hur lådan förändras.
+
+<!-- playground:start -->
+```html
+<div class="box">
+  Detta är en enkel box med padding, border och margin.
+</div>
+```
+```css
+.box {
+  width: 200px;
+  padding: 16px;
+  border: 2px solid #333;
+  margin: 24px;
+  background-color: #eef;
+}
+```
+<!-- playground:end -->
+
 ---
 
 ## Exempel 2: Jämförelse mellan content-box och border-box
