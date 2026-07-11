@@ -1,1279 +1,280 @@
-# Testning med Jest
+# Testning av `portfolio-api` med Jest
 
-## Varför testa kod?
+Automatiska test gör att vi kan ändra API:t utan att manuellt prova varje route. Här testar vi hälsokontrollen, projektvalidering och JWT-skydd med Jest och Supertest, utan att starta en riktig nätverksserver.
 
-När du skriver kod behöver du veta att den fungerar som förväntat. Manuell testning (köra programmet och testa manuellt) är tidskrävande och lätt att glömma bort när du gör ändringar. **Automatiserad testning** låter dig verifiera att din kod fungerar korrekt, snabbt och konsekvent.
+## Mål
 
-```mermaid
-graph LR
-    A[Skriv kod] --> B[Skriv test]
-    B --> C[Kör test]
-    C --> D{Passar?}
-    D -->|Ja| E[Refaktorisera]
-    D -->|Nej| F[Fixa kod]
-    F --> C
-    E --> A
-    
-    style D fill:#f9f,stroke:#333,stroke-width:2px
-    style C fill:#9f9,stroke:#333,stroke-width:2px
+Efter avsnittet kan du:
+
+- skilja på enhets- och integrationstest
+- skriva test enligt Arrange–Act–Assert
+- testa Express med Supertest
+- verifiera `400`, `401`, `403` och lyckade svar
+- hålla databasberoenden utanför små, snabba test
+
+## Förutsättningar
+
+Utgå från `portfolio-api` i [middleware och JWT](./middleware.md). Projektet använder ES-moduler genom `"type": "module"`. Läs [sessioner](./sessions.md) om du valde cookiealternativet; testerna här följer kapitlets primära JWT-spår.
+
+## 1. Gör appen testbar
+
+`src/app.js` ska konfigurera och exportera Express-appen, men inte lyssna på en port:
+
+```javascript
+import express from 'express';
+import projectsRouter from './routes/projects.js';
+import { notFound, errorHandler } from './middleware/errorHandler.js';
+
+const app = express();
+app.use(express.json());
+app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
+app.use('/api/projects', projectsRouter);
+app.use(notFound);
+app.use(errorHandler);
+export default app;
 ```
 
-### Fördelar med testning
+Endast `src/server.js` ansluter databasen och börjar lyssna:
 
-- **Säkerhet vid ändringar**: Test hjälper dig att upptäcka om ändringar bryter befintlig funktionalitet
-- **Dokumentation**: Test visar hur koden ska användas
-- **Refaktorisering**: Du kan förbättra koden utan att oroa dig för att bryta något
-- **Snabbare utveckling**: Mindre tid åt manuell testning
-- **Självförtroende**: Veta att din kod fungerar ger trygghet
+```javascript
+import 'dotenv/config';
+import app from './app.js';
+import { connectDatabase } from './config/database.js';
 
-## Vad är Jest?
+const port = process.env.PORT ?? 3000;
+await connectDatabase();
+app.listen(port, () => console.log(`portfolio-api kör på port ${port}`));
+```
 
-Jest är ett populärt testramverk (test framework) för JavaScript, särskilt utvecklat för att fungera bra med Node.js, React och andra moderna JavaScript-projekt. Jest kommer med många funktioner inbyggda, så du behöver inte installera många extra paket.
+Separationen är viktig: `request(app)` kan anropa appen direkt och lämnar ingen öppen port efter testet.
 
-### Varför Jest?
+## 2. Installera testverktygen
 
-- ✅ **Enkel setup**: Fungerar direkt utan mycket konfiguration
-- ✅ **Snabb**: Optimerad för prestanda
-- ✅ **Bra felmeddelanden**: Tydliga meddelanden när test misslyckas
-- ✅ **Mocks och spies**: Inbyggt stöd för att testa isolerat
-- ✅ **Code coverage**: Se hur mycket av koden som testas
-- ✅ **Watch mode**: Automatisk omkörning när filer ändras
+Vi använder aktuell Jest med `babel-jest` för att transformera projektets ES-moduler under test. Därmed behövs inte det äldre scriptet med `--experimental-vm-modules`, och applikationskoden fortsätter använda enbart `import` och `export`.
 
-## Installation och Setup
+<!-- terminal -->
+```console
+$ npm install --save-dev jest supertest babel-jest @babel/core @babel/preset-env
+added ... packages
+```
 
-### Steg 1: Installera Jest
+### Kör nu i din riktiga terminal
 
 ```bash
-# Initiera projekt om du inte redan har package.json
-npm init -y
-
-# Installera Jest som utvecklingsberoende
-npm install --save-dev jest
+npm install --save-dev jest supertest babel-jest @babel/core @babel/preset-env
 ```
 
-### Steg 2: Konfigurera package.json
-
-För att använda ES6-moduler behöver du först lägga till en rad i `package.json`:
+Komplettera `package.json` utan att ta bort befintliga beroenden:
 
 ```json
 {
-  "name": "mitt-test-projekt",
-  "version": "1.0.0",
-  "type": "module"
-}
-```
-
-**Vad gör detta?**
-- `"type": "module"` aktiverar ES6-moduler (import/export) i hela projektet
-
-Nu behöver du lägga till ett test-script (script för att köra test). Vad behöver du tänka på?
-- Jest behöver köras med en speciell flagga för att fungera med ES6-moduler
-- Scriptet ska ligga under `"scripts"` i `package.json`
-
-**Din uppgift**: Lägg till ett `"scripts"`-objekt med en `"test"`-property. Värdet ska köra Jest med flaggan `--experimental-vm-modules`. Titta på Node.js-kommandot i Steg 1 för att se hur Jest körs.
-
-<details>
-<summary>Visa lösning</summary>
-
-```json
-{
-  "name": "mitt-test-projekt",
-  "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch"
+    "test": "jest --runInBand",
+    "test:watch": "jest --watch"
+  },
+  "babel": {
+    "presets": [
+      ["@babel/preset-env", { "targets": { "node": "current" } }]
+    ]
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "clearMocks": true
   }
 }
 ```
 
-**Förklaring**:
-- `--experimental-vm-modules`: Behövs för att Jest ska fungera med ES6-moduler
-- `test:watch`: Kör test automatiskt när filer ändras (valfritt men användbart)
-</details>
+`--runInBand` kör filerna sekventiellt. Det är ofta tydligare för API-test och gemensamma resurser. Node har också `node --test`, men vi använder Jest eftersom resten av upplägget bygger på Jests matchers och mocks.
 
-### Steg 3: Skapa din första test
+Sätt `JWT_SECRET` och `NODE_ENV=test` i `.env.test` eller en Jest setup-fil. Använd aldrig produktionshemligheter i test.
 
-Låt oss börja enkelt. Skapa en fil `math.js` med en funktion att testa:
+## 3. Testa hälsokontrollen
 
-```javascript
-// math.js
-export function add(a, b) {
-  return a + b;
-}
-```
-
-Nu skapar du din första testfil `math.test.js`. Tänk på:
-- Du behöver importera funktionen från `math.js`
-- Använd `test()` för att definiera ett test
-- Använd `expect()` för att verifiera resultatet
-
-**Din uppgift**: Skapa ett test som verifierar att `add(2, 3)` returnerar `5`.
-
-<details>
-<summary>Visa lösning</summary>
+Skapa `tests/health.test.js`:
 
 ```javascript
-// math.test.js
-import { add } from './math.js';
+import request from 'supertest';
+import app from '../src/app.js';
 
-test('adderar två tal korrekt', () => {
-  expect(add(2, 3)).toBe(5);
+describe('GET /api/health', () => {
+  test('svarar att API:t mår bra', async () => {
+    // Arrange: appen är importerad och ingen server startas.
+
+    // Act
+    const response = await request(app).get('/api/health');
+
+    // Assert
+    expect(response.status).toBe(200);
+    expect(response.headers['content-type']).toMatch(/json/);
+    expect(response.body).toEqual({ status: 'ok' });
+  });
 });
 ```
 
-**Förklaring**:
-- `import { add }`: Importerar funktionen från math.js
-- `test('beskrivning', ...)`: Skapar ett testfall med en beskrivning
-- `expect(add(2, 3))`: Kör funktionen och förbereder för verifiering
-- `.toBe(5)`: Verifierar att resultatet är exakt 5
-</details>
+Arrange förbereder, Act utför och Assert verifierar. Kommentarerna kan tas bort när strukturen är självklar.
 
-Kör testet:
+<!-- terminal -->
+```console
+$ npm test
+PASS tests/health.test.js
+Tests:       1 passed, 1 total
+```
+
+### Kör nu i din riktiga terminal
 
 ```bash
 npm test
 ```
 
-Du bör se något som:
+Vid `FAIL`, läs testnamnet och skillnaden mellan `Expected` och `Received`.
 
-```
-PASS  ./math.test.js
-  ✓ adderar två tal korrekt
+## 4. Testa validering och auktorisation utan databas
 
-Test Suites: 1 passed, 1 total
-Tests:       1 passed, 1 total
-```
+Vi testar att saknad token ger `401`, rollen `user` ger `403` och ogiltig admindata ger `400`, allt innan MongoDB anropas.
 
-**Bra jobbat!** Du har skapat ditt första test. Nu är det din tur att öva.
-
-#### Övning: Lägg till fler funktioner och test
-
-1. **Lägg till `subtract()` i `math.js`**:
-   - Skapa funktionen som subtraherar två tal
-   - Lägg till ett test som verifierar `subtract(5, 3)` blir `2`
-
-2. **Lägg till `multiply()` i `math.js`**:
-   - Skapa funktionen som multiplicerar två tal
-   - Lägg till ett test som verifierar `multiply(4, 3)` blir `12`
-
-3. **Utmaning: Lägg till `divide()` med felhantering**:
-   - Funktionen ska dividera två tal
-   - Om den andra parametern är 0, ska den kasta ett fel med `throw new Error('Division med noll är inte tillåten')`
-   - Skriv två test:
-     - Ett som testar normal division, t.ex. `divide(10, 2)` blir `5`
-     - Ett som testar att fel kastas: `expect(() => divide(10, 0)).toThrow('Division med noll är inte tillåten')`
-
-**Tips**: Tänk på hur du testade `add()` - använd samma struktur för de andra funktionerna!
-
-## Grundläggande Jest-koncept
-
-### Test struktur
-
-Du har redan använt `test()` och `expect()`. Låt oss förstå strukturen bättre:
-
-#### `test()` - Ett testfall
-
-`test()` (eller `it()`) definierar ett enskilt testfall:
+Det förutsätter att routeordningen är:
 
 ```javascript
-test('beskrivning av vad testet gör', () => {
-  // Din testkod här
-});
+router.post(
+  '/',
+  authenticate,
+  requireAdmin,
+  validateProject,
+  createProject
+);
 ```
 
-#### `expect()` - Verifiering (assertion)
-
-`expect()` används för att verifiera att resultatet stämmer:
+En liten valideringsmiddleware kan se ut så här:
 
 ```javascript
-expect(actualValue).toBe(expectedValue);
-```
-
-#### `describe()` - Gruppera relaterade test
-
-När du har flera test kan du gruppera dem med `describe()` för bättre struktur:
-
-```javascript
-describe('Matematiska funktioner', () => {
-  test('adderar två tal', () => {
-    expect(add(2, 3)).toBe(5);
-  });
-  
-  test('subtraherar två tal', () => {
-    expect(subtract(5, 3)).toBe(2);
-  });
-});
-```
-
-**Övning**: Uppdatera din `math.test.js` och gruppera dina test under en `describe('Matematiska funktioner', ...)`.
-
-#### Arrange-Act-Assert mönster
-
-Ett bra sätt att strukturera test är att följa Arrange-Act-Assert mönstret:
-
-```javascript
-test('beräknar dubbelt värde', () => {
-  // Arrange (Förbered) - förbered testdata
-  const input = 5;
-  const expected = 10;
-  
-  // Act (Utför) - kör funktionen
-  const result = double(input);
-  
-  // Assert (Verifiera) - kontrollera resultatet
-  expect(result).toBe(expected);
-});
-```
-
-Detta gör testen lättare att förstå och underhålla.
-
-### Matchers (Matchare)
-
-Matchers är metoder som används med `expect()` för att verifiera värden. Du har redan använt `.toBe()` - låt oss lära oss fler!
-
-#### `toBe()` - Exakt likhet
-
-Du känner redan till `toBe()`. Den använder `===` för jämförelse:
-
-```javascript
-expect(5).toBe(5);
-expect('hej').toBe('hej');
-```
-
-**Viktigt**: `toBe()` fungerar inte för objekt och arrays (de jämförs med referens, inte värde).
-
-**Övning**: Skriv ett test som använder `toBe()` för att verifiera att två tal är lika.
-
-#### `toEqual()` - Värde-likhet för objekt och arrays
-
-För att jämföra objekt och arrays använder du `toEqual()`:
-
-```javascript
-expect({ name: 'Anna' }).toEqual({ name: 'Anna' });
-expect([1, 2, 3]).toEqual([1, 2, 3]);
-```
-
-**Övning**: Skapa ett objekt `{ age: 25 }` och skriv ett test som verifierar att det är lika med `{ age: 25 }` med `toEqual()`.
-
-#### `not` - Negering
-
-Du kan använda `.not` för att invertera vilken matcher som helst:
-
-```javascript
-expect(5).not.toBe(3);
-expect('hej').not.toBe('adjö');
-```
-
-**Övning**: Skriv ett test som verifierar att `10` inte är lika med `5`.
-
-#### Jämförelse för tal
-
-```javascript
-expect(10).toBeGreaterThan(5);      // Större än
-expect(5).toBeLessThan(10);         // Mindre än
-expect(5).toBeGreaterThanOrEqual(5); // Större eller lika
-expect(5).toBeLessThanOrEqual(10);   // Mindre eller lika
-```
-
-**Viktigt för flyttal**: På grund av avrundningsfel i JavaScript använder du `toBeCloseTo()` för decimaltal:
-
-```javascript
-expect(0.1 + 0.2).toBeCloseTo(0.3);
-```
-
-**Övning**: Skriv test som verifierar:
-- `15` är större än `10`
-- `0.1 + 0.2` är ungefär lika med `0.3` (använd `toBeCloseTo`)
-
-#### Strängar
-
-```javascript
-const message = 'Hej världen';
-
-expect(message).toContain('världen');  // Innehåller delsträng
-expect(message).toMatch(/världen/);   // Matchar regex
-expect(message).toHaveLength(11);     // Längd
-```
-
-**Övning**: Testa att strängen `'JavaScript'` innehåller `'Script'` och har längden `10`.
-
-#### Arrays
-
-```javascript
-const fruits = ['äpple', 'banan', 'apelsin'];
-
-expect(fruits).toContain('banan');           // Array innehåller element
-expect(fruits).toHaveLength(3);              // Array-längd
-expect(fruits).toEqual(['äpple', 'banan', 'apelsin']); // Exakt lika array
-```
-
-**Övning**: Skapa en array `[1, 2, 3]` och skriv test som verifierar:
-- Arrayen innehåller `2`
-- Arrayen har längden `3`
-
-#### Objekt
-
-```javascript
-const user = { name: 'Anna', age: 25 };
-
-expect(user).toHaveProperty('name');          // Har property
-expect(user).toHaveProperty('age', 25);     // Har property med värde
-expect(user.name).toBe('Anna');              // Direkt access
-```
-
-**Övning**: Skapa ett objekt `{ city: 'Stockholm', country: 'Sverige' }` och verifiera:
-- Objektet har propertyn `city`
-- `city` har värdet `'Stockholm'`
-
-#### Booleans och null/undefined
-
-```javascript
-expect(true).toBeTruthy();        // Alla "truthy" värden
-expect(false).toBeFalsy();        // Alla "falsy" värden
-expect(null).toBeNull();          // Exakt null
-expect(undefined).toBeUndefined(); // Exakt undefined
-expect('text').toBeDefined();     // Inte undefined
-```
-
-**Övning**: Skriv test som verifierar:
-- `null` är `null`
-- Ett tal (t.ex. `5`) är truthy
-
-#### Funktioner och fel
-
-När du testar att en funktion kastar fel, måste du wrappa anropet i en arrow function:
-
-```javascript
-function throwError() {
-  throw new Error('Något gick fel');
-}
-
-expect(() => throwError()).toThrow();                    // Kastar något fel
-expect(() => throwError()).toThrow('Något gick fel');   // Kastar specifikt felmeddelande
-expect(() => throwError()).toThrow(Error);               // Kastar Error-typ
-```
-
-**Övning**: Om du har `divide()` från tidigare, testa att den kastar fel när du försöker dividera med noll.
-
-## Testa Express API:er
-
-När du testar web API:er behöver du simulera HTTP-requests (förfrågningar). För detta använder vi `supertest`.
-
-### Installera Supertest
-
-```bash
-npm install --save-dev supertest
-```
-
-### Steg 1: Skapa en enkel modell att testa
-
-Börja med en enkel modell som hanterar posts i minnet. Skapa `models/Post.js`:
-
-```javascript
-// models/Post.js
-let posts = [];
-let nextId = 1;
-
-function getAllPosts() {
-  return posts;
-}
-
-function getPostById(id) {
-  const post = posts.find(p => p.id === parseInt(id));
-  if (!post) {
-    throw new Error(`Post med id ${id} hittades inte`);
+export function validateProject(req, res, next) {
+  if (typeof req.body.title !== 'string' || !req.body.title.trim()) {
+    return res.status(400).json({ error: 'Titel krävs' });
   }
-  return post;
+  next();
 }
-
-function createPost(title, content) {
-  if (!title || title.trim().length === 0) {
-    throw new Error('Titel krävs');
-  }
-  if (!content || content.trim().length === 0) {
-    throw new Error('Innehåll krävs');
-  }
-
-  const newPost = {
-    id: nextId++,
-    title: title.trim(),
-    content: content.trim(),
-    createdAt: new Date().toISOString()
-  };
-  
-  posts.push(newPost);
-  return newPost;
-}
-
-function resetPosts() {
-  posts = [];
-  nextId = 1;
-}
-
-export default {
-  getAllPosts,
-  getPostById,
-  createPost,
-  resetPosts
-};
 ```
 
-**Din uppgift**: Skapa funktionerna `updatePost(id, title, content)` och `deletePost(id)`. Tänk på:
-- `updatePost` ska hitta posten med `getPostById()` och uppdatera title/content om de anges
-- `deletePost` ska hitta och ta bort posten, kasta fel om den inte finns
-- Glöm inte att lägga till dem i export-objektet
-
-### Steg 2: Testa modellen direkt
-
-Innan vi testar API:et kan vi testa modellen direkt. Skapa `models/Post.test.js`:
-
-```javascript
-import PostModel from './Post.js';
-
-describe('Post Model', () => {
-  beforeEach(() => {
-    PostModel.resetPosts();
-  });
-
-  test('getAllPosts returnerar tom array initialt', () => {
-    const posts = PostModel.getAllPosts();
-    expect(posts).toEqual([]);
-  });
-
-  test('createPost skapar en ny post', () => {
-    const post = PostModel.createPost('Titel', 'Innehåll');
-    
-    expect(post).toHaveProperty('id');
-    expect(post.title).toBe('Titel');
-    expect(post.content).toBe('Innehåll');
-    expect(post).toHaveProperty('createdAt');
-  });
-});
-```
-
-**Din uppgift**: Lägg till test för:
-- `getPostById()` - verifiera att den hittar en post och kastar fel om den inte finns
-- `createPost()` - testa att den kastar fel om title eller content saknas
-- Om du implementerade `updatePost()` och `deletePost()` - skriv test för dem också!
-
-### Steg 3: Skapa Express-route
-
-Skapa en enkel route i `routes/posts.js`:
-
-```javascript
-import express from 'express';
-import PostModel from '../models/Post.js';
-
-const router = express.Router();
-
-router.get('/', (req, res) => {
-  try {
-    const posts = PostModel.getAllPosts();
-    res.json(posts);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-```
-
-**Din uppgift**: Lägg till route för `GET /:id` som:
-- Använder `PostModel.getPostById(req.params.id)`
-- Returnerar posten som JSON om den finns
-- Returnerar 404 med felmeddelande om posten inte finns
-
-### Steg 4: Testa route med Supertest
-
-Skapa `routes/posts.test.js`:
+Skapa `tests/projects.auth.test.js`:
 
 ```javascript
 import request from 'supertest';
-import express from 'express';
-import postsRouter from './posts.js';
-import PostModel from '../models/Post.js';
+import jwt from 'jsonwebtoken';
+import app from '../src/app.js';
 
-const app = express();
-app.use(express.json());
-app.use('/api/posts', postsRouter);
+const secret = 'test-secret-som-endast-anvands-lokalt';
 
-describe('GET /api/posts', () => {
-  beforeEach(() => {
-    PostModel.resetPosts();
+beforeAll(() => {
+  process.env.JWT_SECRET = secret;
+});
+
+function tokenFor(role) {
+  return jwt.sign({ sub: 'test-user-id', role }, secret, { expiresIn: '5m' });
+}
+
+describe('POST /api/projects', () => {
+  test('avvisar en request utan token', async () => {
+    // Arrange
+    const project = { title: 'Min portfolio' };
+
+    // Act
+    const response = await request(app).post('/api/projects').send(project);
+
+    // Assert
+    expect(response.status).toBe(401);
+    expect(response.body).toEqual({ error: 'Bearer-token krävs' });
   });
 
-  test('returnerar tom array när inga posts finns', async () => {
+  test('avvisar en vanlig användare', async () => {
     const response = await request(app)
-      .get('/api/posts')
-      .expect(200)
-      .expect('Content-Type', /json/);
-    
-    expect(response.body).toEqual([]);
+      .post('/api/projects')
+      .set('Authorization', `Bearer ${tokenFor('user')}`)
+      .send({ title: 'Min portfolio' });
+    expect(response.status).toBe(403);
+    expect(response.body.error).toMatch(/Admin/);
+  });
+
+  test('validerar data från en administratör', async () => {
+    const response = await request(app)
+      .post('/api/projects')
+      .set('Authorization', `Bearer ${tokenFor('admin')}`)
+      .send({ title: '   ' });
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({ error: 'Titel krävs' });
   });
 });
 ```
 
-**Förklaring**:
-- `request(app)` skapar en request till Express-appen
-- `.get('/api/posts')` gör en GET-request
-- `.expect(200)` verifierar statuskoden
-- `response.body` är JSON-svaret
+Sätt miljövariabeln före import om din auth-modul läser hemligheten på modulnivå. Bättre är att läsa `process.env.JWT_SECRET` när token verifieras eller att använda en setup-fil.
 
-**Din uppgift**: Skriv test för:
-- GET `/api/posts` när det finns posts (skapa några med `PostModel.createPost()` först)
-- GET `/api/posts/:id` - testa både lyckat fall och 404-fall
+## 5. Testa controllern med en injicerad modell
 
-### Steg 5: POST-route med validering
-
-Lägg till POST-route i `routes/posts.js`:
+Enhetsprov blir enklare om logiken tar sitt beroende som argument:
 
 ```javascript
-router.post('/', (req, res) => {
-  try {
-    const { title, content } = req.body;
-    const newPost = PostModel.createPost(title, content);
-    res.status(201).json(newPost);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-});
-```
-
-**Din uppgift**: Skriv test för POST `/api/posts` som verifierar:
-- En post skapas korrekt med title och content
-- 400 returneras om title saknas
-- 400 returneras om content saknas
-- Whitespace trimmas från title och content
-
-**Tips**: Använd `.send({ title: '...', content: '...' })` för att skicka JSON-data.
-
-### Utmaning: Komplettera API:et
-
-Om du implementerade `updatePost()` och `deletePost()` i Steg 1:
-1. Lägg till routes för PUT `/api/posts/:id` och DELETE `/api/posts/:id`
-2. Skriv tester för dessa routes
-3. Tänk på alla edge cases (saknad post, saknade/tomma fält, etc.)
-
-<details>
-<summary>Visa komplett lösningsförslag</summary>
-
-Här är ett komplett lösningsförslag för hela API:et med tester:
-
-#### Komplett Post.js
-
-```javascript
-// models/Post.js
-let posts = [];
-let nextId = 1;
-
-function getAllPosts() {
-  return posts;
-}
-
-function getPostById(id) {
-  const post = posts.find(p => p.id === parseInt(id));
-  if (!post) {
-    throw new Error(`Post med id ${id} hittades inte`);
-  }
-  return post;
-}
-
-function createPost(title, content) {
-  if (!title || title.trim().length === 0) {
-    throw new Error('Titel krävs');
-  }
-  if (!content || content.trim().length === 0) {
-    throw new Error('Innehåll krävs');
-  }
-
-  const newPost = {
-    id: nextId++,
-    title: title.trim(),
-    content: content.trim(),
-    createdAt: new Date().toISOString()
+export function makeCreateProject(Project) {
+  return async (req, res, next) => {
+    try {
+      const project = await Project.create(req.body);
+      res.status(201).json(project);
+    } catch (error) {
+      next(error);
+    }
   };
-  
-  posts.push(newPost);
-  return newPost;
 }
-
-function updatePost(id, title, content) {
-  const post = getPostById(id);
-  
-  if (title !== undefined) {
-    if (!title || title.trim().length === 0) {
-      throw new Error('Titel kan inte vara tom');
-    }
-    post.title = title.trim();
-  }
-  
-  if (content !== undefined) {
-    if (!content || content.trim().length === 0) {
-      throw new Error('Innehåll kan inte vara tomt');
-    }
-    post.content = content.trim();
-  }
-  
-  post.updatedAt = new Date().toISOString();
-  return post;
-}
-
-function deletePost(id) {
-  const postIndex = posts.findIndex(p => p.id === parseInt(id));
-  if (postIndex === -1) {
-    throw new Error(`Post med id ${id} hittades inte`);
-  }
-  const deletedPost = posts[postIndex];
-  posts.splice(postIndex, 1);
-  return deletedPost;
-}
-
-function resetPosts() {
-  posts = [];
-  nextId = 1;
-}
-
-export default {
-  getAllPosts,
-  getPostById,
-  createPost,
-  updatePost,
-  deletePost,
-  resetPosts
-};
 ```
 
-#### Komplett Post.test.js
+Skapa `tests/createProject.test.js`:
 
 ```javascript
-// models/Post.test.js
-import PostModel from './Post.js';
+import { jest } from '@jest/globals';
+import { makeCreateProject } from '../src/controllers/projectController.js';
 
-describe('Post Model', () => {
-  beforeEach(() => {
-    PostModel.resetPosts();
-  });
+test('skapar ett validerat projekt', async () => {
+  const saved = { id: 'p1', title: 'Portfolio API' };
+  const Project = { create: jest.fn().mockResolvedValue(saved) };
+  const req = { body: { title: 'Portfolio API' } };
+  const res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
+  const next = jest.fn();
 
-  test('getAllPosts returnerar tom array initialt', () => {
-    const posts = PostModel.getAllPosts();
-    expect(posts).toEqual([]);
-  });
+  await makeCreateProject(Project)(req, res, next);
 
-  test('createPost skapar en ny post', () => {
-    const post = PostModel.createPost('Titel', 'Innehåll');
-    
-    expect(post).toHaveProperty('id');
-    expect(post.title).toBe('Titel');
-    expect(post.content).toBe('Innehåll');
-    expect(post).toHaveProperty('createdAt');
-  });
-
-  test('getPostById hittar en post', () => {
-    const createdPost = PostModel.createPost('Titel', 'Innehåll');
-    const foundPost = PostModel.getPostById(createdPost.id);
-    
-    expect(foundPost).toEqual(createdPost);
-  });
-
-  test('getPostById kastar fel om post inte finns', () => {
-    expect(() => PostModel.getPostById(999)).toThrow('Post med id 999 hittades inte');
-  });
-
-  test('createPost kastar fel om title saknas', () => {
-    expect(() => PostModel.createPost('', 'Innehåll')).toThrow('Titel krävs');
-    expect(() => PostModel.createPost(null, 'Innehåll')).toThrow('Titel krävs');
-  });
-
-  test('createPost kastar fel om content saknas', () => {
-    expect(() => PostModel.createPost('Titel', '')).toThrow('Innehåll krävs');
-    expect(() => PostModel.createPost('Titel', null)).toThrow('Innehåll krävs');
-  });
-
-  test('updatePost uppdaterar en post', () => {
-    const createdPost = PostModel.createPost('Original', 'Originalt innehåll');
-    const updatedPost = PostModel.updatePost(createdPost.id, 'Ny titel', 'Nytt innehåll');
-    
-    expect(updatedPost.title).toBe('Ny titel');
-    expect(updatedPost.content).toBe('Nytt innehåll');
-    expect(updatedPost).toHaveProperty('updatedAt');
-  });
-
-  test('updatePost uppdaterar endast title om content saknas', () => {
-    const createdPost = PostModel.createPost('Original', 'Innehåll');
-    const updatedPost = PostModel.updatePost(createdPost.id, 'Ny titel');
-    
-    expect(updatedPost.title).toBe('Ny titel');
-    expect(updatedPost.content).toBe('Innehåll');
-  });
-
-  test('updatePost kastar fel om post inte finns', () => {
-    expect(() => PostModel.updatePost(999, 'Titel', 'Innehåll')).toThrow('hittades inte');
-  });
-
-  test('deletePost tar bort en post', () => {
-    const createdPost = PostModel.createPost('Att ta bort', 'Innehåll');
-    const deletedPost = PostModel.deletePost(createdPost.id);
-    
-    expect(deletedPost.id).toBe(createdPost.id);
-    expect(PostModel.getAllPosts()).toHaveLength(0);
-  });
-
-  test('deletePost kastar fel om post inte finns', () => {
-    expect(() => PostModel.deletePost(999)).toThrow('Post med id 999 hittades inte');
-  });
+  expect(Project.create).toHaveBeenCalledWith(req.body);
+  expect(res.status).toHaveBeenCalledWith(201);
+  expect(res.json).toHaveBeenCalledWith(saved);
 });
 ```
 
-#### Komplett routes/posts.js
+Modellen är en kontrollerad mock. `mongodb-memory-server` passar senare för Mongoose-frågor, index och hooks, men innebär mer setup. Lägg inte till det innan testet behöver riktigt MongoDB-beteende.
 
-```javascript
-// routes/posts.js
-import express from 'express';
-import PostModel from '../models/Post.js';
+## 6. Läs och förbättra testresultatet
 
-const router = express.Router();
-
-router.get('/', (req, res) => {
-  try {
-    const posts = PostModel.getAllPosts();
-    res.json(posts);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-router.get('/:id', (req, res) => {
-  try {
-    const post = PostModel.getPostById(req.params.id);
-    res.json(post);
-  } catch (error) {
-    res.status(404).json({ error: error.message });
-  }
-});
-
-router.post('/', (req, res) => {
-  try {
-    const { title, content } = req.body;
-    const newPost = PostModel.createPost(title, content);
-    res.status(201).json(newPost);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-});
-
-router.put('/:id', (req, res) => {
-  try {
-    const { title, content } = req.body;
-    const updatedPost = PostModel.updatePost(req.params.id, title, content);
-    res.json(updatedPost);
-  } catch (error) {
-    const statusCode = error.message.includes('hittades inte') ? 404 : 400;
-    res.status(statusCode).json({ error: error.message });
-  }
-});
-
-router.delete('/:id', (req, res) => {
-  try {
-    const deletedPost = PostModel.deletePost(req.params.id);
-    res.json(deletedPost);
-  } catch (error) {
-    res.status(404).json({ error: error.message });
-  }
-});
-
-export default router;
-```
-
-#### Komplett routes/posts.test.js
-
-```javascript
-// routes/posts.test.js
-import request from 'supertest';
-import express from 'express';
-import postsRouter from './posts.js';
-import PostModel from '../models/Post.js';
-
-const app = express();
-app.use(express.json());
-app.use('/api/posts', postsRouter);
-
-describe('Posts API', () => {
-  beforeEach(() => {
-    PostModel.resetPosts();
-  });
-
-  describe('GET /api/posts', () => {
-    test('returnerar tom array när inga posts finns', async () => {
-      const response = await request(app)
-        .get('/api/posts')
-        .expect(200)
-        .expect('Content-Type', /json/);
-      
-      expect(response.body).toEqual([]);
-    });
-
-    test('returnerar alla posts', async () => {
-      PostModel.createPost('Första posten', 'Innehåll här');
-      PostModel.createPost('Andra posten', 'Mer innehåll');
-      
-      const response = await request(app)
-        .get('/api/posts')
-        .expect(200);
-      
-      expect(response.body).toHaveLength(2);
-      expect(response.body[0]).toHaveProperty('id');
-      expect(response.body[0]).toHaveProperty('title');
-      expect(response.body[0]).toHaveProperty('content');
-    });
-  });
-
-  describe('GET /api/posts/:id', () => {
-    test('returnerar post med korrekt id', async () => {
-      const createdPost = PostModel.createPost('Test post', 'Innehåll');
-      
-      const response = await request(app)
-        .get(`/api/posts/${createdPost.id}`)
-        .expect(200);
-      
-      expect(response.body.id).toBe(createdPost.id);
-      expect(response.body.title).toBe('Test post');
-      expect(response.body.content).toBe('Innehåll');
-    });
-
-    test('returnerar 404 om post inte finns', async () => {
-      const response = await request(app)
-        .get('/api/posts/999')
-        .expect(404);
-      
-      expect(response.body).toHaveProperty('error');
-      expect(response.body.error).toContain('hittades inte');
-    });
-  });
-
-  describe('POST /api/posts', () => {
-    test('skapar ny post med korrekt data', async () => {
-      const newPost = {
-        title: 'Ny post',
-        content: 'Detta är innehållet'
-      };
-      
-      const response = await request(app)
-        .post('/api/posts')
-        .send(newPost)
-        .expect(201)
-        .expect('Content-Type', /json/);
-      
-      expect(response.body).toHaveProperty('id');
-      expect(response.body.title).toBe('Ny post');
-      expect(response.body.content).toBe('Detta är innehållet');
-      expect(response.body).toHaveProperty('createdAt');
-    });
-
-    test('returnerar 400 om titel saknas', async () => {
-      const response = await request(app)
-        .post('/api/posts')
-        .send({ content: 'Innehåll utan titel' })
-        .expect(400);
-      
-      expect(response.body).toHaveProperty('error');
-      expect(response.body.error).toBe('Titel krävs');
-    });
-
-    test('returnerar 400 om innehåll saknas', async () => {
-      const response = await request(app)
-        .post('/api/posts')
-        .send({ title: 'Titel utan innehåll' })
-        .expect(400);
-      
-      expect(response.body).toHaveProperty('error');
-      expect(response.body.error).toBe('Innehåll krävs');
-    });
-
-    test('trimmar whitespace från titel och innehåll', async () => {
-      const response = await request(app)
-        .post('/api/posts')
-        .send({ title: '  Titel  ', content: '  Innehåll  ' })
-        .expect(201);
-      
-      expect(response.body.title).toBe('Titel');
-      expect(response.body.content).toBe('Innehåll');
-    });
-  });
-
-  describe('PUT /api/posts/:id', () => {
-    test('uppdaterar post med ny data', async () => {
-      const createdPost = PostModel.createPost('Original', 'Originalt innehåll');
-      
-      const response = await request(app)
-        .put(`/api/posts/${createdPost.id}`)
-        .send({ title: 'Uppdaterad titel', content: 'Uppdaterat innehåll' })
-        .expect(200);
-      
-      expect(response.body.title).toBe('Uppdaterad titel');
-      expect(response.body.content).toBe('Uppdaterat innehåll');
-      expect(response.body).toHaveProperty('updatedAt');
-    });
-
-    test('uppdaterar endast titel om content saknas', async () => {
-      const createdPost = PostModel.createPost('Original', 'Innehåll');
-      
-      const response = await request(app)
-        .put(`/api/posts/${createdPost.id}`)
-        .send({ title: 'Ny titel' })
-        .expect(200);
-      
-      expect(response.body.title).toBe('Ny titel');
-      expect(response.body.content).toBe('Innehåll');
-    });
-
-    test('returnerar 404 om post inte finns', async () => {
-      const response = await request(app)
-        .put('/api/posts/999')
-        .send({ title: 'Ny titel', content: 'Nytt innehåll' })
-        .expect(404);
-      
-      expect(response.body).toHaveProperty('error');
-    });
-
-    test('returnerar 400 om titel är tom', async () => {
-      const createdPost = PostModel.createPost('Titel', 'Innehåll');
-      
-      const response = await request(app)
-        .put(`/api/posts/${createdPost.id}`)
-        .send({ title: '', content: 'Innehåll' })
-        .expect(400);
-      
-      expect(response.body.error).toContain('kan inte vara tom');
-    });
-  });
-
-  describe('DELETE /api/posts/:id', () => {
-    test('tar bort post och returnerar den', async () => {
-      const createdPost = PostModel.createPost('Att ta bort', 'Innehåll');
-      
-      const response = await request(app)
-        .delete(`/api/posts/${createdPost.id}`)
-        .expect(200);
-      
-      expect(response.body.id).toBe(createdPost.id);
-      
-      // Verifiera att posten faktiskt är borttagen
-      const getResponse = await request(app)
-        .get(`/api/posts/${createdPost.id}`)
-        .expect(404);
-    });
-
-    test('returnerar 404 om post inte finns', async () => {
-      const response = await request(app)
-        .delete('/api/posts/999')
-        .expect(404);
-      
-      expect(response.body).toHaveProperty('error');
-    });
-  });
-});
-```
-
-#### app.js (för att köra servern)
-
-```javascript
-// app.js
-import express from 'express';
-import postsRouter from './routes/posts.js';
-
-const app = express();
-
-app.use(express.json());
-app.use('/api/posts', postsRouter);
-
-export default app;
-```
-
-</details>
-
-## Setup och Teardown
-
-Ibland behöver du förbereda data eller städa upp mellan test. Jest ger dig hooks (krokar) för detta.
-
-### `beforeEach()` - Körs före varje test
-
-Du har redan sett `beforeEach()` i våra exempel. Den används för att säkerställa att varje test börjar med en ren miljö:
-
-```javascript
-describe('Post Model', () => {
-  beforeEach(() => {
-    PostModel.resetPosts(); // Rensa alla posts före varje test
-  });
-
-  test('test 1', () => {
-    // Posts är nu tomma
-  });
-
-  test('test 2', () => {
-    // Posts är återigen tomma, oavsett vad test 1 gjorde
-  });
-});
-```
-
-**Övning**: Om du har flera test i din `math.test.js`, vad skulle du kunna förbereda i `beforeEach()`? (Tips: kanske skapa testdata?)
-
-### `afterEach()` - Körs efter varje test
-
-`afterEach()` körs efter varje test, användbar för städning:
-
-```javascript
-describe('Filer', () => {
-  afterEach(() => {
-    // Ta bort temporära filer efter varje test
-    fs.unlinkSync('temp-file.txt');
-  });
-});
-```
-
-**Övning**: När tror du `afterEach()` är användbar? Ge ett exempel.
-
-### `beforeAll()` och `afterAll()` - Körs en gång
-
-Dessa körs en gång före/efter alla test i ett `describe`-block. Användbart för tunga operationer:
-
-```javascript
-describe('Databas-test', () => {
-  // Körs EN gång före alla test
-  beforeAll(async () => {
-    await connectToDatabase(); // Anslut till databas
-  });
-
-  // Körs EN gång efter alla test
-  afterAll(async () => {
-    await closeDatabase(); // Stäng anslutning
-  });
-
-  test('test 1', () => {
-    // Databasen är redan ansluten
-  });
-
-  test('test 2', () => {
-    // Samma databasanslutning används
-  });
-});
-```
-
-**Övning**: I vilka situationer skulle `beforeAll()` vara bättre än `beforeEach()`? (Tips: tänk på kostnad/tid)
-
-## Organisera dina test
-
-### Filnamn och struktur
-
-Jest letar automatiskt efter testfiler med dessa namn:
-- Filer i `__tests__`-mapp
-- Filer som slutar på `.test.js`
-- Filer som slutar på `.spec.js`
-
-**Rekommenderad struktur**:
-
-```
-projekt/
-├── src/
-│   ├── math.js
-│   ├── user.js
-│   └── utils.js
-├── tests/
-│   ├── math.test.js
-│   ├── user.test.js
-│   └── utils.test.js
-└── package.json
-```
-
-### Konfigurera testmapp
-
-Du kan konfigurera Jest att leta i specifika mappar genom att skapa `jest.config.js`:
-
-```javascript
-// jest.config.js
-export default {
-  testMatch: ['**/tests/**/*.test.js'],
-  testEnvironment: 'node',
-  collectCoverageFrom: [
-    'src/**/*.js',
-    '!src/**/*.test.js'
-  ]
-};
-```
-
-## Best Practices (Bästa praxis)
-
-### 1. Testa en sak i taget
-
-```javascript
-// ❌ Dåligt - testar flera saker
-test('användare funktioner', () => {
-  const user = createUser('Anna', 'anna@test.com');
-  expect(user.getName()).toBe('Anna');
-  user.updateName('Kalle');
-  expect(user.getName()).toBe('Kalle');
-  expect(user.isValidEmail()).toBe(true);
-});
-
-// ✅ Bra - separata test
-test('skapar användare med korrekt namn', () => {
-  const user = createUser('Anna', 'anna@test.com');
-  expect(user.getName()).toBe('Anna');
-});
-
-test('uppdaterar användarens namn', () => {
-  const user = createUser('Anna', 'anna@test.com');
-  user.updateName('Kalle');
-  expect(user.getName()).toBe('Kalle');
-});
-
-test('validerar email korrekt', () => {
-  const user = createUser('Anna', 'anna@test.com');
-  expect(user.isValidEmail()).toBe(true);
-});
-```
-
-### 2. Använd beskrivande namn
-
-```javascript
-// ❌ Dåligt
-test('test 1', () => { ... });
-test('funktion fungerar', () => { ... });
-
-// ✅ Bra
-test('räknar ut summan av två positiva tal', () => { ... });
-test('kastar fel när man försöker dividera med noll', () => { ... });
-```
-
-### 3. Testa edge cases (Gränsfall)
-
-```javascript
-describe('add funktion', () => {
-  test('adderar positiva tal', () => {
-    expect(add(2, 3)).toBe(5);
-  });
-
-  test('adderar negativa tal', () => {
-    expect(add(-2, -3)).toBe(-5);
-  });
-
-  test('adderar med noll', () => {
-    expect(add(5, 0)).toBe(5);
-    expect(add(0, 5)).toBe(5);
-  });
-
-  test('hanterar decimaltal', () => {
-    expect(add(0.1, 0.2)).toBeCloseTo(0.3);
-  });
-});
-```
-
-### 4. Arrange-Act-Assert mönster
-
-```javascript
-test('beräknar ålder från födelsedatum', () => {
-  // Arrange (Förbered)
-  const birthDate = new Date('1990-01-01');
-  const today = new Date('2024-01-01');
-  
-  // Act (Utför)
-  const age = calculateAge(birthDate, today);
-  
-  // Assert (Verifiera)
-  expect(age).toBe(34);
-});
-```
-
-**Övning**: Skriv om ett av dina tidigare test med tydlig Arrange-Act-Assert-struktur med kommentarer.
-
-## Code Coverage (Kodtäckning)
-
-Code coverage visar hur mycket av din kod som testas. Kör med coverage-flaggan:
+Kör en fil med `npx jest tests/projects.auth.test.js`. Kör hela sviten före leverans:
 
 ```bash
+npm test
 npm test -- --coverage
 ```
 
-Detta ger dig en rapport som visar:
-- **Statements**: Hur många kodrader som kördes
-- **Branches**: Hur många if/else-vägar som testades
-- **Functions**: Hur många funktioner som anropades
-- **Lines**: Hur många rader som täcktes
+Kodtäckning visar körd kod, inte testkvalitet. Prioritera felaktig token, fel roll, ogiltig input, databasfel och statuskoder.
 
-```javascript
-// Exempel på vad coverage kan visa
+## Vanliga misstag
 
-// math.js - 100% coverage
-export function add(a, b) {
-  return a + b;  // ✅ Täckt av test
-}
+- `app.listen()` ligger i `src/app.js` och håller Jest öppet.
+- Testet ansluter av misstag till utvecklings- eller produktionsdatabasen.
+- `await` glöms framför Supertest-anropet.
+- Ett test verifierar intern implementation i stället för HTTP-beteende.
+- Samma data delas mellan test så att ordningen påverkar resultatet.
+- En admin-token används i test utan kort giltighet eller separat testhemlighet.
 
-export function subtract(a, b) {
-  return a - b;  // ✅ Täckt av test
-}
+## Checkpoint
 
-// user.js - 80% coverage
-export function updateName(newName) {
-  if (!newName) {  // ✅ Täckt av test
-    throw new Error('Namn krävs');
-  }
-  this.name = newName;  // ✅ Täckt av test
-}
+- [ ] `src/app.js` exporterar appen och endast `src/server.js` lyssnar.
+- [ ] `npm test` fungerar med ES-moduler utan VM-flaggan.
+- [ ] Hälsokontrollen testas med Supertest.
+- [ ] Projektets validering, `401` och `403` har egna test.
+- [ ] Minst ett test följer tydligt Arrange–Act–Assert.
+- [ ] Databasen är mockad eller uttryckligen isolerad från riktig data.
 
-export function sendEmail() {
-  // ❌ Inte täckt - inget test för denna funktion
-  console.log('Skickar email...');
-}
-```
-
-## Vanliga problem och lösningar
-
-### Problem: "Cannot find module"
-
-**Orsak**: ES6-moduler kräver att filer har `.js`-ändelse i imports.
-
-**Lösning**:
-```javascript
-// ✅ Rätt
-import { add } from './math.js';
-
-// ❌ Fel
-import { add } from './math';
-```
-
-### Problem: "SyntaxError: Unexpected token 'export'"
-
-**Orsak**: Node.js försöker använda CommonJS istället för ES6-moduler.
-
-**Lösning**: Se till att `package.json` innehåller `"type": "module"`.
-
-### Problem: Test timeout
-
-**Orsak**: Asynkron kod tar för lång tid.
-
-**Lösning**: Öka timeout eller fixa koden:
-```javascript
-test('långsam async operation', async () => {
-  // Standard timeout är 5000ms, öka om nödvändigt
-}, 10000); // 10 sekunder
-```
-
-## Sammanfattning
-
-I denna lektion har du lärt dig:
-
-✅ **Varför testa**: Säkerhet vid ändringar, dokumentation, snabbare utveckling  
-✅ **Jest setup**: Installera och konfigurera Jest med ES6-moduler  
-✅ **Grundläggande test**: `describe`, `test`, `expect` och olika matchers  
-✅ **Teststruktur**: Organisera test med Arrange-Act-Assert mönstret  
-✅ **Setup/Teardown**: Använda `beforeEach`, `afterEach`, `beforeAll`, `afterAll`  
-✅ **API-testning**: Testa Express-routes med Supertest  
-✅ **Best practices**: Hur du skriver bra test  
-
-### Nästa steg
-
-- Öva på att skriva test för dina egna funktioner
-- Lär dig om mocks (låtsaskod) för att isolera test
-- Utforska mer avancerade testscenarion
-- Lär dig om test-driven development (TDD) - skriv testet först, sedan koden
-
-Kom ihåg: **Bra test ger dig trygghet och hjälper dig bygga robust kod!**
-
+Fortsätt med [övningarna](./ovningar.md) och lägg test till varje ny route.

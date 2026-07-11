@@ -4,6 +4,10 @@ Modern React-applikationer separerar frontend från backend och kommunicerar via
 
 **Mål:** Lära sig använda Fetch API, skapa custom hooks för API-anrop, implementera robust error handling och förstå bästa praxis för datahantering. (Notis: Axios är ett populärt bibliotek om du vill ha extra funktioner.)
 
+> **Koppling till Node.js-kapitlet:** Exemplen kan användas mot det
+> [`portfolio-api`](../kapitel_9/index.md) som du bygger där. Då ersätter du
+> exempel-URL:en med din egen endpoint, till exempel `/api/projects`.
+
 ## Fetch API: Webbstandardens Sätt
 
 **Fetch API** är den moderna standarden för att göra HTTP-requests i JavaScript. Det är inbyggt i alla moderna webbläsare och behöver inga externa bibliotek.
