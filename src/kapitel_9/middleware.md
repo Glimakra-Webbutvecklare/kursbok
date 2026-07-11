@@ -233,7 +233,7 @@ import { authenticate, requireAdmin } from '../middleware/auth.js';
 
 const router = Router();
 
-router.get('/', projects.getProjects);
+router.get('/', projects.listProjects);
 router.get('/:id', projects.getProject);
 router.post('/', authenticate, requireAdmin, projects.createProject);
 router.patch('/:id', authenticate, requireAdmin, projects.updateProject);

@@ -5,7 +5,7 @@ JavaScript utanför webbläsaren. Nu bygger du API:ets första riktiga server me
 Node-modulen `node:http` – utan externa beroenden.
 
 > **Mål:**  
-> Förstå HTTP:s request–response-flöde och skapa `GET /health` samt
+> Förstå HTTP:s request–response-flöde och skapa `GET /api/health` samt
 > `GET /api/projects` med korrekta statuskoder och JSON-headers.
 
 ## Förutsättningar
@@ -74,7 +74,7 @@ function sendJson(response, statusCode, data) {
 export function requestHandler(request, response) {
   const url = new URL(request.url, `http://${request.headers.host ?? 'localhost'}`);
 
-  if (request.method === 'GET' && url.pathname === '/health') {
+  if (request.method === 'GET' && url.pathname === '/api/health') {
     sendJson(response, 200, { status: 'ok' });
     return;
   }
@@ -85,7 +85,7 @@ export function requestHandler(request, response) {
   }
 
   const knownPath =
-    url.pathname === '/health' || url.pathname === '/api/projects';
+    url.pathname === '/api/health' || url.pathname === '/api/projects';
 
   if (knownPath) {
     response.setHeader('Allow', 'GET');
@@ -135,14 +135,14 @@ Processen avslutas inte, eftersom servern lyssnar efter fler requests.
 
 <!-- terminal -->
 ```bash
-curl -i http://localhost:3000/health
+curl -i http://localhost:3000/api/health
 # HTTP/1.1 200 OK
 # Content-Type: application/json; charset=utf-8
 #
 # {"status":"ok"}
 ```
 
-> **Kör nu i din riktiga terminal:** Anropa `/health` och kontrollera statuskod och JSON.
+> **Kör nu i din riktiga terminal:** Anropa `/api/health` och kontrollera statuskod och JSON.
 
 Testa projektresursen:
 
@@ -197,7 +197,7 @@ inte av webbläsarens CORS-regler.
 
 ## Checkpoint
 
-- [ ] `GET /health` ger `200` och `{ "status": "ok" }`.
+- [ ] `GET /api/health` ger `200` och `{ "status": "ok" }`.
 - [ ] `GET /api/projects` ger `200` och en JSON-array med två projekt.
 - [ ] En okänd route ger `404` som JSON.
 - [ ] Du kan peka ut request, response, statuskod, header och body.
