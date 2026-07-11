@@ -27,20 +27,7 @@ Varje låda i CSS består av fyra lager, utifrån och in:
 
 ## Visualisering av CSS Box Model
 
-```mermaid
-flowchart TD
-    Margin["Margin<br/>luft utanför elementet"] --> Border["Border<br/>elementets kantlinje"]
-    Border --> Padding["Padding<br/>luft innanför kantlinjen"]
-    Padding --> Content["Content<br/>innehållet: text eller bild"]
-    classDef marginStyle fill:#f9f9f9,stroke:#999,stroke-width:2px,stroke-dasharray:5 5
-    classDef borderStyle fill:#ffe6e6,stroke:#cc0000,stroke-width:3px
-    classDef paddingStyle fill:#e6ffe6,stroke:#009900,stroke-width:2px
-    classDef contentStyle fill:#e6e6ff,stroke:#0000cc,stroke-width:2px
-    class Margin marginStyle
-    class Border borderStyle
-    class Padding paddingStyle
-    class Content contentStyle
-```
+![CSS box model: margin omsluter border, som omsluter padding och content.](./box-model.svg)
 
 *Diagram: CSS box model visar hur varje element består av fyra lager som omsluter varandra.*
 
@@ -380,89 +367,136 @@ Med `position: fixed;` placeras elementet i förhållande till webbläsarfönstr
 
 ---
 
-## Prova positionering och se resultatet
+### Resultat: static
 
-Klicka på **Kör** och läs rutornas placering. Scrolla sedan i den grå ytan:
+`static` är standard. Rutorna följer dokumentets vanliga flöde och hamnar efter varandra.
 
-- **Static** ligger i det vanliga flödet.
-- **Relative** flyttas från sin vanliga plats men behåller sin ursprungliga yta.
-- **Absolute** placeras i förhållande till den streckade föräldern.
-- **Fixed** ligger kvar i samma hörn av förhandsvisningen när du scrollar.
-- **Sticky** följer med tills dess egen scroll-yta tar slut.
+<!-- playground:start -->
+```html
+<div class="box">Första rutan</div>
+<div class="box">Andra rutan</div>
+```
+```css
+.box {
+  position: static;
+  padding: 12px;
+  margin-bottom: 8px;
+  background: #e3f2fd;
+  border: 2px solid #1976d2;
+}
+```
+<!-- playground:end -->
+
+### Resultat: relative
+
+Ändra `left` och se att rutan flyttas, men att dess ursprungliga plats fortfarande finns kvar i flödet.
+
+<!-- playground:start -->
+```html
+<div class="box">Vanlig ruta</div>
+<div class="box moved">Relative: flyttad åt höger</div>
+<div class="box">Nästa ruta</div>
+```
+```css
+.box {
+  padding: 12px;
+  margin-bottom: 8px;
+  background: #e8f5e9;
+  border: 2px solid #388e3c;
+}
+
+.moved {
+  position: relative;
+  left: 32px;
+}
+```
+<!-- playground:end -->
+
+### Resultat: absolute
+
+Den röda rutan placeras mot den streckade föräldern. Den tar inte längre någon egen plats i det vanliga flödet.
+
+<!-- playground:start -->
+```html
+<div class="parent">
+  Förälder med position: relative
+  <div class="child">Absolute</div>
+</div>
+```
+```css
+.parent {
+  position: relative;
+  height: 140px;
+  padding: 12px;
+  border: 2px dashed #555;
+  background: #f5f5f5;
+}
+
+.child {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  padding: 10px;
+  background: #ffcdd2;
+  border: 2px solid #c62828;
+}
+```
+<!-- playground:end -->
+
+### Resultat: fixed
+
+Klicka på **Kör**. Den blå rutan är fäst i förhandsvisningens nedre högra hörn, även när du scrollar boksidan.
+
+<!-- playground:start -->
+```html
+<p>Scrolla boksidan efter att du har kört exemplet.</p>
+<div class="fixed-box">Fixed: fast i hörnet</div>
+```
+```css
+.fixed-box {
+  position: fixed;
+  right: 12px;
+  bottom: 12px;
+  padding: 10px;
+  background: #d0e0ff;
+  border: 2px solid #1565c0;
+}
+```
+<!-- playground:end -->
+
+### Resultat: sticky
+
+Scrolla i den grå ytan. Den gula rubriken följer med tills du når slutet av just den ytan.
 
 <!-- playground:start -->
 ```html
 <div class="scroll-area">
-  <div class="static-box">Static: normalt flöde</div>
-  <div class="relative-box">Relative: flyttad 24px åt höger</div>
-
-  <div class="absolute-parent">
-    Förälder med position: relative
-    <div class="absolute-box">Absolute</div>
-  </div>
-
-  <div class="sticky-box">Sticky: stannar vid överkanten</div>
-  <p>Scrolla här för att se sticky-beteendet.</p>
+  <h3>Sticky: jag följer med</h3>
+  <p>Scrolla nedåt i den här rutan.</p>
   <p class="space">Mer innehåll …</p>
   <p class="space">Ännu mer innehåll …</p>
 </div>
-
-<div class="fixed-box">Fixed: fast i hörnet</div>
 ```
 ```css
 .scroll-area {
-  height: 230px;
+  height: 220px;
   overflow: auto;
   padding: 12px;
   background: #f1f3f5;
   border: 2px solid #adb5bd;
 }
 
-.static-box, .relative-box, .sticky-box, .absolute-box, .fixed-box {
-  padding: 8px;
-  margin-bottom: 12px;
-  border: 2px solid #333;
-  background: white;
-}
-
-.relative-box {
-  position: relative;
-  left: 24px;
-  background: #d0ffd0;
-}
-
-.absolute-parent {
-  position: relative;
-  height: 90px;
-  padding: 8px;
-  margin-bottom: 12px;
-  border: 2px dashed #555;
-}
-
-.absolute-box {
-  position: absolute;
-  top: 32px;
-  right: 12px;
-  margin: 0;
-  background: #ffd0d0;
-}
-
-.sticky-box {
+h3 {
   position: sticky;
   top: 0;
-  background: #fff3bf;
-}
-
-.fixed-box {
-  position: fixed;
-  right: 12px;
-  bottom: 12px;
   margin: 0;
-  background: #d0e0ff;
+  padding: 10px;
+  background: #fff3bf;
+  border: 2px solid #f9a825;
 }
 
 .space {
-  height: 110px;
+  height: 120px;
 }
 ```
 <!-- playground:end -->
