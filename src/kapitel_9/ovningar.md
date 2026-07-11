@@ -1,1638 +1,648 @@
-# Praktiska Övningar - Backend-utveckling
+# Övningar: bygg ett portfolio-API steg för steg
 
-Nu är det dags att tillämpa allt du lärt dig! Dessa fyra projekt bygger progressivt på varandra - från grundläggande Express-applikationer till fullständiga backend-system med autentisering och databasintegration.
+I de här fyra övningarna bygger du vidare på samma projekt: `portfolio-api`.
+När du är klar kan din portfolio visa projekt från MongoDB, medan en administratör
+kan logga in och hantera innehållet. Varje övning utgår från checkpointen före.
 
-## Övning 1: Todo API med Express och MongoDB
+All JavaScript-kod använder ES-moduler (`import` och `export`).
 
-**Mål**: Bygga en fullständig RESTful API för todo-hantering med MongoDB-integration.
+## Övning 1: Express, projektstruktur och health endpoint
 
-**Vad du kommer lära dig**:
-- Express routing och middleware
-- MongoDB-integration med Mongoose
-- CRUD-operationer med testning
-- Felhantering och validering
-- API-design och automatiserad testning med Jest
+### Mål
 
-### Steg 1: Projekt-setup
+Skapa grunden till `portfolio-api`, starta en Express-server och kontrollera att
+den svarar via en health endpoint.
 
-Börja med att skapa projektet och installera alla dependencies (beroenden) du behöver.
+### Din uppgift
+
+1. Skapa projektet och initiera npm.
+2. Installera `express`, `cors`, `helmet`, `morgan` och `dotenv`.
+3. Installera `nodemon` som utvecklingsberoende.
+4. Sätt `"type": "module"` i `package.json`.
+5. Skapa `src/app.js` som konfigurerar Express utan att starta servern.
+6. Skapa `src/server.js` som lyssnar på en port.
+7. Lägg till `GET /api/health`.
+8. Lägg till en JSON-baserad 404-hanterare för okända `/api`-adresser.
+9. Lägg `PORT=3000` i `.env` och skapa även `.env.example`.
 
 ```bash
-mkdir todo-api
-cd todo-api
+mkdir portfolio-api
+cd portfolio-api
 npm init -y
+npm install express cors helmet morgan dotenv
+npm install --save-dev nodemon
+mkdir src
 ```
 
-**Din uppgift**: Installera dependencies. Tänk på:
-- Express för servern
-- Mongoose för MongoDB
-- Middleware: cors, helmet, morgan
-- dotenv för miljövariabler
-- Jest och supertest för testning (som utvecklingsberoenden)
-- nodemon för automatisk omstart (som utvecklingsberoende)
-
 <details>
-<summary>Visa lösning</summary>
+<summary>Lösningsförslag</summary>
 
-```bash
-npm install express mongoose cors helmet morgan dotenv
-npm install --save-dev jest supertest nodemon
-```
-</details>
-
-Nu behöver du konfigurera `package.json` för ES6-moduler och lägga till scripts.
-
-**Din uppgift**: Uppdatera `package.json`:
-1. Lägg till `"type": "module"` för att aktivera ES6-moduler
-2. Lägg till scripts för `start`, `dev` och `test`
-3. För test-scriptet, använd flaggan `--experimental-vm-modules` (se `testning.md`)
-
-<details>
-<summary>Visa lösning</summary>
+Relevanta delar av `package.json`:
 
 ```json
 {
-  "name": "todo-api",
-  "version": "1.0.0",
+  "name": "portfolio-api",
   "type": "module",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js",
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch"
-  },
-  "dependencies": {
-    "express": "^4.18.2",
-    "mongoose": "^7.0.0",
-    "cors": "^2.8.5",
-    "helmet": "^6.0.0",
-    "morgan": "^1.10.0",
-    "dotenv": "^16.0.0"
-  },
-  "devDependencies": {
-    "jest": "^29.0.0",
-    "supertest": "^6.0.0",
-    "nodemon": "^2.0.0"
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js"
   }
 }
 ```
-</details>
 
-Skapa projektstrukturen:
-
-```
-todo-api/
-├── server.js
-├── models/
-│   └── Todo.js
-├── controllers/
-│   └── todoController.js
-├── routes/
-│   └── todos.js
-├── middleware/
-│   └── errorHandler.js
-└── .env
-```
-
-### Steg 2: Skapa Todo-modellen
-
-Skapa filen `models/Todo.js`. Börja med grundläggande schema-definition:
+`src/app.js`:
 
 ```javascript
-import mongoose from 'mongoose';
-
-const todoSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: [true, 'Titel krävs'],
-    trim: true
-    // TODO: Lägg till maxlength-validering (100 tecken)
-  },
-  // TODO: Lägg till fält för description, completed, priority
-});
-```
-
-**Din uppgift**: 
-1. Komplettera schemat med:
-   - `description`: String, trim, maxlength 500 tecken
-   - `completed`: Boolean med default `false`
-   - `priority`: String, enum ['low', 'medium', 'high'], default 'medium'
-   - `dueDate`: Date (valfritt)
-   - `category`: String, trim (valfritt)
-   - `createdAt`: Date med default `Date.now`
-   - `updatedAt`: Date med default `Date.now`
-2. Lägg till maxlength-validering för title (100 tecken)
-
-<details>
-<summary>Visa lösning</summary>
-
-```javascript
-import mongoose from 'mongoose';
-
-const todoSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: [true, 'Titel krävs'],
-    trim: true,
-    maxlength: [100, 'Titel kan inte överstiga 100 tecken']
-  },
-  description: {
-    type: String,
-    trim: true,
-    maxlength: [500, 'Beskrivning kan inte överstiga 500 tecken']
-  },
-  completed: {
-    type: Boolean,
-    default: false
-  },
-  priority: {
-    type: String,
-    enum: ['low', 'medium', 'high'],
-    default: 'medium'
-  },
-  dueDate: {
-    type: Date
-  },
-  category: {
-    type: String,
-    trim: true
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now
-  }
-});
-
-export default mongoose.model('Todo', todoSchema);
-```
-</details>
-
-Nu lägger vi till pre-hook (krok) för att automatiskt uppdatera `updatedAt`:
-
-**Din uppgift**: Lägg till en `pre('save')` hook som uppdaterar `updatedAt` när dokumentet modifieras (men inte när det skapas första gången).
-
-Tips: Använd `this.isModified()` och `this.isNew` för att kontrollera.
-
-<details>
-<summary>Visa lösning</summary>
-
-```javascript
-// Uppdatera updatedAt före sparning
-todoSchema.pre('save', function(next) {
-  if (this.isModified() && !this.isNew) {
-    this.updatedAt = Date.now();
-  }
-  next();
-});
-```
-</details>
-
-Lägg till en virtual (beräknat fält) för att räkna ut antal dagar kvar till `dueDate`:
-
-**Din uppgift**: Skapa en virtual `daysUntilDue` som:
-- Returnerar `null` om `dueDate` saknas
-- Annars räknar ut antal dagar (kan vara negativt om datumet har passerat)
-- Inkludera virtuals när JSON konverteras med `todoSchema.set('toJSON', { virtuals: true })`
-
-<details>
-<summary>Visa lösning</summary>
-
-```javascript
-// Virtual för att räkna ut hur många dagar kvar
-todoSchema.virtual('daysUntilDue').get(function() {
-  if (!this.dueDate) return null;
-  const today = new Date();
-  const dueDate = new Date(this.dueDate);
-  const diffTime = dueDate - today;
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  return diffDays;
-});
-
-// Inkludera virtuals när JSON konverteras
-todoSchema.set('toJSON', { virtuals: true });
-```
-</details>
-
-### Steg 3: Testa Todo-modellen
-
-Innan vi bygger API:et ska vi testa modellen direkt. Skapa `models/Todo.test.js`:
-
-```javascript
-import mongoose from 'mongoose';
-import Todo from './Todo.js';
-
-// Anslut till testdatabas
-beforeAll(async () => {
-  await mongoose.connect('mongodb://localhost:27017/todo-api-test');
-});
-
-afterAll(async () => {
-  await mongoose.connection.close();
-});
-
-describe('Todo Model', () => {
-  beforeEach(async () => {
-    await Todo.deleteMany({});
-  });
-
-  test('skapar todo med required fields', async () => {
-    // TODO: Skapa en todo med endast title
-    // TODO: Verifiera att den sparades korrekt
-    // TODO: Verifiera att completed är false (default)
-    // TODO: Verifiera att priority är 'medium' (default)
-  });
-});
-```
-
-**Din uppgift**: 
-1. Skriv testet som skapar en todo med endast `title` och verifierar att den sparades korrekt med defaults
-2. Lägg till test som verifierar att `title` är required (förväntat fel när du försöker spara utan title)
-3. Lägg till test som verifierar maxlength för title (försök spara med för lång title)
-4. Lägg till test som verifierar att `daysUntilDue` virtual fungerar
-
-<details>
-<summary>Visa lösning</summary>
-
-```javascript
-import mongoose from 'mongoose';
-import Todo from './Todo.js';
-
-beforeAll(async () => {
-  await mongoose.connect('mongodb://localhost:27017/todo-api-test');
-});
-
-afterAll(async () => {
-  await mongoose.connection.close();
-});
-
-describe('Todo Model', () => {
-  beforeEach(async () => {
-    await Todo.deleteMany({});
-  });
-
-  test('skapar todo med required fields', async () => {
-    const todo = new Todo({ title: 'Test todo' });
-    const savedTodo = await todo.save();
-    
-    expect(savedTodo.title).toBe('Test todo');
-    expect(savedTodo.completed).toBe(false);
-    expect(savedTodo.priority).toBe('medium');
-    expect(savedTodo).toHaveProperty('createdAt');
-    expect(savedTodo).toHaveProperty('_id');
-  });
-
-  test('kräver title', async () => {
-    const todo = new Todo({});
-    await expect(todo.save()).rejects.toThrow();
-  });
-
-  test('validerar maxlength för title', async () => {
-    const longTitle = 'a'.repeat(101);
-    const todo = new Todo({ title: longTitle });
-    await expect(todo.save()).rejects.toThrow();
-  });
-
-  test('beräknar daysUntilDue korrekt', async () => {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    
-    const todo = new Todo({ 
-      title: 'Test',
-      dueDate: tomorrow 
-    });
-    const savedTodo = await todo.save();
-    
-    expect(savedTodo.daysUntilDue).toBe(1);
-  });
-});
-```
-</details>
-
-### Steg 4: Skapa Todo Controller - Grundläggande CRUD
-
-Börja med `controllers/todoController.js`. Vi bygger metod för metod och testar varje.
-
-```javascript
-import Todo from '../models/Todo.js';
-
-class TodoController {
-  // TODO: Implementera getAllTodos
-  static async getAllTodos(req, res, next) {
-    try {
-      // TODO: Hämta alla todos med Todo.find()
-      // TODO: Skicka tillbaka som JSON
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  // TODO: Implementera getTodoById
-  static async getTodoById(req, res, next) {
-    try {
-      // TODO: Hitta todo med Todo.findById(req.params.id)
-      // TODO: Returnera 404 om inte hittad
-      // TODO: Returnera todo som JSON
-    } catch (error) {
-      next(error);
-    }
-  }
-}
-
-export default TodoController;
-```
-
-**Din uppgift**: 
-1. Implementera `getAllTodos` som hämtar alla todos
-2. Implementera `getTodoById` som:
-   - Hämtar todo med `req.params.id`
-   - Returnerar 404 med felmeddelande om den inte finns
-   - Returnerar todo som JSON om den finns
-
-<details>
-<summary>Visa lösning</summary>
-
-```javascript
-import Todo from '../models/Todo.js';
-
-class TodoController {
-  static async getAllTodos(req, res, next) {
-    try {
-      const todos = await Todo.find();
-      res.json(todos);
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  static async getTodoById(req, res, next) {
-    try {
-      const todo = await Todo.findById(req.params.id);
-      
-      if (!todo) {
-        return res.status(404).json({ error: 'Todo inte hittad' });
-      }
-
-      res.json(todo);
-    } catch (error) {
-      next(error);
-    }
-  }
-}
-
-export default TodoController;
-```
-</details>
-
-Nu lägger vi till `createTodo`:
-
-**Din uppgift**: Implementera `createTodo` som:
-- Skapar ny todo från `req.body`
-- Sparar den
-- Returnerar 201 status med Location-header och todo som JSON
-
-<details>
-<summary>Visa lösning</summary>
-
-```javascript
-static async createTodo(req, res, next) {
-  try {
-    const todo = new Todo(req.body);
-    const savedTodo = await todo.save();
-
-    res.status(201)
-       .location(`/api/todos/${savedTodo._id}`)
-       .json(savedTodo);
-  } catch (error) {
-    next(error);
-  }
-}
-```
-</details>
-
-Lägg till `updateTodo` och `deleteTodo`:
-
-**Din uppgift**: 
-1. Implementera `updateTodo` med `findByIdAndUpdate` (använd `{ new: true, runValidators: true }`)
-2. Implementera `deleteTodo` med `findByIdAndDelete`
-3. Båda ska returnera 404 om todo inte finns
-4. `deleteTodo` ska returnera 204 status (inget innehåll)
-
-<details>
-<summary>Visa lösning</summary>
-
-```javascript
-static async updateTodo(req, res, next) {
-  try {
-    const todo = await Todo.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true }
-    );
-
-    if (!todo) {
-      return res.status(404).json({ error: 'Todo inte hittad' });
-    }
-
-    res.json(todo);
-  } catch (error) {
-    next(error);
-  }
-}
-
-static async deleteTodo(req, res, next) {
-  try {
-    const todo = await Todo.findByIdAndDelete(req.params.id);
-
-    if (!todo) {
-      return res.status(404).json({ error: 'Todo inte hittad' });
-    }
-
-    res.status(204).send();
-  } catch (error) {
-    next(error);
-  }
-}
-```
-</details>
-
-### Steg 5: Testa Controller med Supertest
-
-Skapa `controllers/todoController.test.js`. Börja med att sätta upp testmiljön:
-
-```javascript
-import request from 'supertest';
-import express from 'express';
-import mongoose from 'mongoose';
-import Todo from '../models/Todo.js';
-import TodoController from './todoController.js';
-
-const app = express();
-app.use(express.json());
-
-// Routes - vi lägger till dessa senare, för nu testar vi direkt
-// app.use('/api/todos', todoRoutes);
-
-beforeAll(async () => {
-  await mongoose.connect('mongodb://localhost:27017/todo-api-test');
-});
-
-afterAll(async () => {
-  await mongoose.connection.close();
-});
-
-describe('TodoController', () => {
-  beforeEach(async () => {
-    await Todo.deleteMany({});
-  });
-
-  // TODO: Skriv tester här
-});
-```
-
-**Din uppgift**: Skriv tester för:
-1. `createTodo` - verifiera att todo skapas korrekt
-2. `getAllTodos` - verifiera att alla todos returneras
-3. `getTodoById` - verifiera att specifik todo returneras och 404 om inte hittad
-4. `updateTodo` - verifiera att todo uppdateras
-5. `deleteTodo` - verifiera att todo tas bort
-
-Tips: Du behöver skapa routes först för att testa. Vi gör det i nästa steg, men du kan testa controller-metoderna direkt också.
-
-<details>
-<summary>Visa lösning</summary>
-
-För att testa controllers behöver vi routes. Vi gör en enkel route-fil först:
-
-```javascript
-// routes/todos.js (temporär för tester)
-import express from 'express';
-import TodoController from '../controllers/todoController.js';
-
-const router = express.Router();
-
-router.get('/', TodoController.getAllTodos);
-router.get('/:id', TodoController.getTodoById);
-router.post('/', TodoController.createTodo);
-router.put('/:id', TodoController.updateTodo);
-router.delete('/:id', TodoController.deleteTodo);
-
-export default router;
-```
-
-```javascript
-// controllers/todoController.test.js
-import request from 'supertest';
-import express from 'express';
-import mongoose from 'mongoose';
-import Todo from '../models/Todo.js';
-import todosRouter from '../routes/todos.js';
-
-const app = express();
-app.use(express.json());
-app.use('/api/todos', todosRouter);
-
-beforeAll(async () => {
-  await mongoose.connect('mongodb://localhost:27017/todo-api-test');
-});
-
-afterAll(async () => {
-  await mongoose.connection.close();
-});
-
-describe('TodoController', () => {
-  beforeEach(async () => {
-    await Todo.deleteMany({});
-  });
-
-  describe('POST /api/todos', () => {
-    test('skapar ny todo', async () => {
-      const newTodo = {
-        title: 'Test todo',
-        description: 'Test description',
-        priority: 'high'
-      };
-
-      const response = await request(app)
-        .post('/api/todos')
-        .send(newTodo)
-        .expect(201);
-
-      expect(response.body.title).toBe('Test todo');
-      expect(response.body.priority).toBe('high');
-      expect(response.body).toHaveProperty('_id');
-    });
-  });
-
-  describe('GET /api/todos', () => {
-    test('returnerar alla todos', async () => {
-      await Todo.create([
-        { title: 'Todo 1' },
-        { title: 'Todo 2' }
-      ]);
-
-      const response = await request(app)
-        .get('/api/todos')
-        .expect(200);
-
-      expect(response.body).toHaveLength(2);
-    });
-  });
-
-  describe('GET /api/todos/:id', () => {
-    test('returnerar specifik todo', async () => {
-      const created = await Todo.create({ title: 'Test todo' });
-
-      const response = await request(app)
-        .get(`/api/todos/${created._id}`)
-        .expect(200);
-
-      expect(response.body.title).toBe('Test todo');
-    });
-
-    test('returnerar 404 om todo inte finns', async () => {
-      const fakeId = new mongoose.Types.ObjectId();
-      
-      await request(app)
-        .get(`/api/todos/${fakeId}`)
-        .expect(404);
-    });
-  });
-});
-```
-</details>
-
-### Steg 6: Avancerade Controller-funktioner
-
-Nu lägger vi till filtering, sortering och pagination i `getAllTodos`:
-
-**Din uppgift**: Utöka `getAllTodos` för att hantera query-parametrar:
-- `completed` - filtrera på completed status
-- `priority` - filtrera på priority
-- `sortBy` - sortera på fält (default 'createdAt')
-- `order` - 'asc' eller 'desc' (default 'desc')
-- `page` - sidnummer för pagination (default 1)
-- `limit` - antal per sida (default 10)
-
-<details>
-<summary>Visa lösning</summary>
-
-```javascript
-static async getAllTodos(req, res, next) {
-  try {
-    const { 
-      completed, 
-      priority, 
-      sortBy = 'createdAt',
-      order = 'desc',
-      page = 1,
-      limit = 10
-    } = req.query;
-
-    // Bygg filter
-    const filter = {};
-    if (completed !== undefined) filter.completed = completed === 'true';
-    if (priority) filter.priority = priority;
-
-    // Bygg sortering
-    const sort = {};
-    sort[sortBy] = order === 'desc' ? -1 : 1;
-
-    // Pagination
-    const skip = (page - 1) * limit;
-
-    const [todos, totalCount] = await Promise.all([
-      Todo.find(filter)
-        .sort(sort)
-        .skip(skip)
-        .limit(parseInt(limit)),
-      Todo.countDocuments(filter)
-    ]);
-
-    res.json({
-      todos,
-      pagination: {
-        page: parseInt(page),
-        limit: parseInt(limit),
-        total: totalCount,
-        pages: Math.ceil(totalCount / limit),
-        hasNext: page * limit < totalCount,
-        hasPrev: page > 1
-      }
-    });
-
-  } catch (error) {
-    next(error);
-  }
-}
-```
-</details>
-
-Lägg till search-funktionalitet:
-
-**Din uppgift**: Utöka `getAllTodos` med `search` query-parameter som söker i `title` och `description` med case-insensitive matchning.
-
-<details>
-<summary>Visa lösning</summary>
-
-```javascript
-// I filter-delen, lägg till:
-if (search) {
-  filter.$or = [
-    { title: new RegExp(search, 'i') },
-    { description: new RegExp(search, 'i') }
-  ];
-}
-```
-</details>
-
-Lägg till `toggleTodo`-metod:
-
-**Din uppgift**: Implementera `toggleTodo` som växlar `completed` status för en todo.
-
-<details>
-<summary>Visa lösning</summary>
-
-```javascript
-static async toggleTodo(req, res, next) {
-  try {
-    const todo = await Todo.findById(req.params.id);
-    
-    if (!todo) {
-      return res.status(404).json({ error: 'Todo inte hittad' });
-    }
-
-    todo.completed = !todo.completed;
-    await todo.save();
-
-    res.json(todo);
-  } catch (error) {
-    next(error);
-  }
-}
-```
-</details>
-
-### Steg 7: Routes och Server
-
-Skapa `routes/todos.js`:
-
-**Din uppgift**: Skapa router med routes för alla controller-metoder:
-- GET `/` - getAllTodos
-- GET `/:id` - getTodoById
-- POST `/` - createTodo
-- PUT `/:id` - updateTodo
-- PATCH `/:id/toggle` - toggleTodo
-- DELETE `/:id` - deleteTodo
-
-<details>
-<summary>Visa lösning</summary>
-
-```javascript
-import express from 'express';
-import TodoController from '../controllers/todoController.js';
-
-const router = express.Router();
-
-router.get('/', TodoController.getAllTodos);
-router.get('/stats', TodoController.getTodoStats);
-router.get('/:id', TodoController.getTodoById);
-router.post('/', TodoController.createTodo);
-router.put('/:id', TodoController.updateTodo);
-router.patch('/:id/toggle', TodoController.toggleTodo);
-router.delete('/:id', TodoController.deleteTodo);
-
-export default router;
-```
-</details>
-
-Skapa `middleware/errorHandler.js`:
-
-**Din uppgift**: Skapa en error handler middleware som:
-- Hanterar Mongoose validation errors
-- Hanterar Mongoose cast errors (ogiltigt ID)
-- Returnerar lämpliga status codes och felmeddelanden
-
-<details>
-<summary>Visa lösning</summary>
-
-```javascript
-const errorHandler = (err, req, res, next) => {
-  if (err.name === 'ValidationError') {
-    const messages = Object.values(err.errors).map(e => e.message);
-    return res.status(400).json({ error: messages.join(', ') });
-  }
-  
-  if (err.name === 'CastError') {
-    return res.status(400).json({ error: 'Ogiltigt ID-format' });
-  }
-
-  res.status(500).json({ 
-    error: err.message || 'Serverfel' 
-  });
-};
-
-export default errorHandler;
-```
-</details>
-
-Skapa `server.js`:
-
-**Din uppgift**: Skapa Express-server som:
-- Importerar routes och middleware
-- Ansluter till MongoDB (använd `MONGODB_URI` från `.env` eller default)
-- Lägger till middleware: helmet, cors, morgan, express.json
-- Lägger till routes under `/api/todos`
-- Har health check endpoint `/api/health`
-- Hanterar 404 för `/api/*`
-- Använder error handler
-
-<details>
-<summary>Visa lösning</summary>
-
-```javascript
-import express from 'express';
-import mongoose from 'mongoose';
 import cors from 'cors';
+import express from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import dotenv from 'dotenv';
-import todosRouter from './routes/todos.js';
-import errorHandler from './middleware/errorHandler.js';
-
-dotenv.config();
 
 const app = express();
 
-// Middleware
 app.use(helmet());
 app.use(cors());
-app.use(morgan('combined'));
-app.use(express.json({ limit: '10mb' }));
+app.use(morgan('dev'));
+app.use(express.json());
 
-// Anslut till MongoDB
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/todo-api');
-
-// Routes
-app.use('/api/todos', todosRouter);
-
-// Health check
 app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime()
+  res.json({
+    status: 'ok',
+    service: 'portfolio-api',
+    timestamp: new Date().toISOString()
   });
 });
 
-// 404 handler
-app.use('/api/*', (req, res) => {
-  res.status(404).json({ error: 'Endpoint finns inte' });
+app.use('/api', (req, res) => {
+  res.status(404).json({ error: 'Endpointen finns inte' });
 });
 
-// Error handler
-app.use(errorHandler);
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Todo API körs på port ${PORT}`);
-});
+export default app;
 ```
-</details>
 
-### Steg 8: Utmaning - Statistik-endpoint
-
-**Din uppgift**: Implementera `getTodoStats` i controller som använder MongoDB aggregation för att räkna:
-- Totalt antal todos
-- Antal completed
-- Antal pending
-- Antal high priority
-- Fördelning per priority (low/medium/high)
-
-Tips: Använd `Todo.aggregate()` med `$group` för att räkna.
-
-<details>
-<summary>Visa lösning</summary>
+`src/server.js`:
 
 ```javascript
-static async getTodoStats(req, res, next) {
-  try {
-    const stats = await Todo.aggregate([
-      {
-        $group: {
-          _id: null,
-          total: { $sum: 1 },
-          completed: { $sum: { $cond: ['$completed', 1, 0] } },
-          pending: { $sum: { $cond: ['$completed', 0, 1] } },
-          highPriority: { $sum: { $cond: [{ $eq: ['$priority', 'high'] }, 1, 0] } }
-        }
-      }
-    ]);
+import 'dotenv/config';
+import app from './app.js';
 
-    const priorityStats = await Todo.aggregate([
-      { $group: { _id: '$priority', count: { $sum: 1 } } }
-    ]);
+const port = process.env.PORT || 3000;
 
-    res.json({
-      overview: stats[0] || { total: 0, completed: 0, pending: 0, highPriority: 0 },
-      byPriority: priorityStats
-    });
-
-  } catch (error) {
-    next(error);
-  }
-}
+app.listen(port, () => {
+  console.log(`portfolio-api körs på http://localhost:${port}`);
+});
 ```
+
+`.env.example`:
+
+```text
+PORT=3000
+```
+
 </details>
 
-### Steg 9: Testa hela API:et
-
-Skapa ett testskript eller använd Postman/Insomnia för att testa alla endpoints manuellt.
-
-**Alternativt - Testa med cURL**:
+Starta servern och prova den från en annan terminal:
 
 ```bash
-# Starta servern först
 npm run dev
-
-# I ett annat terminalfönster:
-BASE_URL="http://localhost:3000/api"
-
-# Skapa todos
-curl -X POST "$BASE_URL/todos" \
-  -H "Content-Type: application/json" \
-  -d '{"title":"Lär dig Node.js","priority":"high","category":"development"}'
-
-curl -X POST "$BASE_URL/todos" \
-  -H "Content-Type: application/json" \
-  -d '{"title":"Handla mat","priority":"medium","category":"personal"}'
-
-# Hämta alla todos
-curl "$BASE_URL/todos"
-
-# Hämta statistik
-curl "$BASE_URL/todos/stats"
-
-# Filtrera todos
-curl "$BASE_URL/todos?priority=high"
+curl -i http://localhost:3000/api/health
+curl -i http://localhost:3000/api/saknas
 ```
 
-Grattis! Du har nu byggt en komplett REST API med testning. I nästa övning lägger vi till autentisering.
+### Checkpoint
+
+- `GET /api/health` ger `200` och JSON med `status: "ok"`.
+- En okänd `/api`-adress ger `404`.
+- `app.js` anropar inte `listen`; det gör bara `server.js`.
+- Projektet innehåller inga `require` eller `module.exports`.
+
+**Förslag på Git-commit:** `feat: initialize portfolio API with health endpoint`
 
 ---
 
-## Övning 2: Blog API med JWT-autentisering
+## Övning 2: Project CRUD med MongoDB
 
-**Mål**: Utöka kunskaperna med användarautentisering, roller och skyddade routes.
+### Mål
 
-**Vad du kommer lära dig**:
-- JWT-implementation
-- Användarhantering och roller
-- Protected routes
-- Middleware för autentisering
-- Lösenordshashing med bcrypt
+Anslut API:et till MongoDB och bygg CRUD för de projekt som ska visas i
+portfolion.
 
-### Projektstruktur
+### Din uppgift
 
+1. Installera `mongoose`.
+2. Lägg `MONGODB_URI` i `.env` och ett ofarligt exempel i `.env.example`.
+3. Skapa en databasfunktion som ansluter med `mongoose.connect`.
+4. Skapa modellen `Project` med:
+   - `title`: obligatorisk sträng, trim, max 100 tecken
+   - `description`: obligatorisk sträng, max 1000 tecken
+   - `technologies`: array av strängar
+   - `imageUrl`, `repositoryUrl` och `liveUrl`: valfria strängar
+   - `featured`: boolean med standardvärdet `false`
+   - automatiska timestamps
+5. Skapa routes för listning, hämtning, skapande, uppdatering och borttagning.
+6. Returnera `404` när ett projekt inte finns.
+7. Returnera `400` vid valideringsfel eller ett felaktigt MongoDB-id.
+8. Starta servern först när databasanslutningen lyckats.
+
+Föreslaget kontrakt:
+
+| Metod | Endpoint | Resultat |
+|---|---|---|
+| `GET` | `/api/projects` | Alla projekt |
+| `GET` | `/api/projects/:id` | Ett projekt |
+| `POST` | `/api/projects` | Skapa projekt |
+| `PATCH` | `/api/projects/:id` | Uppdatera projekt |
+| `DELETE` | `/api/projects/:id` | Ta bort projekt |
+
+```bash
+npm install mongoose
+mkdir -p src/config src/models src/routes src/middleware
 ```
-blog-api/
-├── server.js
-├── config/
-│   ├── database.js
-│   └── jwt.js
-├── models/
-│   ├── User.js
-│   └── Post.js
-├── controllers/
-│   ├── authController.js
-│   └── postController.js
-├── middleware/
-│   ├── auth.js
-│   ├── validation.js
-│   └── errorHandler.js
-├── routes/
-│   ├── auth.js
-│   └── posts.js
-└── .env
-```
 
-### Modeller
+<details>
+<summary>Lösningsförslag</summary>
 
-**models/User.js**:
+`src/models/Project.js`:
+
 ```javascript
-const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+import mongoose from 'mongoose';
 
-const userSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: [true, 'Användarnamn krävs'],
-    unique: true,
-    trim: true,
-    minlength: [3, 'Användarnamn måste vara minst 3 tecken'],
-    maxlength: [30, 'Användarnamn kan inte överstiga 30 tecken']
-  },
-  email: {
-    type: String,
-    required: [true, 'E-post krävs'],
-    unique: true,
-    lowercase: true,
-    validate: {
-      validator: function(v) {
-        return /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v);
-      },
-      message: 'Ogiltig e-postadress'
+const projectSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: [true, 'Titel krävs'],
+      trim: true,
+      maxlength: [100, 'Titeln får vara högst 100 tecken']
+    },
+    description: {
+      type: String,
+      required: [true, 'Beskrivning krävs'],
+      trim: true,
+      maxlength: [1000, 'Beskrivningen får vara högst 1000 tecken']
+    },
+    technologies: {
+      type: [String],
+      default: []
+    },
+    imageUrl: String,
+    repositoryUrl: String,
+    liveUrl: String,
+    featured: {
+      type: Boolean,
+      default: false
     }
   },
-  password: {
-    type: String,
-    required: [true, 'Lösenord krävs'],
-    minlength: [6, 'Lösenord måste vara minst 6 tecken'],
-    select: false // Inkludera inte i queries som standard
-  },
-  role: {
-    type: String,
-    enum: ['user', 'admin'],
-    default: 'user'
-  },
-  profile: {
-    firstName: String,
-    lastName: String,
-    bio: String,
-    avatar: String
-  },
-  isActive: {
-    type: Boolean,
-    default: true
-  },
-  lastLogin: {
-    type: Date
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  }
-});
+  { timestamps: true }
+);
 
-// Hash lösenord före sparning
-userSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) return next();
-  
+export default mongoose.model('Project', projectSchema);
+```
+
+`src/routes/projects.js`:
+
+```javascript
+import { Router } from 'express';
+import Project from '../models/Project.js';
+
+const router = Router();
+
+router.get('/', async (req, res, next) => {
   try {
-    const salt = await bcrypt.genSalt(12);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
+    const projects = await Project.find().sort({ createdAt: -1 });
+    res.json(projects);
   } catch (error) {
     next(error);
   }
 });
 
-// Metod för att verifiera lösenord
-userSchema.methods.comparePassword = async function(candidatePassword) {
-  return await bcrypt.compare(candidatePassword, this.password);
-};
-
-module.exports = mongoose.model('User', userSchema);
-```
-
-**models/Post.js**:
-```javascript
-const mongoose = require('mongoose');
-
-const postSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: [true, 'Titel krävs'],
-    trim: true,
-    maxlength: [200, 'Titel kan inte överstiga 200 tecken']
-  },
-  content: {
-    type: String,
-    required: [true, 'Innehåll krävs'],
-    minlength: [10, 'Innehåll måste vara minst 10 tecken']
-  },
-  excerpt: {
-    type: String,
-    maxlength: [300, 'Excerpt kan inte överstiga 300 tecken']
-  },
-  slug: {
-    type: String,
-    unique: true
-  },
-  author: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
-  status: {
-    type: String,
-    enum: ['draft', 'published', 'archived'],
-    default: 'draft'
-  },
-  tags: [String],
-  featured: {
-    type: Boolean,
-    default: false
-  },
-  publishedAt: {
-    type: Date
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now
+router.post('/', async (req, res, next) => {
+  try {
+    const project = await Project.create(req.body);
+    res.status(201).location(`/api/projects/${project.id}`).json(project);
+  } catch (error) {
+    next(error);
   }
 });
 
-// Generera slug från titel
-postSchema.pre('save', function(next) {
-  if (this.isModified('title')) {
-    this.slug = this.title
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-|-$/g, '');
+router.patch('/:id', async (req, res, next) => {
+  try {
+    const project = await Project.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true
+    });
+    if (!project) return res.status(404).json({ error: 'Projektet finns inte' });
+    res.json(project);
+  } catch (error) {
+    next(error);
   }
-  
-  // Generera excerpt om det inte finns
-  if (this.isModified('content') && !this.excerpt) {
-    this.excerpt = this.content.substring(0, 150) + '...';
-  }
-  
-  // Sätt publishedAt när status ändras till published
-  if (this.isModified('status') && this.status === 'published' && !this.publishedAt) {
-    this.publishedAt = new Date();
-  }
-  
-  this.updatedAt = Date.now();
-  next();
 });
 
-module.exports = mongoose.model('Post', postSchema);
+export default router;
 ```
 
-### Autentisering
+Implementera GET för ett id och DELETE med samma `try`/`catch`-mönster:
+kontrollera resultatet, svara `404` när det är `null` och `204` efter lyckad
+borttagning.
 
-**middleware/auth.js**:
+Montera routern före 404-hanteraren i `app.js`:
+
 ```javascript
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+import projectsRouter from './routes/projects.js';
 
-const authenticateToken = async (req, res, next) => {
-  try {
-    const authHeader = req.headers.authorization;
-    const token = authHeader && authHeader.split(' ')[1];
-
-    if (!token) {
-      return res.status(401).json({ error: 'Access token krävs' });
-    }
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.id);
-
-    if (!user || !user.isActive) {
-      return res.status(401).json({ error: 'Ogiltig token' });
-    }
-
-    req.user = user;
-    next();
-  } catch (error) {
-    if (error.name === 'TokenExpiredError') {
-      return res.status(401).json({ error: 'Token har gått ut' });
-    }
-    res.status(403).json({ error: 'Ogiltig token' });
-  }
-};
-
-const authorize = (roles = []) => {
-  return (req, res, next) => {
-    if (!req.user) {
-      return res.status(401).json({ error: 'Autentisering krävs' });
-    }
-
-    if (roles.length && !roles.includes(req.user.role)) {
-      return res.status(403).json({ error: 'Otillåten åtkomst' });
-    }
-
-    next();
-  };
-};
-
-const optionalAuth = async (req, res, next) => {
-  try {
-    const authHeader = req.headers.authorization;
-    const token = authHeader && authHeader.split(' ')[1];
-
-    if (token) {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      const user = await User.findById(decoded.id);
-      if (user && user.isActive) {
-        req.user = user;
-      }
-    }
-    
-    next();
-  } catch (error) {
-    // Ignorera fel för optional auth
-    next();
-  }
-};
-
-module.exports = { authenticateToken, authorize, optionalAuth };
+app.use('/api/projects', projectsRouter);
 ```
 
-**controllers/authController.js**:
+Montera sist en error middleware som ger `400` för Mongoose-felen
+`ValidationError` och `CastError`, annars loggar felet och ger ett generellt
+`500`-svar.
+
+Databasstart i `server.js`:
+
 ```javascript
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+import 'dotenv/config';
+import mongoose from 'mongoose';
+import app from './app.js';
 
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN || '7d'
-  });
-};
+const port = process.env.PORT || 3000;
 
-class AuthController {
-  static async register(req, res, next) {
-    try {
-      const { username, email, password, profile } = req.body;
-
-      const user = new User({
-        username,
-        email,
-        password,
-        profile
-      });
-
-      await user.save();
-
-      const token = generateToken(user._id);
-
-      res.status(201).json({
-        message: 'Användare registrerad framgångsrikt',
-        token,
-        user: {
-          id: user._id,
-          username: user.username,
-          email: user.email,
-          role: user.role
-        }
-      });
-
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  static async login(req, res, next) {
-    try {
-      const { email, password } = req.body;
-
-      // Hitta användare och inkludera lösenord
-      const user = await User.findOne({ email }).select('+password');
-
-      if (!user || !(await user.comparePassword(password))) {
-        return res.status(401).json({ error: 'Ogiltiga inloggningsuppgifter' });
-      }
-
-      if (!user.isActive) {
-        return res.status(401).json({ error: 'Kontot är inaktiverat' });
-      }
-
-      // Uppdatera senaste inloggning
-      user.lastLogin = new Date();
-      await user.save();
-
-      const token = generateToken(user._id);
-
-      res.json({
-        message: 'Inloggning lyckades',
-        token,
-        user: {
-          id: user._id,
-          username: user.username,
-          email: user.email,
-          role: user.role
-        }
-      });
-
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  static async getProfile(req, res, next) {
-    try {
-      const user = await User.findById(req.user.id);
-      res.json(user);
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  static async updateProfile(req, res, next) {
-    try {
-      const allowedUpdates = ['profile.firstName', 'profile.lastName', 'profile.bio'];
-      const updates = {};
-
-      Object.keys(req.body).forEach(key => {
-        if (allowedUpdates.includes(key)) {
-          updates[key] = req.body[key];
-        }
-      });
-
-      const user = await User.findByIdAndUpdate(
-        req.user.id,
-        { $set: updates },
-        { new: true }
-      );
-
-      res.json(user);
-    } catch (error) {
-      next(error);
-    }
-  }
+try {
+  await mongoose.connect(process.env.MONGODB_URI);
+  app.listen(port, () => console.log(`API körs på port ${port}`));
+} catch (error) {
+  console.error('Kunde inte ansluta till MongoDB', error);
+  process.exit(1);
 }
-
-module.exports = AuthController;
 ```
+
+</details>
+
+Prova CRUD. Spara id:t från POST-svaret:
+
+```bash
+curl -X POST http://localhost:3000/api/projects \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Väderapp","description":"Visar prognoser","technologies":["React","Express"],"featured":true}'
+
+curl http://localhost:3000/api/projects
+curl http://localhost:3000/api/projects/PROJECT_ID
+
+curl -X PATCH http://localhost:3000/api/projects/PROJECT_ID \
+  -H "Content-Type: application/json" \
+  -d '{"description":"Visar prognoser för valda städer"}'
+
+curl -i -X DELETE http://localhost:3000/api/projects/PROJECT_ID
+```
+
+### Checkpoint
+
+- Projekt överlever en omstart av servern.
+- POST ger `201`, PATCH ger det uppdaterade dokumentet och DELETE ger `204`.
+- Ett okänt men giltigt id ger `404`; ett trasigt id ger `400`.
+- `GET /api/projects` är fortfarande publik.
+
+**Förslag på Git-commit:** `feat: add MongoDB project CRUD`
 
 ---
 
-## Övning 3: E-handel API med beställningshantering
+## Övning 3: JWT-skydd för administratören
 
-**Mål**: Bygga en komplex e-handelsbackend med produkter, beställningar och lagerhantering.
+### Mål
 
-**Projektstruktur**:
+Låt alla besökare läsa projekt, men kräv en giltig JWT för att skapa, ändra och
+ta bort dem.
+
+### Din uppgift
+
+1. Installera `bcrypt` och `jsonwebtoken`.
+2. Skapa en `Admin`-modell med unik e-post och hashat lösenord.
+3. Skapa `POST /api/auth/login`.
+4. Svara med samma generella felmeddelande för okänd e-post och fel lösenord.
+5. Signera en kortlivad token med `JWT_SECRET`.
+6. Skapa middleware som läser `Authorization: Bearer <token>`.
+7. Skydda POST, PATCH och DELETE för projekt; behåll GET publika.
+8. Skapa administratören med ett separat seed-skript, inte en publik
+   registreringsendpoint.
+9. Lägg aldrig lösenord, hash eller `JWT_SECRET` i API-svar eller Git.
+
+Lägg exempelvärden utan riktiga hemligheter i `.env.example`:
+
+```text
+MONGODB_URI=mongodb://127.0.0.1:27017/portfolio
+JWT_SECRET=replace-with-a-long-random-secret
 ```
-ecommerce-api/
-├── models/
-│   ├── Product.js
-│   ├── Category.js
-│   ├── Order.js
-│   └── Cart.js
-├── controllers/
-│   ├── productController.js
-│   ├── orderController.js
-│   └── cartController.js
-└── services/
-    ├── inventoryService.js
-    └── paymentService.js
-```
 
-### Produktmodell
+<details>
+<summary>Lösningsförslag</summary>
 
-**models/Product.js**:
+`src/models/Admin.js`:
+
 ```javascript
-const mongoose = require('mongoose');
+import bcrypt from 'bcrypt';
+import mongoose from 'mongoose';
 
-const productSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, 'Produktnamn krävs'],
-    trim: true,
-    maxlength: [100, 'Produktnamn kan inte överstiga 100 tecken']
-  },
-  description: {
-    type: String,
-    required: [true, 'Beskrivning krävs'],
-    maxlength: [1000, 'Beskrivning kan inte överstiga 1000 tecken']
-  },
-  price: {
-    type: Number,
-    required: [true, 'Pris krävs'],
-    min: [0, 'Pris måste vara positivt']
-  },
-  comparePrice: {
-    type: Number,
-    validate: {
-      validator: function(v) {
-        return v == null || v > this.price;
-      },
-      message: 'Jämförelsepris måste vara högre än ordinarie pris'
-    }
-  },
-  category: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Category',
-    required: true
-  },
-  images: [{
-    url: String,
-    alt: String,
-    isPrimary: { type: Boolean, default: false }
-  }],
-  sku: {
+const adminSchema = new mongoose.Schema({
+  email: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
+    lowercase: true,
+    trim: true
   },
-  inventory: {
-    quantity: { type: Number, default: 0 },
-    reserved: { type: Number, default: 0 },
-    lowStockThreshold: { type: Number, default: 10 }
-  },
-  attributes: {
-    weight: Number,
-    dimensions: {
-      length: Number,
-      width: Number,
-      height: Number
-    },
-    color: String,
-    size: String,
-    material: String
-  },
-  seo: {
-    title: String,
-    description: String,
-    keywords: [String]
-  },
-  isActive: {
-    type: Boolean,
-    default: true
-  },
-  isFeatured: {
-    type: Boolean,
-    default: false
-  },
-  rating: {
-    average: { type: Number, default: 0 },
-    count: { type: Number, default: 0 }
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now
+  passwordHash: {
+    type: String,
+    required: true,
+    select: false
   }
 });
 
-// Virtual för tillgänglig kvantitet
-productSchema.virtual('availableQuantity').get(function() {
-  return this.inventory.quantity - this.inventory.reserved;
-});
+adminSchema.methods.verifyPassword = function verifyPassword(password) {
+  return bcrypt.compare(password, this.passwordHash);
+};
 
-// Virtual för rabatt
-productSchema.virtual('discount').get(function() {
-  if (!this.comparePrice) return null;
-  const discount = ((this.comparePrice - this.price) / this.comparePrice) * 100;
-  return Math.round(discount);
-});
-
-// Virtual för lågt lager
-productSchema.virtual('isLowStock').get(function() {
-  return this.availableQuantity <= this.inventory.lowStockThreshold;
-});
-
-productSchema.set('toJSON', { virtuals: true });
-
-module.exports = mongoose.model('Product', productSchema);
+export default mongoose.model('Admin', adminSchema);
 ```
 
-### Beställningshantering
+`src/routes/auth.js`:
 
-**models/Order.js**:
 ```javascript
-const mongoose = require('mongoose');
+import { Router } from 'express';
+import jwt from 'jsonwebtoken';
+import Admin from '../models/Admin.js';
 
-const orderSchema = new mongoose.Schema({
-  orderNumber: {
-    type: String,
-    unique: true
-  },
-  customer: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
-  items: [{
-    product: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Product',
-      required: true
-    },
-    quantity: {
-      type: Number,
-      required: true,
-      min: 1
-    },
-    price: {
-      type: Number,
-      required: true
-    },
-    total: {
-      type: Number,
-      required: true
+const router = Router();
+
+router.post('/login', async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const admin = await Admin.findOne({ email }).select('+passwordHash');
+    const valid = admin && await admin.verifyPassword(password);
+
+    if (!valid) {
+      return res.status(401).json({ error: 'Fel e-post eller lösenord' });
     }
-  }],
-  shipping: {
-    address: {
-      street: { type: String, required: true },
-      city: { type: String, required: true },
-      postalCode: { type: String, required: true },
-      country: { type: String, required: true, default: 'Sweden' }
-    },
-    method: {
-      type: String,
-      enum: ['standard', 'express', 'overnight'],
-      default: 'standard'
-    },
-    cost: {
-      type: Number,
-      default: 0
-    }
-  },
-  payment: {
-    method: {
-      type: String,
-      enum: ['card', 'paypal', 'klarna'],
-      required: true
-    },
-    status: {
-      type: String,
-      enum: ['pending', 'completed', 'failed', 'refunded'],
-      default: 'pending'
-    },
-    transactionId: String,
-    paidAt: Date
-  },
-  totals: {
-    subtotal: { type: Number, required: true },
-    shipping: { type: Number, default: 0 },
-    tax: { type: Number, default: 0 },
-    total: { type: Number, required: true }
-  },
-  status: {
-    type: String,
-    enum: ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'],
-    default: 'pending'
-  },
-  notes: String,
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now
+
+    const token = jwt.sign(
+      { sub: admin.id, role: 'admin' },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    res.json({ token });
+  } catch (error) {
+    next(error);
   }
 });
 
-// Generera ordernummer före sparning
-orderSchema.pre('save', function(next) {
-  if (!this.orderNumber) {
-    const timestamp = Date.now().toString();
-    this.orderNumber = `ORD-${timestamp.slice(-8)}`;
-  }
-  this.updatedAt = Date.now();
-  next();
-});
-
-module.exports = mongoose.model('Order', orderSchema);
+export default router;
 ```
 
-### Inventory Service
+`src/middleware/authenticate.js`:
 
-**services/inventoryService.js**:
 ```javascript
-const Product = require('../models/Product');
+import jwt from 'jsonwebtoken';
 
-class InventoryService {
-  static async reserveItems(items) {
-    const reservations = [];
-    
-    try {
-      for (const item of items) {
-        const product = await Product.findById(item.product);
-        
-        if (!product) {
-          throw new Error(`Produkt ${item.product} finns inte`);
-        }
-        
-        if (product.availableQuantity < item.quantity) {
-          throw new Error(`Otillräckligt lager för ${product.name}`);
-        }
-        
-        // Reservera lager
-        product.inventory.reserved += item.quantity;
-        await product.save();
-        
-        reservations.push({
-          product: item.product,
-          quantity: item.quantity
-        });
-      }
-      
-      return reservations;
-      
-    } catch (error) {
-      // Rulla tillbaka reservationer vid fel
-      await this.releaseReservations(reservations);
-      throw error;
-    }
+export function authenticateAdmin(req, res, next) {
+  const [scheme, token] = (req.headers.authorization || '').split(' ');
+
+  if (scheme !== 'Bearer' || !token) {
+    return res.status(401).json({ error: 'Autentisering krävs' });
   }
-  
-  static async releaseReservations(reservations) {
-    for (const reservation of reservations) {
-      await Product.findByIdAndUpdate(
-        reservation.product,
-        { $inc: { 'inventory.reserved': -reservation.quantity } }
-      );
+
+  try {
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    if (payload.role !== 'admin') {
+      return res.status(403).json({ error: 'Åtkomst nekad' });
     }
-  }
-  
-  static async confirmReservations(reservations) {
-    for (const reservation of reservations) {
-      await Product.findByIdAndUpdate(
-        reservation.product,
-        { 
-          $inc: { 
-            'inventory.quantity': -reservation.quantity,
-            'inventory.reserved': -reservation.quantity 
-          } 
-        }
-      );
-    }
-  }
-  
-  static async checkLowStock() {
-    return await Product.find({
-      $expr: {
-        $lte: [
-          { $subtract: ['$inventory.quantity', '$inventory.reserved'] },
-          '$inventory.lowStockThreshold'
-        ]
-      },
-      isActive: true
-    });
+    req.auth = payload;
+    next();
+  } catch {
+    res.status(401).json({ error: 'Ogiltig eller utgången token' });
   }
 }
-
-module.exports = InventoryService;
 ```
+
+Skydda skrivande routes:
+
+```javascript
+import { authenticateAdmin } from '../middleware/authenticate.js';
+
+router.post('/', authenticateAdmin, async (req, res, next) => {
+  // Samma create-kod som i övning 2.
+});
+router.patch('/:id', authenticateAdmin, updateProject);
+router.delete('/:id', authenticateAdmin, deleteProject);
+```
+
+I seed-skriptet: hasha `ADMIN_PASSWORD` med
+`bcrypt.hash(process.env.ADMIN_PASSWORD, 12)` och använd `Admin.updateOne` med
+`{ upsert: true }`. Läs e-post och lösenord från miljön.
+
+</details>
+
+Logga in och använd token:
+
+```bash
+curl -X POST http://localhost:3000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@example.com","password":"byt-mig"}'
+
+TOKEN="KLISTRA_IN_TOKEN"
+
+curl -X POST http://localhost:3000/api/projects \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{"title":"Portfolio API","description":"API för mina projekt","technologies":["Node.js","MongoDB"]}'
+
+curl -i -X DELETE http://localhost:3000/api/projects/PROJECT_ID \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+### Checkpoint
+
+- Publika GET-anrop fungerar utan token.
+- Skrivande anrop utan token ger `401`.
+- En giltig admin-token tillåter POST, PATCH och DELETE.
+- En utgången eller manipulerad token avvisas.
+- Det finns ingen publik endpoint för att skapa administratörer.
+
+**Förslag på Git-commit:** `feat: protect project mutations with admin JWT`
 
 ---
 
-## Sammanfattning
+## Övning 4: API-tester och anslutning till frontend
 
-Dessa fyra övningar tar dig från grundläggande Express-applikationer till avancerade real-time system. Varje projekt bygger på kunskaperna från föregående och introducerar nya koncept:
+### Mål
 
-1. **Todo API**: Grundläggande CRUD, MongoDB, felhantering
-2. **Blog API**: JWT-autentisering, användarsystem, behörigheter  
-3. **E-handel API**: Komplex datamodellering, transaktioner, inventoriehantering
+Verifiera API-kontraktet med Jest och Supertest och låt din befintliga
+`portfolio-site`, eller React-appen från kapitel 8, läsa projekten.
 
-Efter att ha genomfört dessa projekt har du en solid grund i modern backend-utveckling med Node.js!
+### Din uppgift
 
-## Nästa steg
+1. Installera Jest, Supertest och `mongodb-memory-server`.
+2. Säkerställ att tester kan importera `app` utan att en port eller
+   produktionsdatabas startas.
+3. Testa health endpoint, publik projektlista och valideringsfel.
+4. Testa att skrivning nekas utan token och tillåts med giltig admin-token.
+5. Rensa testdatabasen mellan tester och stäng anslutningen efteråt.
+6. Sätt frontendvariabeln `VITE_API_URL`.
+7. Hämta och rendera projekten med `fetch`.
+8. Lägg till laddnings- och feltillstånd.
+9. Begränsa CORS till frontendens origin via en miljövariabel.
 
-- **Deploiera till produktion** med Docker och cloud services
-- **Implementera CI/CD** för automatisk testning och deployment
-- **Lägg till monitoring** och logging för produktion
+```bash
+npm install --save-dev jest supertest mongodb-memory-server
+```
+
+<details>
+<summary>Lösningsförslag</summary>
+
+`package.json`:
+
+```json
+{
+  "scripts": {
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  }
+}
+```
+
+Representativa tester i `test/projects.test.js`:
+
+```javascript
+import mongoose from 'mongoose';
+import { MongoMemoryServer } from 'mongodb-memory-server';
+import request from 'supertest';
+import jwt from 'jsonwebtoken';
+import app from '../src/app.js';
+import Project from '../src/models/Project.js';
+
+let mongo;
+process.env.JWT_SECRET = 'test-secret-that-is-not-used-in-production';
+
+beforeAll(async () => {
+  mongo = await MongoMemoryServer.create();
+  await mongoose.connect(mongo.getUri());
+});
+
+afterEach(async () => {
+  await Project.deleteMany({});
+});
+
+afterAll(async () => {
+  await mongoose.disconnect();
+  await mongo.stop();
+});
+
+test('GET /api/health visar att tjänsten mår bra', async () => {
+  const response = await request(app).get('/api/health').expect(200);
+  expect(response.body.status).toBe('ok');
+});
+
+test('GET /api/projects är publik', async () => {
+  await Project.create({ title: 'Test', description: 'Ett testprojekt' });
+  const response = await request(app).get('/api/projects').expect(200);
+  expect(response.body).toHaveLength(1);
+});
+
+test('POST /api/projects kräver token', async () => {
+  await request(app)
+    .post('/api/projects')
+    .send({ title: 'Test', description: 'Ska nekas' })
+    .expect(401);
+});
+
+test('admin kan skapa projekt', async () => {
+  const token = jwt.sign(
+    { sub: new mongoose.Types.ObjectId().toString(), role: 'admin' },
+    process.env.JWT_SECRET,
+    { expiresIn: '5m' }
+  );
+
+  const response = await request(app)
+    .post('/api/projects')
+    .set('Authorization', `Bearer ${token}`)
+    .send({ title: 'Test', description: 'Skapas i testdatabasen' })
+    .expect(201);
+
+  expect(response.body.title).toBe('Test');
+});
+```
+
+En frontend-hjälpare i exempelvis `src/api/projects.js`:
+
+```javascript
+const apiUrl = import.meta.env.VITE_API_URL;
+
+export async function getProjects() {
+  const response = await fetch(`${apiUrl}/api/projects`);
+  if (!response.ok) throw new Error('Kunde inte hämta projekt');
+  return response.json();
+}
+```
+
+I en React-komponent:
+
+```jsx
+import { useEffect, useState } from 'react';
+import { getProjects } from './api/projects.js';
+
+export function ProjectList() {
+  const [projects, setProjects] = useState([]);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    getProjects().then(setProjects).catch(error => setError(error.message));
+  }, []);
+
+  if (error) return <p role="alert">{error}</p>;
+  if (!projects.length) return <p>Inga projekt att visa ännu.</p>;
+
+  return (
+    <section>
+      {projects.map(project => (
+        <article key={project._id}>
+          <h3>{project.title}</h3>
+          <p>{project.description}</p>
+        </article>
+      ))}
+    </section>
+  );
+}
+```
+
+Konfigurera CORS med `app.use(cors({ origin: process.env.FRONTEND_URL }))`.
+
+</details>
+
+Kör tester och kontrollera integrationen:
+
+```bash
+npm test
+curl http://localhost:3000/api/projects
+
+# I frontendens .env:
+VITE_API_URL=http://localhost:3000
+```
+
+### Checkpoint
+
+- Testsviten går igenom utan en lokal MongoDB-process.
+- Testerna använder inte produktionsdatabasen.
+- Frontend visar data från API:et och hanterar nätverksfel.
+- Produktions-CORS använder en explicit frontend-origin, inte `*`.
+- Ändringar syns efter ett nytt HTTP-anrop; detta är inte realtid.
+
+Vill du senare skicka uppdateringar direkt till öppna webbläsare kan du bygga
+vidare med [WebSockets i kapitel 10](../kapitel_10/websockets.md).
+
+**Förslag på Git-commit:** `test: cover portfolio API and connect frontend`
+
+---
+
+Efter de fyra checkpointsen har du backendgrunden till kapitlets sammanhängande
+capstone: en fullstack-portfolio med publik projektsida och skyddad administration.
+Fortsätt i [Capstone: Fullstack-portfolio](demo.md).

@@ -1,566 +1,242 @@
-# Express.js - Webbramverk för Node.js
+# Bygg `portfolio-api` med Express
 
-Express.js är det mest populära webbramverket för Node.js. Det gör det enkelt att bygga webbapplikationer och API:er med minimal kod och maximal flexibilitet. Express kallas ofta "det minimala och flexibla Node.js-webbramverket" - det ger dig de verktyg du behöver utan att vara i vägen.
+I [lektionen om Node HTTP](http-webserver.md) hanterade du routing, JSON och
+headers själv. Express bygger ovanpå samma HTTP-flöde och ger oss tydligare
+routes och middleware. Vi bygger nu om samma `portfolio-api`, utan att ändra
+API:ets adresser eller svar.
 
-## Vad är Express.js?
+> **Mål:**  
+> Installera Express och dotenv, dela upp app och server, skapa en router samt
+> använda JSON- och felmiddleware.
 
-Express.js är ett snabbt, minimalt och flexibelt webbramverk för Node.js som tillhandahåller:
+## Förutsättningar
 
-- **Routing**: Hantera olika URL:er och HTTP-metoder
-- **Middleware support**: Modulär requesthantering 
-- **Template engines**: Dynamisk HTML-generering
-- **Static file serving**: Servera CSS, bilder och JavaScript-filer
-- **Error handling**: Robust felhantering
-- **HTTP utilities**: Förenklade verktyg för HTTP-förfrågningar
+- `portfolio-api` har `"type": "module"` i `package.json`.
+- Du har `start`- och `dev`-skripten från [Node-introduktionen](node-intro.md).
+- Du kan förklara request, response, statuskod och JSON-header.
 
-### Varför använda Express?
+---
 
-```javascript
-// Utan Express - ren Node.js
-const http = require('http');
-const url = require('url');
+## 1. Installera beroenden
 
-const server = http.createServer((req, res) => {
-  const parsedUrl = url.parse(req.url, true);
-  
-  if (parsedUrl.pathname === '/' && req.method === 'GET') {
-    res.writeHead(200, { 'Content-Type': 'text/html' });
-    res.end('<h1>Välkommen!</h1>');
-  } else if (parsedUrl.pathname === '/api/users' && req.method === 'GET') {
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ users: [] }));
-  } else {
-    res.writeHead(404, { 'Content-Type': 'text/plain' });
-    res.end('Sidan finns inte');
-  }
-});
+Express sköter webbserverns routes och middleware. dotenv läser lokal
+konfiguration från `.env` till `process.env`.
 
-// Med Express - samma funktionalitet
-const express = require('express');
-const app = express();
-
-app.get('/', (req, res) => {
-  res.send('<h1>Välkommen!</h1>');
-});
-
-app.get('/api/users', (req, res) => {
-  res.json({ users: [] });
-});
-
-app.listen(3000);
-```
-
-## Installation och Setup
-
-### Installera Express
-
+<!-- terminal -->
 ```bash
-# Skapa nytt projekt
-mkdir min-express-app
-cd min-express-app
-
-# Initiera npm
-npm init -y
-
-# Installera Express
-npm install express
-
-# Installera utvecklingsverktyg (valfritt men rekommenderat)
-npm install --save-dev nodemon
+npm install express dotenv
 ```
 
-### Din första Express-applikation
+> **Kör nu i din riktiga terminal:** Installera båda paketen i `portfolio-api`.
 
-Skapa `app.js`:
+npm lägger till paketen under `dependencies` i `package.json` och uppdaterar
+`package-lock.json`. Vi använder bara ES-moduler med `import` och `export`.
+CommonJS (`require`) förekommer i äldre exempel men används inte här.
 
-```javascript
-const express = require('express');
-const app = express();
-const PORT = 3000;
+Skapa mapparna för projektets första router:
 
-// Grundläggande route
-app.get('/', (req, res) => {
-  res.send('Hej från Express!');
-});
-
-// Starta servern
-app.listen(PORT, () => {
-  console.log(`Servern körs på http://localhost:${PORT}`);
-});
-```
-
-Kör applikationen:
+<!-- terminal -->
 ```bash
-node app.js
+mkdir -p src/routes
 ```
 
-## Routing i Express
+> **Kör nu i din riktiga terminal:** Skapa mappen `src/routes` (i PowerShell kan du använda `mkdir src/routes`).
 
-Routing bestämmer hur applikationen svarar på olika endpoint-förfrågningar.
+---
 
-### Grundläggande Routes
+## 2. Skapa en projektrouter
 
-```javascript
-const express = require('express');
-const app = express();
+Skapa `src/routes/projects.js`:
 
-// GET route
-app.get('/', (req, res) => {
-  res.send('GET request till startsidan');
-});
+```js
+import { Router } from 'express';
 
-// POST route
-app.post('/users', (req, res) => {
-  res.send('POST request för att skapa användare');
-});
+export const projectsRouter = Router();
 
-// PUT route
-app.put('/users/:id', (req, res) => {
-  res.send(`PUT request för användare ${req.params.id}`);
-});
-
-// DELETE route
-app.delete('/users/:id', (req, res) => {
-  res.send(`DELETE request för användare ${req.params.id}`);
-});
-
-// Route som matchar alla HTTP-metoder
-app.all('/secret', (req, res) => {
-  res.send('Åtkomst till hemlig sektion!');
-});
-```
-
-### Route Parameters
-
-```javascript
-// Grundläggande parameter
-app.get('/users/:id', (req, res) => {
-  const userId = req.params.id;
-  res.send(`Användare ID: ${userId}`);
-});
-
-// Flera parametrar
-app.get('/users/:userId/posts/:postId', (req, res) => {
-  const { userId, postId } = req.params;
-  res.json({ userId, postId });
-});
-
-// Valfria parametrar
-app.get('/posts/:year/:month?', (req, res) => {
-  const { year, month } = req.params;
-  res.json({ year, month: month || 'alla månader' });
-});
-
-// Regex patterns
-app.get('/files/*', (req, res) => {
-  const filePath = req.params[0];
-  res.send(`Filsökväg: ${filePath}`);
-});
-```
-
-### Query Parameters
-
-```javascript
-// URL: /search?q=express&category=web&sort=date
-app.get('/search', (req, res) => {
-  const { q, category, sort } = req.query;
-  
-  res.json({
-    searchTerm: q,
-    category: category || 'alla',
-    sortBy: sort || 'relevans'
-  });
-});
-
-// Med standardvärden och validering
-app.get('/products', (req, res) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
-  const category = req.query.category;
-  
-  // Validering
-  if (page < 1 || limit < 1 || limit > 100) {
-    return res.status(400).json({ 
-      error: 'Ogiltiga parametrar' 
-    });
+const projects = [
+  {
+    id: 1,
+    title: 'Portfolio',
+    description: 'Min personliga webbplats',
+    technologies: ['HTML', 'CSS', 'JavaScript']
+  },
+  {
+    id: 2,
+    title: 'Väderapp',
+    description: 'Visar väderdata från ett externt API',
+    technologies: ['JavaScript', 'Fetch API']
   }
-  
-  res.json({ page, limit, category });
-});
-```
-
-## Middleware i Express
-
-Middleware är funktioner som körs under request-response-cykeln. De kan:
-- Köra kod
-- Modifiera request och response-objekten  
-- Avsluta request-response-cykeln
-- Anropa nästa middleware i stacken
-
-```mermaid
-flowchart LR
-    A[Request] --> B[Middleware 1]
-    B --> C[Middleware 2]
-    C --> D[Route Handler]
-    D --> E[Response]
-    B -.-> F[Error Handler]
-    C -.-> F
-    D -.-> F
-```
-
-### Inbyggt Middleware
-
-```javascript
-const express = require('express');
-const app = express();
-
-// Parsa JSON-requests
-app.use(express.json());
-
-// Parsa URL-encoded data (formulär)
-app.use(express.urlencoded({ extended: true }));
-
-// Servera statiska filer
-app.use(express.static('public'));
-
-// Servera statiska filer från specifik sökväg
-app.use('/assets', express.static('public'));
-```
-
-### Custom Middleware
-
-```javascript
-// Logging middleware
-const logger = (req, res, next) => {
-  const timestamp = new Date().toISOString();
-  console.log(`${timestamp} - ${req.method} ${req.url}`);
-  next(); // Viktigt! Anropa next() för att fortsätta
-};
-
-// Använd middleware globalt
-app.use(logger);
-
-// Autentiserings-middleware
-const requireAuth = (req, res, next) => {
-  const token = req.headers.authorization;
-  
-  if (!token) {
-    return res.status(401).json({ error: 'Token required' });
-  }
-  
-  // Verifiera token (förenklad)
-  if (token === 'Bearer valid-token') {
-    req.user = { id: 1, name: 'John Doe' };
-    next();
-  } else {
-    res.status(403).json({ error: 'Invalid token' });
-  }
-};
-
-// Använd middleware för specifika routes
-app.get('/profile', requireAuth, (req, res) => {
-  res.json({ user: req.user });
-});
-```
-
-### Middleware för felhantering
-
-```javascript
-// Error-handling middleware (måste ha 4 parametrar)
-const errorHandler = (err, req, res, next) => {
-  console.error(err.stack);
-  
-  // Olika feltyper
-  if (err.name === 'ValidationError') {
-    return res.status(400).json({ error: 'Valideringsfel' });
-  }
-  
-  if (err.name === 'CastError') {
-    return res.status(400).json({ error: 'Ogiltigt ID-format' });
-  }
-  
-  // Generiskt fel
-  res.status(500).json({ error: 'Något gick fel!' });
-};
-
-// Placera error handler sist
-app.use(errorHandler);
-
-// Async error handling
-const asyncHandler = (fn) => {
-  return (req, res, next) => {
-    Promise.resolve(fn(req, res, next)).catch(next);
-  };
-};
-
-app.get('/async-route', asyncHandler(async (req, res) => {
-  const data = await someAsyncOperation();
-  res.json(data);
-}));
-```
-
-## Response-metoder
-
-Express ger flera metoder för att skicka svar:
-
-```javascript
-app.get('/examples', (req, res) => {
-  // Olika response-metoder
-  res.send('Text eller HTML');
-  res.json({ key: 'value' });
-  res.status(404).send('Inte hittad');
-  res.redirect('/other-page');
-  res.sendFile(__dirname + '/index.html');
-});
-
-// Kedja metoder
-app.get('/api/users', (req, res) => {
-  res
-    .status(200)
-    .set('Content-Type', 'application/json')
-    .json({ users: [] });
-});
-
-// Sätt headers
-app.get('/api/data', (req, res) => {
-  res.set({
-    'Content-Type': 'application/json',
-    'X-Custom-Header': 'MinApplikation'
-  });
-  res.json({ data: 'värde' });
-});
-```
-
-## Router för modulär kod
-
-Express Router låter dig skapa modulära route-handlers:
-
-```javascript
-// routes/users.js
-const express = require('express');
-const router = express.Router();
-
-// Middleware för alla user-routes
-router.use((req, res, next) => {
-  console.log('User route accessed');
-  next();
-});
-
-// Routes
-router.get('/', (req, res) => {
-  res.json({ users: [] });
-});
-
-router.get('/:id', (req, res) => {
-  res.json({ user: { id: req.params.id } });
-});
-
-router.post('/', (req, res) => {
-  res.status(201).json({ message: 'Användare skapad' });
-});
-
-module.exports = router;
-
-// app.js
-const userRoutes = require('./routes/users');
-app.use('/api/users', userRoutes);
-```
-
-## Praktiskt exempel: Todo API
-
-Låt oss bygga ett komplett Todo API:
-
-```javascript
-const express = require('express');
-const app = express();
-
-// Middleware
-app.use(express.json());
-
-// In-memory data (i verkligheten använd databas)
-let todos = [
-  { id: 1, text: 'Lär dig Express', completed: false },
-  { id: 2, text: 'Bygg ett API', completed: false }
 ];
 
-let nextId = 3;
-
-// GET alla todos
-app.get('/api/todos', (req, res) => {
-  const { completed } = req.query;
-  
-  let filteredTodos = todos;
-  if (completed !== undefined) {
-    const isCompleted = completed === 'true';
-    filteredTodos = todos.filter(todo => todo.completed === isCompleted);
-  }
-  
-  res.json(filteredTodos);
-});
-
-// GET specifik todo
-app.get('/api/todos/:id', (req, res) => {
-  const id = parseInt(req.params.id);
-  const todo = todos.find(t => t.id === id);
-  
-  if (!todo) {
-    return res.status(404).json({ error: 'Todo inte hittad' });
-  }
-  
-  res.json(todo);
-});
-
-// POST ny todo
-app.post('/api/todos', (req, res) => {
-  const { text } = req.body;
-  
-  if (!text || text.trim().length === 0) {
-    return res.status(400).json({ error: 'Text krävs' });
-  }
-  
-  const newTodo = {
-    id: nextId++,
-    text: text.trim(),
-    completed: false
-  };
-  
-  todos.push(newTodo);
-  res.status(201).json(newTodo);
-});
-
-// PUT uppdatera todo
-app.put('/api/todos/:id', (req, res) => {
-  const id = parseInt(req.params.id);
-  const todoIndex = todos.findIndex(t => t.id === id);
-  
-  if (todoIndex === -1) {
-    return res.status(404).json({ error: 'Todo inte hittad' });
-  }
-  
-  const { text, completed } = req.body;
-  
-  if (text !== undefined) {
-    if (!text || text.trim().length === 0) {
-      return res.status(400).json({ error: 'Text kan inte vara tom' });
-    }
-    todos[todoIndex].text = text.trim();
-  }
-  
-  if (completed !== undefined) {
-    todos[todoIndex].completed = Boolean(completed);
-  }
-  
-  res.json(todos[todoIndex]);
-});
-
-// DELETE todo
-app.delete('/api/todos/:id', (req, res) => {
-  const id = parseInt(req.params.id);
-  const todoIndex = todos.findIndex(t => t.id === id);
-  
-  if (todoIndex === -1) {
-    return res.status(404).json({ error: 'Todo inte hittad' });
-  }
-  
-  todos.splice(todoIndex, 1);
-  res.status(204).send();
-});
-
-// Error handling
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Något gick fel!' });
-});
-
-// 404 handler
-app.use('*', (req, res) => {
-  res.status(404).json({ error: 'Endpoint finns inte' });
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Todo API körs på port ${PORT}`);
+projectsRouter.get('/', (request, response) => {
+  response.status(200).json(projects);
 });
 ```
 
-## Testa API:et
+En router samlar routes som hör till samma resurs. Sökvägen `/` är relativ
+till den adress där routern monteras. Arrayen ligger bara i minnet och
+återställs när servern startar om. I
+[MongoDB-lektionen](mongodb.md) ersätts den av beständig data.
 
-```bash
-# Hämta alla todos
-curl http://localhost:3000/api/todos
+---
 
-# Skapa ny todo
-curl -X POST http://localhost:3000/api/todos \
-  -H "Content-Type: application/json" \
-  -d '{"text": "Min nya todo"}'
+## 3. Konfigurera Express-appen
 
-# Uppdatera todo
-curl -X PUT http://localhost:3000/api/todos/1 \
-  -H "Content-Type: application/json" \
-  -d '{"completed": true}'
+Skapa `src/app.js`:
 
-# Ta bort todo
-curl -X DELETE http://localhost:3000/api/todos/1
+```js
+import express from 'express';
+import { projectsRouter } from './routes/projects.js';
+
+export const app = express();
+
+app.use(express.json());
+
+app.get('/api/health', (request, response) => {
+  response.status(200).json({ status: 'ok' });
+});
+
+app.use('/api/projects', projectsRouter);
+
+app.use((request, response) => {
+  response.status(404).json({ error: 'Endpointen finns inte' });
+});
+
+app.use((error, request, response, next) => {
+  console.error(error);
+
+  const statusCode = error.status ?? 500;
+  const message =
+    statusCode === 400 ? 'Ogiltig JSON' : 'Internt serverfel';
+
+  response.status(statusCode).json({ error: message });
+});
 ```
 
-## Best Practices
+`express.json()` är middleware. Den läser requests med JSON-body och placerar
+resultatet i `request.body`, vilket behövs när API:et senare får POST-routes.
 
-### Projektstruktur
+Ordningen är viktig: JSON-parsern körs först, därefter routes, 404-hanteraren
+och sist felhanteraren. En Express-felhanterare känns igen på sina fyra
+parametrar, även när `request` och `next` inte används ännu.
 
+Express sätter automatiskt rätt JSON-header när `response.json()` används.
+
+---
+
+## 4. Separera start från app
+
+Skapa `.env` i projektets rot:
+
+```dotenv
+PORT=3000
 ```
-myapp/
-├── app.js                 # Huvudapplikation
+
+`.env` ska redan finnas i `.gitignore`. Porten är inte hemlig, men samma fil
+kommer senare att innehålla databasens anslutningssträng och ska därför aldrig
+committas.
+
+Ersätt `src/server.js` med:
+
+```js
+import 'dotenv/config';
+import { app } from './app.js';
+
+const PORT = Number(process.env.PORT) || 3000;
+
+export const server = app.listen(PORT, () => {
+  console.log(`Portfolio API körs på http://localhost:${PORT}`);
+});
+```
+
+`src/app.js` beskriver beteendet; `src/server.js` läser miljön och börjar
+lyssna. Uppdelningen gör appen enklare att importera i tester utan att
+automatiskt öppna en port.
+
+Projektet ser nu ut så här:
+
+```text
+portfolio-api/
+├── .env
+├── .gitignore
+├── package-lock.json
 ├── package.json
-├── routes/               # Route-moduler
-│   ├── users.js
-│   ├── posts.js
-│   └── auth.js
-├── middleware/           # Custom middleware
-│   ├── auth.js
-│   └── validation.js
-├── models/              # Datamodeller
-│   └── User.js
-├── controllers/         # Route handlers
-│   └── userController.js
-├── config/             # Konfiguration
-│   └── database.js
-└── public/             # Statiska filer
-    ├── css/
-    ├── js/
-    └── images/
+└── src/
+    ├── routes/
+    │   └── projects.js
+    ├── app.js
+    └── server.js
 ```
 
-### Säkerhet
+När projektet växer tillkommer bland annat modeller, controllers och
+databaskonfiguration. Skapa inte de lagren innan de behövs.
 
-```javascript
-const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
+---
 
-// Grundläggande säkerhet
-app.use(helmet());
+## 5. Starta och testa
 
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minuter
-  max: 100 // Max 100 requests per IP
-});
-app.use(limiter);
-
-// Input sanitering
-const mongoSanitize = require('express-mongo-sanitize');
-app.use(mongoSanitize());
+<!-- terminal -->
+```bash
+npm run dev
+# Portfolio API körs på http://localhost:3000
 ```
 
-### Miljövariabler
+> **Kör nu i din riktiga terminal:** Starta Express-servern och låt den terminalen vara öppen.
 
-```javascript
-require('dotenv').config();
+Öppna en andra terminal:
 
-const PORT = process.env.PORT || 3000;
-const DB_URL = process.env.DB_URL || 'mongodb://localhost:27017/myapp';
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret';
+<!-- terminal -->
+```bash
+curl -i http://localhost:3000/api/health
+# HTTP/1.1 200 OK
+# Content-Type: application/json; charset=utf-8
+#
+# {"status":"ok"}
+
+curl -i http://localhost:3000/api/projects
+# HTTP/1.1 200 OK
+# Content-Type: application/json; charset=utf-8
+#
+# [{"id":1,"title":"Portfolio",...}]
 ```
 
-Express.js ger dig en solid grund för att bygga skalbara webb-API:er. Med dess flexibla middleware-system och rena syntax kan du skapa allt från enkla webbsidor till komplexa enterprise-applikationer.
+> **Kör nu i din riktiga terminal:** Kontrollera att båda GET-routes ger samma JSON som tidigare.
 
-Nästa steg är att lära dig om databaser och hur du integrerar MongoDB med Express för att skapa fullständiga backend-lösningar!
+Verifiera också 404-hanteraren:
+
+<!-- terminal -->
+```bash
+curl -i http://localhost:3000/saknas
+# HTTP/1.1 404 Not Found
+# {"error":"Endpointen finns inte"}
+```
+
+> **Kör nu i din riktiga terminal:** Anropa en okänd route och kontrollera att svaret är JSON med status `404`.
+
+---
+
+## Vanliga misstag
+
+- **`require is not defined`:** kopiera inte CommonJS-exempel; använd
+  `import` och kontrollera `"type": "module"`.
+- **Routern ger 404:** kontrollera både `app.use('/api/projects', ...)` och
+  `projectsRouter.get('/')`.
+- **`request.body` är `undefined`:** placera `express.json()` före routes.
+- **Felmiddleware körs inte:** den ska ligga sist och ha fyra parametrar.
+- **Porten ändras inte:** kontrollera `.env`, starta om processen och verifiera
+  att `import 'dotenv/config'` ligger först i `src/server.js`.
+- **Hemligheter hamnar i Git:** kontrollera att `.env` finns i `.gitignore`.
+
+---
+
+## Checkpoint
+
+- [ ] `express` och `dotenv` finns under `dependencies`.
+- [ ] `src/app.js` exporterar appen och `src/server.js` startar den.
+- [ ] `GET /api/health` och `GET /api/projects` ger `200` och JSON.
+- [ ] Projektroutern ligger i `src/routes/projects.js`.
+- [ ] Okända endpoints ger ett JSON-svar med `404`.
+- [ ] JSON-, 404- och felmiddleware ligger i rätt ordning.
+
+Fortsätt med [MongoDB och Mongoose](mongodb.md), där minnesarrayen ersätts av
+beständig data. Därefter bygger du CRUD i [REST-API-lektionen](rest-api.md).

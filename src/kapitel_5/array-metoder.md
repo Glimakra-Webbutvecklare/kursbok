@@ -273,3 +273,22 @@ logMessage('error', 'Databasfel');              // Output: [ERROR] Databasfel
 ```
 
 Dessa metoder och syntax-förbättringar (`map`, `filter`, `reduce`, destructuring, spread/rest) är centrala i modern JavaScript och gör det möjligt att skriva mer uttrycksfull, koncis och ofta mer läsbar kod, särskilt när man hanterar datastrukturer.
+
+**Prova själv:** Filtrera och transformera en array med `filter` och `map`.
+
+<!-- playground -->
+```js
+const todos = [
+  { title: "Fixa HTML", completed: true },
+  { title: "Styla med CSS", completed: true },
+  { title: "Lägg till JavaScript", completed: false }
+];
+
+const doneTitles = todos
+  .filter((todo) => todo.completed)
+  .map((todo) => todo.title);
+
+console.log("Klart:", doneTitles);
+```
+
+> **Kör nu i `portfolio-site`:** Skapa en array med tre projekt och använd `map` för att skriva ut bara titlarna i konsolen.

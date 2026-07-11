@@ -1,1294 +1,550 @@
-# Demo App - Poem Collector
+# Capstone: Fullstack-portfolio
 
-# Projektbeskrivning
+Det här är kapitlets sammanhängande capstone efter övningarna. Du tar
+`portfolio-api` som du nyss byggde och kopplar det till din befintliga
+`portfolio-site`, eller till React-projektet från kapitel 8. Resultatet blir en
+portfolio där besökare kan se projekt och där en administratör kan logga in för
+att skapa, redigera och ta bort dem.
 
-Vi ska bygga en Poesi-samlingsapp där användare kan registrera sig, logga in och dela sina egna dikter. Varje dikt är kopplad till en författare (användare), och andra användare kan kommentera på dikterna. Applikationen kommer att ha följande funktioner:
-- Användarhantering: Registrering, inloggning och autentisering.
-- Dikthantering: Skapa, läsa, uppdatera och ta bort dikter.
-- Kommentarer: Användare kan kommentera på dikter.
+Du ska inte starta ett nytt, fristående tema. Fortsätt på samma domänmodell,
+endpoints och säkerhetsregler som i övningarna.
 
-Teknologier som används:
-- React med React Router för enkel navigering.
-- Node.js med Express, skriven med ES2015 (ES6) syntax som använder import istället för require.
-- Databas: MongoDB med Mongoose för lagring av användare, dikter och kommentarer.
+## Slutprodukt
 
-```mermaid
-graph TB
-    subgraph "Frontend (React)"
-        A[React App] --> B[React Router]
-        A --> C[Components]
-        C --> D[Navbar]
-        C --> E[Home]
-        C --> F[Login/Register]
-        C --> G[PoemDetail]
-        C --> H[AddPoem]
-    end
-    
-    subgraph "Backend (Node.js/Express)"
-        I[Express Server] --> J[Auth Routes]
-        I --> K[Poem Routes]
-        I --> L[Comment Routes]
-        I --> M[JWT Middleware]
-    end
-    
-    subgraph "Database (MongoDB)"
-        N[(MongoDB)]
-        N --> O[Users Collection]
-        N --> P[Poems Collection]
-        N --> Q[Comments Collection]
-    end
-    
-    A -->|HTTP Requests| I
-    J -->|User Auth| O
-    K -->|CRUD Operations| P
-    L -->|Comments| Q
-    M -->|Token Verification| J
-```
+Applikationen har två tydliga lägen:
 
-## Mappstruktur
-
-Projektets mappstruktur kommer att organiseras enligt följande:
-```
-Projekt/
-    frontend/
-    backend/
-    package.json
-```
-- frontend/: Innehåller all frontend-kod byggd med React.
-- backend/: Innehåller all backend-kod med Express och MongoDB.
-- package.json: I rotmappen för att hantera skript som påverkar både frontend och backend.
-
-Skript i package.json:
-- "setup": Installerar beroenden i både frontend och backend.
-- "frontend-dev": Startar utvecklingsservern för frontend.
-- "backend-dev": Startar utvecklingsservern för backend.
+- **Publik portfolio:** visar projekt från API:et utan inloggning.
+- **Administration:** låter en administratör logga in och hantera projekt.
 
 ```mermaid
-graph TD
-    A[Projekt/] --> B[frontend/]
-    A --> C[backend/]
-    A --> D[package.json]
-    
-    B --> E[src/]
-    B --> F[public/]
-    B --> G[package.json]
-    B --> H[node_modules/]
-    
-    E --> I[components/]
-    E --> J[pages/]
-    E --> K[utils/]
-    E --> L[App.js]
-    
-    I --> M[Navbar.jsx]
-    I --> N[AddComment.jsx]
-    
-    J --> O[Home.jsx]
-    J --> P[Login.jsx]
-    J --> Q[Register.jsx]
-    J --> R[PoemDetail.jsx]
-    J --> S[AddPoem.jsx]
-    
-    K --> T[api.js]
-    
-    C --> U[models/]
-    C --> V[routes/]
-    C --> W[middleware/]
-    C --> X[server.js]
-    C --> Y[package.json]
-    C --> Z[.env]
-    
-    U --> AA[User.js]
-    U --> BB[Poem.js]
-    U --> CC[Comment.js]
-    
-    V --> DD[auth.js]
-    V --> EE[poems.js]
-    V --> FF[comments.js]
-    
-    W --> GG[auth.js]
+flowchart LR
+    V[Besökare] --> F[portfolio-site / React]
+    A[Administratör] --> F
+    F -->|GET /api/projects| E[portfolio-api]
+    F -->|login + skyddad CRUD| E
+    E --> M[(MongoDB)]
 ```
 
-## Planering och arkitektur
+Frontend och backend kommunicerar med HTTP och JSON. Projektlistan uppdateras
+när klienten gör ett nytt API-anrop. Det är inte en realtidslösning.
 
-### Funktioner
+## Arkitektur och ansvar
 
-- Användarautentisering: Registrera och logga in användare med säker lösenordshantering.
-- Dikthantering: CRUD-operationer (Create, Read, Update, Delete) för dikter.
-- Kommentarssystem: Möjlighet att kommentera på dikter.
-- Navigering: Användarvänlig navigering mellan olika sidor i applikationen.
+### Frontend
 
-### Databasschema
+- renderar en publik projektlista
+- visar laddnings-, tom- och feltillstånd
+- innehåller ett adminformulär för inloggning
+- skickar JWT i `Authorization` vid skrivande anrop
+- visar formulär för att skapa och redigera projekt
+- uppdaterar lokal vy efter create, update och delete
 
-Vi använder MongoDB för att lagra data. Här är en översikt av databasschemat:
+### Backend
 
-#### User
+- exponerar ett dokumenterat REST-kontrakt
+- validerar all inkommande projektdata
+- lagrar projekt och admin i MongoDB
+- hashar adminlösenord med bcrypt
+- utfärdar och verifierar kortlivade JWT
+- håller läsning publik och skyddar alla ändringar
+- tillåter endast konfigurerade frontend-origins med CORS
 
-- username: String (unik och krävs)
-- email: String (unik och krävs)
-- password: String (hashad och krävs)
-- createdAt: Date (standardvärde: aktuellt datum)
+## Föreslagen mappstruktur
 
-#### Poem
+Följande visar ansvarsgränserna; behåll gärna frontendens befintliga filnamn.
 
-- title: String (krävs)
-- content: String (krävs)
-- author: ObjectId (referens till en användare)
-- createdAt: Date (standardvärde: aktuellt datum)
-
-#### Comment
-
-- content: String (krävs)
-- author: ObjectId (referens till en användare)
-- poem: ObjectId (referens till en dikt)
-- createdAt: Date (standardvärde: aktuellt datum)
-
-```mermaid
-erDiagram
-    USER {
-        ObjectId _id PK
-        string username UK
-        string email UK
-        string password
-        date createdAt
-    }
-    
-    POEM {
-        ObjectId _id PK
-        string title
-        string content
-        ObjectId author FK
-        date createdAt
-    }
-    
-    COMMENT {
-        ObjectId _id PK
-        string content
-        ObjectId author FK
-        ObjectId poem FK
-        date createdAt
-    }
-    
-    USER ||--o{ POEM : "writes"
-    USER ||--o{ COMMENT : "writes"
-    POEM ||--o{ COMMENT : "has"
+```text
+fullstack-portfolio/
+├── portfolio-site/
+│   ├── src/
+│   │   ├── api/
+│   │   │   └── client.js
+│   │   ├── components/
+│   │   │   ├── ProjectList.jsx
+│   │   │   ├── ProjectForm.jsx
+│   │   │   └── AdminLogin.jsx
+│   │   └── App.jsx
+│   ├── .env.example
+│   └── package.json
+└── portfolio-api/
+    ├── src/
+    │   ├── config/
+    │   │   └── database.js
+    │   ├── middleware/
+    │   │   ├── authenticate.js
+    │   │   └── errorHandler.js
+    │   ├── models/
+    │   │   ├── Admin.js
+    │   │   └── Project.js
+    │   ├── routes/
+    │   │   ├── auth.js
+    │   │   └── projects.js
+    │   ├── app.js
+    │   └── server.js
+    ├── test/
+    │   └── projects.test.js
+    ├── scripts/
+    │   └── seedAdmin.js
+    ├── .env.example
+    └── package.json
 ```
 
-## Setup av projektmiljö
+## Backendens endpoint-kontrakt
 
-Initialisera projektet
+Bestäm kontraktet innan frontend byggs. Då kan båda delarna utvecklas mot samma
+förväntningar.
 
-1.	Skapa projektmappen:
-```bash
-mkdir poesi-app
-cd poesi-app
-```
+| Metod | Endpoint | Behörighet | Lyckat svar |
+|---|---|---|---|
+| `GET` | `/api/health` | Publik | `200` statusobjekt |
+| `GET` | `/api/projects` | Publik | `200` array |
+| `GET` | `/api/projects/:id` | Publik | `200` projekt |
+| `POST` | `/api/auth/login` | Publik | `200` token |
+| `POST` | `/api/projects` | Admin | `201` skapat projekt |
+| `PATCH` | `/api/projects/:id` | Admin | `200` uppdaterat projekt |
+| `DELETE` | `/api/projects/:id` | Admin | `204` utan body |
 
-2.	Skapa frontend och backend-mappar:
-```bash
-mkdir frontend backend
-```
+Ett projekt representeras exempelvis så här:
 
-3.	Initiera NPM i rotmappen:
-```bash
-npm init -y
-```
-
-4.	Uppdatera package.json med skript:
 ```json
 {
-  "scripts": {
-    "setup": "cd frontend && npm install && cd ../backend && npm install",
-    "frontend-dev": "cd frontend && npm run start",
-    "backend-dev": "cd backend && npm run dev"
-  }
+  "_id": "66a1234567890abcdef1234",
+  "title": "Tillgänglig väderapp",
+  "description": "En responsiv prognosapp med tangentbordsstöd.",
+  "technologies": ["React", "Express", "MongoDB"],
+  "imageUrl": "https://example.com/weather.webp",
+  "repositoryUrl": "https://github.com/example/weather",
+  "liveUrl": "https://weather.example.com",
+  "featured": true,
+  "createdAt": "2026-07-11T10:00:00.000Z",
+  "updatedAt": "2026-07-11T10:00:00.000Z"
 }
 ```
 
+Fel ska ha ett konsekvent format:
 
-Backend-setup
-
-1.	Gå till backend-mappen och initiera NPM:
-```bash
-cd backend
-npm init -y
-```
-
-2.	Installera beroenden:
-```bash
-npm install express mongoose bcrypt jsonwebtoken cors
-```
-
-3.	Installera utvecklingsberoenden:
-```bash
-npm install -D nodemon
-```
-
-4.	Uppdatera package.json skript:
 ```json
 {
-  "scripts": {
-    "dev": "nodemon server.js"
-  }
+  "error": "Projektet finns inte"
 }
 ```
 
+## Milstolpe 1: stabilisera API-grunden
 
+Utgå från övning 2. Supertest ska kunna importera appen utan att öppna en port.
 
-## Frontend-setup
+`src/app.js`:
 
-1.	Gå till frontend-mappen och skapa en React-app:
-```bash
-cd ../frontend
-npm create vite@latest # Välj React och javascript
-```
-
-2.	Installera React Router:
-
-```bash
-npm install react-router-dom
-```
-
-## Backend 
-
-Vi börjar med att implementera och testa __poems__-rutterna och använder cURL för att verifiera funktionaliteten. När __poems__ fungerar korrekt, lägger vi till __users__ och autentisering med JSON Web Tokens (JWT). Slutligen implementerar vi __comments__.
-
-## Projektmapp
-
-1. Skapa en fil server.js i backend-mappen:
-```bash
-touch server.js
-```
-Lägg till följande kod i server.js:
-```js
-import express from 'express';
-import mongoose from 'mongoose';
+```javascript
 import cors from 'cors';
-// TODO: Använd routes
-//import poemRoutes from './routes/poems';
+import express from 'express';
+import helmet from 'helmet';
+import projectsRouter from './routes/projects.js';
+import authRouter from './routes/auth.js';
+import { errorHandler } from './middleware/errorHandler.js';
 
-// Konfigurera miljövariabler
-process.loadEnvFile()
+const app = express();
 
-// Skapa Express-applikationen
-const server = express();
+const allowedOrigins = (process.env.FRONTEND_URLS || '')
+  .split(',')
+  .map(origin => origin.trim())
+  .filter(Boolean);
 
-// Middleware
-server.use(cors());
-server.use(express.json());
+app.use(helmet());
+app.use(cors({
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    callback(new Error('Origin tillåts inte av CORS'));
+  }
+}));
+app.use(express.json({ limit: '100kb' }));
 
-// Test route
-server.get('/', (req, res) => {
-  res.json({message: "Hello from poem app!"});
-})
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', service: 'portfolio-api' });
+});
 
-// TODO: Använd routes
-//server.use('/api/poems', poemRoutes);
+app.use('/api/auth', authRouter);
+app.use('/api/projects', projectsRouter);
 
-// Anslut till MongoDB och starta servern
-const PORT = process.env.PORT || 5000;
+app.use('/api', (req, res) => {
+  res.status(404).json({ error: 'Endpointen finns inte' });
+});
 
-mongoose
-  .connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => {
-    server.listen(PORT, () => console.log(`Servern körs på port ${PORT}`));
-  })
-  .catch((error) => console.error(error));
+app.use(errorHandler);
+
+export default app;
 ```
 
-3. Skapa .env-fil
+`src/server.js`:
 
-Skapa en .env-fil i backend-mappen:
-```bash
-touch .env
-```
-Lägg till följande innehåll och ersätt din_mongodb_connection_string med din faktiska MongoDB-anslutningssträng:
-```txt
-MONGODB_URI=din_mongodb_connection_string
-```
-4. Starta Servern
-
-Lägg till följande skript i din package.json:
-```json
-"scripts": {
-  "start": "node server.js",
-  "dev": "nodemon server.js"
-}
-```
-
-Starta servern i utvecklingsläge:
-```bash
-npm run dev
-```
-
-Testa serverns test route:
-```bash
-curl localhost:3000 # Borde ge svaret {"message": "Hello from poem app!"}
-```
-Skapa Poem Model
-
-Skapa en mapp models och skapa filen Poem.js:
-```bash
-mkdir models
-touch models/Poem.js
-```
-Lägg till följande kod i models/Poem.js:
-```js
+```javascript
+import 'dotenv/config';
 import mongoose from 'mongoose';
+import app from './app.js';
 
-const poemSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  content: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now },
-});
+const port = process.env.PORT || 3000;
 
-export default mongoose.model('Poem', poemSchema);
+try {
+  await mongoose.connect(process.env.MONGODB_URI);
+  app.listen(port, () => console.log(`portfolio-api körs på port ${port}`));
+} catch (error) {
+  console.error('Databasanslutningen misslyckades', error);
+  process.exit(1);
+}
 ```
 
-### Implementera Poems Routes
+### Checkpoint 1
 
-Skapa en mapp routes och skapa filen poems.js:
-```bash
-mkdir routes
-touch routes/poems.js
-```
-Lägg till följande kod i routes/poems.js:
-```js
-import express from 'express';
-import Poem from '../models/Poem';
-const router = express.Router();
+- Health endpoint svarar utan databasdata i svaret.
+- Okända API-routes ger JSON och `404`.
+- Servern startar inte om MongoDB-anslutningen misslyckas.
+- Frontendens lokala origin finns i `FRONTEND_URLS`.
 
-// Hämta alla dikter
-router.get('/', async (req, res) => {
+## Milstolpe 2: publik projektlista
+
+Implementera först läsflödet från databas till skärm. Besökaren ska inte behöva
+ett konto eller en token.
+
+En representativ publik route:
+
+```javascript
+import { Router } from 'express';
+import Project from '../models/Project.js';
+
+const router = Router();
+
+router.get('/', async (req, res, next) => {
   try {
-    const poems = await Poem.find().sort({ createdAt: -1 });
-    res.json(poems);
-  } catch (error) {
-    res.status(500).json({ message: 'Serverfel' });
-  }
-});
-
-// Skapa en ny dikt
-router.post('/', async (req, res) => {
-  const { title, content } = req.body;
-  try {
-    const poem = new Poem({ title, content });
-    await poem.save();
-    res.status(201).json(poem);
-  } catch (error) {
-    res.status(400).json({ message: 'Invalid data' });
-  }
-});
-
-export default router;
-```
-
-**Nu kan du kommentera in `poemRoutes` i `server.js`.**
-
-Då har vi två routes för poems:
-- `GET /api/poems`: hämtar alla dikter i databasen
-- `POST /api/poems`: skapar en ny dikt med title och content
-
-### Testa Poems Routes med cURL
-
-Testa GET Request
-
-Kör följande cURL-kommando i terminalen för att hämta alla dikter:
-```bash
-curl -X GET http://localhost:5000/api/poems
-```
-
-#### Förväntat Resultat
-
-Eftersom databasen är tom bör du få en tom array:
-```
-[]
-```
-Testa POST Request
-
-Skapa en ny dikt genom att skicka en POST-request:
-```bash
-curl -X POST http://localhost:5000/api/poems \
-  -H "Content-Type: application/json" \
-  -d '{
-    "title": "Min Första Dikt",
-    "content": "Detta är innehållet i min första dikt."
-  }'
-```
-#### Förväntat Resultat
-
-Du bör få tillbaka den skapade dikten med ett unikt _id:
-```json
-{
-  "_id": "5f9d88b8b5e1b12d4c8e1a1e",
-  "title": "Min Första Dikt",
-  "content": "Detta är innehållet i min första dikt.",
-  "createdAt": "2023-10-31T12:34:56.789Z",
-  "__v": 0
-}
-```
-Verifiera att Dikten Har Sparats
-
-Kör GET-requesten igen:
-```bash
-curl -X GET http://localhost:5000/api/poems
-```
-#### Förväntat Resultat
-
-Nu bör du se den nyligen skapade dikten i arrayen:
-```json
-[
-  {
-    "_id": "5f9d88b8b5e1b12d4c8e1a1e",
-    "title": "Min Första Dikt",
-    "content": "Detta är innehållet i min första dikt.",
-    "createdAt": "2023-10-31T12:34:56.789Z",
-    "__v": 0
-  }
-]
-```
-### Felhantering
-
-Skicka Tomma Fält vid POST
-
-Om du försöker skapa en dikt utan nödvändiga fält:
-```bash
-curl -X POST http://localhost:5000/api/poems \
-  -H "Content-Type: application/json" \
-  -d '{}'
-```
-#### Förväntat Resultat
-
-Du bör få ett felmeddelande:
-```json
-{
-  "message": "Invalid data"
-}
-```
-Servern returnerar statuskod `400 Bad Request`.
-
-### Lägga till Users och Autentisering
-
-Nu när __poems__ fungerar korrekt, låt oss lägga till __users__ och autentisering med JSON Web Tokens.
-
-## Autentisering
-
-Autentisering handlar om att verifiera att en användare verkligen är den de utger sig för att vara. I webbutveckling är detta kritiskt för att skydda användares data och begränsa åtkomst till vissa funktioner.
-
-JWT (JSON Web Tokens) är en modern standard för att hantera autentisering genom att:
-
-Skapa en krypterad token när användaren loggar in
-Låta klienten spara denna token
-Skicka med token vid varje efterföljande request
-Verifiera token på serversidan
-Fördelar med JWT:
-
-- Stateless: Servern behöver inte spara sessions-information
-- Säkert: Tokens är signerade och kan inte manipuleras
-- Flexibelt: Kan innehålla anpassad användardata
-- Skalbart: Fungerar bra i från 10 till 1000000 användare
-
-#### Ett typiskt JWT-flöde:
-
-1. Användaren skickar inloggningsuppgifter 
-```json
-{email: "user@example.com", password: "123456"}
-```
-2. Servern verifierar och skapar en token 
-```js
-jwt.sign({userId: user._id}, "hemlig_nyckel"))
-```
-3. Klienten sparar token 
-```js
-localStorage.setItem('token', receivedToken)
-```
-4. Vid API-anrop inkluderas token 
-```js
-headers: { Authorization: 'Bearer ' + token }
-```
-5. Servern verifierar token innan den ger åtkomst till skyddade routes.
-
-För att skydda routes använder vi middleware, som vi kan kalla `authMiddleware` som kontrollerar token innan förfrågan tillåts fortsätta. Detta ger oss ett elegant sätt att:
-
-- Kontrollera behörighet
-- Identifiera användaren
-- Neka åtkomst för ogiltiga tokens
-
-```mermaid
-sequenceDiagram
-    participant U as User
-    participant F as Frontend
-    participant B as Backend
-    participant D as Database
-    
-    Note over U,D: Registrering
-    U->>F: Fyller i registreringsformulär
-    F->>B: POST /api/auth/register
-    B->>D: Kontrollera om email finns
-    D-->>B: Email finns inte
-    B->>B: Hasha lösenord
-    B->>D: Spara användare
-    D-->>B: Användare sparad
-    B->>B: Skapa JWT token
-    B-->>F: Returnera token + user info
-    F->>F: Spara token i localStorage
-    
-    Note over U,D: Inloggning
-    U->>F: Fyller i inloggningsformulär
-    F->>B: POST /api/auth/login
-    B->>D: Hitta användare via email
-    D-->>B: Returnera användare
-    B->>B: Verifiera lösenord
-    B->>B: Skapa JWT token
-    B-->>F: Returnera token + user info
-    F->>F: Spara token i localStorage
-    
-    Note over U,D: Skyddad API-anrop
-    F->>B: API-anrop med Authorization header
-    B->>B: Verifiera JWT token
-    B->>B: Extrahera user ID från token
-    B->>D: Utför operation
-    D-->>B: Returnera data
-    B-->>F: Returnera svar
-```
-
-1. Installera Nödvändiga Paket
-```bash
-npm install bcrypt jsonwebtoken
-```
-2. Skapa User Model
-
-Skapa filen models/User.js:
-```bash
-touch models/User.js
-```
-Lägg till följande kod:
-```js
-import mongoose from'mongoose';
-
-const userSchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now },
-});
-
-export default mongoose.model('User', userSchema);
-```
-3. Skapa Auth Routes
-
-Skapa filen routes/auth.js:
-```bash
-touch routes/auth.js
-```
-Lägg till följande kod:
-```js
-import express from 'express';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import User from '../models/User';
-const router = express.Router();
-
-// Registrering
-router.post('/register', async (req, res) => {
-  const { username, email, password } = req.body;
-  try {
-    // Kontrollera om användaren redan finns
-    const existingUser = await User.findOne({ email });
-    if (existingUser) return res.status(400).json({ message: 'E-postadressen already exists' });
-
-    // Hasha lösenordet
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Skapa ny användare
-    const user = new User({ username, email, password: hashedPassword });
-    await user.save();
-
-    // Skapa JWT-token
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-
-    res.status(201).json({ token, user: { id: user._id, username: user.username } });
-  } catch (error) {
-    res.status(500).json({ message: 'Serverfel' });
-  }
-});
-
-// Inloggning
-router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
-  try {
-    // Hitta användaren
-    const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: 'Användaren finns inte' });
-
-    // Kontrollera lösenordet
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: 'Fel lösenord' });
-
-    // Skapa JWT-token
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-
-    res.json({ token, user: { id: user._id, username: user.username } });
-  } catch (error) {
-    res.status(500).json({ message: 'Serverfel' });
-  }
-});
-
-export default router;
-```
-
-4. Uppdatera .env-filen
-
-Lägg till en hemlig nyckel för JWT:
-```
-JWT_SECRET=din_hemliga_nyckel
-```
-5. Uppdatera server.js
-
-Importera och använd authRoutes:
-```js
-import authRoutes from './routes/auth';
-server.use('/api/auth', authRoutes);
-```
-6. Skapa Autentiseringsmiddleware
-
-Skapa filen middleware/auth.js:
-```bash
-mkdir middleware
-touch middleware/auth.js
-```
-Lägg till följande kod:
-```js
-import jwt from 'jsonwebtoken';
-
-function authMiddleware(req, res, next) {
-  const token = req.header('Authorization')?.split(' ')[1];
-  if (!token) return res.status(401).json({ message: 'No token provided, authorization denied' });
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
-    next();
-  } catch (error) {
-    res.status(400).json({ message: 'Invalid token' });
-  }
-};
-
-export default {
-  authMiddleware
-}
-```
-
-7. Uppdatera Poems Routes för Att Kräva Autentisering vid Skapande
-
-Uppdatera routes/poems.js:
-
-```js
-import authMiddleware from '../middleware/auth';
-
-// Skapa en ny dikt
-router.post('/', authMiddleware, async (req, res) => {
-  const { title, content } = req.body;
-  try {
-    const poem = new Poem({ title, content, author: req.user.id });
-    await poem.save();
-    res.status(201).json(poem);
-  } catch (error) {
-    res.status(400).json({ message: 'Invalid data' });
-  }
-});
-```
-
-8. Testa Auth Routes med cURL
-
-Registrering
-```bash
-curl -X POST http://localhost:5000/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "username": "användarnamn",
-    "email": "email@example.com",
-    "password": "lösenord"
-  }'
-```
-Förväntat Resultat
-```json
-{
-  "token": "JWT_TOKEN_HÄR",
-  "user": {
-    "id": "USER_ID_HÄR",
-    "username": "användarnamn"
-  }
-}
-```
-Inloggning
-```bash
-curl -X POST http://localhost:5000/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "email@example.com",
-    "password": "lösenord"
-  }'
-```
-Förväntat Resultat
-```json
-{
-  "token": "JWT_TOKEN_HÄR",
-  "user": {
-    "id": "USER_ID_HÄR",
-    "username": "användarnamn"
-  }
-}
-```
-
-### Felhantering
-
-- Fel lösenord:
-Om du anger fel lösenord vid inloggning får du:
-```json
-{
-  "message": "Fel lösenord"
-}
-```
-
-- Användaren finns inte:
-Om e-postadressen inte finns i systemet:
-```json
-{
-  "message": "Användaren finns inte"
-}
-```
-
-
-9. Testa Skyddade Poems Routes med cURL
-
-Använd JWT-token från inloggningen för att skapa en ny dikt.
-```bash
-curl -X POST http://localhost:5000/api/poems \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer JWT_TOKEN_HÄR" \
-  -d '{
-    "title": "En Dikt av En Inloggad Användare",
-    "content": "Innehållet i dikten."
-  }'
-```
-Förväntat Resultat
-
-Den nya dikten bör skapas och returneras.
-
-Felhantering
-
-- Ingen Token:
-Om du inte inkluderar Authorization-huvudet:
-```json
-{
-  "message": "No token provided, authorization denied"
-}
-```
-
-- Ogiltig token:
-Om token är ogiltig eller utgått:
-```json
-{
-  "message": "Invalid token"
-}
-```
-
-
-## Implementera Comments
-
-Nu när användarautentisering fungerar kan vi lägga till kommentarer.
-
-1. Skapa Comment Model
-
-Skapa filen models/Comment.js:
-```bash
-touch models/Comment.js
-```
-Lägg till följande kod:
-```js
-import mongoose from 'mongoose';
-
-const commentSchema = new mongoose.Schema({
-  content: { type: String, required: true },
-  author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  poem: { type: mongoose.Schema.Types.ObjectId, ref: 'Poem' },
-  createdAt: { type: Date, default: Date.now },
-});
-
-export default mongoose.model('Comment', commentSchema);
-```
-2. Skapa Comments Routes
-
-Skapa filen routes/comments.js:
-```bash
-touch routes/comments.js
-```
-Lägg till följande kod:
-```js
-import express from 'express';
-import Comment from '../models/Comment';
-import authMiddleware from '../middleware/auth';
-const router = express.Router();
-
-// Lägg till en kommentar
-router.post('/:poemId', authMiddleware, async (req, res) => {
-  const { content } = req.body;
-  const { poemId } = req.params;
-  try {
-    const comment = new Comment({ content, author: req.user.id, poem: poemId });
-    await comment.save();
-    res.status(201).json(comment);
-  } catch (error) {
-    res.status(400).json({ message: 'Invalid data' });
-  }
-});
-
-// Hämta kommentarer för en dikt
-router.get('/:poemId', async (req, res) => {
-  const { poemId } = req.params;
-  try {
-    const comments = await Comment.find({ poem: poemId }).populate('author', 'username');
-    res.json(comments);
-  } catch (error) {
-    res.status(500).json({ message: 'Serverfel' });
-  }
-});
-
-module.exports = router;
-```
-
-3. Uppdatera server.js
-
-Importera och använd commentRoutes:
-```js
-import commentRoutes from './routes/comments';
-
-server.use('/api/comments', commentRoutes);
-```
-4. Testa Comments Routes med cURL
-
-### Lägg till en Kommentar
-
-Använd en giltig JWT-token för att lägga till en kommentar till en dikt med poemId.
-```bash
-curl -X POST http://localhost:5000/api/comments/POEM_ID_HÄR \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer JWT_TOKEN_HÄR" \
-  -d '{
-    "content": "Detta är en kommentar."
-  }'
-```
-#### Förväntat Resultat
-
-Den nya kommentaren bör skapas och returneras.
-
-Hämta Kommentarer för en Dikt
-```bash
-curl -X GET http://localhost:5000/api/comments/POEM_ID_HÄR
-```
-#### Förväntat Resultat
-
-En array av kommentarer för den specifika dikten returneras.
-
-Felhantering
-
-- Invalid data:
-Om content saknas vid skapande av kommentar:
-```json
-{
-  "message": "Invalid data"
-}
-```
-
-- Serverfel:
-Vid oväntade fel returneras:
-```json
-{
-  "message": "Server error"
-}
-```
-
-## Frontend-integration
-
-## Strukturera frontend
-
-- Komponenter:
-    - Navbar: Navigeringsmeny.
-    - Home: Startsida som visar alla dikter.
-    - Login: Inloggningsformulär.
-    - Register: Registreringsformulär.
-    - PoemDetail: Visar en specifik dikt och dess kommentarer.
-    - AddPoem: Formulär för att lägga upp en ny dikt.
-    - AddComment: Formulär för att lägga till en kommentar.
-
-### Implementera React Routes 
-
-I App.js:
-```js
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import PoemDetail from './pages/PoemDetail';
-import AddPoem from './pages/AddPoem';
-
-function App() {
-  return (
-    <Router>
-      <Navbar />
-      <Routes>
-        <Route path="/" exact component={Home} />
-        <Route path="/login" component={Login} />
-        <Route path="/register" component={Register} />
-        <Route path="/poems/:id" component={PoemDetail} />
-        <Route path="/add-poem" component={AddPoem} />
-      </Routes>
-    </Router>
-  );
-}
-
-export default App;
-```
-
-Sedan skapar vi React komponenter för varje sida. Men vänta med backend integreringen.
-
-Exempelvis `pages/Home.jsx`:
-
-```js
-import { Link } from 'react-router-dom';
-
-function Home() {
-  // Sample data for poems
-  const poems = [
-    { id: 1, title: 'The Road Not Taken' },
-    { id: 2, title: 'Stopping by Woods on a Snowy Evening' },
-  ];
-
-  return (
-    <div>
-      <h1>Welcome to the Poetry App</h1>
-      <ul>
-        {poems.map(poem => (
-          <li key={poem.id}>
-            <Link to={`/poems/${poem.id}`}>{poem.title}</Link>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-export default Home;
-```
-
-Försök sedan själv att implementera resten av sidorna. `Login.jsx`, `Register.jsx`, `PoemDetail.jsx`, `AddPoem.jsx`
-
-## Anslutning till backend-API
-Med fetch kan vi skicka HTTP-förfrågningar till vår backend. Eftersom merparten av en fetch HTTP request är identiskt är det hjälpsamt att ha en hjälpfunktion.
-
-```js
-// utils/api.js
-
-const apiBaseUrl = 'http://localhost:3000/api';
-
-function api(endpoint, options = {}) {
-  const token = localStorage.getItem('token');
-
-  // Sätt standardheaders
-  const headers = {
-    'Content-Type': 'application/json',
-    ...options.headers,
-  };
-
-  // Lägg till Authorization-header om token finns
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
-  }
-
-  // Kombinera standardinställningar med inkommande options
-  const config = {
-    ...options,
-    headers,
-  };
-
-  return fetch(`${apiBaseUrl}${endpoint}`, config)
-    .then((response) => {
-      if (!response.ok) {
-        // Hantera fel genom att kasta ett undantag
-        return response.json().then((error) => {
-          throw error;
-        });
-      }
-      // Returnera svarets JSON-data
-      return response.json();
-    })
-    .catch((error) => {
-      // Global felhantering (valfritt)
-      console.error('API-fel:', error);
-      throw error;
+    const projects = await Project.find().sort({
+      featured: -1,
+      createdAt: -1
     });
-}
+    res.json(projects);
+  } catch (error) {
+    next(error);
+  }
+});
 
-export default api;
+export default router;
 ```
 
+Frontendens API-klient kan centralisera basadress och felhantering:
 
-- Exempel på användning i en komponent:
-```js
+```javascript
+const apiBaseUrl = import.meta.env.VITE_API_URL;
+
+async function parseResponse(response) {
+  if (response.status === 204) return null;
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'API-anropet misslyckades');
+  }
+  return data;
+}
+
+export async function getProjects() {
+  const response = await fetch(`${apiBaseUrl}/api/projects`);
+  return parseResponse(response);
+}
+```
+
+I React:
+
+```jsx
 import { useEffect, useState } from 'react';
-import api from '../utils/api';
+import { getProjects } from './api/client.js';
 
-function Home() {
-  const [poems, setPoems] = useState([]);
+export function ProjectList() {
+  const [state, setState] = useState({
+    projects: [],
+    loading: true,
+    error: ''
+  });
 
   useEffect(() => {
-    api.get('/poems')
-      .then((response) => setPoems(response.data))
-      .catch((error) => console.error(error));
+    getProjects()
+      .then(projects => setState({ projects, loading: false, error: '' }))
+      .catch(error => setState({
+        projects: [],
+        loading: false,
+        error: error.message
+      }));
   }, []);
 
+  if (state.loading) return <p>Laddar projekt…</p>;
+  if (state.error) return <p role="alert">{state.error}</p>;
+  if (!state.projects.length) return <p>Inga projekt publicerade ännu.</p>;
+
   return (
-    <main>
-      <h1>Welcome to the Poetry App</h1>
-      <ul>
-        {poems.map(poem => (
-          <li key={poem.id}>
-            <Link to={`/poems/${poem.id}`}>{poem.title}</Link>
-          </li>
-        ))}
-      </ul>
-    </main>
+    <section aria-labelledby="projects-heading">
+      <h2 id="projects-heading">Projekt</h2>
+      {state.projects.map(project => (
+        <article key={project._id}>
+          <h3>{project.title}</h3>
+          <p>{project.description}</p>
+          <p>{project.technologies.join(', ')}</p>
+        </article>
+      ))}
+    </section>
   );
 }
-
-export default Home;
 ```
 
+### Checkpoint 2
 
-```mermaid
-graph TD
-    A[App.js] --> B[Router]
-    A --> C[Navbar]
-    
-    B --> D[Home]
-    B --> E[Login]
-    B --> F[Register]
-    B --> G[PoemDetail]
-    B --> H[AddPoem]
-    
-    C --> I[Login Link]
-    C --> J[Register Link]
-    C --> K[Logout Button]
-    C --> L[Add Poem Link]
-    
-    D --> M[Poem List]
-    M --> N[Poem Card]
-    N --> O[Poem Title Link]
-    N --> P[Poem Preview]
-    
-    E --> Q[Login Form]
-    Q --> R[Email Input]
-    Q --> S[Password Input]
-    Q --> T[Submit Button]
-    
-    F --> U[Register Form]
-    U --> V[Username Input]
-    U --> W[Email Input]
-    U --> X[Password Input]
-    U --> Y[Submit Button]
-    
-    G --> Z[Poem Content]
-    G --> AA[Comments Section]
-    AA --> BB[Comment List]
-    AA --> CC[Add Comment Form]
-    BB --> DD[Comment Item]
-    
-    H --> EE[Add Poem Form]
-    EE --> FF[Title Input]
-    EE --> GG[Content Textarea]
-    EE --> HH[Submit Button]
-    
-    style A fill:#e1f5fe
-    style B fill:#f3e5f5
-    style C fill:#fff3e0
-    style D fill:#e8f5e8
-    style E fill:#e8f5e8
-    style F fill:#e8f5e8
-    style G fill:#e8f5e8
-    style H fill:#e8f5e8
+- En ny webbläsarsession kan läsa projekt utan token.
+- Laddning, tom lista och nätverksfel har synliga tillstånd.
+- Listans nyckel är MongoDB-fältet `_id`.
+- API-adressen kommer från miljön, inte från hårdkodad produktionsadress.
+
+## Milstolpe 3: admininloggning
+
+Administratören skapas med ett lokalt seed-skript eller en skyddad
+driftsprocess. Lägg inte till publik registrering i den här capstonen.
+
+Inloggningsrouten verifierar hash och ger en kortlivad token:
+
+```javascript
+import { Router } from 'express';
+import jwt from 'jsonwebtoken';
+import Admin from '../models/Admin.js';
+
+const router = Router();
+
+router.post('/login', async (req, res, next) => {
+  try {
+    const admin = await Admin
+      .findOne({ email: req.body.email })
+      .select('+passwordHash');
+
+    const valid = admin && await admin.verifyPassword(req.body.password);
+    if (!valid) {
+      return res.status(401).json({ error: 'Fel e-post eller lösenord' });
+    }
+
+    const token = jwt.sign(
+      { sub: admin.id, role: 'admin' },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    res.json({ token });
+  } catch (error) {
+    next(error);
+  }
+});
+
+export default router;
 ```
 
-## Testning och felsökning
+Håll helst token i React state eller annan minnesbaserad state:
 
-### Backend-testning
+```jsx
+const [token, setToken] = useState('');
 
-- Använd Postman eller Insomnia för att testa API-endpoints.
-- Enhetstester: Implementera tester med Mocha eller Jest för kritiska funktioner.
-
-### Frontend-testning
-
-- Webbläsarens utvecklarverktyg: Inspektera element, nätverkstrafik och konsol för att hitta fel.
-- React Developer Tools: För att inspektera komponenternas tillstånd och props.
-
-### Vanliga problem
-
-- CORS-fel: Se till att cors-middleware är korrekt konfigurerad i backend. Det bör räcka med att skriva `server.use(cors())` i `backend/server.js`
-- Felaktig token: Kontrollera att token lagras och skickas korrekt.
-- Databasanslutningsproblem: Verifiera MongoDB-anslutningssträngen och att databasen körs.
-
-```mermaid
-flowchart TD
-    A[Problem upptäckt] --> B{Typ av problem?}
-    
-    B -->|Frontend| C[Kontrollera webbläsarens utvecklarverktyg]
-    B -->|Backend| D[Kontrollera serverloggar]
-    B -->|Database| E[Kontrollera databasanslutning]
-    
-    C --> C1[Inspektera Console för fel]
-    C --> C2[Kontrollera Network tab]
-    C --> C3[Kontrollera React DevTools]
-    
-    C1 --> F{JavaScript fel?}
-    F -->|Ja| F1[Kontrollera syntax och imports]
-    F -->|Nej| C2
-    
-    C2 --> G{CORS fel?}
-    G -->|Ja| G1[Verifiera cors() middleware i backend]
-    G -->|Nej| H{API-anrop misslyckas?}
-    
-    H -->|Ja| H1[Kontrollera API-endpoints]
-    H -->|Nej| C3
-    
-    D --> D1[Kontrollera server.js konfiguration]
-    D --> D2[Verifiera miljövariabler]
-    D --> D3[Kontrollera routes och middleware]
-    
-    D1 --> I{Server startar inte?}
-    I -->|Ja| I1[Kontrollera port och dependencies]
-    I -->|Nej| D2
-    
-    D2 --> J{Miljövariabler saknas?}
-    J -->|Ja| J1[Kontrollera .env fil]
-    J -->|Nej| D3
-    
-    E --> E1[Verifiera MongoDB URI]
-    E --> E2[Kontrollera databasstatus]
-    E --> E3[Testa anslutning]
-    
-    E1 --> K{URI korrekt?}
-    K -->|Nej| K1[Uppdatera MONGODB_URI]
-    K -->|Ja| E2
-    
-    E2 --> L{Databas körs?}
-    L -->|Nej| L1[Starta MongoDB]
-    L -->|Ja| E3
-    
-    F1 --> M[Testa lösning]
-    G1 --> M
-    H1 --> M
-    I1 --> M
-    J1 --> M
-    K1 --> M
-    L1 --> M
-    
-    M --> N{Lösning fungerar?}
-    N -->|Ja| O[Problem löst!]
-    N -->|Nej| P[Gå tillbaka till relevant steg]
-    
-    P --> B
-    
-    style A fill:#ffebee
-    style O fill:#e8f5e8
-    style B fill:#fff3e0
-    style C fill:#e3f2fd
-    style D fill:#e3f2fd
-    style E fill:#e3f2fd
+async function login(credentials) {
+  const response = await fetch(`${apiBaseUrl}/api/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(credentials)
+  });
+  const data = await parseResponse(response);
+  setToken(data.token);
+}
 ```
 
-## Deploying till produktion
+Minneslagring betyder att administratören får logga in igen efter omladdning,
+men token lämnas inte kvar i beständig webbläsarlagring. `localStorage` är
+enklare för beständig inloggning men JavaScript på sidan kan läsa värdet. En
+XSS-sårbarhet kan därför stjäla token. Använd inte `localStorage` som om det
+vore en säker hemlighetsbehållare. Ett mer avancerat alternativ är en säker,
+`HttpOnly`, `Secure`, `SameSite`-cookie tillsammans med CSRF-skydd.
 
-### Backend-deploy
+### Checkpoint 3
 
-- Hosting: Använd en molntjänst som Heroku, DigitalOcean eller AWS.
-- Miljövariabler: Konfigurera miljövariabler på servern för MONGODB_URI och JWT_SECRET.
-- Bygg för produktion: Säkerställ att alla beroenden är installerade och att servern körs korrekt.
+- Fel e-post och fel lösenord ger samma generella svar.
+- Token innehåller inte lösenord eller lösenordshash.
+- Token försvinner vid omladdning om du valt minneslagring.
+- Adminvyn visas bara efter lyckad inloggning.
 
-### Frontend-deploy
+## Milstolpe 4: skyddad administration
 
-- Bygg frontend:
-```bash
-npm run build
+Återanvänd samma autentiseringsmiddleware på alla skrivande routes:
+
+```javascript
+import jwt from 'jsonwebtoken';
+
+export function authenticateAdmin(req, res, next) {
+  const [scheme, token] = (req.headers.authorization || '').split(' ');
+
+  if (scheme !== 'Bearer' || !token) {
+    return res.status(401).json({ error: 'Autentisering krävs' });
+  }
+
+  try {
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    if (payload.role !== 'admin') {
+      return res.status(403).json({ error: 'Åtkomst nekad' });
+    }
+    req.auth = payload;
+    next();
+  } catch {
+    res.status(401).json({ error: 'Ogiltig eller utgången token' });
+  }
+}
 ```
 
-- Hosting: Använd tjänster som Netlify, Vercel eller hosta statiska filer på samma server som backend.
+Frontendklienten skickar token endast när det behövs:
 
-### Domän och SSL
+```javascript
+export async function saveProject(project, token, id = '') {
+  const response = await fetch(`${apiBaseUrl}/api/projects/${id}`, {
+    method: id ? 'PATCH' : 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify(project)
+  });
+  return parseResponse(response);
+}
 
-- Domännamn: Köp och konfigurera ett domännamn.
-- SSL-certifikat: Använd Let’s Encrypt för att säkra applikationen med HTTPS.
-
-### CI/CD-pipeline
-
-- Automatiserad deployment: Använd GitHub Actions eller liknande för att automatisera bygg och deployment vid varje push till huvudgrenen.
-
-```mermaid
-graph TB
-    subgraph "Development"
-        A[Local Development] --> B[Git Repository]
-    end
-    
-    subgraph "CI/CD Pipeline"
-        B --> C[GitHub Actions]
-        C --> D[Build & Test]
-        D --> E[Deploy to Production]
-    end
-    
-    subgraph "Production Environment"
-        E --> F[Frontend Hosting]
-        E --> G[Backend Hosting]
-        E --> H[Database Hosting]
-        
-        F --> I[Netlify/Vercel]
-        G --> J[Heroku/DigitalOcean]
-        H --> K[MongoDB Atlas]
-    end
-    
-    subgraph "Domain & Security"
-        L[Domain Name] --> M[SSL Certificate]
-        M --> N[HTTPS]
-        N --> F
-        N --> G
-    end
-    
-    subgraph "Monitoring & Analytics"
-        O[Application Monitoring]
-        P[Error Tracking]
-        Q[Performance Analytics]
-        
-        F --> O
-        G --> O
-        F --> P
-        G --> P
-        F --> Q
-        G --> Q
-    end
-    
-    style A fill:#e8f5e8
-    style B fill:#e3f2fd
-    style C fill:#fff3e0
-    style F fill:#f3e5f5
-    style G fill:#f3e5f5
-    style H fill:#f3e5f5
-    style L fill:#ffebee
-    style O fill:#e0f2f1
+export async function deleteProject(id, token) {
+  const response = await fetch(`${apiBaseUrl}/api/projects/${id}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return parseResponse(response);
+}
 ```
 
-Genom att följa denna guide har vi byggt en fullständig webbapplikation med en modern tech stack. Projektet täcker viktiga koncept som:
-- Fullstack-utveckling med Node.js, Express och React.
-- Hantering av användarautentisering med JWT.
-- Kommunikation mellan frontend och backend med RESTful API:er.
-- Databasinteraktion med MongoDB och Mongoose.
-- Deployment av en fullständig applikation till produktion.
+Efter en mutation kan du antingen uppdatera React state med API-svaret eller
+hämta listan igen. Vid `401` ska frontend rensa token och visa inloggningen.
+Frontendens dolda knappar är bara användargränssnitt; det är backendens
+middleware som upprätthåller säkerheten.
 
-Detta projekt ger en praktisk inblick i att bygga skalbara och underhållbara webbapplikationer, vilket är en värdefull erfarenhet för alla blivande webbutvecklare.
+### Checkpoint 4
+
+- Admin kan skapa, redigera och ta bort ett projekt.
+- Besökaren kan fortfarande bara läsa.
+- Ett direkt skrivande API-anrop utan token ger `401`.
+- Listan visar den senaste serverdatan efter varje ändring.
+
+## Milstolpe 5: tester och felvägar
+
+Behåll testerna från övning 4 och komplettera dem med projektets viktigaste
+kontrakt:
+
+- health endpoint ger `200`
+- projektlistan är publik
+- valideringsfel ger `400`
+- okänt projekt ger `404`
+- POST, PATCH och DELETE ger `401` utan token
+- admin-token tillåter samtliga skrivande operationer
+- DELETE ger `204` utan JSON-body
+- felaktig och utgången token avvisas
+
+Testa även frontend manuellt:
+
+1. Stoppa backend och kontrollera frontendens felmeddelande.
+2. Starta backend och kontrollera tomt tillstånd.
+3. Logga in och skapa ett projekt.
+4. Ladda om sidan och kontrollera att projektet finns kvar.
+5. Redigera projektet och kontrollera publik vy.
+6. Ta bort projektet och kontrollera att det försvinner.
+
+### Checkpoint 5
+
+- Backendtesterna använder en separat testdatabas.
+- Tester kan köras upprepade gånger utan kvarvarande testdata.
+- Frontend fastnar inte i ett evigt laddningstillstånd vid fel.
+- API-fel visas begripligt utan att läcka stack traces.
+
+## CORS och miljövariabler
+
+`cors()` utan begränsning är bekvämt lokalt men för brett för den här
+produktionen. Använd en kommaseparerad allowlist:
+
+```text
+FRONTEND_URLS=http://localhost:5173,https://portfolio.example.com
+```
+
+Backendens `.env.example`:
+
+```text
+PORT=3000
+MONGODB_URI=mongodb://127.0.0.1:27017/portfolio
+JWT_SECRET=replace-with-a-long-random-value
+JWT_EXPIRES_IN=1h
+FRONTEND_URLS=http://localhost:5173
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=replace-only-when-seeding
+```
+
+Frontendens `.env.example`:
+
+```text
+VITE_API_URL=http://localhost:3000
+```
+
+Variabler med prefixet `VITE_` byggs in i frontendpaketet och är synliga för
+besökaren. Lägg därför aldrig `JWT_SECRET`, databas-URI eller adminlösenord där.
+
+## Deployment-checklista
+
+### Backend och databas
+
+- [ ] Sätt `NODE_ENV=production`.
+- [ ] Sätt en unik, lång `JWT_SECRET` i plattformens secret-hantering.
+- [ ] Sätt produktionsvärdet för `MONGODB_URI`.
+- [ ] Begränsa databasens nätverksåtkomst och använd en egen databasanvändare.
+- [ ] Sätt exakt produktionsorigin i `FRONTEND_URLS`.
+- [ ] Kör tester före deployment.
+- [ ] Kontrollera att startkommandot är `npm start`.
+- [ ] Kontrollera `/api/health` över HTTPS efter deployment.
+- [ ] Seed:a admin en gång och ta bort tillfälligt adminlösenord ur miljön.
+
+### Frontend
+
+- [ ] Sätt `VITE_API_URL` till backendens publika HTTPS-adress.
+- [ ] Bygg med `npm run build`.
+- [ ] Kontrollera att inga hemligheter finns i den byggda JavaScript-koden.
+- [ ] Testa projektlista, login och CRUD från produktionsdomänen.
+- [ ] Kontrollera responsivitet, tangentbordsnavigering och felmeddelanden.
+
+## Acceptanskriterier
+
+Capstonen är klar när:
+
+- den befintliga portfolion visar projekt hämtade från MongoDB via API:et
+- `GET /api/projects` fungerar utan autentisering
+- admin kan logga in med ett hashat, seed:at konto
+- POST, PATCH och DELETE kräver en giltig admin-JWT
+- formulären valideras både i frontend och backend
+- lyckade ändringar syns i den publika listan efter ett nytt API-anrop
+- frontend hanterar laddning, tom data, `401` och nätverksfel
+- CORS använder en miljöstyrd allowlist
+- hemligheter saknas i repository och frontendbundle
+- backendens centrala flöden täcks av Jest och Supertest
+- både frontend och backend fungerar via HTTPS i produktionsmiljön
+
+## Slutlig checkpoint
+
+Demonstrera hela flödet för en annan person:
+
+1. Öppna den publika portfolion och visa projekten.
+2. Logga in som administratör.
+3. Skapa ett projekt och visa det i publik vy.
+4. Redigera projektet och ladda om sidan.
+5. Ta bort projektet.
+6. Visa ett avvisat skrivförsök utan token.
+7. Kör backendens testsvit.
+
+Du har nu en enda sammanhängande fullstackprodukt från Express och MongoDB till
+React, autentisering, testning och deployment. Om du senare vill lägga till
+serverdrivna uppdateringar kan du fortsätta med
+[WebSockets i kapitel 10](../kapitel_10/websockets.md); nuvarande lösning gör
+vanliga HTTP-anrop och ska inte beskrivas som realtid.

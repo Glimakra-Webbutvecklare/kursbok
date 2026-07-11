@@ -2,7 +2,7 @@
 
 JavaScript blir riktigt kraftfullt när vi använder det för att interagera med och ändra innehållet och strukturen på vår HTML-sida *efter* att den har laddats. Detta görs genom **DOM (Document Object Model)**. Vi behöver också kunna reagera på användarens handlingar, vilket vi gör genom att hantera **Events (Händelser)**.
 
-**Förutsättningar:** Du ska känna till HTML-element och CSS-selektorer. I den här lektionen använder JavaScript samma typer av selektorer för att hitta element på sidan.
+**Förutsättningar:** Du ska känna till HTML-element och CSS-selektorer. I den här lektionen använder JavaScript samma typer av selektorer för att hitta element på sidan. Vi fortsätter med **`portfolio-site`** från Git- och JavaScript-kapitlen.
 
 **Mål:** Förstå vad DOM är, lära oss hur man väljer ut (selectar) HTML-element med JavaScript, hur man manipulerar (ändrar) deras innehåll, attribut och stilar, samt hur man kopplar händelselyssnare (`addEventListener`) för att reagera på användarinteraktioner som klick.
 
@@ -288,6 +288,10 @@ saveButton.addEventListener('click', () => {
 <!-- playground:end -->
 
 > **Notera:** I den här interaktiva rutan körs koden i en isolerad (sandboxad) ram. För att `localStorage` ska fungera körs just det här exemplet med extra rättigheter. På en riktig webbsida behövs inget sådant.
+
+> **Förhandsvisning av kapitel 5:** `JSON.stringify` och `JSON.parse` används ofta tillsammans med `localStorage` och API-anrop – det går vi igenom i [Fortsättning JavaScript](../kapitel_5/data-format.md).
+
+> **Kör nu i `portfolio-site`:** Lägg till ett input-fält och en knapp i `index.html`. Spara värdet i `localStorage` och visa det vid sidladdning – samma mönster som ovan.
 
 ---
 

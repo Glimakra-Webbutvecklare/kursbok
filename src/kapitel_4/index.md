@@ -8,14 +8,16 @@ I de tidigare kapitlen har vi lärt oss att bygga upp webbsidor med HTML, ge dem
 - Hämta och visa data från andra tjänster (API:er).
 - Skapa spel, animationer och mycket mer.
 
-> **Motivation:**  
-> JavaScript är ett av världens mest använda programmeringsspråk och är oumbärligt för modern webbutveckling. Nästan alla interaktiva funktioner du ser på webben bygger på JavaScript.
+> **Så här lär du dig JavaScript i den här boken**  
+> Varje lektion innehåller **interaktiva kodexempel** där du kan ändra koden och klicka på **Kör**. Efter varje övning finns en uppmaning att **göra samma sak i ditt eget projekt** – det är där kunskapen fastnar. Playgrounden i boken är uppvärmning, inte slutmålet.
 
-> **Mål:**
-> Förstå JavaScripts roll på webben och bygga upp grunderna steg för steg: värden, beslut, loopar, funktioner och sedan interaktion med sidan.
+---
 
-**Språkpolicy:**  
-Svenska används i förklaringar, men engelska tekniska termer anges i parentes första gången de nämns. Variabel- och funktionsnamn skrivs på engelska.
+## Vårt exempelprojekt: `portfolio-site`
+
+Genom hela kapitlet fortsätter vi med samma projekt som i Git-kapitlet: en enkel portfoliosida med `index.html` (och eventuellt `about.html`). Du lägger till en fil `script.js` och gör sidan interaktiv steg för steg – räknare, formulär och mer.
+
+Om du inte har `portfolio-site` än: skapa mappen och en enkel `index.html` (se [Git-kapitlet](../git/forsta-commits.md)).
 
 ---
 
@@ -28,7 +30,10 @@ Svenska används i förklaringar, men engelska tekniska termer anges i parentes 
 - **Funktioner:** Hur du organiserar och återanvänder kod.
 - **Interaktion med HTML (DOM):** Hur JavaScript kan läsa och ändra innehåll på sidan.
 - **Händelser:** Hur du reagerar på användarens handlingar, t.ex. klick och tangenttryckningar.
-- **Praktiska övningar:** Du får skriva och testa JavaScript-kod direkt på dina egna webbsidor.
+- **Praktiska övningar:** Du bygger vidare på `portfolio-site` med JavaScript.
+
+**Språkpolicy:**  
+Svenska används i förklaringar, men engelska tekniska termer anges i parentes första gången de nämns. Variabel- och funktionsnamn skrivs på engelska.
 
 ---
 

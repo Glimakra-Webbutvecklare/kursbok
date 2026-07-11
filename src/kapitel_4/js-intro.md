@@ -83,9 +83,9 @@ Du kan också inkludera JavaScript som en modul med attributet `type="module"`. 
 
 **I filen `main.js`:**
 ```javascript
-import { minFunktion } from './utils.js';
+import { greet } from './utils.js';
 
-minFunktion();
+greet();
 ```
 
 Detta är användbart för större projekt där du vill strukturera din kod i flera filer.
@@ -117,8 +117,8 @@ Att använda beskrivande namn gör koden lättare att underhålla och förstå f
 En variabel används för att spara data som kan användas senare.
 
 ```javascript
-let namn = "Anna";
-let alder = 25;
+let name = "Anna";
+let age = 25;
 ```
 
 ### Utskrift
@@ -134,9 +134,34 @@ let alder = 25;
 ```js
 console.log("Hej!");
 
-const namn = "Världen";
-console.log("Hej, " + namn + "!");
+const name = "Världen";
+console.log("Hej, " + name + "!");
 ```
+
+---
+
+## Felsökning med konsolen
+
+När något inte fungerar som förväntat är **webbläsarens konsol** (Developer Tools) ditt viktigaste verktyg.
+
+1. Öppna konsolen med **F12** (eller högerklicka → *Inspektera* → fliken **Console**).
+2. Använd `console.log()` för att skriva ut värden och se vad koden faktiskt gör.
+3. Läs felmeddelanden – de visar ofta filnamn, radnummer och vad som gick fel.
+
+```javascript
+let score = 10;
+console.log("Poäng före:", score);
+score = score + 5;
+console.log("Poäng efter:", score);
+```
+
+> **Vanliga misstag**
+>
+> - **Glömt att länka `script.js`** → inget händer. Kontrollera `<script src="script.js">` i HTML.
+> - **Script före HTML-element** → `null` vid DOM-sökning. Placera `<script>` sist i `<body>`.
+> - **Stavfel i variabelnamn** → `ReferenceError: x is not defined`.
+
+> **Kör nu i din egen editor:** Öppna `portfolio-site/index.html` (från Git-kapitlet), lägg till `<script src="script.js"></script>` före `</body>` och skriv din första `console.log` i `script.js`. Bekräfta i konsolen att meddelandet syns.
 
 ---
 

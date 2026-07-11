@@ -128,11 +128,87 @@ console.log("Hello, " + firstName + "!");
 
 ---
 
+## Operatorer och uttryck
+
+Operatorer låter dig räkna, jämföra och kombinera värden.
+
+**Aritmetiska operatorer:** `+`, `-`, `*`, `/`, `%` (rest vid division)
+
+```javascript
+let price = 100;
+let discount = 0.2;
+let finalPrice = price * (1 - discount); // 80
+```
+
+**Jämförelseoperatorer:** Använd `===` och `!==` för att jämföra värde *och* typ.
+
+```javascript
+let age = 18;
+console.log(age >= 18); // true
+```
+
+**Logiska operatorer:** `&&` (och), `||` (eller), `!` (inte)
+
+```javascript
+let isMember = true;
+let hasTicket = false;
+console.log(isMember && hasTicket); // false
+```
+
+---
+
+## Template literals
+
+Med **template literals** (backticks `` ` ``) kan du bädda in variabler direkt i text med `${variabel}`:
+
+```javascript
+const name = "Anna";
+const score = 42;
+console.log(`Hej ${name}! Du har ${score} poäng.`);
+```
+
+Det är tydligare än att kedja många `+`-tecken.
+
+<!-- playground -->
+```js
+const projectName = "portfolio-site";
+const pageCount = 2;
+console.log(`Projekt: ${projectName}, sidor: ${pageCount}`);
+```
+
+---
+
+## Arrayer och objekt – grunderna
+
+En **array** är en ordnad lista. Ett **objekt** lagrar namngivna egenskaper.
+
+```javascript
+const skills = ["HTML", "CSS", "JavaScript"];
+console.log(skills[0]);        // "HTML"
+console.log(skills.length);    // 3
+
+const developer = {
+  name: "Anna",
+  role: "Webbutvecklare",
+  years: 2
+};
+console.log(developer.name);   // "Anna"
+console.log(developer["role"]); // "Webbutvecklare"
+```
+
+Du kan loopa igenom en array med en `for`-loop (se [Kontrollstrukturer](./kontrollstrukturer.md)). Avancerade array-metoder som `map` och `filter` kommer i [kapitel 5](../kapitel_5/array-metoder.md).
+
+> **Kör nu i `portfolio-site`:** Skapa variabler för ditt namn och en array med tre färdigheter du vill visa på portfolion. Skriv ut dem med `console.log` och template literals.
+
+---
+
 ## Sammanfattning
 
 - Variabler används för att lagra och hantera data i JavaScript.
 - Använd `let` för variabler som kan ändras, `const` för konstanter.
 - Variabler kan innehålla olika datatyper: text, tal, boolean, listor, objekt m.m.
+- Operatorer (`===`, `&&`, `+` m.m.) och template literals gör uttryck läsbara.
+- Arrayer och objekt är grunden för att strukturera mer komplex data.
 - Välj tydliga och beskrivande variabelnamn på engelska.
 - Variabler är grunden för att kunna skapa dynamiska och flexibla program.
 
