@@ -6,6 +6,22 @@ Tänk dig att du är en vägvisare på en korsning: beroende på vilken väg en 
 
 De vanligaste kontrollstrukturerna är **villkorssatser** (if/else) och **loopar** (for, while).
 
+> **Mål:**
+> Kunna låta ett program välja väg med `if`/`else` och upprepa ett tydligt antal gånger med en `for`-loop.
+
+**Prova först:** Ändra åldern och klicka på **Kör**. Konsolen visar vilken väg programmet väljer.
+
+<!-- playground -->
+```js
+const age = 17;
+
+if (age >= 18) {
+  console.log("Du är myndig.");
+} else {
+  console.log("Du är inte myndig ännu.");
+}
+```
+
 ---
 
 ## Villkorssatser (if, else if, else)

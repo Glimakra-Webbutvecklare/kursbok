@@ -2,8 +2,29 @@
 
 Att förstå olika CSS-enheter är avgörande för att skapa flexibla, responsiva och tillgängliga webbsidor. CSS erbjuder många olika enheter för att mäta storlekar, avstånd och positioner. Att välja rätt enhet för rätt situation gör skillnaden mellan en sida som fungerar bra på alla enheter och en som bara fungerar på en specifik skärmstorlek.
 
-> **Motivation:**  
-> Med kunskap om olika CSS-enheter kan du skapa webbsidor som anpassar sig till användarens inställningar, fungerar på alla enheter och är tillgängliga för alla användare. Du lär dig när du ska använda pixlar, procent, rem eller andra enheter.
+> **Mål:**
+> Kunna skilja på fasta och relativa mått och se hur `px`, `%` och `rem` förändrar en sida.
+
+**Prova först:** Ändra bredden eller textstorleken och klicka på **Kör**. Procent beräknas från förälderns bredd, medan `rem` beräknas från sidans grundstorlek.
+
+<!-- playground:start -->
+```html
+<div class="container">
+  <p>Den här rutan är 80% av sin förälder.</p>
+</div>
+```
+```css
+.container {
+  width: 80%;
+  padding: 1rem;
+  border: 2px solid darkcyan;
+}
+
+p {
+  font-size: 1.25rem;
+}
+```
+<!-- playground:end -->
 
 ---
 
@@ -78,6 +99,8 @@ Relativa enheter anpassar sig till sin kontext, vilket gör dem perfekta för re
 }
 ```
 
+> **Historisk kod:** `float` användes länge för enkla kolumnlayouter. I modern CSS använder vi oftast Flexbox eller Grid för layout; exemplet visar bara hur procent fungerar i äldre kod.
+
 ### Em (em) – Relativt till förälderns fontstorlek
 
 - **Vad det är:** 1em = förälderelement `font-size`.
@@ -134,8 +157,7 @@ Dessa enheter baseras på webbläsarfönstrets (viewport) dimensioner:
 }
 
 .full-width-text {
-  font-size: 5vw;       /* Text som skalas med skärmbredd */
-  max-font-size: 3rem;  /* Men inte större än 3rem */
+  font-size: clamp(1.5rem, 5vw, 3rem); /* Skalar, men blir högst 3rem */
 }
 
 .square {
@@ -660,4 +682,4 @@ Genom att välja rätt enhet för varje situation och förstå hur de fungerar t
 
 ---
 
-*I nästa avsnitt tittar vi på boxmodellen, som beskriver hur utrymme hanteras runt HTML-element.*
+*I nästa avsnitt tittar vi på responsiv design, där enheter och media queries används för att anpassa sidan.*

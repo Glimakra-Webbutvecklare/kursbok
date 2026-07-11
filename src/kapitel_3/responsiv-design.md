@@ -2,8 +2,36 @@
 
 Idag surfar människor på webben från en mängd olika enheter: stora datorskärmar, bärbara datorer, surfplattor och mobiler av alla storlekar. En modern webbplats måste kunna anpassa sin layout och sitt innehåll för att se bra ut och vara användbar på alla dessa skärmar. Detta kallas **responsiv web design (responsive web design, RWD)**.
 
-> **Motivation:**  
-> Responsiv design gör att din webbplats fungerar och ser bra ut på alla enheter, vilket förbättrar användarupplevelsen och gör sidan mer tillgänglig.
+> **Mål:**
+> Kunna använda en `min-width`-media query och testa hur en layout ändras när förhandsvisningen blir bredare.
+
+**Prova först:** Dra i kanten på förhandsvisningen efter att du klickat på **Kör**. Vid 600px blir rutorna två kolumner i stället för en.
+
+<!-- playground:start -->
+```html
+<div class="cards">
+  <article>Första kortet</article>
+  <article>Andra kortet</article>
+</div>
+```
+```css
+.cards {
+  display: grid;
+  gap: 1rem;
+}
+
+article {
+  padding: 1rem;
+  background: #dff6f6;
+}
+
+@media (min-width: 600px) {
+  .cards {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+```
+<!-- playground:end -->
 
 ---
 

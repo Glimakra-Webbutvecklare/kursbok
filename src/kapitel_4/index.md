@@ -11,6 +11,9 @@ I de tidigare kapitlen har vi lärt oss att bygga upp webbsidor med HTML, ge dem
 > **Motivation:**  
 > JavaScript är ett av världens mest använda programmeringsspråk och är oumbärligt för modern webbutveckling. Nästan alla interaktiva funktioner du ser på webben bygger på JavaScript.
 
+> **Mål:**
+> Förstå JavaScripts roll på webben och bygga upp grunderna steg för steg: värden, beslut, loopar, funktioner och sedan interaktion med sidan.
+
 **Språkpolicy:**  
 Svenska används i förklaringar, men engelska tekniska termer anges i parentes första gången de nämns. Variabel- och funktionsnamn skrivs på engelska.
 
@@ -29,4 +32,4 @@ Svenska används i förklaringar, men engelska tekniska termer anges i parentes 
 
 ---
 
-Nu är det dags att ta steget från statiska sidor
+Nu är det dags att ta steget från statiska sidor till program som kan reagera och förändras.
