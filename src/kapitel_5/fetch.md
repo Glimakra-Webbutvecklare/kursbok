@@ -1,8 +1,8 @@
 # Hämta Data med Fetch API
 
-Nu när vi förstår Promises och `async/await`, kan vi titta på det moderna sättet att göra nätverksanrop (network requests) i JavaScript: **Fetch API**.
+Nu när vi förstår Promises, `async/await`, JSON och array-metoder kan vi hämta data från externa API:er med **Fetch API** – och visa resultatet i `portfolio-site`.
 
-Fetch API är ett inbyggt gränssnitt i webbläsaren (och Node.js via externa bibliotek) som ger ett kraftfullt och flexibelt sätt att interagera med resurser över nätverket, oftast genom att hämta data från eller skicka data till ett webb-API (Application Programming Interface).
+Fetch API är ett inbyggt gränssnitt i webbläsaren som ger ett kraftfullt sätt att interagera med resurser över nätverket, oftast genom att hämta data från eller skicka data till ett webb-API (Application Programming Interface).
 
 **Varför Fetch?**
 
@@ -38,13 +38,20 @@ fetch(apiUrl)
   .then(data => {
     // Steg 2: Hantera den parsade datan (nu ett JavaScript-objekt)
     console.log("Mottagen data:", data);
-    // Gör något med datan, t.ex. visa den på sidan
-    document.body.innerHTML += `<p>Titel: ${data.title}</p>`;
+    // Visa titeln i DOM (bättre än innerHTML +=)
+    const output = document.querySelector("#post-output");
+    if (output) {
+      const titleEl = document.createElement("p");
+      titleEl.textContent = `Titel: ${data.title}`;
+      output.appendChild(titleEl);
+    }
   })
   .catch(error => {
-    // Hantera fel från nätverket eller från throw new Error ovan
     console.error("Fel vid fetch:", error);
-    document.body.innerHTML += `<p style="color: red;">Kunde inte hämta data: ${error.message}</p>`;
+    const output = document.querySelector("#post-output");
+    if (output) {
+      output.textContent = `Kunde inte hämta data: ${error.message}`;
+    }
   });
 
 console.log("Fetch-anrop startat, väntar...");
@@ -82,11 +89,19 @@ async function getPost() {
     const data = await response.json();
     console.log("Mottagen data (async):", data);
 
-    document.body.innerHTML += `<p>Titel (async): ${data.title}</p>`;
+    const output = document.querySelector("#post-output");
+    if (output) {
+      const titleEl = document.createElement("p");
+      titleEl.textContent = `Titel (async): ${data.title}`;
+      output.appendChild(titleEl);
+    }
 
   } catch (error) {
     console.error("Fel vid async fetch:", error);
-    document.body.innerHTML += `<p style="color: red;">Kunde inte hämta data (async): ${error.message}</p>`;
+    const output = document.querySelector("#post-output");
+    if (output) {
+      output.textContent = `Kunde inte hämta data (async): ${error.message}`;
+    }
   }
 }
 
@@ -151,3 +166,33 @@ createPost(myNewPost)
 *   `credentials`: ('include', 'same-origin', 'omit'). Styr om cookies ska skickas med förfrågan.
 
 Fetch API är ett kraftfullt verktyg för att bygga dynamiska webbapplikationer som interagerar med externa datakällor.
+
+**Prova själv:** Simulera ett API-svar och visa titeln i förhandsvisningen.
+
+<!-- playground:start -->
+```html
+<div id="post-output">Laddar...</div>
+```
+```js
+// Simulerat API-svar (i riktigt projekt använder du fetch mot en URL)
+const mockPost = {
+  title: "Min första bloggpost",
+  body: "Innehåll från API..."
+};
+
+const output = document.querySelector("#post-output");
+output.textContent = "";
+
+const titleEl = document.createElement("p");
+titleEl.textContent = `Titel: ${mockPost.title}`;
+output.appendChild(titleEl);
+```
+<!-- playground:end -->
+
+> **Vanliga misstag**
+>
+> - **Glömmer `response.ok`** → 404/500 behandlas som lyckat anrop.
+> - **Glömmer `await response.json()`** → du får ett Promise-objekt, inte datan.
+> - **Använder `innerHTML +=` i loop** → långsam och risk för XSS. Använd `createElement`/`appendChild`.
+
+> **Kör nu i `portfolio-site`:** Lägg till `<ul id="user-list"></ul>` i `index.html` och hämta användare från `https://jsonplaceholder.typicode.com/users` med `async/await`. Visa namnen i listan.

@@ -160,3 +160,33 @@ console.log("processData anropad, väntar...");
 *   **Enklare felsökning:** Lättare att följa kodflödet och sätta brytpunkter.
 
 `async/await` är idag det vanligaste sättet att hantera Promises i modern JavaScript-utveckling.
+
+**Prova själv:** Kör koden nedan och se hur `.then()` och `.catch()` hanterar ett simulerat Promise.
+
+<!-- playground -->
+```js
+function loadPortfolioData() {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve({ title: "Min Portfolio", views: 42 }), 800);
+  });
+}
+
+console.log("Startar...");
+
+loadPortfolioData()
+  .then((data) => {
+    console.log("Data:", data.title, "- visningar:", data.views);
+  })
+  .catch((error) => {
+    console.error("Fel:", error.message);
+  });
+
+console.log("Promise anropat, väntar...");
+```
+
+> **Vanliga misstag**
+>
+> - **Glömmer `.catch()`** → ohanterade fel i konsolen.
+> - **Använder `await` utanför `async function`** → syntaxfel.
+
+> **Kör nu i `portfolio-site`:** Skriv en `async function loadGreeting()` som väntar 1 sekund (med `setTimeout` inuti ett Promise) och sedan loggar ett meddelande.
