@@ -55,6 +55,21 @@ console.log("Timer startad, fortsätter med annan kod...");
 
 Notera hur `setTimeout` inte blockerar. Koden fortsätter direkt till nästa `console.log`, och callback-funktionen körs först när timern har gått ut.
 
+**Prova själv:** Förutsäg utskriftsordningen, klicka **Kör**, och jämför med din gissning.
+
+<!-- playground -->
+```js
+console.log("A");
+
+setTimeout(() => {
+  console.log("B (efter timeout)");
+}, 1000);
+
+console.log("C");
+```
+
+> **Kör nu i `portfolio-site`:** Lägg till en `setTimeout` i `script.js` som skriver ut ett meddelande två sekunder efter sidladdning. Bekräfta att sidan fortfarande är responsiv under väntetiden.
+
 ## Händelseloopen (The Event Loop)
 
 Men hur fungerar detta bakom kulisserna? Hur kan JavaScript, som är entrådat, hantera saker som händer "samtidigt"?
