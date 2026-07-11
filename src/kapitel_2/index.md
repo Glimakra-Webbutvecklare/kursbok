@@ -1,21 +1,17 @@
-# HTML – Webbens byggstenar
+# HTML – webbens byggstenar
 
-I det föregående kapitlet fick vi en överblick över webbutvecklingens värld. Nu är det dags att kavla upp ärmarna och börja bygga!
+Nu börjar du bygga webbsidor. **HTML (HyperText Markup Language)** är språket som berättar vad sidans innehåll är: rubriker, text, länkar, bilder och listor. Tänk på HTML som ett skelett – CSS ger det senare färg och form.
 
-Detta kapitel introducerar **HTML (HyperText Markup Language)** – språket vi använder för att definiera strukturen och innehållet på en webbsida. Tänk på det som skelettet som håller allt på plats. Utan HTML finns det ingen webbsida.
+> **Du behöver inte kunna allt utantill.** Skriv ett litet exempel, öppna det i webbläsaren och se resultatet. Det är så du lär dig vad HTML-koden gör.
 
-> **Bra att veta:**  
-> När du börjar skriva HTML-kod vill du också kunna spara ditt arbete på ett säkert sätt och kunna gå tillbaka om något går fel. Det verktyget heter **Git** och har ett helt eget kapitel direkt efter detta.
+## I det här kapitlet
 
----
+1. **Bygg din första sida** med rubriker, text, listor, länkar och bilder.
+2. **Se sidans HTML-träd** och förstå hur element ligger inuti varandra.
+3. **Ge innehållet mening** med semantiska element som `<header>`, `<main>` och `<footer>`.
+4. **Gör en bra grund för alla** med alt-texter, beskrivande länkar och tydliga rubriker.
+5. **Bygg själv** i praktiska övningar.
 
-## Vad kommer du att lära dig i detta kapitel?
+De interaktiva exemplen i kapitlet har en **Kör**-knapp. Ändra gärna en liten sak åt gången och se direkt hur sidan påverkas.
 
-- **Grunderna i HTML5:** De vanligaste taggarna för att skapa text, rubriker, listor, länkar och bilder.
-- **Struktur och semantik:** Varför det är viktigt att använda rätt HTML-element för rätt syfte – inte bara för utseendet, utan också för sökmotorer och tillgänglighet.
-- **Tillgänglighet (accessibility):** Hur HTML kan användas för att göra webbplatser användbara för fler människor, inklusive de med funktionsvariationer.
-- **Praktiska övningar:** Du får bygga enkla HTML-strukturer.
-
----
-
-Låt oss börja med att lägga grunden för våra webbsidor med HTML!
+Efter HTML-kapitlet kommer Git, där du lär dig att spara och följa ändringar i dina projekt.

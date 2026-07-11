@@ -1,30 +1,24 @@
-# Praktiska övningar: HTML och Git
+# Praktiska övningar: HTML
 
-Teori är bra, men det bästa sättet att lära sig HTML och Git är att använda dem! Här är några övningar för att befästa kunskaperna från detta kapitel.
+Nu är det dags att skriva HTML själv. Börja med övning 1 och öppna alltid din `index.html` i webbläsaren efter en ändring. Jämför vad du skrev med vad som faktiskt syns.
 
 > **Mål:**  
-> Praktiskt tillämpa HTML-taggar för struktur och semantik, samt använda grundläggande Git-kommandon för att spåra och spara ändringar lokalt och på GitHub.
+> Skapa en enkel, semantisk HTML-sida med rubriker, text, listor, länkar och tillgänglighetsgrunder.
 
 **Förutsättningar:**  
-Du har VS Code (eller annan editor), Git och en terminal installerad. Du har också ett GitHub-konto.
+Du behöver en editor, till exempel VS Code, och en webbläsare. Git kommer i nästa kapitel.
 
 ---
 
-## Övning 1: Skapa en enkel "Om Mig"-sida
+## Övning 1: Skapa en enkel ”Om mig”-sida
 
 1. **Skapa projektmapp:**  
    Skapa en ny mapp, t.ex. `om-mig-sida`.
 
-2. **Initiera Git:**  
-   Öppna terminalen, navigera till mappen (`cd om-mig-sida`) och kör:
-   ```bash
-   git init
-   ```
-
-3. **Skapa HTML-fil:**  
+2. **Skapa HTML-fil:**
    Skapa en fil med namnet `index.html` i mappen.
 
-4. **Grundstruktur:**  
+3. **Grundstruktur:**
    Lägg till grundläggande HTML5-struktur i `index.html`:
    - `<!DOCTYPE html>`
    - `<html lang="sv">`
@@ -33,7 +27,7 @@ Du har VS Code (eller annan editor), Git och en terminal installerad. Du har ock
 
    Ge sidan en passande titel, t.ex. "Om [Ditt Namn]".
 
-5. **Lägg till innehåll i `<body>`:**
+4. **Lägg till innehåll i `<body>`:**
    - En huvudrubrik (`<h1>`) med ditt namn.
    - En kort paragraf (`<p>`) som introducerar dig.
    - En underrubrik (`<h2>`) för "Mina intressen".
@@ -42,18 +36,11 @@ Du har VS Code (eller annan editor), Git och en terminal installerad. Du har ock
    - En paragraf (`<p>`) med en länk (`<a>`) till din (påhittade eller riktiga) e-postadress (`href="mailto:din.epost@example.com"`).
    - (Valfritt) En bild (`<img>`) på dig själv eller något relaterat. Glöm inte `alt`-attributet!
 
-6. **Första commit:**
-   ```bash
-   git status
-   git add index.html
-   git commit -m "Skapa grundläggande Om Mig-sida med innehåll"
-   ```
+5. **Kontrollera resultatet:**
+   Öppna `index.html` i din webbläsare. Kontrollera att du kan se rubrikerna, listan och länken. Prova länken.
 
-7. **Validera (bonus):**  
+6. **Validera (bonus):**
    Klistra in din HTML-kod i [W3C Markup Validation Service](https://validator.w3.org/) för att kontrollera att den är korrekt.
-
-8. **Visa i webbläsare:**  
-   Öppna `index.html` i din webbläsare.
 
 ---
 
@@ -67,55 +54,36 @@ Du har VS Code (eller annan editor), Git och en terminal installerad. Du har ock
    - Lägg till en `<footer>` längst ner, t.ex. med copyright.
    - Om du har flera tydliga delar i `<main>`, omslut dem med `<section>` och ge varje sektion en egen rubrik (`<h2>`).
 
-3. **Commit:**
-   ```bash
-   git status
-   git add .
-   git commit -m "Lägg till semantisk struktur (header, main, footer, sections)"
+3. **Kontrollera din struktur:**
+   Jämför din sida med trädet nedan. Är `<header>`, `<main>` och `<footer>` syskon? Ligger varje `<section>` i `<main>`?
+
+   ```text
+   body
+   ├── header
+   ├── main
+   │   ├── section
+   │   └── section
+   └── footer
    ```
 
-4. **Visa historik:**  
-   ```bash
-   git log --oneline
-   ```
+4. **Kontrollera resultatet:**
+   Uppdatera sidan i webbläsaren. HTML ser kanske nästan likadan ut utan CSS – det är normalt. Vinsten här är en tydlig struktur för människor, skärmläsare och framtida CSS.
 
 ---
 
-## Övning 3: Koppla till GitHub
+## Utmaning: Gör sidan mer tillgänglig
 
-1. **Skapa repo på GitHub:**  
-   Skapa ett nytt, tomt repository på GitHub (utan README, .gitignore eller license).
+Gå igenom din ”Om mig”-sida och förbättra den:
 
-2. **Koppla lokalt till remote:**  
-   Följ instruktionerna från GitHub ("…or push an existing repository").  
-   Byt ut URL:en mot den från ditt repo:
-   ```bash
-   git remote add origin https://github.com/ditt-anvandarnamn/om-mig-sida.git
-   git branch -M main
-   git push -u origin main
-   ```
+1. Har bilden en alt-text som beskriver det viktiga i bilden? Om den bara är dekoration, använd `alt=""`.
+2. Förstår man vart varje länk leder utan att läsa texten runt omkring?
+3. Har sidan exakt en tydlig `<h1>` och logiska underrubriker?
+4. Är sidans språk angivet med `<html lang="sv">`?
 
-3. **Verifiera:**  
-   Gå till din repository-sida på GitHub och kontrollera att din `index.html` och dina commits syns.
-
-4. **Gör en liten ändring:**  
-   Lägg till ytterligare ett intresse i listan i `index.html`.
-
-5. **Commit och push:**
-   ```bash
-   git status
-   git add .
-   git commit -m "Lägg till ett till intresse"
-   git push
-   ```
-
-6. **Verifiera igen:**  
-   Uppdatera sidan på GitHub och kontrollera att ändringen syns.
+Be en klasskamrat läsa din HTML-kod, inte bara titta på sidan. Kan personen förstå sidans olika delar?
 
 ---
 
 ## Sammanfattning och nästa steg
 
-Genom dessa övningar har du praktiskt skapat en enkel HTML-sida, strukturerat den semantiskt och använt Git för att spåra ändringar lokalt och synkronisera dem med ett remote-repository på GitHub. Detta är grunden för arbetsflödet vi kommer använda genom resten av kursen.
-
-I nästa kapitel introducerar vi CSS för att börja styla våra HTML-sidor och ge dem ett visuellt utseende.
+Du har skapat en HTML-sida, sett resultatet i webbläsaren och förbättrat strukturen med semantiska element. I nästa kapitel lär du dig Git för att spara och följa dina ändringar. CSS kommer senare och ger HTML-sidan ett visuellt utseende.
