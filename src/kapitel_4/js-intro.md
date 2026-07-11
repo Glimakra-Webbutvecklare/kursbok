@@ -2,6 +2,9 @@
 
 JavaScript är det programmeringsspråk som gör webbsidor interaktiva och dynamiska. Med JavaScript kan du reagera på användarens handlingar, ändra innehåll på sidan utan att ladda om den, skapa spel, animationer och mycket mer. Nästan alla moderna webbplatser använder JavaScript på något sätt.
 
+> **Mål:**
+> Förstå var JavaScript körs, hur det kopplas till en sida och hur du skriver ut ett första värde.
+
 ---
 
 ## Vad är JavaScript?
@@ -125,6 +128,16 @@ let alder = 25;
 - **Som popup:**  
   `alert("Varning!");`
 
+**Prova själv:** Klicka på **Kör** för att köra koden. Utskriften från `console.log` visas under editorn. Ändra gärna texten och kör igen.
+
+<!-- playground -->
+```js
+console.log("Hej!");
+
+const namn = "Världen";
+console.log("Hej, " + namn + "!");
+```
+
 ---
 
 ## Sammanfattning
@@ -134,4 +147,4 @@ let alder = 25;
 - Med JavaScript kan du skapa allt från enkla effekter till avancerade webbapplikationer.
 - Nästa steg är att lära dig grunderna i programmering med JavaScript: variabler, datatyper, operatorer och logik.
 
-Nu är du redo att börja skriva din första JavaScript
+Nu är du redo att börja skriva din första JavaScript-kod.

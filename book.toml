@@ -13,4 +13,5 @@ command = "mdbook-mermaid"
 [output]
 
 [output.html]
-additional-js = ["mermaid.min.js", "mermaid-init.js"]
+additional-js = ["mermaid.min.js", "mermaid-init.js", "theme/playground/playground.js", "theme/playground/terminal.js"]
+additional-css = ["theme/playground/playground.css"]

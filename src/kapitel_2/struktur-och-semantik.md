@@ -1,16 +1,70 @@
-# Strukturera och ge semantisk betydelse åt webbinnehåll med HTML5
+# Struktur och semantisk HTML
 
-Vi har lärt oss de grundläggande HTML-taggarna för att skapa innehåll. Men hur organiserar vi innehållet på ett logiskt sätt? Och hur kan vi ge innehållet *mening* utöver bara dess utseende? Det är här **struktur** och **semantik** kommer in i bilden.
+Du kan bygga en sida med bara `<div>`-element, men då måste både människor och hjälpmedel gissa vad varje del är till för. **Semantisk HTML** betyder att du väljer en tagg som beskriver innehållets syfte: navigering är `<nav>`, sidans huvuddel är `<main>` och sidfoten är `<footer>`.
 
-- **Struktur:** Handlar om hur vi organiserar och grupperar innehållet på sidan med hjälp av olika HTML-element.
-- **Semantik:** Handlar om att använda HTML-element som korrekt beskriver *innebörden* eller *syftet* med innehållet de omsluter.
+> **Mål:** Kunna dela in en enkel sida i tydliga delar och välja semantiska element före generiska `<div>` när det passar.
 
-**Varför är detta viktigt?**
+## Se sidans delar först
 
-1. **Tillgänglighet (accessibility):** Skärmläsare och andra hjälpmedel använder HTML-strukturen och semantiken för att förstå och navigera på sidan. Korrekt semantik gör webbplatsen användbar för fler människor.
-2. **Sökmotoroptimering (SEO):** Sökmotorer som Google analyserar HTML-strukturen för att förstå vad sidan handlar om och rangordna den i sökresultaten. Semantisk HTML hjälper dem att göra ett bättre jobb.
-3. **Underhållbarhet:** En välstrukturerad och semantisk kodbas är lättare att läsa, förstå och underhålla för dig själv och andra utvecklare.
-4. **Styling med CSS:** Även om CSS styr utseendet, ger en bra HTML-struktur tydliga "krokar" som CSS kan fästa vid för att applicera stilar.
+Tänk på en enkel receptsida. Den har en rubrik och meny högst upp, ett huvudinnehåll och en sidfot. Det är sidans struktur – inte dess design.
+
+```mermaid
+graph TD
+    Page["Webbsida"] --> Header["&lt;header&gt;"]
+    Header --> H1["&lt;h1&gt;"]
+    Header --> Nav["&lt;nav&gt;"]
+    Page --> Main["&lt;main&gt;"]
+    Main --> Article["&lt;article&gt;"]
+    Article --> H2["&lt;h2&gt;"]
+    Article --> Section["&lt;section&gt;"]
+    Main --> Aside["&lt;aside&gt;"]
+    Page --> Footer["&lt;footer&gt;"]
+```
+
+Här är samma idé som HTML. Klicka på **Kör** för att se vad som faktiskt visas i webbläsaren. Taggarna i sig ger nästan ingen form – CSS tar hand om utseendet senare.
+
+<!-- playground -->
+```html
+<header>
+  <h1>Enkla vardagsrecept</h1>
+  <nav>
+    <a href="#recept">Recept</a> |
+    <a href="#kontakt">Kontakt</a>
+  </nav>
+</header>
+
+<main>
+  <article id="recept">
+    <h2>Pannkakor</h2>
+    <p>Ett snabbt recept för fyra personer.</p>
+
+    <section>
+      <h3>Ingredienser</h3>
+      <ul>
+        <li>2 ägg</li>
+        <li>5 dl mjölk</li>
+      </ul>
+    </section>
+  </article>
+
+  <aside>
+    <h2>Tips</h2>
+    <p>Servera med bär.</p>
+  </aside>
+</main>
+
+<footer id="kontakt">
+  <p>© 2026 Enkla vardagsrecept</p>
+</footer>
+```
+
+## Varför välja rätt element?
+
+- **Personer som använder skärmläsare** kan hoppa direkt till navigeringen eller huvudinnehållet.
+- **Du och dina kurskamrater** kan läsa koden och förstå dess delar snabbare.
+- **Sökmotorer** får bättre information om vad sidan innehåller. Detta kan hjälpa **SEO** (*Search Engine Optimization*, sökmotoroptimering): arbetet med att göra en sida lättare för sökmotorer att förstå och hitta.
+
+Det handlar alltså inte om att få sidan att se finare ut. Det handlar om att beskriva den tydligt.
 
 ---
 ## Allmänna strukturelement: `<div>` och `<span>`
@@ -37,49 +91,17 @@ Detta fungerar, men det kräver att man inspekterar `id` eller `class`-attribut 
 
 ---
 
-## HTML5 semantiska strukturelement
+## De viktigaste strukturelementen
 
-HTML5 introducerade nya element specifikt för att ge semantisk betydelse åt olika delar av en webbsidas struktur. Dessa gör koden tydligare och mer meningsfull.
+Välj element utifrån innehållets roll:
 
-```mermaid
-graph TD
-    subgraph Sida
-    Header[<header>]
-    Nav[<nav>]
-    Main[<main>]
-    Aside[<aside>]
-    Footer[<footer>]
-
-    Header --> Nav
-    Header --> Main
-    Nav --> Main
-    Main --- Aside
-    Main --> Footer
-    Aside --> Footer
-    end
-
-    subgraph MainContent
-        direction LR
-        Section1[<section>]
-        Article1[<article>]
-        Section2[<section>]
-
-        Main --> Section1
-        Main --> Article1
-        Main --> Section2
-    end
-```
-*Diagram: Vanlig sidlayout med HTML5 semantiska element.*
-
-Här är de viktigaste:
-
-- `<header>`: Representerar introducerande innehåll för en sida eller en sektion. Innehåller ofta sidans logotyp, huvudrubrik (`<h1>`), och kanske primär navigering.
-- `<nav>`: Representerar en sektion med navigeringslänkar (t.ex. huvudmenyn, länkar inom sidan).
-- `<main>`: Representerar **huvudinnehållet** i dokumentet. Det ska bara finnas *ett* `<main>`-element per sida, och det ska inte placeras inuti `<article>`, `<aside>`, `<header>`, `<nav>`, eller `<footer>`.
-- `<article>`: Representerar en **fristående**, komplett innehållsdel som skulle kunna distribueras oberoende av resten av sidan (t.ex. ett blogginlägg, en forumkommentar, en nyhetsartikel).
-- `<section>`: Representerar en **tematisk gruppering** av innehåll, vanligtvis med en egen rubrik (`<h2>`–`<h6>`). Används när det inte finns något mer specifikt semantiskt element (som `<article>` eller `<nav>`). Tänk på det som ett kapitel i en bok.
-- `<aside>`: Representerar innehåll som är **tangentiellt relaterat** till innehållet runt omkring det (t.ex. en sidopanel med relaterade länkar, författarinformation, reklam). Kan ses som en fotnot eller en sidnotering.
-- `<footer>`: Representerar sidfoten för en sida eller sektion. Innehåller ofta copyrightinformation, länkar till sekretesspolicy, kontaktuppgifter.
+- `<header>`: Inledning för en sida eller del av en sida, ofta logotyp, rubrik och meny.
+- `<nav>`: En grupp viktiga navigeringslänkar, till exempel huvudmenyn.
+- `<main>`: Sidans unika huvudinnehåll. Använd ett `<main>` per sida.
+- `<article>`: Ett fristående innehåll, till exempel ett blogginlägg, recept eller en nyhetsartikel.
+- `<section>`: En tydlig del av innehållet, normalt med en egen rubrik.
+- `<aside>`: Innehåll som hör ihop med huvudinnehållet men inte är dess kärna, till exempel ett tips eller relaterade länkar.
+- `<footer>`: Avslutning för sidan eller en del av den, ofta kontaktuppgifter eller copyright.
 
 ---
 
@@ -126,7 +148,7 @@ Denna version är mycket tydligare. Bara genom att titta på taggarna förstår 
 Även med de semantiska elementen finns det fortfarande tillfällen då `<div>` är lämpligt:
 
 - **Endast för styling/layout:** Om du behöver gruppera element *enbart* för att applicera CSS-regler (t.ex. skapa en container för att centrera innehåll) och det inte finns något semantiskt element som passar, är `<div>` rätt val.
-- **JavaScript-krokar:** Om du behöver ett element att fästa JavaScript-funktionalitet vid och ingen semantisk tagg passar.
+- **JavaScript-hooks:** Om du behöver ett element att fästa JavaScript-funktionalitet vid och ingen semantisk tagg passar.
 
 Försök dock alltid att först använda ett semantiskt element om det finns ett som beskriver innehållets syfte.
 
@@ -134,6 +156,6 @@ Försök dock alltid att först använda ett semantiskt element om det finns ett
 
 ## Sammanfattning
 
-Att använda semantisk HTML handlar om att välja de HTML-element som bäst beskriver innebörden av ditt innehåll. HTML5 erbjuder specifika element som `<header>`, `<nav>`, `<main>`, `<article>`, `<section>`, `<aside>`, och `<footer>` för att strukturera sidans huvuddelar på ett meningsfullt sätt. Detta förbättrar tillgänglighet, SEO och kodens läsbarhet jämfört med att bara använda generiska `<div>`-element.
+Att använda semantisk HTML handlar om att välja det element som bäst beskriver innehållets roll. Element som `<header>`, `<nav>`, `<main>`, `<article>`, `<section>`, `<aside>` och `<footer>` gör sidan lättare att förstå än en samling generiska `<div>`-element.
 
-I nästa avsnitt fokuserar vi specifikt på hur HTML-element bidrar till att göra webbplatser mer
+I nästa avsnitt ser du hur samma val gör webbplatsen mer tillgänglig.

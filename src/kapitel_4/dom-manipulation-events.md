@@ -2,6 +2,8 @@
 
 JavaScript blir riktigt kraftfullt när vi använder det för att interagera med och ändra innehållet och strukturen på vår HTML-sida *efter* att den har laddats. Detta görs genom **DOM (Document Object Model)**. Vi behöver också kunna reagera på användarens handlingar, vilket vi gör genom att hantera **Events (Händelser)**.
 
+**Förutsättningar:** Du ska känna till HTML-element och CSS-selektorer. I den här lektionen använder JavaScript samma typer av selektorer för att hitta element på sidan.
+
 **Mål:** Förstå vad DOM är, lära oss hur man väljer ut (selectar) HTML-element med JavaScript, hur man manipulerar (ändrar) deras innehåll, attribut och stilar, samt hur man kopplar händelselyssnare (`addEventListener`) för att reagera på användarinteraktioner som klick.
 
 ---
@@ -166,6 +168,23 @@ const list = document.querySelector('#myList');
 list.appendChild(newItem);
 ```
 
+**Prova själv:** Ändra texten eller skapa fler element och klicka på **Kör** för att se resultatet direkt.
+
+<!-- playground:start -->
+```html
+<ul id="myList">
+  <li>Första punkten</li>
+</ul>
+```
+```js
+const newItem = document.createElement('li');
+newItem.textContent = "Ny punkt";
+
+const list = document.querySelector('#myList');
+list.appendChild(newItem);
+```
+<!-- playground:end -->
+
 ---
 
 ## Hantera händelser
@@ -196,6 +215,22 @@ anotherButton.addEventListener('click', (event) => {
 });
 ```
 
+**Prova själv:** Klicka på knappen i förhandsvisningen. Försök sedan ändra texten eller färgen i koden.
+
+<!-- playground:start -->
+```html
+<button id="myButton">Klicka på mig</button>
+```
+```js
+const myButton = document.querySelector('#myButton');
+
+myButton.addEventListener('click', (event) => {
+  event.target.textContent = "Klickad!";
+  event.target.style.backgroundColor = 'lightgreen';
+});
+```
+<!-- playground:end -->
+
 ### Vanliga händelsetyper
 
 - **Mus-händelser:** `click`, `dblclick`, `mouseover`, `mouseout`, `mousedown`, `mouseup`, `mousemove`
@@ -216,6 +251,43 @@ myForm.addEventListener('submit', (event) => {
   // Hantera formulärdata här...
 });
 ```
+
+---
+
+## Spara data med localStorage
+
+Ofta vill vi att data ska finnas kvar även efter att användaren laddar om sidan. Då kan vi använda **localStorage**, ett enkelt nyckel-värde-lager (key-value store) som webbläsaren sparar på användarens dator.
+
+- `localStorage.setItem('nyckel', 'värde')` – Sparar ett värde.
+- `localStorage.getItem('nyckel')` – Hämtar ett värde (eller `null` om det saknas).
+- `localStorage.removeItem('nyckel')` – Tar bort ett värde.
+
+Värden sparas alltid som **text (string)**. Vill du spara ett objekt använder du `JSON.stringify` när du sparar och `JSON.parse` när du läser.
+
+**Prova själv:** Skriv ett meddelande, klicka **Spara** och ladda sedan om förhandsvisningen (klicka **Kör** igen) - texten finns kvar tack vare localStorage.
+
+<!-- playground:start storage -->
+```html
+<input id="msg" type="text" placeholder="Skriv något...">
+<button id="save">Spara</button>
+<p>Sparat meddelande: <strong id="output"></strong></p>
+```
+```js
+const input = document.querySelector('#msg');
+const saveButton = document.querySelector('#save');
+const output = document.querySelector('#output');
+
+// Visa det som redan finns sparat när sidan laddas
+output.textContent = localStorage.getItem('meddelande') || '(inget än)';
+
+saveButton.addEventListener('click', () => {
+  localStorage.setItem('meddelande', input.value);
+  output.textContent = input.value;
+});
+```
+<!-- playground:end -->
+
+> **Notera:** I den här interaktiva rutan körs koden i en isolerad (sandboxad) ram. För att `localStorage` ska fungera körs just det här exemplet med extra rättigheter. På en riktig webbsida behövs inget sådant.
 
 ---
 

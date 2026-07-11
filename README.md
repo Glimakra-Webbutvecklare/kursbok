@@ -161,4 +161,117 @@ To maintain a consistent feel throughout the book, please try to follow these st
     *   Provide the Swedish translation in parenthesis. E.g "Användaren skickar en HTTP request (förfrågan)".
     *   Make sure all variable names are written in English.
 
+## Interaktiva kodexempel (Playgrounds)
+
+Boken har stöd för **interaktiva kodexempel** där läsaren kan redigera koden och köra den direkt i webbläsaren. Detta är tänkt främst för frontend-grunderna (modul 1-3: HTML, CSS, JavaScript, DOM och localStorage), eftersom de körs helt i webbläsaren utan server eller externa tjänster.
+
+Editorn är avsiktligt enkel (ingen autocomplete/AI), vilket passar regeln *"ej AI | autocomplete"* för de tidiga modulerna.
+
+### Hur du skapar en playground
+
+Markera ett kodblock med en HTML-kommentar i Markdown. Skriptet (`theme/playground/playground.js`) byter automatiskt ut det markerade kodblocket mot en redigerbar editor med knapparna **Kör** och **Återställ**.
+
+**Ett enskilt block** (t.ex. ren JavaScript). Utskrift från `console.log` visas i en panel under editorn:
+
+````markdown
+<!-- playground -->
+```js
+console.log("Hej!");
+```
+````
+
+**Flera block grupperade** till en gemensam förhandsvisning. Kombinera `html`, `css` och `js` - resultatet renderas i en sandboxad `<iframe>`:
+
+````markdown
+<!-- playground:start -->
+```html
+<button id="btn">Klicka</button>
+```
+```css
+button { padding: 8px 16px; }
+```
+```js
+document.querySelector('#btn').addEventListener('click', () => {
+  console.log('Klickad!');
+});
+```
+<!-- playground:end -->
+````
+
+### Tillval: `storage` (localStorage)
+
+Förhandsvisningen körs normalt i en hårt sandboxad iframe (`sandbox="allow-scripts"`), vilket blockerar `localStorage`. För exempel som behöver `localStorage` lägger du till nyckelordet `storage` efter markören, vilket kör iframen med `allow-same-origin`:
+
+````markdown
+<!-- playground:start storage -->
+```html
+<input id="msg"><button id="save">Spara</button>
+```
+```js
+document.querySelector('#save').addEventListener('click', () => {
+  localStorage.setItem('msg', document.querySelector('#msg').value);
+});
+```
+<!-- playground:end -->
+````
+
+Använd `storage` endast när det verkligen behövs, och nämn för läsaren att den extra rättigheten bara är till för det interaktiva exemplet.
+
+### Riktlinjer för playgrounds
+
+*   Gör exemplen **självständiga** - om din JavaScript refererar till ett element (t.ex. `#myButton`) måste motsvarande HTML finnas med i samma playground-grupp, annars blir det fel.
+*   Behåll gärna det vanliga (icke-interaktiva) kodexemplet i texten för läsning och lägg den interaktiva versionen under en kort uppmaning, t.ex. *"**Prova själv:** ..."*.
+*   Playgrounden körs i webbläsaren - använd den bara för HTML/CSS/JS, inte för kod som kräver en server (Node.js, databaser, m.m.).
+
+## Interaktiva Git- och terminalövningar
+
+HTML/CSS/JS kan köras direkt i webbläsaren, men **bash och Git** har ingen körmiljö i webbläsaren. Därför finns två särskilda verktyg (`theme/playground/terminal.js`):
+
+### Simulerad terminal
+
+En *guidad, deterministisk* terminal: läsaren skriver kommandona själv och får dem validerade mot ett förväntat transkript. Kommandona körs inte på riktigt - det är en övning i att lära in kommandon och se förväntad utskrift. Säg alltid till läsaren att riktig övning sker i deras egen terminal.
+
+Markera ett kodblock som ser ut som en terminalsession. Rader som börjar med `$ ` är kommandon, raderna under (till nästa `$ `) är förväntad utskrift:
+
+````markdown
+<!-- terminal -->
+```bash
+$ git init
+Initialized empty Git repository in /home/elev/projekt/.git/
+$ git status
+On branch main
+...
+```
+````
+
+- Text *före* första `$ ` visas som en banner.
+- Tillval `prompt=...` ändrar prompten, t.ex. `<!-- terminal prompt=~/projekt -->`.
+- Knappen **Tips** fyller i nästa förväntade kommando, **Återställ** börjar om. Pil upp/ner bläddrar i historiken.
+
+### Learn Git Branching (visuell git-sandlåda)
+
+För brancher, merge och rebase bäddas [Learn Git Branching](https://learngitbranching.js.org/) in. Ett valfritt kodblock anger kommandon som körs automatiskt vid laddning:
+
+````markdown
+<!-- learngit -->
+```bash
+git commit
+git checkout -b feature
+git commit
+git checkout main
+git merge feature
+```
+````
+
+Widgeten visar en `<iframe>` med sandlådan plus en "Öppna i ny flik"-länk som fallback. Utan kodblock startar den tom. Den körs helt i läsarens webbläsare (ingen kostnad eller gräns per läsare).
+
+### Senare: React, Node.js och TypeScript (år 2)
+
+För modulerna i år 2 som kräver en riktig körmiljö (React, Node.js, Deno, TypeScript, WebSocket) rekommenderas inbäddade tjänster i stället för den självhostade playgrounden:
+
+*   **React:** [Sandpack](https://sandpack.codesandbox.io/) (MIT-licens, paketerar i webbläsaren, inga användningsgränser).
+*   **Node.js / Express / Deno / WebSocket:** inbäddade publika [StackBlitz](https://stackblitz.com/)-projekt (kör Node i webbläsaren via WebContainers).
+
+Dessa körs i varje läsares egen webbläsare, så det finns ingen kostnad eller gräns per läsare för en kurs av vår storlek. Betaltjänster behövs bara för privata projekt, teamplatser eller för att köra container-tekniken på egen domän.
+
 Thank you for contributing!

@@ -2,6 +2,9 @@
 
 Variabler är en grundläggande del av programmering. De används för att lagra och hantera data som kan ändras under programmets gång. I JavaScript kan du spara allt från siffror och text till objekt och listor i variabler.
 
+> **Mål:**
+> Kunna skapa variabler med `let` och `const`, välja tydliga engelska namn och se värdena i konsolen.
+
 ---
 
 ## Vad är en variabel?
@@ -47,6 +50,18 @@ let name = "Anna";
 let age = 25;
 
 const pi = 3.14159;
+```
+
+**Prova själv:** Ändra namnet och poängen, klicka på **Kör** och se vad som skrivs ut. Avkommentera inte raden som försöker ändra `const` – den ger medvetet ett fel.
+
+<!-- playground -->
+```js
+let score = 10;
+score = score + 5;
+
+const userName = "Sam";
+
+console.log(userName + " har " + score + " poäng.");
 ```
 
 ---
