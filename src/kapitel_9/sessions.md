@@ -1,611 +1,279 @@
-# Sessionshantering och Cookies
+# Sessioner och cookies
 
-Sessioner är ett sätt att lagra information om en användare över flera HTTP-förfrågningar. Eftersom HTTP är stateless behöver vi sessioner för att komma ihåg inloggade användare och deras preferenser. Låt oss utforska hur sessioner fungerar och när de är att föredra framför JWT.
+I [föregående avsnitt](./middleware.md) valde `portfolio-api` JWT. Här bygger vi samma inloggning med en serverlagrad session för att förstå ett vanligt alternativ. Kapitelprojektets primära lösning är fortfarande JWT; koden nedan är ett alternativ, inte något som ska köras parallellt utan ett medvetet beslut.
 
-## Vad är sessioner och cookies?
+## Mål
 
-**Sessions**: Server-side lagring av användardata som identifieras med ett unikt session-ID.
+Efter avsnittet kan du:
 
-**Cookies**: Små textfiler som lagras i användarens webbläsare och skickas med varje HTTP-förfrågan.
+- beskriva samspelet mellan cookie, sessions-id och serverlager
+- konfigurera `express-session` med säkra cookieval
+- logga in, kontrollera en session och logga ut
+- välja mellan sessioner och JWT utifrån faktiska krav
+- förklara varför cookieautentisering behöver CSRF-skydd
 
-```mermaid
-sequenceDiagram
-    participant C as Client
-    participant S as Server
-    participant DB as Session Store
-    
-    C->>S: 1. POST /login (credentials)
-    S->>DB: 2. Create session
-    DB-->>S: 3. Session ID
-    S->>C: 4. Set-Cookie: session=abc123
-    Note over C: Cookie sparas i webbläsare
-    
-    C->>S: 5. GET /profile (Cookie: session=abc123)
-    S->>DB: 6. Lookup session abc123
-    DB-->>S: 7. User data
-    S-->>C: 8. User profile data
+## Förutsättningar
+
+Du behöver `portfolio-api`, användarmodellen med `email`, `passwordHash` och `role` från [middleware och JWT](./middleware.md), samt `"type": "module"` i `package.json`.
+
+## 1. Förstå modellen
+
+HTTP minns inget mellan requests. Med sessioner sker detta:
+
+```text
+POST /api/session/login
+  -> servern verifierar lösenordet
+  -> servern sparar userId och role i sessionen
+  -> webbläsaren får en cookie med ett slumpat sessions-id
+
+GET /api/session/me + cookie
+  -> servern slår upp sessions-id
+  -> req.session innehåller användardata
 ```
 
-### Sessioner vs JWT
+Cookien ska bara innehålla sessions-id, inte lösenord eller hela användarobjektet. En signerad cookie skyddar mot ändring, men är inte automatiskt krypterad.
 
-| Aspekt | Sessioner | JWT |
-|--------|-----------|-----|
-| **Lagring** | Server-side | Client-side (token) |
-| **Skalbarhet** | Kräver delad session store | Stateless, enkelt att skala |
-| **Säkerhet** | Svårare att manipulera | Kan dekodas (ej krypterad) |
-| **Invalidering** | Omedelbar (ta bort från server) | Svår (vänta på expiry) |
-| **Prestanda** | Databaslookup för varje request | Ingen server-lookup |
-| **Datalagring** | Obegränsad (server-side) | Begränsad (cookie/header size) |
+## 2. Installera `express-session`
 
-## Implementera sessioner i Express
-
-### Grundläggande setup
-
-```javascript
-const express = require('express');
-const session = require('express-session');
-const MongoStore = require('connect-mongo');
-
-const app = express();
-
-// Session middleware
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'your-secret-key',
-  resave: false,               // Spara inte om inget har ändrats
-  saveUninitialized: false,    // Spara inte tomma sessioner
-  name: 'sessionId',           // Ändra från default 'connect.sid'
-  cookie: {
-    secure: process.env.NODE_ENV === 'production', // HTTPS only i produktion
-    httpOnly: true,             // Förhindra XSS-attacker
-    maxAge: 1000 * 60 * 60 * 24 // 24 timmar
-  },
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGODB_URI,
-    touchAfter: 24 * 3600 // Lazy session update
-  })
-}));
+<!-- terminal -->
+```console
+$ npm install express-session
+added ... packages
 ```
 
-### Session-baserad autentisering
+### Kör nu i din riktiga terminal
 
-```javascript
-const bcrypt = require('bcrypt');
-const User = require('../models/User');
-
-class SessionAuthController {
-  // Registrera användare
-  static async register(req, res) {
-    try {
-      const { username, email, password } = req.body;
-      
-      // Kontrollera om användaren finns
-      const existingUser = await User.findOne({ 
-        $or: [{ email }, { username }] 
-      });
-      
-      if (existingUser) {
-        return res.status(409).json({ 
-          error: 'Användare finns redan' 
-        });
-      }
-      
-      // Hasha lösenord
-      const hashedPassword = await bcrypt.hash(password, 12);
-      
-      // Skapa användare
-      const user = new User({
-        username,
-        email,
-        password: hashedPassword
-      });
-      
-      await user.save();
-      
-      // Logga in automatiskt efter registrering
-      req.session.userId = user._id;
-      req.session.user = {
-        id: user._id,
-        username: user.username,
-        email: user.email,
-        role: user.role
-      };
-      
-      res.status(201).json({
-        message: 'Användare registrerad och inloggad',
-        user: req.session.user
-      });
-      
-    } catch (error) {
-      console.error('Registration error:', error);
-      res.status(500).json({ error: 'Registreringsfel' });
-    }
-  }
-  
-  // Logga in
-  static async login(req, res) {
-    try {
-      const { email, password } = req.body;
-      
-      // Hitta användare
-      const user = await User.findOne({ email }).select('+password');
-      
-      if (!user) {
-        return res.status(401).json({ 
-          error: 'Ogiltiga inloggningsuppgifter' 
-        });
-      }
-      
-      // Verifiera lösenord
-      const isValidPassword = await bcrypt.compare(password, user.password);
-      
-      if (!isValidPassword) {
-        return res.status(401).json({ 
-          error: 'Ogiltiga inloggningsuppgifter' 
-        });
-      }
-      
-      // Skapa session
-      req.session.userId = user._id;
-      req.session.user = {
-        id: user._id,
-        username: user.username,
-        email: user.email,
-        role: user.role
-      };
-      
-      // Uppdatera senaste inloggning
-      user.lastLogin = new Date();
-      await user.save();
-      
-      res.json({
-        message: 'Inloggning lyckades',
-        user: req.session.user
-      });
-      
-    } catch (error) {
-      console.error('Login error:', error);
-      res.status(500).json({ error: 'Inloggningsfel' });
-    }
-  }
-  
-  // Logga ut
-  static async logout(req, res) {
-    try {
-      req.session.destroy((err) => {
-        if (err) {
-          return res.status(500).json({ error: 'Kunde inte logga ut' });
-        }
-        
-        res.clearCookie('sessionId');
-        res.json({ message: 'Utloggning lyckades' });
-      });
-    } catch (error) {
-      res.status(500).json({ error: 'Utloggningsfel' });
-    }
-  }
-  
-  // Hämta profil
-  static async getProfile(req, res) {
-    try {
-      const user = await User.findById(req.session.userId).select('-password');
-      
-      if (!user) {
-        return res.status(404).json({ error: 'Användare inte hittad' });
-      }
-      
-      res.json(user);
-    } catch (error) {
-      res.status(500).json({ error: 'Kunde inte hämta profil' });
-    }
-  }
-  
-  // Kontrollera session-status
-  static checkSession(req, res) {
-    if (req.session.userId) {
-      res.json({ 
-        authenticated: true, 
-        user: req.session.user 
-      });
-    } else {
-      res.json({ 
-        authenticated: false 
-      });
-    }
-  }
-}
-
-module.exports = SessionAuthController;
+```bash
+npm install express-session
 ```
 
-## Konfigurera session-lagring
+Lägg en separat, lång hemlighet i `.env`:
 
-### In-Memory Store (endast utveckling)
-
-```javascript
-// Standard - endast för utveckling
-app.use(session({
-  secret: 'dev-secret',
-  resave: false,
-  saveUninitialized: false
-  // Ingen store specificerad = MemoryStore
-}));
+```dotenv
+SESSION_SECRET=byt-till-en-annan-lang-slumpad-hemlighet
 ```
 
-### MongoDB Store
+Återanvänd inte `JWT_SECRET`. Kontrollera att `SESSION_SECRET` finns när appen startar.
+
+## 3. Konfigurera middleware
+
+Skapa `src/config/session.js`:
 
 ```javascript
-const MongoStore = require('connect-mongo');
+import session from 'express-session';
 
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGODB_URI,
-    dbName: 'sessions',
-    collectionName: 'sessions',
-    ttl: 24 * 60 * 60, // 24 timmar
-    autoRemove: 'native'
-  }),
-  cookie: {
-    maxAge: 1000 * 60 * 60 * 24 // 24 timmar
-  }
-}));
-```
+const production = process.env.NODE_ENV === 'production';
 
-### Redis Store (hög prestanda)
-
-```javascript
-const redis = require('redis');
-const RedisStore = require('connect-redis')(session);
-
-const redisClient = redis.createClient({
-  host: process.env.REDIS_HOST || 'localhost',
-  port: process.env.REDIS_PORT || 6379,
-  password: process.env.REDIS_PASSWORD
-});
-
-app.use(session({
-  store: new RedisStore({ client: redisClient }),
+export const sessionMiddleware = session({
+  name: 'portfolio.sid',
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: false, // true för HTTPS
     httpOnly: true,
-    maxAge: 1000 * 60 * 60 * 24
-  }
-}));
-```
-
-## Arbeta med cookies
-
-### Sätta och läsa cookies
-
-```javascript
-// Sätta cookies
-app.get('/set-cookie', (req, res) => {
-  // Enkel cookie
-  res.cookie('username', 'johndoe');
-  
-  // Cookie med options
-  res.cookie('preferences', JSON.stringify({
-    theme: 'dark',
-    language: 'sv'
-  }), {
-    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 dagar
-    httpOnly: false, // Tillgänglig för JavaScript
-    secure: process.env.NODE_ENV === 'production',
-    signed: true // Signerad cookie
-  });
-  
-  res.json({ message: 'Cookies satta' });
-});
-
-// Läsa cookies (kräver cookie-parser middleware)
-const cookieParser = require('cookie-parser');
-app.use(cookieParser(process.env.COOKIE_SECRET));
-
-app.get('/get-cookies', (req, res) => {
-  res.json({
-    cookies: req.cookies,        // Osignerade cookies
-    signedCookies: req.signedCookies // Signerade cookies
-  });
-});
-
-// Ta bort cookie
-app.get('/clear-cookie', (req, res) => {
-  res.clearCookie('username');
-  res.json({ message: 'Cookie borttagen' });
-});
-```
-
-### Cookie-säkerhet
-
-```javascript
-// Säkra cookie-inställningar för produktion
-const secureCookieSettings = {
-  httpOnly: true,      // Förhindra XSS
-  secure: true,        // Endast HTTPS
-  sameSite: 'strict',  // CSRF-skydd
-  maxAge: 24 * 60 * 60 * 1000 // 24 timmar
-};
-
-// Miljöspecifika inställningar
-const cookieSettings = process.env.NODE_ENV === 'production' 
-  ? secureCookieSettings 
-  : { 
-      httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
-      maxAge: 24 * 60 * 60 * 1000
-    };
-
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  cookie: cookieSettings,
-  // ... andra inställningar
-}));
-```
-
-## Säkerhet i sessionshantering
-
-### Session Hijacking Prevention
-
-```javascript
-// Regenera session-ID efter inloggning
-const regenerateSession = (req, res, next) => {
-  const oldSessionData = req.session;
-  
-  req.session.regenerate((err) => {
-    if (err) {
-      return next(err);
-    }
-    
-    // Återställ sessionsdata
-    Object.assign(req.session, oldSessionData);
-    req.session.save(next);
-  });
-};
-
-// Använd efter lyckad inloggning
-app.post('/login', async (req, res, next) => {
-  // ... autentiseringslogik
-  
-  if (loginSuccessful) {
-    regenerateSession(req, res, () => {
-      req.session.userId = user._id;
-      res.json({ message: 'Inloggad' });
-    });
+    secure: production,
+    sameSite: 'lax',
+    maxAge: 1000 * 60 * 60
   }
 });
 ```
 
-### CSRF-skydd med sessions
+- `httpOnly` hindrar JavaScript i webbläsaren från att läsa cookien.
+- `secure` skickar den bara över HTTPS.
+- `sameSite: 'lax'` minskar vissa CSRF-risker.
+- `maxAge` ger en timmes giltighet.
+- `saveUninitialized: false` skapar inte sessioner för anonyma besökare.
+
+Montera middleware före sessionsrouterna i `src/app.js`:
 
 ```javascript
-const csrf = require('csurf');
+import { sessionMiddleware } from './config/session.js';
+import sessionRoutes from './routes/sessionRoutes.js';
 
-// CSRF-middleware
-const csrfProtection = csrf({
-  cookie: {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production'
-  }
-});
-
-app.use(csrfProtection);
-
-// Skicka CSRF-token till frontend
-app.get('/api/csrf-token', (req, res) => {
-  res.json({ csrfToken: req.csrfToken() });
-});
-
-// Alla POST/PUT/DELETE-routes är nu skyddade
-app.post('/api/data', (req, res) => {
-  // CSRF-token valideras automatiskt
-  res.json({ success: true });
-});
+app.use(sessionMiddleware);
+app.use('/api/session', sessionRoutes);
 ```
 
-### Session Timeout och Activity Tracking
+Express standardlager `MemoryStore` är endast för lokal utveckling. Det läcker minne över tid, försvinner vid omstart och kan inte delas av flera serverinstanser.
+
+## 4. Bygg login och logout
+
+Skapa `src/controllers/sessionController.js`:
 
 ```javascript
-// Middleware för att kontrollera session-timeout
-const sessionTimeout = (timeoutMinutes = 30) => {
-  return (req, res, next) => {
-    if (req.session.userId) {
-      const now = Date.now();
-      const lastActivity = req.session.lastActivity || now;
-      const timeDiff = now - lastActivity;
-      
-      if (timeDiff > timeoutMinutes * 60 * 1000) {
-        req.session.destroy();
-        return res.status(401).json({ 
-          error: 'Session har gått ut på grund av inaktivitet' 
-        });
-      }
-      
-      // Uppdatera senaste aktivitet
-      req.session.lastActivity = now;
-    }
-    
-    next();
-  };
-};
+import bcrypt from 'bcryptjs';
+import User from '../models/User.js';
 
-app.use(sessionTimeout(30)); // 30 minuters timeout
-```
-
-## Avancerad sessionshantering
-
-### Multi-device Sessions
-
-```javascript
-// Schema för att lagra flera aktiva sessioner per användare
-const activeSessionSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  sessionId: { type: String, required: true },
-  deviceInfo: {
-    userAgent: String,
-    ip: String,
-    device: String,
-    browser: String
-  },
-  createdAt: { type: Date, default: Date.now },
-  lastActivity: { type: Date, default: Date.now },
-  isActive: { type: Boolean, default: true }
-});
-
-const ActiveSession = mongoose.model('ActiveSession', activeSessionSchema);
-
-// Logga aktiva sessioner
-const trackSession = async (req, res, next) => {
-  if (req.session.userId) {
-    await ActiveSession.findOneAndUpdate(
-      { sessionId: req.sessionID },
-      {
-        userId: req.session.userId,
-        sessionId: req.sessionID,
-        deviceInfo: {
-          userAgent: req.get('User-Agent'),
-          ip: req.ip,
-          // Parse user agent för device/browser info
-        },
-        lastActivity: new Date()
-      },
-      { upsert: true }
-    );
-  }
-  next();
-};
-
-// Hämta alla aktiva sessioner för användare
-app.get('/api/active-sessions', async (req, res) => {
+export async function login(req, res, next) {
   try {
-    const sessions = await ActiveSession.find({
-      userId: req.session.userId,
-      isActive: true
-    });
-    
-    res.json(sessions);
-  } catch (error) {
-    res.status(500).json({ error: 'Kunde inte hämta sessioner' });
-  }
-});
-
-// Logga ut från specifik session
-app.delete('/api/sessions/:sessionId', async (req, res) => {
-  try {
-    await ActiveSession.findOneAndUpdate(
-      { 
-        sessionId: req.params.sessionId,
-        userId: req.session.userId
-      },
-      { isActive: false }
+    const email = req.body.email?.trim().toLowerCase();
+    const user = await User.findOne({ email }).select('+passwordHash');
+    const valid = user && await bcrypt.compare(
+      req.body.password ?? '',
+      user.passwordHash
     );
-    
-    res.json({ message: 'Session avslutad' });
+
+    if (!valid) {
+      return res.status(401).json({ error: 'Fel e-post eller lösenord' });
+    }
+
+    req.session.regenerate((error) => {
+      if (error) return next(error);
+
+      req.session.user = { id: user.id, role: user.role };
+      req.session.save((saveError) => {
+        if (saveError) return next(saveError);
+        res.json({ user: { id: user.id, email: user.email, role: user.role } });
+      });
+    });
   } catch (error) {
-    res.status(500).json({ error: 'Kunde inte avsluta session' });
-  }
-});
-```
-
-### Session Data Encryption
-
-```javascript
-const crypto = require('crypto');
-
-class SessionEncryption {
-  static encrypt(text, key) {
-    const algorithm = 'aes-256-gcm';
-    const iv = crypto.randomBytes(16);
-    const cipher = crypto.createCipher(algorithm, key);
-    
-    let encrypted = cipher.update(text, 'utf8', 'hex');
-    encrypted += cipher.final('hex');
-    
-    const authTag = cipher.getAuthTag();
-    
-    return {
-      encrypted,
-      iv: iv.toString('hex'),
-      authTag: authTag.toString('hex')
-    };
-  }
-  
-  static decrypt(encryptedData, key) {
-    const algorithm = 'aes-256-gcm';
-    const decipher = crypto.createDecipher(algorithm, key);
-    
-    decipher.setAuthTag(Buffer.from(encryptedData.authTag, 'hex'));
-    
-    let decrypted = decipher.update(encryptedData.encrypted, 'hex', 'utf8');
-    decrypted += decipher.final('utf8');
-    
-    return decrypted;
+    next(error);
   }
 }
 
-// Custom session serialization
-app.use(session({
-  // ... andra inställningar
-  store: new CustomStore({
-    serialize: (session) => {
-      const key = process.env.SESSION_ENCRYPTION_KEY;
-      const sessionData = JSON.stringify(session);
-      return SessionEncryption.encrypt(sessionData, key);
-    },
-    deserialize: (encryptedSession) => {
-      const key = process.env.SESSION_ENCRYPTION_KEY;
-      const sessionData = SessionEncryption.decrypt(encryptedSession, key);
-      return JSON.parse(sessionData);
-    }
-  })
-}));
+export function logout(req, res, next) {
+  req.session.destroy((error) => {
+    if (error) return next(error);
+
+    res.clearCookie('portfolio.sid');
+    res.status(204).end();
+  });
+}
+
+export function me(req, res) {
+  res.json({ user: req.session.user });
+}
 ```
 
-## Komplett exempel: Session-baserad auth
+`regenerate()` byter sessions-id efter login och motverkar session fixation. Vi sparar bara den identitet som behövs. För mycket känsliga operationer kan rollen läsas på nytt från databasen.
+
+Skapa `src/middleware/sessionAuth.js`:
 
 ```javascript
-// routes/sessionAuth.js
-const express = require('express');
-const router = express.Router();
-const SessionAuthController = require('../controllers/SessionAuthController');
-
-// Middleware för att kontrollera session
-const requireAuth = (req, res, next) => {
-  if (!req.session.userId) {
+export function requireSession(req, res, next) {
+  if (!req.session.user) {
     return res.status(401).json({ error: 'Inloggning krävs' });
   }
   next();
-};
+}
 
-const requireRole = (roles) => {
-  return (req, res, next) => {
-    if (!req.session.user || !roles.includes(req.session.user.role)) {
-      return res.status(403).json({ error: 'Otillåten åtkomst' });
-    }
-    next();
-  };
-};
-
-// Publika routes
-router.post('/register', SessionAuthController.register);
-router.post('/login', SessionAuthController.login);
-router.get('/session-status', SessionAuthController.checkSession);
-
-// Skyddade routes
-router.post('/logout', requireAuth, SessionAuthController.logout);
-router.get('/profile', requireAuth, SessionAuthController.getProfile);
-router.get('/admin', requireAuth, requireRole(['admin']), (req, res) => {
-  res.json({ message: 'Admin-område' });
-});
-
-module.exports = router;
+export function requireSessionAdmin(req, res, next) {
+  if (req.session.user?.role !== 'admin') {
+    return res.status(403).json({ error: 'Adminbehörighet krävs' });
+  }
+  next();
+}
 ```
 
-Sessioner erbjuder en traditionell och säker metod för användarautentisering, särskilt lämplig för traditionella webbapplikationer. Medan JWT är bättre för API:er och mikroservices, ger sessioner bättre kontroll över säkerhet och användarhantering.
+Skapa `src/routes/sessionRoutes.js`:
 
-Nästa steg är att utforska den kompletta demo-applikationen som kombinerar alla dessa koncept!
+```javascript
+import { Router } from 'express';
+import { login, logout, me } from '../controllers/sessionController.js';
+import {
+  requireSession,
+  requireSessionAdmin
+} from '../middleware/sessionAuth.js';
+
+const router = Router();
+
+router.post('/login', login);
+router.get('/me', requireSession, me);
+router.post('/logout', requireSession, logout);
+router.get('/admin-check', requireSession, requireSessionAdmin, (req, res) => {
+  res.json({ ok: true });
+});
+
+export default router;
+```
+
+Registrering kan återanvända den säkra registreringen från JWT-avsnittet. Autentiseringsmekanismen ändrar inte kravet på hashade lösenord.
+
+## 5. Prova cookieflödet
+
+`curl -c` sparar cookies och `curl -b` skickar dem igen.
+
+<!-- terminal -->
+```console
+$ curl -c cookies.txt -X POST http://localhost:3000/api/session/login \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"admin@example.com","password":"ett-langt-losenord"}'
+{"user":{"id":"...","email":"admin@example.com","role":"admin"}}
+$ curl -b cookies.txt http://localhost:3000/api/session/me
+{"user":{"id":"...","role":"admin"}}
+$ curl -b cookies.txt -X POST http://localhost:3000/api/session/logout
+```
+
+### Kör nu i din riktiga terminal
+
+Kör kommandona med din administratör. Kontrollera att `/me` ger `401` utan cookie och efter logout.
+
+## 6. Beständig lagring med MongoDB
+
+Om sessioner blir ditt produktionsval, använd ett delat lager. `connect-mongo` kan återanvända projektets `MONGODB_URI`.
+
+```javascript
+import MongoStore from 'connect-mongo';
+
+export const sessionMiddleware = session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGODB_URI,
+    ttl: 60 * 60
+  }),
+  cookie: {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge: 1000 * 60 * 60
+  }
+});
+```
+
+### Kör nu i din riktiga terminal
+
+Installera `connect-mongo` endast om du väljer sessionsspåret:
+
+```bash
+npm install connect-mongo
+```
+
+## Sessioner eller JWT?
+
+| Fråga | Session | JWT |
+|---|---|---|
+| Var finns tillståndet? | På servern | I signerad token |
+| Logout/revokering | Direkt genom radering | Kräver extra strategi |
+| Flera serverinstanser | Delat lager behövs | Ingen sessionslagring behövs |
+| Rolländring | Syns när sessionen uppdateras | Token kan vara inaktuell |
+| Webbläsare | Cookieflöde är naturligt | Bearer-token kräver säker lagring |
+| CSRF | Relevant när cookie skickas automatiskt | Lägre med Authorization-header |
+
+JWT är inte automatiskt säkrare eller mer skalbart i alla system. Sessioner ger enkel revokering men kräver tillgänglig serverlagring. JWT passar fristående API-klienter, men stulna tokens gäller tills de går ut om ingen revokeringslösning finns. För `portfolio-api` behåller vi JWT som primär lösning så resten av kapitlet har ett tydligt spår.
+
+## Produktion och CSRF
+
+Cookieautentisering gör att webbläsaren skickar credentials automatiskt. `sameSite` hjälper men ersätter inte alltid CSRF-skydd. Använd en aktivt underhållen CSRF-lösning eller ett verifierat tokenmönster för skrivande requests, kontrollera `Origin`, och tillåt inte bred CORS med credentials.
+
+I produktion krävs HTTPS för `secure: true`. Bakom en reverse proxy måste Express lita på rätt proxy, exempelvis `app.set('trust proxy', 1)`, annars kan säkra cookies utebli. Sätt bara detta när infrastrukturen verkligen har exakt den proxykedjan.
+
+## Vanliga misstag
+
+- `MemoryStore` används i produktion.
+- Sessionshemligheten hårdkodas eller återanvänds.
+- `secure: true` testas över vanlig lokal HTTP och cookien verkar försvinna.
+- Sessions-id regenereras inte efter login.
+- Cookie-namnet i `clearCookie` skiljer sig från `name`.
+- CORS, CSRF och proxyinställningar behandlas som samma problem.
+
+## Checkpoint
+
+- [ ] Du kan förklara vad cookien respektive serverlagret innehåller.
+- [ ] Login regenererar sessionen och logout förstör den.
+- [ ] Cookie har `httpOnly`, rimlig `sameSite`, livslängd och produktionsstyrd `secure`.
+- [ ] Produktion använder ett beständigt, delat lager.
+- [ ] Du kan motivera JWT-valet för `portfolio-api`.
+
+Fortsätt med [Testning med Jest](./testning.md), där vi verifierar API:ets publika och skyddade routes.
