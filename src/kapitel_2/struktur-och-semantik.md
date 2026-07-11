@@ -62,7 +62,7 @@ Här är samma idé som HTML. Klicka på **Kör** för att se vad som faktiskt v
 
 - **Personer som använder skärmläsare** kan hoppa direkt till navigeringen eller huvudinnehållet.
 - **Du och dina kurskamrater** kan läsa koden och förstå dess delar snabbare.
-- **Sökmotorer** får bättre information om vad sidan innehåller.
+- **Sökmotorer** får bättre information om vad sidan innehåller. Detta kan hjälpa **SEO** (*Search Engine Optimization*, sökmotoroptimering): arbetet med att göra en sida lättare för sökmotorer att förstå och hitta.
 
 Det handlar alltså inte om att få sidan att se finare ut. Det handlar om att beskriva den tydligt.
 
@@ -148,7 +148,7 @@ Denna version är mycket tydligare. Bara genom att titta på taggarna förstår 
 Även med de semantiska elementen finns det fortfarande tillfällen då `<div>` är lämpligt:
 
 - **Endast för styling/layout:** Om du behöver gruppera element *enbart* för att applicera CSS-regler (t.ex. skapa en container för att centrera innehåll) och det inte finns något semantiskt element som passar, är `<div>` rätt val.
-- **JavaScript-krokar:** Om du behöver ett element att fästa JavaScript-funktionalitet vid och ingen semantisk tagg passar.
+- **JavaScript-hooks:** Om du behöver ett element att fästa JavaScript-funktionalitet vid och ingen semantisk tagg passar.
 
 Försök dock alltid att först använda ett semantiskt element om det finns ett som beskriver innehållets syfte.
 

@@ -71,6 +71,35 @@ Du behöver en editor, till exempel VS Code, och en webbläsare. Git kommer i n�
 
 ---
 
+## Övning 3: Lägg till en tabell
+
+Fortsätt på din ”Om mig”-sida och skapa en tabell med något som passar dina intressen: filmer du vill se, spel du spelar eller recept du vill laga.
+
+1. Lägg till en `<section>` med rubriken “Min lista”.
+2. Skapa en tabell med minst två kolumnrubriker i `<th>`.
+3. Lägg till minst tre rader data med `<td>`.
+4. Använd `<thead>` för rubrikraden, `<tbody>` för resten och `scope="col"` på varje kolumnrubrik.
+5. Öppna sidan i webbläsaren. Går informationen att jämföra rad för rad?
+
+> Kontrollfråga: Om du tog bort alla CSS-stilar, skulle informationen fortfarande vara lätt att läsa som en tabell? Om svaret är nej kanske det är layout, inte tabelldata.
+
+---
+
+## Övning 4: Lägg till ett kontaktformulär
+
+Lägg till ett enkelt formulär i din kontaktsektion.
+
+1. Lägg ett `<form>` runt fälten.
+2. Skapa ett fält för namn och ett för e-postadress. Använd `type="email"` för e-postfältet.
+3. Lägg till ett `<textarea>` för ett meddelande.
+4. Ge varje fält en `<label>` och koppla den med `for` och `id`.
+5. Lägg till ett `name` på varje fält och en knapp med `type="submit"`.
+6. Testa att klicka på varje etikett. Hamnar markören i rätt fält?
+
+Använd inte en riktig e-postadress eller känslig information. Formuläret behöver en server för att faktiskt kunna ta emot och hantera data – det lär du dig mer om senare.
+
+---
+
 ## Utmaning: Gör sidan mer tillgänglig
 
 Gå igenom din ”Om mig”-sida och förbättra den:
@@ -86,4 +115,4 @@ Be en klasskamrat läsa din HTML-kod, inte bara titta på sidan. Kan personen f�
 
 ## Sammanfattning och nästa steg
 
-Du har skapat en HTML-sida, sett resultatet i webbläsaren och förbättrat strukturen med semantiska element. I nästa kapitel lär du dig Git för att spara och följa dina ändringar. CSS kommer senare och ger HTML-sidan ett visuellt utseende.
+Du har skapat en HTML-sida, sett resultatet i webbläsaren, förbättrat strukturen och använt både tabell och formulär. I nästa kapitel lär du dig Git för att spara och följa ändringar. CSS kommer senare och ger HTML-sidan ett visuellt utseende.

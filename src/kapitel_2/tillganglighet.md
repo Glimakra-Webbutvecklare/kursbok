@@ -14,7 +14,7 @@ Vi har pratat om semantisk HTML och hur det hjälper maskiner (som sökmotorer o
 1. **Mänskliga rättigheter:** Alla har rätt att ta del av information och tjänster online.
 2. **Lagar och regler:** Många länder (inklusive inom EU) har lagkrav på att offentliga och vissa privata webbplatser ska vara tillgängliga (t.ex. [Webbtillgänglighetsdirektivet](https://www.digg.se/webbriktlinjer/lagar-och-standarder/webbtillganglighetsdirektivet)).
 3. **Bättre användarupplevelse för alla:** Principer för god tillgänglighet leder ofta till en bättre och tydligare upplevelse för *samtliga* användare.
-4. **SEO:** God tillgänglighet och god SEO går ofta hand i hand, eftersom båda gynnas av tydlig struktur och semantik.
+4. **SEO (Search Engine Optimization, sökmotoroptimering):** Arbetet med att göra en sida lättare för sökmotorer att förstå och hitta. God tillgänglighet och god SEO går ofta hand i hand, eftersom båda gynnas av tydlig struktur och semantik.
 
 ---
 

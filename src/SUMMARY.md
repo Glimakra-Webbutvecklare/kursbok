@@ -9,6 +9,8 @@
   - [Grunderna i HTML5](./kapitel_2/html5-grunder.md)
   - [Strukturera och semantisera webbinnehåll](./kapitel_2/struktur-och-semantik.md)
   - [HTML-element för tillgänglighet](./kapitel_2/tillganglighet.md)
+  - [Tabeller](./kapitel_2/tabeller.md)
+  - [Formulär](./kapitel_2/formular.md)
   - [Praktiska övningar](./kapitel_2/ovningar.md)
   - [Teknisk Intervju](./kapitel_2/teknisk-intervju.md)
 - [Git och versionshantering](./git/index.md)

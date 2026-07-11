@@ -9,8 +9,9 @@ Nu börjar du bygga webbsidor. **HTML (HyperText Markup Language)** är språket
 1. **Bygg din första sida** med rubriker, text, listor, länkar och bilder.
 2. **Se sidans HTML-träd** och förstå hur element ligger inuti varandra.
 3. **Ge innehållet mening** med semantiska element som `<header>`, `<main>` och `<footer>`.
-4. **Gör en bra grund för alla** med alt-texter, beskrivande länkar och tydliga rubriker.
-5. **Bygg själv** i praktiska övningar.
+4. **Visa data och ta emot svar** med tabeller och formulär.
+5. **Gör en bra grund för alla** med alt-texter, beskrivande länkar och tydliga rubriker.
+6. **Bygg själv** i praktiska övningar.
 
 De interaktiva exemplen i kapitlet har en **Kör**-knapp. Ändra gärna en liten sak åt gången och se direkt hur sidan påverkas.
 
