@@ -203,25 +203,18 @@ Själva innehållet i elementet (t.ex. text eller bild). Dimensionerna styrs av 
 </ol>
 <hr />
 <h2 id="visualisering-av-css-box-model"><a class="header" href="#visualisering-av-css-box-model">Visualisering av CSS Box Model</a></h2>
-<pre class="mermaid">block-beta
-    columns 1
-    block:margin[&quot;Margin (marginal)&quot;]
-        block:border[&quot;Border (kantlinje)&quot;]
-            block:padding[&quot;Padding (utfyllnad)&quot;]
-                block:content[&quot;Content (innehåll)&lt;br/&gt;width × height&quot;]
-            end
-        end
-    end
-    
-    classDef marginStyle fill:#f9f9f9,stroke:#999,stroke-width:2px,stroke-dasharray: 5 5
+<pre class="mermaid">flowchart TD
+    Margin[&quot;Margin&lt;br/&gt;luft utanför elementet&quot;] --&gt; Border[&quot;Border&lt;br/&gt;elementets kantlinje&quot;]
+    Border --&gt; Padding[&quot;Padding&lt;br/&gt;luft innanför kantlinjen&quot;]
+    Padding --&gt; Content[&quot;Content&lt;br/&gt;innehållet: text eller bild&quot;]
+    classDef marginStyle fill:#f9f9f9,stroke:#999,stroke-width:2px,stroke-dasharray:5 5
     classDef borderStyle fill:#ffe6e6,stroke:#cc0000,stroke-width:3px
     classDef paddingStyle fill:#e6ffe6,stroke:#009900,stroke-width:2px
     classDef contentStyle fill:#e6e6ff,stroke:#0000cc,stroke-width:2px
-    
-    class margin marginStyle
-    class border borderStyle
-    class padding paddingStyle
-    class content contentStyle
+    class Margin marginStyle
+    class Border borderStyle
+    class Padding paddingStyle
+    class Content contentStyle
 </pre>
 <p><em>Diagram: CSS box model visar hur varje element består av fyra lager som omsluter varandra.</em></p>
 <hr />
@@ -398,15 +391,16 @@ När du bygger webbsidor behöver du förstå hur olika HTML-element beter sig i
 </tbody></table>
 </div>
 <h3 id="visualisering-block-vs-inline"><a class="header" href="#visualisering-block-vs-inline">Visualisering: Block vs Inline</a></h3>
-<pre class="mermaid">flowchart TD
-    subgraph container1 [&quot;Container med block-element&quot;]
-        block1[&quot;📦 Block element&lt;br/&gt;tar hela bredden av containern&quot;]
-        block2[&quot;📦 Nästa block element&lt;br/&gt;börjar på ny rad&quot;]
+<pre class="mermaid">flowchart LR
+    subgraph container1 [&quot;Blockelement: ett per rad&quot;]
+        direction TB
+        block1[&quot;📦 Blockelement&lt;br/&gt;hela tillgängliga bredden&quot;]
+        block2[&quot;📦 Nästa blockelement&lt;br/&gt;ny rad, hela bredden&quot;]
     end
     
-    subgraph container2 [&quot;Container med inline-element&quot;]
-        inline1[&quot;📝 Inline&quot;] ~~~ inline2[&quot;📝 Inline&quot;] ~~~ inline3[&quot;📝 Inline&quot;]
-        note[&quot;↑ Alla ligger på samma rad&quot;]
+    subgraph container2 [&quot;Inline-element: delar en rad&quot;]
+        direction LR
+        inline1[&quot;📝 Inline&quot;] --- inline2[&quot;📝 Inline&quot;] --- inline3[&quot;📝 Inline&quot;]
     end
     
     style container1 fill:#f8f9fa,stroke:#6c757d,stroke-width:2px
@@ -416,7 +410,6 @@ När du bygger webbsidor behöver du förstå hur olika HTML-element beter sig i
     style inline1 fill:#fff3e0,stroke:#f57c00,stroke-width:2px
     style inline2 fill:#fff3e0,stroke:#f57c00,stroke-width:2px
     style inline3 fill:#fff3e0,stroke:#f57c00,stroke-width:2px
-    style note fill:#f1f3f4,stroke:#9aa0a6,stroke-width:1px
 </pre>
 <p><em>Diagram: Block-element tar upp hela bredden och börjar på ny rad, medan inline-element ligger på samma rad.</em></p>
 <hr />
@@ -484,6 +477,93 @@ Ibland räcker det inte med det normala flödet av element på en webbsida. Du k
   padding: 10px;
 }
 </code></pre>
+<hr />
+<h2 id="prova-positionering-och-se-resultatet"><a class="header" href="#prova-positionering-och-se-resultatet">Prova positionering och se resultatet</a></h2>
+<p>Klicka på <strong>Kör</strong> och läs rutornas placering. Scrolla sedan i den grå ytan:</p>
+<ul>
+<li><strong>Static</strong> ligger i det vanliga flödet.</li>
+<li><strong>Relative</strong> flyttas från sin vanliga plats men behåller sin ursprungliga yta.</li>
+<li><strong>Absolute</strong> placeras i förhållande till den streckade föräldern.</li>
+<li><strong>Fixed</strong> ligger kvar i samma hörn av förhandsvisningen när du scrollar.</li>
+<li><strong>Sticky</strong> följer med tills dess egen scroll-yta tar slut.</li>
+</ul>
+<!-- playground:start -->
+<pre><code class="language-html">&lt;div class="scroll-area"&gt;
+  &lt;div class="static-box"&gt;Static: normalt flöde&lt;/div&gt;
+  &lt;div class="relative-box"&gt;Relative: flyttad 24px åt höger&lt;/div&gt;
+
+  &lt;div class="absolute-parent"&gt;
+    Förälder med position: relative
+    &lt;div class="absolute-box"&gt;Absolute&lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class="sticky-box"&gt;Sticky: stannar vid överkanten&lt;/div&gt;
+  &lt;p&gt;Scrolla här för att se sticky-beteendet.&lt;/p&gt;
+  &lt;p class="space"&gt;Mer innehåll …&lt;/p&gt;
+  &lt;p class="space"&gt;Ännu mer innehåll …&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;div class="fixed-box"&gt;Fixed: fast i hörnet&lt;/div&gt;
+</code></pre>
+<pre><code class="language-css">.scroll-area {
+  height: 230px;
+  overflow: auto;
+  padding: 12px;
+  background: #f1f3f5;
+  border: 2px solid #adb5bd;
+}
+
+.static-box, .relative-box, .sticky-box, .absolute-box, .fixed-box {
+  padding: 8px;
+  margin-bottom: 12px;
+  border: 2px solid #333;
+  background: white;
+}
+
+.relative-box {
+  position: relative;
+  left: 24px;
+  background: #d0ffd0;
+}
+
+.absolute-parent {
+  position: relative;
+  height: 90px;
+  padding: 8px;
+  margin-bottom: 12px;
+  border: 2px dashed #555;
+}
+
+.absolute-box {
+  position: absolute;
+  top: 32px;
+  right: 12px;
+  margin: 0;
+  background: #ffd0d0;
+}
+
+.sticky-box {
+  position: sticky;
+  top: 0;
+  background: #fff3bf;
+}
+
+.fixed-box {
+  position: fixed;
+  right: 12px;
+  bottom: 12px;
+  margin: 0;
+  background: #d0e0ff;
+}
+
+.space {
+  height: 110px;
+}
+</code></pre>
+<!-- playground:end -->
+<blockquote>
+<p><strong>Viktigt:</strong> <code>absolute</code>, <code>fixed</code> och <code>sticky</code> används för särskilda situationer. Börja normalt med sidans vanliga flöde, Flexbox eller Grid; positionering är inte en generell layoutlösning.</p>
+</blockquote>
 <hr />
 <h2 id="illustration-css-positionering"><a class="header" href="#illustration-css-positionering">Illustration: CSS-positionering</a></h2>
 <pre class="mermaid">flowchart TD
