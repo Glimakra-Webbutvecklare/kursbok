@@ -28,25 +28,18 @@ Varje låda i CSS består av fyra lager, utifrån och in:
 ## Visualisering av CSS Box Model
 
 ```mermaid
-block-beta
-    columns 1
-    block:margin["Margin (marginal)"]
-        block:border["Border (kantlinje)"]
-            block:padding["Padding (utfyllnad)"]
-                block:content["Content (innehåll)<br/>width × height"]
-            end
-        end
-    end
-    
-    classDef marginStyle fill:#f9f9f9,stroke:#999,stroke-width:2px,stroke-dasharray: 5 5
+flowchart TD
+    Margin["Margin<br/>luft utanför elementet"] --> Border["Border<br/>elementets kantlinje"]
+    Border --> Padding["Padding<br/>luft innanför kantlinjen"]
+    Padding --> Content["Content<br/>innehållet: text eller bild"]
+    classDef marginStyle fill:#f9f9f9,stroke:#999,stroke-width:2px,stroke-dasharray:5 5
     classDef borderStyle fill:#ffe6e6,stroke:#cc0000,stroke-width:3px
     classDef paddingStyle fill:#e6ffe6,stroke:#009900,stroke-width:2px
     classDef contentStyle fill:#e6e6ff,stroke:#0000cc,stroke-width:2px
-    
-    class margin marginStyle
-    class border borderStyle
-    class padding paddingStyle
-    class content contentStyle
+    class Margin marginStyle
+    class Border borderStyle
+    class Padding paddingStyle
+    class Content contentStyle
 ```
 
 *Diagram: CSS box model visar hur varje element består av fyra lager som omsluter varandra.*
@@ -269,15 +262,16 @@ Inline-element (inline elements) är HTML-element som bara tar upp så mycket pl
 ### Visualisering: Block vs Inline
 
 ```mermaid
-flowchart TD
-    subgraph container1 ["Container med block-element"]
-        block1["📦 Block element<br/>tar hela bredden av containern"]
-        block2["📦 Nästa block element<br/>börjar på ny rad"]
+flowchart LR
+    subgraph container1 ["Blockelement: ett per rad"]
+        direction TB
+        block1["📦 Blockelement<br/>hela tillgängliga bredden"]
+        block2["📦 Nästa blockelement<br/>ny rad, hela bredden"]
     end
     
-    subgraph container2 ["Container med inline-element"]
-        inline1["📝 Inline"] ~~~ inline2["📝 Inline"] ~~~ inline3["📝 Inline"]
-        note["↑ Alla ligger på samma rad"]
+    subgraph container2 ["Inline-element: delar en rad"]
+        direction LR
+        inline1["📝 Inline"] --- inline2["📝 Inline"] --- inline3["📝 Inline"]
     end
     
     style container1 fill:#f8f9fa,stroke:#6c757d,stroke-width:2px
@@ -287,7 +281,6 @@ flowchart TD
     style inline1 fill:#fff3e0,stroke:#f57c00,stroke-width:2px
     style inline2 fill:#fff3e0,stroke:#f57c00,stroke-width:2px
     style inline3 fill:#fff3e0,stroke:#f57c00,stroke-width:2px
-    style note fill:#f1f3f4,stroke:#9aa0a6,stroke-width:1px
 ```
 
 *Diagram: Block-element tar upp hela bredden och börjar på ny rad, medan inline-element ligger på samma rad.*
@@ -384,6 +377,97 @@ Med `position: fixed;` placeras elementet i förhållande till webbläsarfönstr
   padding: 10px;
 }
 ```
+
+---
+
+## Prova positionering och se resultatet
+
+Klicka på **Kör** och läs rutornas placering. Scrolla sedan i den grå ytan:
+
+- **Static** ligger i det vanliga flödet.
+- **Relative** flyttas från sin vanliga plats men behåller sin ursprungliga yta.
+- **Absolute** placeras i förhållande till den streckade föräldern.
+- **Fixed** ligger kvar i samma hörn av förhandsvisningen när du scrollar.
+- **Sticky** följer med tills dess egen scroll-yta tar slut.
+
+<!-- playground:start -->
+```html
+<div class="scroll-area">
+  <div class="static-box">Static: normalt flöde</div>
+  <div class="relative-box">Relative: flyttad 24px åt höger</div>
+
+  <div class="absolute-parent">
+    Förälder med position: relative
+    <div class="absolute-box">Absolute</div>
+  </div>
+
+  <div class="sticky-box">Sticky: stannar vid överkanten</div>
+  <p>Scrolla här för att se sticky-beteendet.</p>
+  <p class="space">Mer innehåll …</p>
+  <p class="space">Ännu mer innehåll …</p>
+</div>
+
+<div class="fixed-box">Fixed: fast i hörnet</div>
+```
+```css
+.scroll-area {
+  height: 230px;
+  overflow: auto;
+  padding: 12px;
+  background: #f1f3f5;
+  border: 2px solid #adb5bd;
+}
+
+.static-box, .relative-box, .sticky-box, .absolute-box, .fixed-box {
+  padding: 8px;
+  margin-bottom: 12px;
+  border: 2px solid #333;
+  background: white;
+}
+
+.relative-box {
+  position: relative;
+  left: 24px;
+  background: #d0ffd0;
+}
+
+.absolute-parent {
+  position: relative;
+  height: 90px;
+  padding: 8px;
+  margin-bottom: 12px;
+  border: 2px dashed #555;
+}
+
+.absolute-box {
+  position: absolute;
+  top: 32px;
+  right: 12px;
+  margin: 0;
+  background: #ffd0d0;
+}
+
+.sticky-box {
+  position: sticky;
+  top: 0;
+  background: #fff3bf;
+}
+
+.fixed-box {
+  position: fixed;
+  right: 12px;
+  bottom: 12px;
+  margin: 0;
+  background: #d0e0ff;
+}
+
+.space {
+  height: 110px;
+}
+```
+<!-- playground:end -->
+
+> **Viktigt:** `absolute`, `fixed` och `sticky` används för särskilda situationer. Börja normalt med sidans vanliga flöde, Flexbox eller Grid; positionering är inte en generell layoutlösning.
 
 ---
 
