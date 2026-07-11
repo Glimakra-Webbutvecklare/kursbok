@@ -92,7 +92,7 @@ export const app = express();
 
 app.use(express.json());
 
-app.get('/health', (request, response) => {
+app.get('/api/health', (request, response) => {
   response.status(200).json({ status: 'ok' });
 });
 
@@ -187,7 +187,7 @@ npm run dev
 
 <!-- terminal -->
 ```bash
-curl -i http://localhost:3000/health
+curl -i http://localhost:3000/api/health
 # HTTP/1.1 200 OK
 # Content-Type: application/json; charset=utf-8
 #
@@ -233,10 +233,10 @@ curl -i http://localhost:3000/saknas
 
 - [ ] `express` och `dotenv` finns under `dependencies`.
 - [ ] `src/app.js` exporterar appen och `src/server.js` startar den.
-- [ ] `GET /health` och `GET /api/projects` ger `200` och JSON.
+- [ ] `GET /api/health` och `GET /api/projects` ger `200` och JSON.
 - [ ] Projektroutern ligger i `src/routes/projects.js`.
 - [ ] Okända endpoints ger ett JSON-svar med `404`.
 - [ ] JSON-, 404- och felmiddleware ligger i rätt ordning.
 
-Fortsätt med [middleware](middleware.md) och därefter
-[REST-API:er](rest-api.md), där `portfolio-api` får fler operationer.
+Fortsätt med [MongoDB och Mongoose](mongodb.md), där minnesarrayen ersätts av
+beständig data. Därefter bygger du CRUD i [REST-API-lektionen](rest-api.md).
