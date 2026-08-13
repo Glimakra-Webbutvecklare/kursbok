@@ -1,111 +1,238 @@
 # Praktiska Övningar: Asynkron JavaScript och API-Anrop
 
-Nu är det dags att praktisera de kraftfulla koncept vi har lärt oss i detta kapitel. Vi kommer att använda `fetch` för att hämta data från det publika test-API:et [JSONPlaceholder](https://jsonplaceholder.typicode.com/) och sedan bearbeta och visa den datan med hjälp av array-metoder och DOM-manipulation.
+Nu bygger vi ett **portfolio-dashboard** i `portfolio-site` med data från [JSONPlaceholder](https://jsonplaceholder.typicode.com/). Varje övning lägger till en ny del – använd `async/await` och `try...catch` genomgående.
+
+> **Mål:**  
+> Hämta, bearbeta och visa extern data i `portfolio-site` med fetch, JSON och array-metoder.
 
 **Förutsättningar:**
+- `portfolio-site` med `index.html` och `script.js`
+- Grundläggande DOM-kunskaper från kapitel 4
+- En modern webbläsare med internetanslutning (för riktiga API-anrop)
 
-*   En enkel HTML-fil (`index.html`) där du kan visa resultaten.
-*   En länkad JavaScript-fil (`script.js`) där du skriver din kod.
-*   Grundläggande kunskaper i DOM-manipulation (t.ex. `querySelector`, `createElement`, `textContent`, `appendChild`) från föregående kapitel.
+**Tips:** Använd `async/await` för fetch-anrop och glöm inte `try...catch` för felhantering.
 
-**Tips:** Använd `async/await` för att hantera dina `fetch`-anrop, då det ofta ger mer läsbar kod. Glöm inte `try...catch` för felhantering!
+---
 
-## Övning 1: Hämta och Visa Användare
+## Övning 1: Hämta och visa användare
 
-**Mål:** Hämta en lista med användare från JSONPlaceholder och visa deras namn i en lista på webbsidan.
+**Mål:** Hämta en lista med användare och visa deras namn i en lista på webbsidan.
 
-1.  **Skapa HTML-struktur:** Lägg till en `<ul>`-tagg i din `index.html` med ett id, t.ex. `id="user-list"`.
-2.  **Hämta Användare (i `script.js`):**
-    *   Skapa en `async function`, t.ex. `fetchUsers()`.
-    *   Använd `fetch` för att göra ett GET-anrop till `https://jsonplaceholder.typicode.com/users`.
-    *   Hantera `response`-objektet: Kontrollera `response.ok` och använd `await response.json()` för att få datan.
-    *   Använd `try...catch` för att fånga eventuella fel under hämtningen.
-3.  **Visa Namnen:**
-    *   Inuti `fetchUsers()` (efter att du har fått datan): Hämta referensen till din `<ul>`-tagg.
-    *   Loopa igenom arrayen med användardata (som du fick från API:et).
-    *   För varje användare, skapa ett nytt `<li>`-element.
-    *   Sätt `<li>`-elementets `textContent` till användarens `name`.
-    *   Lägg till (`appendChild`) `<li>`-elementet i din `<ul>`.
-4.  **Anropa Funktionen:** Glöm inte att anropa din `fetchUsers()`-funktion så att koden körs när sidan laddas.
-5.  **Testa:** Öppna `index.html` i webbläsaren. Ser du en lista med 10 användarnamn?
+1. Lägg till `<ul id="user-list"></ul>` i `index.html`.
+2. Skapa `async function fetchUsers()` i `script.js`.
+3. Hämta `https://jsonplaceholder.typicode.com/users`, kontrollera `response.ok`, parsa JSON.
+4. Loopa igenom användarna och lägg till `<li>` med varje `name` i listan.
+5. Anropa `fetchUsers()` när sidan laddas.
 
-## Övning 2: Filtrera och Mappa Todos
+<details>
+<summary>Lösningsförslag</summary>
 
-**Mål:** Hämta en lista med "todos" (att-göra-uppgifter) från JSONPlaceholder. Filtrera listan så att du bara har de slutförda (`completed: true`) uppgifterna. Visa titlarna på dessa slutförda uppgifter i en ny lista.
+```javascript
+async function fetchUsers() {
+  const list = document.querySelector("#user-list");
+  try {
+    const response = await fetch("https://jsonplaceholder.typicode.com/users");
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+    const users = await response.json();
 
-1.  **Skapa HTML-struktur:** Lägg till en ny `<ul>`-tagg, t.ex. `id="completed-todos"`.
-2.  **Hämta Todos (i `script.js`):**
-    *   Skapa en ny `async function`, t.ex. `fetchAndFilterTodos()`.
-    *   Använd `fetch` för att hämta data från `https://jsonplaceholder.typicode.com/todos`.
-    *   Hantera `response` och parsa JSON som i övning 1, inkludera `try...catch`.
-3.  **Filtrera och Mappa:**
-    *   När du har fått todo-arrayen:
-        *   Använd `filter()`-metoden för att skapa en ny array som *endast* innehåller de objekt där egenskapen `completed` är `true`.
-        *   Använd `map()`-metoden på den *filtrerade* arrayen för att skapa en ny array som *endast* innehåller `title` för varje slutförd todo.
-4.  **Visa Titlarna:**
-    *   Hämta referensen till din `<ul>`-tagg (`#completed-todos`).
-    *   Loopa igenom arrayen med **titlar**.
-    *   Skapa och lägg till `<li>`-element för varje titel i `<ul>`.
-5.  **Anropa Funktionen:** Anropa `fetchAndFilterTodos()`.
-6.  **Testa:** Öppna `index.html`. Ser du en lista med titlarna på de slutförda uppgifterna?
+    users.forEach((user) => {
+      const item = document.createElement("li");
+      item.textContent = user.name;
+      list.appendChild(item);
+    });
+  } catch (error) {
+    console.error("Kunde inte hämta användare:", error);
+    list.textContent = "Kunde inte ladda användare.";
+  }
+}
 
-## Övning 3: Kombinera Data (Post och Kommentarer)
+fetchUsers();
+```
+</details>
 
-**Mål:** Hämta först en specifik bloggpost (t.ex. post med id 5). När du har hämtat posten, använd dess `id` för att hämta alla kommentarer som hör till just den posten. Visa postens titel och sedan en lista med kommentarernas namn (namnet på den som kommenterat).
+**Checkpoint:** Ser du 10 användarnamn i listan när du öppnar sidan?
 
-1.  **Skapa HTML-struktur:** Lägg till en `<div>`, t.ex. `id="post-and-comments"`.
-2.  **Hämta Data (i `script.js`):**
-    *   Skapa en `async function`, t.ex. `fetchPostAndComments(postId)`.
-    *   **Steg 1: Hämta Posten:**
-        *   Använd `fetch` för att hämta data från `https://jsonplaceholder.typicode.com/posts/${postId}` (använd template literal för att inkludera `postId`).
-        *   Hantera `response` och parsa JSON. Spara post-objektet.
-    *   **Steg 2: Hämta Kommentarer:**
-        *   Använd `fetch` igen, nu för att hämta data från `https://jsonplaceholder.typicode.com/posts/${postId}/comments` (eller `https://jsonplaceholder.typicode.com/comments?postId=${postId}`).
-        *   Hantera `response` och parsa JSON. Spara kommentars-arrayen.
-    *   Använd `try...catch` för att hantera fel från båda anropen.
-3.  **Visa Resultatet:**
-    *   Hämta referensen till din `<div>` (`#post-and-comments`).
-    *   Skapa och lägg till ett `<h2>`-element med postens `title`.
-    *   Skapa en `<ul>`-lista för kommentarerna.
-    *   Loopa igenom kommentars-arrayen.
-    *   För varje kommentar, skapa ett `<li>`-element med kommentarens `name` och lägg till det i `<ul>`.
-    *   Lägg till `<ul>`-listan i din `<div>`.
-4.  **Anropa Funktionen:** Anropa `fetchPostAndComments(5)` (eller välj ett annat id).
-5.  **Testa:** Öppna `index.html`. Ser du postens titel följt av en lista med namn på de som kommenterat?
+---
 
-## Övning 4: Felhantering med Fetch
+## Övning 2: Filtrera och mappa todos
 
-**Mål:** Öva på att hantera olika typer av fel som kan uppstå vid `fetch`-anrop.
+**Mål:** Hämta todos, filtrera slutförda (`completed: true`) och visa titlarna.
 
-1.  **Försök hämta från en ogiltig URL:**
-    *   Skapa en `async function`.
-    *   Försök att `fetch` från en URL som inte finns, t.ex. `https://jsonplaceholder.typicode.com/nonexistent-endpoint`.
-    *   Använd `try...catch`. Vad händer i `catch`-blocket? Logga felet.
-    *   Kontrollera också `response.ok` inuti `try`-blocket (även om du kanske inte kommer dit om URL:en är helt fel). Visa ett felmeddelande på sidan om `response.ok` är `false` eller om ett `catch`-fel inträffar.
-2.  **Försök parsa ogiltig JSON:**
-    *   Hämta data från en URL som *inte* returnerar JSON, t.ex. `https://google.com` (detta kan ge CORS-problem, testa annars med en lokal fil eller en URL du vet returnerar HTML).
-    *   Försök att anropa `await response.json()` på svaret.
-    *   Se till att ditt `try...catch`-block fångar felet som uppstår vid JSON-parsningen. Logga felet och visa ett användarvänligt meddelande på sidan.
+1. Lägg till `<ul id="completed-todos"></ul>`.
+2. Hämta `https://jsonplaceholder.typicode.com/todos`.
+3. Använd `filter()` och `map()` för att få titlar på slutförda uppgifter.
+4. Visa titlarna i listan.
 
-## Övning 5 (Bonus): Aggregera Data med Reduce
+<details>
+<summary>Lösningsförslag</summary>
 
-**Mål:** Hämta alla "posts" från JSONPlaceholder och använd `reduce` för att räkna hur många poster varje `userId` har skrivit.
+```javascript
+async function fetchCompletedTodos() {
+  const list = document.querySelector("#completed-todos");
+  try {
+    const response = await fetch("https://jsonplaceholder.typicode.com/todos");
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-1.  **Hämta Alla Poster:**
-    *   Skapa en `async function`.
-    *   Hämta data från `https://jsonplaceholder.typicode.com/posts`.
-    *   Hantera `response` och parsa JSON.
-2.  **Räkna Poster per Användare:**
-    *   Använd `reduce()`-metoden på post-arrayen.
-    *   Ditt `initialValue` ska vara ett tomt objekt `{}`.
-    *   I din reducer-funktion, för varje `post`:
-        *   Kontrollera om `post.userId` redan finns som en nyckel i ackumulator-objektet (`accumulator`).
-        *   Om det finns, öka värdet (antalet) med 1.
-        *   Om det inte finns, lägg till `post.userId` som en nyckel med värdet 1.
-        *   Returnera det uppdaterade ackumulator-objektet.
-3.  **Visa Resultatet:**
-    *   Logga det slutliga objektet som `reduce` returnerar. Det bör se ut ungefär så här: `{ '1': 10, '2': 10, '3': 10, ... }`.
-    *   (Valfritt) Visa denna information på webbsidan på ett snyggt sätt.
+    const todos = await response.json();
+    const completedTitles = todos
+      .filter((todo) => todo.completed)
+      .map((todo) => todo.title);
 
-Dessa övningar ger dig en bra grund för att arbeta med asynkron kod och externa API:er i dina framtida JavaScript-projekt!
+    completedTitles.forEach((title) => {
+      const item = document.createElement("li");
+      item.textContent = title;
+      list.appendChild(item);
+    });
+  } catch (error) {
+    console.error(error);
+    list.textContent = "Kunde inte ladda todos.";
+  }
+}
 
+fetchCompletedTodos();
+```
+</details>
+
+**Checkpoint:** Listan innehåller bara titlar på slutförda todos (inte de med `completed: false`).
+
+---
+
+## Övning 3: Post och kommentarer
+
+**Mål:** Hämta post med id 5, sedan dess kommentarer, och visa titel + kommentarsnamn.
+
+1. Lägg till `<div id="post-and-comments"></div>`.
+2. Skapa `async function fetchPostAndComments(postId)`.
+3. Hämta posten från `/posts/${postId}`, sedan kommentarer från `/posts/${postId}/comments`.
+4. Visa postens `title` som `<h2>` och kommentarernas `name` i en `<ul>`.
+
+<details>
+<summary>Lösningsförslag</summary>
+
+```javascript
+async function fetchPostAndComments(postId) {
+  const container = document.querySelector("#post-and-comments");
+  try {
+    const postRes = await fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`);
+    if (!postRes.ok) throw new Error(`HTTP ${postRes.status}`);
+    const post = await postRes.json();
+
+    const commentsRes = await fetch(
+      `https://jsonplaceholder.typicode.com/posts/${postId}/comments`
+    );
+    if (!commentsRes.ok) throw new Error(`HTTP ${commentsRes.status}`);
+    const comments = await commentsRes.json();
+
+    const heading = document.createElement("h2");
+    heading.textContent = post.title;
+    container.appendChild(heading);
+
+    const ul = document.createElement("ul");
+    comments.forEach((comment) => {
+      const li = document.createElement("li");
+      li.textContent = comment.name;
+      ul.appendChild(li);
+    });
+    container.appendChild(ul);
+  } catch (error) {
+    console.error(error);
+    container.textContent = "Kunde inte ladda post och kommentarer.";
+  }
+}
+
+fetchPostAndComments(5);
+```
+</details>
+
+**Checkpoint:** Du ser postens titel följt av en lista med kommentarsnamn.
+
+---
+
+## Övning 4: Felhantering med fetch
+
+**Mål:** Öva på att hantera fel vid ogiltiga anrop.
+
+1. Lägg till `<p id="error-demo"></p>`.
+2. Försök hämta `https://jsonplaceholder.typicode.com/nonexistent-endpoint`.
+3. Visa ett användarvänligt felmeddelande på sidan om `response.ok` är `false` eller om `catch` triggas.
+
+<details>
+<summary>Lösningsförslag</summary>
+
+```javascript
+async function demoErrorHandling() {
+  const output = document.querySelector("#error-demo");
+  try {
+    const response = await fetch(
+      "https://jsonplaceholder.typicode.com/nonexistent-endpoint"
+    );
+    if (!response.ok) {
+      throw new Error(`Servern svarade med status ${response.status}`);
+    }
+    const data = await response.json();
+    output.textContent = JSON.stringify(data);
+  } catch (error) {
+    console.error(error);
+    output.textContent = `Fel: ${error.message}`;
+    output.style.color = "red";
+  }
+}
+
+demoErrorHandling();
+```
+</details>
+
+**Checkpoint:** Sidan visar ett tydligt felmeddelande (t.ex. status 404) utan att krascha.
+
+> **Om CORS-blockering:** JSONPlaceholder tillåter anrop från webbläsaren. Om du testar mot andra URL:er kan webbläsaren blockera anropet – använd då JSONPlaceholder eller ett lokalt test-API.
+
+---
+
+## Övning 5 (Bonus): Aggregera data med reduce
+
+**Mål:** Hämta alla posts och räkna hur många poster varje `userId` har skrivit.
+
+1. Hämta `https://jsonplaceholder.typicode.com/posts`.
+2. Använd `reduce()` för att bygga ett objekt `{ userId: antal }`.
+3. Logga resultatet i konsolen (eller visa på sidan).
+
+<details>
+<summary>Lösningsförslag</summary>
+
+```javascript
+async function countPostsPerUser() {
+  try {
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+    const posts = await response.json();
+    const counts = posts.reduce((acc, post) => {
+      const id = post.userId;
+      acc[id] = (acc[id] || 0) + 1;
+      return acc;
+    }, {});
+
+    console.log("Poster per användare:", counts);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+countPostsPerUser();
+```
+</details>
+
+**Checkpoint:** Konsolen visar ett objekt där varje `userId` har värdet 10 (JSONPlaceholder har 10 användare med 10 poster vardera).
+
+---
+
+## Sammanfattning
+
+Du har nu byggt ett datadrivet portfolio-dashboard med:
+- **Fetch och async/await** (övning 1, 3–4)
+- **Array-metoder** (övning 2, 5)
+- **Felhantering** (övning 4)
+
+Committa dina ändringar i `portfolio-site` innan du går vidare till nästa kapitel.

@@ -1,6 +1,6 @@
 # Dataformat: JSON
 
-När vi hämtar data från ett API med `fetch`, eller när vi vill skicka data till ett API, behöver vi ett standardiserat format för att representera den datan som text. Det absolut vanligaste formatet för detta på webben idag är **JSON (JavaScript Object Notation)**.
+När vi ska skicka eller ta emot strukturerad data på webben behöver vi ett standardiserat textformat. Det absolut vanligaste formatet idag är **JSON (JavaScript Object Notation)**. I nästa lektion använder vi JSON tillsammans med `fetch` för att hämta data från API:er.
 
 **Varför JSON?**
 
@@ -38,10 +38,9 @@ JSON-data representeras som text och följer några enkla regler:
 *   **Booleans:** `true` eller `false` (små bokstäver).
 *   **Null:** `null` (små bokstäver).
 
-**Viktigt:** JSON tillåter *inte* funktioner, `undefined`, kommentarer, eller avslutande kommatecken (trailing commas).
+**Viktigt:** JSON tillåter *inte* funktioner, `undefined`, kommentarer, eller avslutande kommatecken (trailing commas). Kommentarer som `//` fungerar bara i JavaScript – inte i ren JSON-text.
 
 ```json
-// Exempel på JSON-data (som text)
 {
   "userId": 1,
   "id": 1,
@@ -151,3 +150,23 @@ När du har parsat JSON-data till ett JavaScript-objekt, är det ofta bara det f
 *   **Validera datan:** Kontrollera att datan du fick faktiskt innehåller de fält och datatyper du förväntar dig innan du använder den i din applikation. Detta skyddar mot oväntade fel om API:et ändras eller skickar oväntad data.
 
 Att förstå JSON är fundamentalt för att kunna bygga webbapplikationer som kommunicerar med omvärlden.
+
+**Prova själv:** Konvertera ett objekt till JSON och tillbaka igen.
+
+<!-- playground -->
+```js
+const project = {
+  name: "portfolio-site",
+  pages: ["index.html", "about.html"],
+  isPublic: true
+};
+
+const jsonText = JSON.stringify(project, null, 2);
+console.log("Som JSON:");
+console.log(jsonText);
+
+const parsed = JSON.parse(jsonText);
+console.log("Tillbaka till objekt:", parsed.name);
+```
+
+> **Kör nu i `portfolio-site`:** Skapa ett objekt med dina portfolio-uppgifter och logga `JSON.stringify`-resultatet i konsolen.
