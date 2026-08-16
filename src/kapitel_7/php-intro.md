@@ -228,6 +228,7 @@ När du besöker denna sida i webbläsaren:
 
 Detta visar tydligt hur PHP genererar innehållet på serversidan medan JavaScript hanterar interaktivitet och logik på klientsidan.
 
+<!-- Temporarily hidden: this exercise depended on the removed Chapter 7 submodule.
 ## Testa nu
 
 Om du använder exempelappen i `code-examples/kapitel_7/crud-app`, starta miljön med:
@@ -242,6 +243,7 @@ docker compose up -d --build
 *   phpMyAdmin: `http://localhost:8061`
 
 Skapa en enkel `index.php` i appens `public`-mapp och verifiera att PHP-kod renderas i webbläsaren.
+-->
 
 ## Checklista innan du går vidare
 

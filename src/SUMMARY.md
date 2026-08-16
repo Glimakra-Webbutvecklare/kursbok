@@ -88,6 +88,7 @@
   - [Funktionell PHP](./kapitel_7/funktionell-php.md)
   - [PHP klasser](./kapitel_7/class.md)
   - [MySQL och databaser](./kapitel_7/sql.md)
+<!-- Temporarily hidden: these lessons depended on the removed Chapter 7 submodules.
   - [CRUD-applikationer](./kapitel_7/crud-app.md)
     - [Del 1: Setup och databas](./kapitel_7/crud-app-1-setup.md)
     - [Del 2: Autentisering](./kapitel_7/crud-app-2-autentisering.md)
@@ -100,6 +101,7 @@
     - [Del 3: Setup och autentisering](./kapitel_7/laravel-crud-3-setup.md)
     - [Del 4: Skapa och läsa inlägg](./kapitel_7/laravel-crud-4-create-read.md)
     - [Del 5: Uppdatera och radera](./kapitel_7/laravel-crud-5-update-delete.md)
+-->
   - [Sessioner och cookies](./kapitel_7/sessions.md)
   - [Säkerhet](./kapitel_7/security.md)
   - [Praktiska övningar](./kapitel_7/ovningar.md)
