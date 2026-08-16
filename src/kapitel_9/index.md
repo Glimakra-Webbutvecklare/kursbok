@@ -56,5 +56,9 @@ Efter varje lektion:
 2. Läs eventuella felmeddelanden i terminalen.
 3. Committa ett fungerande steg med Git.
 
+Det klassöverskridande grupparbetet, där år 2 äger API:t och år 1 äger frontend, finns i
+[Grupparbete: frontend och API](../grupparbete/index.md). Det kapitlet lär inte om Express
+på nytt – det lär hur ni dokumenterar kontraktet, kör Docker och granskar varandras PR:er.
+
 När du är redo börjar du med
 [Node.js – från fetch till ett eget API](./node-intro.md).

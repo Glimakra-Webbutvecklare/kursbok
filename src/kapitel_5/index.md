@@ -25,3 +25,5 @@ Vi bygger vidare på `portfolio-site` och gör den **datadrivet**: hämta använ
 6. **Praktiska övningar** – bygg ett komplett portfolio-dashboard.
 
 Detta kapitel ger dig verktygen för att skapa dynamiska och datadrivna webbapplikationer.
+
+När du kan hämta JSON med `fetch` är nästa steg att göra det i grupp: år 1 bygger frontend mot ett API som år 2 skriver. Handboken för det arbetet – issues, PR-review, Docker och kontrakt – finns i [Grupparbete: frontend och API](../grupparbete/index.md).

@@ -136,6 +136,10 @@ console.log("Hej!");
 
 const name = "Världen";
 console.log("Hej, " + name + "!");
+
+for (let i = 1; i <= 3; i++) {
+  console.log("Räknar: " + i);
+}
 ```
 
 ---
