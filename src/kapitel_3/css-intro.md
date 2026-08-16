@@ -2,8 +2,29 @@
 
 CSS står för **Cascading Style Sheets**. Det är språket som webbläsare använder för att bestämma hur HTML-element ska visas visuellt. Utan CSS skulle webben vara en ganska monoton plats med bara svart text på vit bakgrund.
 
-> **Motivation:**  
-> CSS gör det möjligt att separera innehåll (HTML) från utseende (design). Det gör webbsidor snyggare, mer lättlästa och enklare att underhålla.
+> **Mål:**
+> Kunna läsa och skriva en enkel CSS-regel, koppla CSS till HTML och se hur en ändring i CSS påverkar en sida.
+
+## Börja med något som syns
+
+CSS väljer ett HTML-element och ger det en stil. Ändra färgen eller textstorleken i editorn och klicka på **Kör** för att se resultatet direkt.
+
+<!-- playground:start -->
+```html
+<h1>Min första CSS-sida</h1>
+<p>Den här texten får stil från CSS.</p>
+```
+```css
+h1 {
+  color: darkcyan;
+}
+
+p {
+  color: #333;
+  font-size: 18px;
+}
+```
+<!-- playground:end -->
 
 ---
 
@@ -39,6 +60,8 @@ p {
 - **Deklarationer:** `color: blue;` och `font-size: 16px;`
 - **Egenskaper:** `color` och `font-size`
 - **Värden:** `blue` och `16px`
+
+> **Se resultatet:** I exemplet ovan är `p` selektorn. Samma idé används i den interaktiva rutan: CSS väljer `h1` och `p`, sedan ändrar deklarationerna deras utseende.
 
 ---
 

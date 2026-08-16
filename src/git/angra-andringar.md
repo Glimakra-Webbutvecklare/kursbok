@@ -40,6 +40,18 @@ Detta kastar dina *osparade* ändringar i den filen och återställer den till h
 
 > **Varning:** Ändringar du kastar med `git restore` är borta – de fanns aldrig i någon commit, så Git kan inte få tillbaka dem. Använd bara när du är säker.
 
+<!-- terminal -->
+```bash
+$ git status
+On branch main
+Changes not staged for commit:
+  modified:   index.html
+$ git restore index.html
+$ git status
+On branch main
+nothing to commit, working tree clean
+```
+
 > **Kör nu i din riktiga terminal:** Ändra något i `index.html` utan att committa. Kör `git restore index.html` och öppna filen – ändringen ska vara borta.
 
 ---
@@ -150,6 +162,34 @@ Detta ersätter den senaste committen med en ny som har rätt meddelande.
 
 ---
 
+## 5. Ångra en commit som redan är pushad – `git revert`
+
+Har en commit redan skickats till GitHub och andra kan ha hämtat den? Skriv då **inte** om historiken med `reset` eller `--amend`. Använd `git revert` i stället. Kommandot skapar en ny commit som tar tillbaka ändringen, utan att ändra den delade historiken.
+
+```bash
+git revert HEAD
+```
+
+`HEAD` betyder den senaste committen. Git öppnar normalt en editor för ett commit-meddelande; spara meddelandet för att slutföra.
+
+<!-- terminal -->
+```bash
+$ git log --oneline -2
+b2c3d4e Lägg till röd bakgrund
+a1b2c3d Skapa startsida
+$ git revert HEAD
+[main c3d4e5f] Revert "Lägg till röd bakgrund"
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+$ git log --oneline -3
+c3d4e5f Revert "Lägg till röd bakgrund"
+b2c3d4e Lägg till röd bakgrund
+a1b2c3d Skapa startsida
+```
+
+> **Regel:** Använd `reset` och `--amend` för lokala commits som inte är pushade. Använd `revert` för commits som redan är delade.
+
+---
+
 ## Checkpoint
 
 Innan du går vidare, kontrollera att du kan:
@@ -158,9 +198,10 @@ Innan du går vidare, kontrollera att du kan:
 - [ ] Ta bort en fil ur staging utan att radera filen.
 - [ ] Ångra en lokal commit med `--soft` och committa om med fler filer.
 - [ ] Rätta ett commit-meddelande med `--amend` (utan att ha pushat).
+- [ ] Förklara varför `git revert` är säkert för en commit som redan är pushad.
 
 ---
 
 ## Sammanfattning
 
-Git ger dig flera trygga sätt att ångra: `git restore` tar tillbaka filer, `git restore --staged` tömmer staging, `git reset --soft` ångrar en commit men behåller arbetet, och `git commit --amend` rättar senaste meddelandet. Det enda kommandot du behöver vara rädd för är `git reset --hard` – det raderar arbete på riktigt. I nästa lektion lär vi oss arbeta parallellt med **brancher** (grenar) och **merge** (sammanfogning).
+Git ger dig flera trygga sätt att ångra: `git restore` tar tillbaka filer, `git restore --staged` tömmer staging, `git reset --soft` ångrar en lokal commit men behåller arbetet, `git commit --amend` rättar senaste lokala meddelandet och `git revert` ångrar en delad commit med en ny commit. Det enda kommandot du behöver vara rädd för är `git reset --hard` – det raderar arbete på riktigt. I nästa lektion lär vi oss arbeta parallellt med **brancher** (grenar) och **merge** (sammanfogning).

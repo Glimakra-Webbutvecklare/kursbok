@@ -2,8 +2,29 @@
 
 Att kunna välja ut och styla rätt HTML-element är grunden i CSS. I detta kapitel lär du dig använda **selektorer** (selectors), ange färger på olika sätt och styra textens utseende (typografi).
 
-> **Motivation:**  
-> Med selektorer kan du styra exakt vilka delar av din webbsida som ska få särskild stil. Färg och typografi gör sidan mer läsbar och tilltalande.
+> **Mål:**
+> Kunna använda element-, klass- och ID-selektorer och direkt se vilka element de påverkar.
+
+**Prova först:** Ändra en selektor eller färg och klicka på **Kör**. Klassen `.notice` väljer bara stycket som har `class="notice"`.
+
+<!-- playground:start -->
+```html
+<h1>Nyheter</h1>
+<p>Detta stycke väljs av elementselektorn <code>p</code>.</p>
+<p class="notice">Detta stycke väljs av klassselektorn <code>.notice</code>.</p>
+```
+```css
+p {
+  color: #333;
+}
+
+.notice {
+  background: #fff3cd;
+  color: #5f4300;
+  padding: 8px;
+}
+```
+<!-- playground:end -->
 
 **Språkpolicy:**  
 Svenska används i förklaringar, men engelska tekniska termer anges i parentes första gången de nämns. Variabel- och klassnamn skrivs på engelska.
@@ -229,4 +250,4 @@ li {
 
 ---
 
-*I nästa avsnitt tittar vi på box model, som beskriver hur utrymme hanteras runt HTML-element.*
+*I nästa avsnitt tittar vi på boxmodellen, som beskriver hur utrymme hanteras runt HTML-element.*

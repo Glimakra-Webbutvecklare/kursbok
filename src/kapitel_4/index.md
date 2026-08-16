@@ -37,4 +37,4 @@ Svenska används i förklaringar, men engelska tekniska termer anges i parentes 
 
 ---
 
-Nu är det dags att ta steget från statiska sidor
+Nu är det dags att ta steget från statiska sidor till program som kan reagera och förändras.

@@ -2,6 +2,9 @@
 
 Funktioner är en av de viktigaste byggstenarna i JavaScript. De gör det möjligt att återanvända kod, strukturera programmet och dela upp logik i mindre, hanterbara delar.
 
+> **Mål:**
+> Kunna skapa och anropa en enkel funktion, skicka in ett argument och använda ett return-värde.
+
 Tänk på en funktion som en **recept** – en instruktion för hur man gör något. När du behöver göra det, anropar du receptet (funktionen) och får tillbaka resultatet.
 
 ---
@@ -34,6 +37,18 @@ function add(a, b) {
 }
 
 let result = add(3, 5);  // Skickar in 3 och 5, får tillbaka 8
+```
+
+**Prova själv:** Ändra talen eller funktionens hälsning och klicka på **Kör**. Utskriften visar värdet som funktionen returnerar.
+
+<!-- playground -->
+```js
+function add(firstNumber, secondNumber) {
+  return firstNumber + secondNumber;
+}
+
+const total = add(3, 5);
+console.log("Summan är " + total);
 ```
 
 ---

@@ -38,6 +38,33 @@ graph LR
 
 ---
 
+## Skydda filer innan första pushen
+
+Innan du kopplar projektet till GitHub ska du skapa en `.gitignore` i projektmappen. Den talar om för Git vilka filer som aldrig ska läggas till i commits, till exempel lösenord, API-nycklar och installerade paket.
+
+```text
+.env
+node_modules/
+*.log
+```
+
+<!-- terminal -->
+```bash
+$ touch .gitignore
+$ git status
+On branch main
+Untracked files:
+  .gitignore
+$ git add .gitignore
+$ git commit -m "Lägg till gitignore"
+[main a1b2c3d] Lägg till gitignore
+ 1 file changed, 3 insertions(+)
+```
+
+> **Viktigt:** `.gitignore` stoppar bara filer som Git ännu inte följer. Om du redan har committat en hemlig fil måste du ta bort den från Git och byta eller återkalla hemligheten.
+
+---
+
 ## Koppla ihop och pusha första gången
 
 GitHub visar nu instruktioner under "…or push an existing repository from the command line". De består av tre kommandon:
@@ -146,6 +173,7 @@ Skulle en hemlighet ändå hamna på GitHub: byt ut/återkalla den direkt. Att r
 Innan du går vidare, kontrollera att du kan:
 
 - [ ] Skapa ett tomt repo på GitHub och koppla det med `git remote add origin`.
+- [ ] Skapa och committa en `.gitignore` innan första pushen.
 - [ ] Pusha `portfolio-site` och se dina commits på GitHub.
 - [ ] Förklara skillnaden mellan `git push` och `git pull`.
 - [ ] Veta vad du gör vid `Authentication failed` eller `remote origin already exists`.
