@@ -1,64 +1,241 @@
-# Praktiska Övningar och Projekt: Bygg Kompletta React-applikationer
+# Praktiska övningar: färdigställ Kulturverkstan
 
-Nu när vi har lärt oss React-fundamenten är det dags att sätta samman allt i praktiska projekt. Dessa övningar bygger gradvis från enkla komponenter till kompletta applikationer.
+Här sätter du samman kapitlets delar. Fortsätt i samma repository och gör en
+checkpoint i taget. Börja inte om från ett färdigt projekt om din egen app går
+att reparera.
 
-**Mål:** Tillämpa React-kunskaper i verkliga projekt, integrera API:er, hantera state management och skapa användbara applikationer.
+> **Mål:** Självständigt färdigställa, felsöka och förklara ett tillgängligt bokningsflöde med React.
 
-## Övning 1: Todo-lista med useState
+## Så arbetar du
 
-- Bygg en enkel todo-app med möjligheter att lägga till, toggla och ta bort todos.
-- Visa antal kvarvarande todos och filtrering (alla/aktiva/klara).
+För varje checkpoint:
 
-Klar-kriterier:
-- Todo-listan överlever sidladdning.
-- Varje todo har stabil `key` (t.ex. id).
-- Inga muterande operationer på state-arrayer (använd spread operator ... ).
+1. Läs resultatet och skriv vad du tror behöver ändras.
+2. Gör en liten ändring åt gången.
+3. Kontrollera resultatet i webbläsaren.
+4. Läs Console och Network innan du ber om hjälp.
+5. Committa först när “Klar när” stämmer.
 
-## Övning 2: Konsumera publikt API + Routing
+<details>
+<summary>Om du har tappat bort dig helt</summary>
 
-- Hämta data från ett publikt API (t.ex. SWAPI eller PokéAPI).
-- Visa lista och detaljsida för ett item via React Router (v6), inkl. `useParams`.
-- Hantera `loading`/`error`-states och tomma resultat.
+Jämför filnamn och dataform med referensprojektet `examples/kulturverkstan` i
+kursbokens repository. Kopiera inte hela lösningen. Hitta den minsta skillnaden
+som förklarar ditt fel.
 
-Klar-kriterier:
-- Lista och detaljvy fungerar via klient-routing (ingen helsidladdning).
-- Sök/filter uppdaterar URL query params med `useSearchParams`.
+</details>
 
-## Övning 3: Formulär med validering och API
+## Checkpoint 1: komponenter och data
 
-- Bygg ett formulär (t.ex. registrering eller produktform) med kontrollerade inputs.
-- Validera fält vid blur och submit; visa felmeddelanden.
-- Skicka data till ett mock-API (json-server eller liknande) och hantera svar/fel.
-- Bonus: Använd `react-hook-form` för att jämföra ergonomi/prestanda.
+### Resultat
 
-Klar-kriterier:
-- Validering hindrar felaktiga submissioner och visar användarvänliga fel.
-- Efter lyckad submit nollställs formuläret eller navigera till en bekräftelsesida.
+Startsidan visar minst tre workshops från en array. Varje kort visar kategori,
+titel, beskrivning, tid, pris och totalt antal lediga platser.
 
-## Övning 4: Global state med Context
+### Din uppgift
 
-- Implementera tema-växling (ljus/mörk) med Context + persistens i `localStorage`.
-- Applicera temat på hela appen via CSS-klass eller `data-theme` på `html`-elementet.
+- Använd `WorkshopList` och `WorkshopCard`.
+- Rendera med `map` och stabil `key`.
+- Visa “Fullbokad” när alla tillfällen har `placesLeft: 0`.
+- Lägg till en egen workshop med minst två tillfällen.
 
-Klar-kriterier:
-- Temat sparas och läses in vid start.
-- Ingen props drilling för temahantering.
+### Vanligt fel
 
-## Övning 5: Prestandaoptimering och stora listor
+Om samma data visas i alla kort är värdena troligen hårdkodade i
+`WorkshopCard` i stället för lästa från `workshop`-propen.
 
-- Rendera en lista med 1 000+ items.
-- Optimera med `React.memo`, `useMemo`, `useCallback` där det ger effekt.
-- Implementera virtualisering med `react-window` och jämför FPS/scroll-känsla.
+<details>
+<summary>Tips 1</summary>
 
-Klar-kriterier:
-- Mätbar förbättring när virtualisering används.
-- Inga onödiga re-renders av listitems (verifiera med React DevTools Profiler).
+Följ dataflödet `App → WorkshopList → WorkshopCard`.
 
----
+</details>
 
-Checklista (Definition of Done) för kapitel:
-- API-anrop hanterar `loading`/`error` och cleanup (AbortController).
-- Routing-exempel följer v6 (relativa paths, `NavLink` utan `activeClassName`).
-- Inga state-mutationer i exempel (kopior vid sortering/uppdatering).
-- ESLint `react-hooks/exhaustive-deps` aktiverat i projektet.
-- Tillgänglighet: formulär har etiketter, fokus är synligt, och knappar har beskrivande text.
+<details>
+<summary>Tips 2</summary>
+
+Kontrollera `workshops.map((workshop) => ...)` och
+`<WorkshopCard workshop={workshop} />`.
+
+</details>
+
+**Klar när:** fyra olika kort visas från data, ett fullbokat läge går att
+demonstrera och du kan förklara varför `key` använder `workshop.id`.
+
+> Commit: `git commit -m "bygg workshoplistan från data"`
+
+## Checkpoint 2: events och state
+
+### Resultat
+
+Besökaren kan filtrera kategorier, välja ett ledigt tillfälle och ändra antal
+deltagare. Sammanfattningen uppdateras direkt.
+
+### Din uppgift
+
+- Låt `App` äga vald kategori och bokningsobjektet.
+- Beräkna den filtrerade listan under rendering.
+- Skicka val uppåt med en event-prop.
+- Uppdatera bokningsobjektet och eventuella arrayer utan mutation.
+- Hindra deltagarantal från att bli mindre än 1 eller större än antal platser.
+
+### Felsök med flit
+
+Byt tillfälligt en funktionell update mot två anrop med ett gammalt värde.
+Förutsäg resultatet, kör och återställ sedan den korrekta varianten.
+
+<details>
+<summary>Tips</summary>
+
+När nästa värde bygger på det förra: använd
+`setBooking((current) => ({ ...current, ... }))`.
+
+</details>
+
+**Klar när:** filter, val och deltagarantal fungerar tillsammans och du kan
+rita state nedåt och eventet uppåt i komponentträdet.
+
+> Commit: `git commit -m "lägg till val och state"`
+
+## Checkpoint 3: tillgängligt formulär
+
+### Resultat
+
+Ett kontrollerat formulär samlar in exakt dessa fält:
+
+```js
+{
+  workshopId,
+  slotId,
+  name,
+  email,
+  participants,
+  message,
+}
+```
+
+### Din uppgift
+
+- Koppla alla värden till state med `value` och `onChange`.
+- Koppla varje synlig etikett med `htmlFor` och `id`.
+- Validera tid, namn, e-post och antal deltagare vid submit.
+- Koppla feltext med `aria-describedby` och ogiltigt fält med `aria-invalid`.
+- Visa submitstatus med `aria-live="polite"`.
+
+### Kontroll utan mus
+
+Ladda om sidan och använd endast `Tab`, piltangenter, `Shift+Tab`, `Space` och
+`Enter`. Fokus ska synas och hela formuläret ska gå att skicka.
+
+<details>
+<summary>Tips</summary>
+
+Om det inte går att skriva: kontrollera att `name`, state-nyckeln, `value` och
+`onChange` syftar på samma fält.
+
+</details>
+
+**Klar när:** tomma eller felaktiga värden stoppas vid rätt fält och en giltig
+bokning visas i en sammanfattning.
+
+> Commit: `git commit -m "validera bokningsformuläret"`
+
+## Checkpoint 4: appens routes
+
+### Resultat
+
+Kulturverkstan använder exakt dessa routes:
+
+- `/`
+- `/workshops/:workshopId`
+- `/book/:workshopId`
+- `/confirm`
+
+### Din uppgift
+
+- Använd `Link` eller `NavLink` för vanlig navigation.
+- Läs `workshopId` med `useParams`.
+- Navigera till `/confirm` först efter en giltig bokning.
+- Visa hjälpsamma lägen för okänd workshop, okänd route och saknad bekräftelse.
+
+### Avsiktligt fel
+
+Skriv in `/workshops/finns-inte` och `/något-helt-annat`. Båda ska hjälpa
+användaren tillbaka utan en tom vit sida.
+
+**Klar när:** adress och innehåll ändras utan helsidesladdning och alla fyra
+routes går att demonstrera.
+
+> Commit: `git commit -m "koppla bokningsflödet till routes"`
+
+## Checkpoint 5: API och robusta UI-lägen
+
+### Resultat
+
+Workshops hämtas från `/api/workshops` och bokningen skickas till
+`/api/bookings`.
+
+### Din uppgift
+
+- Visa loading, error, empty och success.
+- Kontrollera `response.ok` före `response.json()`.
+- Avbryt GET-anropet i Effectets cleanup.
+- Skicka POST i submit-eventet, inte i ett Effect.
+- Lås submitknappen medan POST-anropet pågår.
+
+### Testa alla lägen
+
+| Läge | Så testar du |
+|---|---|
+| loading | gör nätverket långsammare i DevTools |
+| error | stoppa API:t eller skriv en felaktig URL tillfälligt |
+| empty | ersätt `workshops` i `db.json` med `[]` tillfälligt |
+| success | återställ data och ladda om |
+
+Återställ alltid `db.json` och URL:en efter testet.
+
+**Klar när:** du kan visa alla fyra GET-lägen, Network visar ett POST med sex
+förväntade fält och dubbla klick inte skapar två anrop.
+
+> Commit: `git commit -m "hantera api och alla ui-lägen"`
+
+## Checkpoint 6: bygg, publicera och kamratkontrollera
+
+### Din uppgift
+
+1. Kör `npm run build` utan fel.
+2. Kör `npm start` och prova en direkt omladdning på `/book/keramik`.
+3. Publicera enligt hosting-lektionen.
+4. Låt en klasskamrat genomföra bokningsflödet utan instruktioner.
+5. Be klasskamraten ge en konkret sak som var tydlig och en som bör ändras.
+
+**Klar när:** den publika appen klarar samma kontroll som den lokala och du har
+gjort minst en förbättring efter kamratens test.
+
+> Commit: `git commit -m "färdigställ kulturverkstan"`
+
+## Gör appen till din egen
+
+När alla checkpoints fungerar ska du ändra innehållet utan att byta teknisk
+lösning:
+
+- välj ett eget namn och en enkel visuell stil,
+- skriv minst fyra egna workshops,
+- förbättra tom-, fel- och bekräftelselägenas texter,
+- lägg till en relevant filtrering,
+- skriv en README med installation, scripts och appens routes.
+
+## Definition of Done inför caseveckorna
+
+- [ ] Minst tre egna komponenter med tydliga ansvar.
+- [ ] Props, lista med stabila keys och villkorlig rendering.
+- [ ] Events och lokalt eller lyft state utan mutation.
+- [ ] Tillgängligt kontrollerat formulär med validering.
+- [ ] GET och POST med synlig status och felhantering.
+- [ ] De fyra beslutade appvyerna plus en wildcard-fallback för okända adresser.
+- [ ] Hjälpsamma tom- och fellägen.
+- [ ] Begripliga commits och en README.
+- [ ] Fungerande publicerad app.
+- [ ] Du kan förklara var rendering, events och Effects används.
+
+Context, reducers och custom hooks krävs inte. De hör till fördjupningen.

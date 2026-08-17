@@ -1,0 +1,60 @@
+{
+  "workshops": [
+    {
+      "id": "keramik",
+      "title": "Keramik för nybörjare",
+      "category": "Hantverk",
+      "description": "Forma och dekorera en egen liten skål.",
+      "durationMinutes": 120,
+      "priceSek": 350,
+      "slots": [
+        {
+          "id": "keramik-lor-10",
+          "label": "Lördag 10.00–12.00",
+          "placesLeft": 6
+        },
+        {
+          "id": "keramik-ons-18",
+          "label": "Onsdag 18.00–20.00",
+          "placesLeft": 2
+        }
+      ]
+    },
+    {
+      "id": "vavning",
+      "title": "Väv din första provbit",
+      "category": "Textil",
+      "description": "Lär dig grunderna i färg, varp och inslag i en liten bordsvävstol.",
+      "durationMinutes": 150,
+      "priceSek": 425,
+      "slots": [
+        {
+          "id": "vavning-son-13",
+          "label": "Söndag 13.00–15.30",
+          "placesLeft": 4
+        }
+      ]
+    },
+    {
+      "id": "foto",
+      "title": "Fotopromenad i byn",
+      "category": "Foto",
+      "description": "Öva komposition och ljus med mobilen eller en egen kamera.",
+      "durationMinutes": 90,
+      "priceSek": 200,
+      "slots": [
+        {
+          "id": "foto-tor-17",
+          "label": "Torsdag 17.30–19.00",
+          "placesLeft": 8
+        },
+        {
+          "id": "foto-lor-14",
+          "label": "Lördag 14.00–15.30",
+          "placesLeft": 0
+        }
+      ]
+    }
+  ],
+  "bookings": []
+}

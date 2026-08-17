@@ -1,727 +1,266 @@
-# Din Första React-komponent
+# Starta Kulturverkstan med React och Vite
 
-React är ett JavaScript-bibliotek för att bygga användargränssnitt. UI byggs från små enheter som knappar, text och bilder. React låter dig kombinera dem till återanvändbara, nästlade **komponenter**. Från webbplatser till mobilappar - allt på skärmen kan delas upp i komponenter.
+Nu skapar du en riktig React-app och gör en synlig ändring direkt. Först när appen fungerar tittar vi på vad filerna och JSX-koden betyder.
 
-**Mål:** Skapa din första React-komponent, förstå JSX-syntax och sätta upp en utvecklingsmiljö.
+> **Förkunskap:** Gör [JavaScript-bryggan](./javascript-brygga.md) först. Kontrollera också att `node --version` visar minst `v22.12.0` och att `npm --version` skriver ut ett versionsnummer.
 
-## Vad är en Komponent?
+## Mål
 
-En **komponent** är en JavaScript-funktion som returnerar markup (JSX). Komponenter kan vara så små som en knapp, eller så stora som en hel sida.
+Efter lektionen ska du kunna:
 
-```jsx
-// Din första komponent - en enkel funktion som returnerar JSX
-function Välkomstmeddelande() {
-  return <h1>Hej från React!</h1>;
-}
+1. Skapa, starta och stoppa en React-app med Vite.
+2. Ändra markup i `App.jsx` och se resultatet i webbläsaren.
+3. Använda de viktigaste JSX-reglerna och läsa ett enkelt felmeddelande.
 
-// Använd komponenten som en HTML-tagg
-function App() {
-  return (
-    <div>
-      <Välkomstmeddelande />
-      <Välkomstmeddelande />
-      <Välkomstmeddelande />
-    </div>
-  );
-}
-```
+## Följ med: få något på skärmen
 
-**Prova detta!** Skapa en ny React-app och ersätt innehållet i `App.js` med koden ovan.
-
-## Komponenter Överallt
-
-React-applikationer byggs från isolerade UI-delar som kallas komponenter. Här är en `Galleri`-komponent som renderar tre `Profil`-komponenter:
-
-```jsx
-function Profil() {
-  return (
-    <img
-      src="./assets/react-images/MK3eW3As.jpg"
-      alt="Katherine Johnson"
-    />
-  );
-}
-
-function Galleri() {
-  return (
-    <section>
-      <h1>Fantastiska forskare</h1>
-      <Profil />
-      <Profil />
-      <Profil />
-    </section>
-  );
-}
-```
-
-## Importera och Exportera Komponenter
-
-Du kan deklarera många komponenter i en fil, men stora filer kan bli svåra att navigera. För att lösa detta kan du **exportera** en komponent till sin egen fil och sedan **importera** den komponenten från en annan fil:
-
-```jsx
-// Profil.js
-function Profil() {
-  return (
-    <img
-      src="./assets/react-images/MK3eW3As.jpg"
-      alt="Katherine Johnson"
-    />
-  );
-}
-
-export default Profil;
-```
-
-```jsx
-// Galleri.js
-import Profil from './Profil.js';
-
-function Galleri() {
-  return (
-    <section>
-      <h1>Fantastiska forskare</h1>
-      <Profil />
-      <Profil />
-      <Profil />
-    </section>
-  );
-}
-
-export default Galleri;
-```
-
-## Ditt UI som ett Träd
-
-React använder träd för att modellera relationerna mellan komponenter och moduler.
-
-En React render-träd är en representation av förälder- och barnrelationen mellan komponenter.
-
-```mermaid
-graph TB
-    A["Root Component"] --> B["Component A"]
-    A --> C["Component C"] 
-    B --> D["Component B"]
-    C --> E["Component D"]
-    
-    style A fill:#e8f5e8,stroke:#388e3c,stroke-width:2px,color:#000
-    style B fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000
-    style C fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000
-    style D fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000
-    style E fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000
-```
-
-Komponenter nära toppen av trädet, nära root-komponenten, betraktas som toppnivå-komponenter. Komponenter utan barnkomponenter är löv-komponenter. Denna kategorisering av komponenter är användbar för att förstå dataflöde och renderingsprestanda.
-
-## Virtual DOM: Prestanda Under Huven (Fördjupning)
-
-Nu när du förstår grunderna, låt oss titta på **Virtual DOM** - ett av Reacts mest innovativa koncept.
-
-**Virtual DOM-processen:**
-
-1. **Skapande:** React skapar en virtuell representation av DOM:en i JavaScript
-2. **Jämförelse (Diffing):** När något ändras jämför React den nya Virtual DOM med den föregående  
-3. **Minimal uppdatering:** Bara de delar som faktiskt ändrats uppdateras i den riktiga DOM:en
-
-**Virtual DOM:s verkliga fördelar:**
-- **Batching**: Flera state-ändringar → en DOM-uppdatering
-- **Smart diffing**: Hoppar över onödiga uppdateringar
-- **Förutsägbarhet**: Deklarativ kod istället för imperativ DOM-manipulation
-
-### Virtual DOM vs Real DOM: Träd-struktur
-
-För att förstå Virtual DOM bättre, låt oss visualisera hur React hanterar ändringar i en HTML-struktur:
-
-```mermaid
-graph TB
-    subgraph realdom ["Real DOM (Långsam)"]
-        direction TB
-        RD1["div#app"] --> RD2["header"]
-        RD1 --> RD3["main"]
-        RD1 --> RD4["footer"]
-        RD2 --> RD5["h1: 'Välkommen'"]
-        RD3 --> RD6["div.content"]
-        RD3 --> RD7["button: 'Klicka'"]
-        RD6 --> RD8["p: 'Räknare: 0'"]
-        
-        RD8_NEW["p: 'Räknare: 1' ⚡"]
-        RD8 -.->|"Flera separata<br/>DOM-operationer"| RD8_NEW
-    end
-    
-    subgraph vdom ["Virtual DOM (Snabb)"]
-        direction TB
-        VD1["div#app"] --> VD2["header"]
-        VD1 --> VD3["main"]
-        VD1 --> VD4["footer"]
-        VD2 --> VD5["h1: 'Välkommen'"]
-        VD3 --> VD6["div.content"]
-        VD3 --> VD7["button: 'Klicka'"]
-        VD6 --> VD8["p: 'Räknare: 0'"]
-        
-        VD8_NEW["p: 'Räknare: 1' ⚡"]
-        VD8 -.->|"Bara denna nod<br/>uppdateras"| VD8_NEW
-    end
-    
-    style realdom fill:#ffebee,stroke:#d32f2f,stroke-width:2px,color:#000
-    style vdom fill:#e8f5e8,stroke:#388e3c,stroke-width:2px,color:#000
-    
-    style RD8 fill:#ffcdd2,stroke:#d32f2f,color:#000
-    style RD8_NEW fill:#ef5350,stroke:#d32f2f,color:#fff
-    style VD8 fill:#c8e6c9,stroke:#388e3c,color:#000
-    style VD8_NEW fill:#66bb6a,stroke:#388e3c,color:#fff
-```
-
-**Skillnaden förklarad:**
-
-### Vänta - uppdateras verkligen "hela trädet" i traditionell JS?
-
-Nej, det är en förenkling! När du gör:
-```javascript
-document.querySelector("#counter").innerText = "Räknare: 1";
-```
-
-...så uppdateras bara den specifika noden. **Men** - här är varför Virtual DOM ändå ger fördelar:
-
-**Traditionell DOM-manipulation (flera uppdateringar)**:
-```javascript
-// Varje rad triggar separat DOM-operation och potentiell repaint
-document.querySelector("#name").innerText = "Anna";     // Operation 1
-document.querySelector("#age").innerText = "25";        // Operation 2  
-document.querySelector("#status").innerText = "Online"; // Operation 3
-
-// Vid komplex logik - många manuella DOM-operationer
-if (user.isLoggedIn) {
-  document.querySelector("#login-btn").style.display = "none";
-  document.querySelector("#user-menu").style.display = "block";
-  document.querySelector("#username").innerText = user.name;
-  // ... potentiellt 10+ fler DOM-operationer
-}
-```
-
-**Virtual DOM (React approach)**:
-```jsx
-// React batchar alla dessa till EN DOM-uppdatering
-function UserProfile({ user }) {
-  return (
-    <div>
-      <span id="name">{user.name}</span>
-      <span id="age">{user.age}</span>
-      <span id="status">{user.isOnline ? "Online" : "Offline"}</span>
-      {user.isLoggedIn ? (
-        <UserMenu user={user} />
-      ) : (
-        <LoginButton />
-      )}
-    </div>
-  );
-}
-// → React optimerar till minimal antal DOM-operationer
-```
-
-**Virtual DOM:s verkliga fördelar:**
-- **Batching**: Flera state-ändringar → en DOM-uppdatering
-- **Smart diffing**: Hoppar över onödiga uppdateringar (om värdet inte ändrats)
-- **Förutsägbarhet**: Deklarativ kod istället för imperativ DOM-manipulation
-- **Komplexitet**: Hanterar komplexa UI-förändringar elegant
-
-### Praktiskt exempel
-
-Tänk dig denna React-komponent:
-
-```jsx
-function Counter() {
-  const [count, setCount] = useState(0);
-  
-  return (
-    <div id="app">
-      <header>
-        <h1>Välkommen</h1>
-      </header>
-      <main>
-        <div className="content">
-          <p>Räknare: {count}</p> {/* Bara denna rad ändras */}
-        </div>
-        <button onClick={() => setCount(count + 1)}>
-          Klicka
-        </button>
-      </main>
-      <footer>Footer innehåll</footer>
-    </div>
-  );
-}
-```
-
-När `count` ändras:
-1. **Virtual DOM** skapas med det nya värdet
-2. **Diffing algoritm** jämför gamla och nya Virtual DOM
-3. **Minimal uppdatering** - bara `<p>`-elementet uppdateras i Real DOM
-4. **Resultat** - snabb rendering utan onödig omritning
-
-## UI som funktion av state
-
-Grunden i React är att se UI som en funktion av state: UI = f(state). Ett minimalt exempel:
-
-```jsx
-import { useState } from 'react';
-
-export default function Counter() {
-  const [count, setCount] = useState(0);
-  return (
-    <div>
-      <p>Count: {count}</p>
-      <button onClick={() => setCount(c => c + 1)}>+1</button>
-    </div>
-  );
-}
-```
-
-## Skriva Markup med JSX
-
-Varje React-komponent är en JavaScript-funktion som kan innehålla markup som React renderar i webbläsaren. React-komponenter använder en syntax-utökning som kallas **JSX** för att representera den markup:en.
-
-JSX ser ut som HTML, men är lite striktare och kan visa dynamisk information. Om vi klistrar in befintlig HTML-markup i en React-komponent fungerar det inte alltid:
-
-```jsx
-// Detta fungerar inte riktigt!
-function TodoLista() {
-  return (
-    <h1>Hedy Lamarrs Todos</h1>
-    <img 
-        src="./assets/react-images/yXOvdOSs.jpg"
-      alt="Hedy Lamarr" 
-      class="photo"
-    >
-    <ul>
-      <li>Uppfinn nya trafikljus
-      <li>Repetera en filmscen  
-      <li>Förbättra spektrumteknologi
-    </ul>
-  );
-}
-```
-
-Om du har befintlig HTML som detta kan du fixa det med en konverterare, eller följa JSX-reglerna:
-
-```jsx
-function TodoLista() {
-  return (
-    <>
-      <h1>Hedy Lamarrs Todos</h1>
-      <img 
-      src="./assets/react-images/yXOvdOSs.jpg"
-        alt="Hedy Lamarr" 
-        className="photo"
-      />
-      <ul>
-        <li>Uppfinn nya trafikljus</li>
-        <li>Repetera en filmscen</li>
-        <li>Förbättra spektrumteknologi</li>
-      </ul>
-    </>
-  );
-}
-```
-
-## JavaScript i JSX med Klammerparenteser
-
-JSX låter dig skriva HTML-liknande markup inuti en JavaScript-fil, vilket håller renderingslogik och innehåll på samma plats. Ibland vill du lägga till lite JavaScript-logik eller referera till en dynamisk egenskap inuti den markup:en. I denna situation kan du använda klammerparenteser i din JSX för att "öppna ett fönster" till JavaScript:
-
-```jsx
-const person = {
-  name: 'Gregorio Y. Zara',
-  theme: {
-    backgroundColor: 'black',
-    color: 'pink'
-  }
-};
-
-function TodoLista() {
-  return (
-    <div style={person.theme}>
-      <h1>{person.name}s Todos</h1>
-      <img
-        className="avatar"
-        src="./assets/react-images/7vQD0fPs.jpg"
-        alt="Gregorio Y. Zara"
-      />
-      <ul>
-        <li>Förbättra videotelefonen</li>
-        <li>Förbered flygföreläsningar</li>
-        <li>Arbeta på alkoholdrivna motorn</li>
-      </ul>
-    </div>
-  );
-}
-```
-
-## Skicka Props till en Komponent
-
-React-komponenter använder **props** för att kommunicera med varandra. Varje föräldrakomponent kan skicka information till sina barnkomponenter genom att ge dem props. Props kan påminna dig om HTML-attribut, men du kan skicka vilket JavaScript-värde som helst genom dem, inklusive objekt, arrayer, funktioner och till och med JSX!
-
-```jsx
-function Avatar({ person, size }) {
-  return (
-    <img
-      className="avatar"
-      src={getImageUrl(person)}
-      alt={person.name}
-      width={size}
-      height={size}
-    />
-  );
-}
-
-function Profil() {
-  return (
-    <div>
-      <Avatar
-        size={100}
-        person={{ 
-          name: 'Katsuko Saruhashi', 
-          imageId: 'YfeOqp2' 
-        }}
-      />
-    </div>
-  );
-}
-```
-
-## Villkorlig Rendering
-
-Dina komponenter behöver ofta visa olika saker beroende på olika villkor. I React kan du villkorligt rendera JSX med JavaScript-syntax som `if`-satser, `&&` och `? :` operatorer.
-
-I detta exempel används JavaScript `&&` operatorn för att villkorligt rendera en bockmarkering:
-
-```jsx
-function Item({ name, isPacked }) {
-  return (
-    <li className="item">
-      {name} {isPacked && '✅'}
-    </li>
-  );
-}
-
-function PackingList() {
-  return (
-    <section>
-      <h1>Sally Rides Packlista</h1>
-      <ul>
-        <Item 
-          isPacked={true} 
-          name="Rymddräkt" 
-        />
-        <Item 
-          isPacked={true} 
-          name="Hjälm med gyllene blad" 
-        />
-        <Item 
-          isPacked={false} 
-          name="Foto av Tam" 
-        />
-      </ul>
-    </section>
-  );
-}
-```
-
-## Rendera Listor
-
-Du vill ofta visa flera liknande komponenter från en samling data. Du kan använda JavaScripts `map()` med React för att transformera din dataarray till en array av komponenter.
-
-För varje arrayobjekt behöver du specificera en `key`. Vanligtvis vill du använda ett ID från databasen som `key`. Keys låter React hålla reda på varje objekts plats i listan även om listan ändras.
-
-```jsx
-const people = [
-  { id: 0, name: 'Creola Katherine Johnson', profession: 'matematiker' },
-  { id: 1, name: 'Mario José Molina-Pasquel', profession: 'kemist' },
-  { id: 2, name: 'Mohammad Abdus Salam', profession: 'fysiker' },
-];
-
-function ScientistList() {
-  const listItems = people.map(person =>
-    <li key={person.id}>
-      <p>
-        <b>{person.name}</b> är en {person.profession}.
-      </p>
-    </li>
-  );
-  
-  return (
-    <article>
-      <h1>Forskare</h1>
-      <ul>{listItems}</ul>
-    </article>
-  );
-}
-```
-
-**Viktigt om keys:**
-- Använd alltid en unik `key` för varje listelement
-- Keys hjälper React att förstå vilka element som ändrats
-- Använd aldrig array-index som key om listan kan ändras
-
-## Hålla Komponenter Rena
-
-Vissa JavaScript-funktioner är **rena**. En ren funktion:
-
-* **Sköter sina egna affärer.** Den ändrar inte några objekt eller variabler som existerade innan den anropades.
-* **Samma input, samma output.** Givet samma input ska en ren funktion alltid returnera samma resultat.
-
-Genom att strikt bara skriva dina komponenter som rena funktioner kan du undvika en hel klass av förvirrande buggar och oförutsägbart beteende när din kodbas växer. Här är ett exempel på en oren komponent:
-
-```jsx
-let guest = 0;
-
-function Cup() {
-  // Dåligt: ändrar en redan existerande variabel!
-  guest = guest + 1;
-  return <h2>Tekopp för gäst #{guest}</h2>;
-}
-
-function TeaSet() {
-  return (
-    <>
-      <Cup />
-      <Cup />
-      <Cup />
-    </>
-  );
-}
-```
-
-Du kan göra denna komponent ren genom att skicka en prop istället för att modifiera en redan existerande variabel:
-
-```jsx
-function Cup({ guest }) {
-  return <h2>Tekopp för gäst #{guest}</h2>;
-}
-
-function TeaSet() {
-  return (
-    <>
-      <Cup guest={1} />
-      <Cup guest={2} />
-      <Cup guest={3} />
-    </>
-  );
-}
-```
-
-## Utvecklingsmiljö: Kom Igång Snabbt
-
-### Snabbstart med Vite (Rekommenderat)
+Öppna terminalen i den mapp där du brukar spara projekt. Kör:
 
 ```bash
-# Skapa nytt projekt med Vite
-npm create vite@latest min-react-app -- --template react
-cd min-react-app
-
-# Installera dependencies
+npm create vite@8.2.1 kulturverkstan -- --template react
+cd kulturverkstan
 npm install
-
-# Starta utvecklingsserver
 npm run dev
 ```
 
-### Din Första React-app
+Skapa också filen `.nvmrc` i projektroten med innehållet `22`. Den gör det
+tydligt vilken Node-huvudversion projektet använder.
 
-När du har skapat projektet, öppna `src/App.jsx` och ersätt innehållet med:
+Terminalen visar en lokal adress, ofta `http://localhost:5173`. Öppna adressen i webbläsaren. Nu ska Vites startsida synas.
+
+> **Stanna här och kontrollera:** Fortsätt inte förrän sidan syns i webbläsaren. Om den inte syns, använd tabellen **Första hjälpen** längre ner.
+
+Utvecklingsservern fortsätter köra medan du arbetar. Stoppa den med `Ctrl+C` i terminalen. Starta den igen med:
+
+```bash
+npm run dev
+```
+
+## Gör den första synliga ändringen
+
+Öppna `src/App.jsx`. Ersätt allt i filen med:
 
 ```jsx
 function App() {
   return (
-    <div>
-      <h1>Min första React-app!</h1>
-      <p>Välkommen till React-världen!</p>
-    </div>
+    <main>
+      <h1>Kulturverkstan</h1>
+      <p>Hitta en workshop och boka din plats.</p>
+    </main>
   );
 }
 
 export default App;
 ```
 
-**Prova att ändra texten och se hur sidan uppdateras direkt!**
+Spara filen. Webbläsaren ska nu visa rubriken **Kulturverkstan** och en kort text. Vite uppdaterar sidan automatiskt när du sparar.
 
-## JSX-regler att komma ihåg
+### Se → förutsäg → kör → ändra
 
+1. **Se:** Leta upp texten inuti `<p>`.
+2. **Förutsäg:** Vad händer om du byter `Hitta` mot `Välj`?
+3. **Kör:** Gör ändringen och spara.
+4. **Kontrollera:** Ändrades bara stycket i webbläsaren?
+5. **Förklara:** Berätta för en klasskamrat hur koden och resultatet hör ihop.
+
+## Vad skapade Vite?
+
+Du behöver inte kunna alla filer. Börja med dessa:
+
+```text
+kulturverkstan/
+├── src/
+│   ├── App.jsx       # appens första komponent
+│   └── main.jsx      # startar React och visar App
+├── index.html        # HTML-dokumentet som appen monteras i
+├── package.json      # scripts och paket
+└── vite.config.js    # Vites inställningar
+```
+
+- `main.jsx` kopplar React till HTML-sidan och renderar `<App />`.
+- `App.jsx` beskriver vad appen visar just nu.
+- `package.json` innehåller bland annat scriptet som körs av `npm run dev`.
+
+Öppna `src/main.jsx` och hitta `<App />`. Ändra inget där ännu.
+
+> **Kontrollfråga:** Vilken fil ändrar du för appens innehåll just nu? Svaret är `src/App.jsx`.
+
+## En komponent är en funktion
+
+Studera samma kod igen:
+
+<!-- react-playground -->
 ```jsx
-// 1. Måste ha ett parent element (eller React Fragment)
-// ❌ Fel - flera root elements
-function BadComponent() {
-  return (
-    <h1>Titel</h1>
-    <p>Text</p>
-  );
-}
-
-// ✅ Rätt - ett parent element
-function GoodComponent() {
-  return (
-    <div>
-      <h1>Titel</h1>
-      <p>Text</p>
-    </div>
-  );
-}
-
-// ✅ Eller använd React Fragment
-function GoodComponentFragment() {
-  return (
-    <>
-      <h1>Titel</h1>
-      <p>Text</p>
-    </>
-  );
-}
-
-// 2. JavaScript-uttryck inom {}
-function DynamicComponent() {
-  const products = ['Äpple', 'Banan', 'Citron'];
-  const price = 25;
-
-  return (
-    <div>
-      <h2>Produkter ({products.length})</h2>
-      <p>Pris: {price} kr</p>
-      <ul>
-        {products.map(product => (
-          <li key={product}>{product}</li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-```
-
-## Utvecklingsmiljö: Kom Igång Snabbt
-
-### Snabbstart utan tooling
-
-Vill du prova React direkt? Testa en minimal demo via CDN/online-sandbox (t.ex. StackBlitz):
-
-```html
-<!doctype html>
-<div id="root"></div>
-<script type="module">
-  import React from 'https://esm.sh/react';
-  import ReactDOM from 'https://esm.sh/react-dom/client';
-
-  function App() {
-    return React.createElement('h1', null, 'Hej från React!');
-  }
-
-  const root = ReactDOM.createRoot(document.getElementById('root'));
-  root.render(React.createElement(App));
-
-  // För riktig utveckling: använd Vite (se nedan)
-}</script>
-```
-
-### Alternativ 1: Vite (Rekommenderat)
-
-```bash
-# Skapa nytt projekt med Vite
-npm create vite@latest min-react-app -- --template react
-cd min-react-app
-
-# Installera dependencies
-npm install
-
-# Starta utvecklingsserver
-npm run dev
-```
-
-### Alternativ 2: Create React App (historiskt)
-
-```bash
-# Skapa nytt projekt
-npx create-react-app min-react-app
-cd min-react-app
-
-# Starta utvecklingsserver
-npm start
-```
-
-### Projektstruktur (Create React App)
-
-```
-min-react-app/
-  ├── public/
-  │   ├── index.html        # HTML template
-  │   └── favicon.ico
-  ├── src/
-  │   ├── App.js           # Main component
-  │   ├── App.css          # Styles för App
-  │   ├── index.js         # Entry point
-  │   └── index.css        # Global styles
-  ├── package.json         # Dependencies och scripts
-  └── README.md
-```
-
-## Din Första React-komponent
-
-Låt oss titta på en enkel komponent:
-
-```jsx
-// src/App.js
-import './App.css';
-
 function App() {
-  const message = "Välkommen till React!";
-  const currentYear = new Date().getFullYear();
-
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>{message}</h1>
-        <p>Året är {currentYear}</p>
-        <button onClick={() => alert('Hej från React!')}>
-          Klicka mig!
-        </button>
-      </header>
-    </div>
+    <main>
+      <h1>Kulturverkstan</h1>
+      <p>Hitta en workshop och boka din plats.</p>
+    </main>
   );
 }
 
 export default App;
 ```
 
-```jsx
-// src/index.js - Entry point
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
-import './index.css';
+`App` är en **komponent**:
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<App />);
+- Den är en JavaScript-funktion.
+- Namnet börjar med stor bokstav.
+- Den returnerar JSX som React visar i webbläsaren.
+- `export default` gör att `main.jsx` kan importera komponenten.
+
+`<App />` ser ut som en HTML-tagg, men det är din egen komponent. Vanliga HTML-element börjar med liten bokstav, till exempel `<main>` och `<p>`.
+
+## JSX: markup i JavaScript
+
+JSX liknar HTML, men skrivs i en JavaScript-fil. React omvandlar JSX till instruktioner som webbläsaren kan använda.
+
+Tre regler räcker långt i början.
+
+### Regel 1: returnera ett gemensamt ytterelement
+
+Detta fungerar eftersom `<main>` omsluter allt:
+
+```jsx
+return (
+  <main>
+    <h1>Kulturverkstan</h1>
+    <p>Välj en workshop.</p>
+  </main>
+);
 ```
 
-Notis:
-- Med den nya JSX-transformen (React 17+) behöver du inte längre `import React from 'react'` i varje komponentfil. Vissa mallar kan fortfarande inkludera importen – båda fungerar.
-- I React 18 kör `StrictMode` effekter två gånger i utvecklingsläge för att upptäcka biverkningar. Det påverkar inte produktion.
+Två element bredvid varandra utan ett gemensamt ytterelement ger fel. Du kan också använda ett tomt fragment, `<>...</>`.
 
-## React Developer Tools
+### Regel 2: stäng alla taggar
 
-Installera **React Developer Tools** i din webbläsare:
-- [Chrome Extension](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi)
-- [Firefox Extension](https://addons.mozilla.org/en-US/firefox/addon/react-devtools/)
+Element utan innehåll måste också stängas:
 
-Detta ger dig:
-- Komponentträd-visning
-- Props och state inspektion
-- Prestanda-profiling
-- Debugging-verktyg
+```jsx
+<img src="/workshop.jpg" alt="Händer som arbetar med lera" />
+```
 
-## Vad händer härnäst?
+### Regel 3: använd JavaScript inuti klamrar
 
-Nu har du lärt dig grunderna för att beskriva UI:t med React! I nästa avsnitt kommer vi att utforska:
+Lägg till variabler över `return` och visa dem med `{}`:
 
-* **Lägga till interaktivitet** - hantera events och state
-* **Hantera state** - ge komponenter minne
-* **Formulär** - samla in användarinput
-* **API-integration** - hämta data från servrar
+```jsx
+function App() {
+  const title = "Kulturverkstan";
+  const openPlaces = 4;
 
-**Är du redo?** Gå vidare till nästa lektion för att lära dig hur du gör dina komponenter interaktiva!
+  return (
+    <main>
+      <h1>{title}</h1>
+      <p>{openPlaces} platser kvar</p>
+    </main>
+  );
+}
 
+export default App;
+```
 
+Klamrar betyder ungefär: ”tolka detta som JavaScript”. Skriv inte citattecken runt variabeln, för då visas ordet `title` i stället för variabelns värde.
 
+## Fyll i: visa den första workshopen
+
+Ersätt `App.jsx` med koden och fyll i de tre luckorna:
+
+```jsx
+function App() {
+  const workshop = {
+    title: "Prova keramik",
+    category: "Hantverk",
+    priceSek: 250,
+  };
+
+  return (
+    <main>
+      <h1>Kulturverkstan</h1>
+      <article>
+        <h2>{workshop.________}</h2>
+        <p>Kategori: {workshop.________}</p>
+        <p>Pris: {workshop.________} kr</p>
+      </article>
+    </main>
+  );
+}
+
+export default App;
+```
+
+Förväntat resultat är **Prova keramik**, **Kategori: Hantverk** och **Pris: 250 kr**. Jämför med objektets egenskaper om du fastnar.
+
+<details>
+<summary>Visa lösningen</summary>
+
+Luckorna är `title`, `category` och `priceSek`, i den ordningen.
+
+</details>
+
+## Attribut ser nästan ut som i HTML
+
+Många attribut är likadana i HTML och JSX. Några har andra namn eftersom JSX är JavaScript:
+
+- `class` blir `className`.
+- `for` på en label blir `htmlFor`.
+- JavaScript-värden skrivs med klamrar, till exempel `participants={2}`.
+
+```jsx
+<article className="workshop-card">
+  <h2>Prova keramik</h2>
+</article>
+```
+
+Vi använder `htmlFor` när vi bygger bokningsformuläret senare.
+
+## Gör själv: ändra kortet
+
+Utgå från den fungerande koden ovan.
+
+1. Lägg till `durationMinutes: 90` i objektet.
+2. Visa texten `Längd: 90 minuter` i kortet.
+3. Byt titel, kategori, pris och längd till en workshop du själv hittar på.
+4. Förklara varför `{workshop.durationMinutes}` har klamrar men texten `Längd:` inte har det.
+
+**Klar när:** alla fyra värden syns, inga fel visas i Console och sidan uppdateras när du ändrar objektet.
+
+## Lär dig läsa fel
+
+Fel är en normal del av programmering. Skapa ett litet fel med flit:
+
+1. Ta bort sluttaggen `</article>`.
+2. Spara filen.
+3. Läs felmeddelandet i webbläsaren eller terminalen.
+4. Sätt tillbaka taggen och kontrollera att sidan fungerar.
+
+Läs först den översta delen av felmeddelandet. Leta sedan efter filnamnet `App.jsx` och ett radnummer. Börja undersöka där.
+
+## Första hjälpen
+
+| Problem | Trolig orsak | Prova detta |
+| --- | --- | --- |
+| `npm` hittas inte | Node.js är inte installerat eller terminalen är gammal | Installera/aktivera Node.js LTS och öppna en ny terminal |
+| Terminalen visar fel mapp | `npm run dev` körs utanför projektet | Kör `pwd`, `ls` och sedan `cd kulturverkstan` |
+| Sidan kan inte öppnas | Utvecklingsservern kör inte | Kör `npm run dev` och använd adressen terminalen visar |
+| Tom sida efter en ändring | JSX har ett syntaxfel | Läs första felet och kontrollera taggar, parenteser och `return` |
+| Texten ändras inte | Filen är inte sparad eller fel fil är öppen | Spara `src/App.jsx` och kontrollera terminalen |
+| `workshop is not defined` | Variabeln saknas eller har annat namn | Kontrollera stavningen och att objektet ligger inne i `App` |
+
+## Checkpoint
+
+Du är klar när:
+
+- Vites utvecklingsserver startar med `npm run dev`,
+- Kulturverkstan visar ditt workshopkort från data i ett objekt,
+- du kan förklara vad `App`, `return`, JSX och `{}` gör.
+
+> **Commit-förslag:**
+>
+> ```bash
+> git add .
+> git commit -m "Starta Kulturverkstan med Vite"
+> ```
+
+I nästa lektion delar du upp appen i flera komponenter och visar flera workshops från en lista.

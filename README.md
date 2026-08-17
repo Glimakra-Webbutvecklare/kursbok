@@ -265,13 +265,38 @@ git merge feature
 
 Widgeten visar en `<iframe>` med sandlådan plus en "Öppna i ny flik"-länk som fallback. Utan kodblock startar den tom. Den körs helt i läsarens webbläsare (ingen kostnad eller gräns per läsare).
 
-### Senare: React, Node.js och TypeScript (år 2)
+### React-playground (år 2)
 
-För modulerna i år 2 som kräver en riktig körmiljö (React, Node.js, Deno, TypeScript, WebSocket) rekommenderas inbäddade tjänster i stället för den självhostade playgrounden:
+Små React-exempel kan köras direkt i den statiska mdBook-sidan med Sandpack:
 
-*   **React:** [Sandpack](https://sandpack.codesandbox.io/) (MIT-licens, paketerar i webbläsaren, inga användningsgränser).
-*   **Node.js / Express / Deno / WebSocket:** inbäddade publika [StackBlitz](https://stackblitz.com/)-projekt (kör Node i webbläsaren via WebContainers).
+````markdown
+<!-- react-playground -->
+```jsx
+export default function App() {
+  return <h1>Hej från React!</h1>;
+}
+```
+````
 
-Dessa körs i varje läsares egen webbläsare, så det finns ingen kostnad eller gräns per läsare för en kurs av vår storlek. Betaltjänster behövs bara för privata projekt, teamplatser eller för att köra container-tekniken på egen domän.
+Kodblocket måste exportera en `App` som default och ska vara ett litet
+enfilsexempel. Större exempel med flera komponentfiler, API och routing körs i
+studentens riktiga Vite-projekt.
+
+Playgroundet byggs som en lazy-loadad statisk resurs:
+
+```bash
+npm install
+npm run build:react-playground
+mdbook serve
+```
+
+Docker- och GitHub Pages-bygget kör samma npm-script före `mdbook build`.
+Originalkodblocket ligger kvar som fallback om Sandpack eller externa
+CodeSandbox-resurser inte kan laddas. Sandpack har Apache-2.0-licens och kör
+exemplen i läsarens webbläsare.
+
+För Node.js, Express, Deno och WebSocket-exempel kan publika
+[StackBlitz](https://stackblitz.com/)-projekt användas när en riktig
+servermiljö behövs.
 
 Thank you for contributing!

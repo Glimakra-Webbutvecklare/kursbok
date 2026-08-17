@@ -1,519 +1,675 @@
-# Konsumera API:er i React: Data från Backend
+# API och Effects: byt datakälla utan att byta app
 
-Modern React-applikationer separerar frontend från backend och kommunicerar via **API:er** (Application Programming Interfaces). Detta kapitel fokuserar på hur vi hämtar, skickar och hanterar data från externa tjänster.
+Kulturverkstan har fyra fungerande vyer med lokal data. Nu gör vi en enda arkitekturändring: workshopdatan hämtas från `/api/workshops` och bokningar skickas till `/api/bookings`.
 
-**Mål:** Lära sig använda Fetch API, skapa custom hooks för API-anrop, implementera robust error handling och förstå bästa praxis för datahantering. (Notis: Axios är ett populärt bibliotek om du vill ha extra funktioner.)
+`WorkshopList`, `WorkshopCard`, `BookingSummary`, `BookingForm` och alla routes finns kvar. Eftersom lista, detalj och bokning behöver samma data äger `App` fetch-state redan från början. Vi bygger alltså inte först en lokal fetch som sedan måste flyttas.
 
-> **Koppling till Node.js-kapitlet:** Exemplen kan användas mot det
-> [`portfolio-api`](../kapitel_9/index.md) som du bygger där. Då ersätter du
-> exempel-URL:en med din egen endpoint, till exempel `/api/projects`.
+## Mål
 
-## Fetch API: Webbstandardens Sätt
+- skilja rendering och event handlers från ett Effect
+- visa loading, error, empty och success på lista, detalj och bokning
+- skicka exakt sex bokningsfält med `POST` och hantera väntan och fel
 
-**Fetch API** är den moderna standarden för att göra HTTP-requests i JavaScript. Det är inbyggt i alla moderna webbläsare och behöver inga externa bibliotek.
+## 1. Var hör koden hemma?
 
-### Grundläggande Fetch-exempel
+| Kod | Vad startar den? | Plats |
+| --- | --- | --- |
+| `workshops.map(...)` | React räknar ut vyn | rendering |
+| skicka en bokning | användaren skickar formuläret | submit-event |
+| hämta workshops | appen synkroniseras med ett API | `useEffect` |
 
-```jsx
-import { useState, useEffect } from 'react';
+Ett Effect används för synkronisering med något utanför React. Ett POST-anrop ska inte ligga i ett Effect när användarens submit redan anger exakt när det ska köras.
 
-function UserList() {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+## 2. Skapa det lokala demo-API:t
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const response = await fetch('/api/users');
-        
-        // Kontrollera om request lyckades
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const userData = await response.json();
-        setUsers(userData);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUsers();
-  }, []);
-
-  if (loading) return <div>Laddar användare...</div>;
-  if (error) return <div>Fel: {error}</div>;
-
-  return (
-    <ul>
-      {users.map(user => (
-        <li key={user.id}>
-          {user.name} - {user.email}
-        </li>
-      ))}
-    </ul>
-  );
-}
-```
-
-### HTTP-metoder med Fetch
-
-```jsx
-// GET (standard)
-const getUsers = async () => {
-  const response = await fetch('/api/users');
-  return response.json();
-};
-
-// POST - Skapa ny användare
-const createUser = async (userData) => {
-  const response = await fetch('/api/users', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(userData),
-  });
-
-  if (!response.ok) {
-    throw new Error('Failed to create user');
-  }
-
-  return response.json();
-};
-
-// PUT - Uppdatera användare
-const updateUser = async (userId, userData) => {
-  const response = await fetch(`/api/users/${userId}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(userData),
-  });
-
-  return response.json();
-};
-
-// DELETE - Ta bort användare
-const deleteUser = async (userId) => {
-  const response = await fetch(`/api/users/${userId}`, {
-    method: 'DELETE',
-  });
-
-  if (!response.ok) {
-    throw new Error('Failed to delete user');
-  }
-
-  return response.ok;
-};
-```
-
-### Autentisering med Headers
-
-```jsx
-// Token-baserad autentisering
-const fetchWithAuth = async (url, options = {}) => {
-  const token = localStorage.getItem('authToken');
-  
-  const config = {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token && { Authorization: `Bearer ${token}` }),
-      ...options.headers,
-    },
-  };
-
-  const response = await fetch(url, config);
-
-  // Hantera unauthorized
-  if (response.status === 401) {
-    localStorage.removeItem('authToken');
-    // Navigera till login via central hantering (ex. router)
-    throw new Error('Unauthorized');
-  }
-
-  return response;
-};
-
-// Användning
-const getProtectedData = async () => {
-  const response = await fetchWithAuth('/api/protected-data');
-  return response.json();
-};
-```
-
-## Notis: Axios
-
-Axios är ett populärt bibliotek för HTTP-anrop som erbjuder interceptors och några bekvämligheter. I denna kurs använder vi web standarden Fetch för alla exempel. Om du föredrar Axios kan du enkelt översätta våra fetch-anrop till `axios.get/post/...` och använda interceptors för t.ex. token-hantering.
-
-
-## Använd data från Pokemon API
-
-Nu när vi har sett grunderna för hur man anropar ett API låt oss göra något roligare. [Pokemon API](https://pokeapi.co/) är ett öppet API som ger oss tillgång till data om alla Pokemon från spelen - perfekt för att öva på API-anrop!
-
-### Vad är Pokemon API?
-
-Pokemon API (PokeAPI) är ett RESTful API som innehåller information om:
-- Pokemon (namn, typ, statistik, bilder)
-- Moves (attacker)
-- Types (typer som Fire, Water, Electric)
-- Items (föremål)
-- Locations (platser)
-
-**Fördelar:**
-- Helt gratis att använda
-- Ingen API-nyckel krävs
-- Välstrukturerad JSON-data
-- Stöder CORS (fungerar direkt från webbläsaren)
-
-### Undersök datan
-
-Låt oss först utforska vad API:et ger oss. Öppna https://pokeapi.co/api/v2/pokemon/pikachu i webbläsaren eller testa med curl:
+Installera två låsta paket i Kulturverkstans projektmapp:
 
 ```bash
-curl https://pokeapi.co/api/v2/pokemon/pikachu
+npm install json-server@0.17.4 concurrently@10.0.5
 ```
 
-**Viktiga endpoints:**
-```
-GET https://pokeapi.co/api/v2/pokemon/         # Lista första 20 Pokemon
-GET https://pokeapi.co/api/v2/pokemon/{id}     # Specifik Pokemon (ID eller namn)
-GET https://pokeapi.co/api/v2/type/{type}      # Pokemon av viss typ
-```
+### `db.json`
 
-**Exempel på data för Pikachu:**
+Skapa `db.json` i projektets rot. Datan är exakt samma som tidigare låg i `src/data/workshops.js`:
+
 ```json
 {
-  "id": 25,
-  "name": "pikachu",
-  "height": 4,
-  "weight": 60,
-  "types": [
+  "workshops": [
     {
-      "slot": 1,
-      "type": {
-        "name": "electric",
-        "url": "https://pokeapi.co/api/v2/type/13/"
-      }
+      "id": "keramik",
+      "title": "Keramik för nybörjare",
+      "category": "Hantverk",
+      "description": "Forma och dekorera en egen liten skål.",
+      "durationMinutes": 120,
+      "priceSek": 350,
+      "slots": [
+        {
+          "id": "keramik-lor-10",
+          "label": "Lördag 10.00–12.00",
+          "placesLeft": 6
+        },
+        {
+          "id": "keramik-ons-18",
+          "label": "Onsdag 18.00–20.00",
+          "placesLeft": 2
+        }
+      ]
+    },
+    {
+      "id": "vavning",
+      "title": "Väv din första provbit",
+      "category": "Textil",
+      "description": "Lär dig grunderna i färg, varp och inslag i en liten bordsvävstol.",
+      "durationMinutes": 150,
+      "priceSek": 425,
+      "slots": [
+        {
+          "id": "vavning-son-13",
+          "label": "Söndag 13.00–15.30",
+          "placesLeft": 4
+        }
+      ]
+    },
+    {
+      "id": "foto",
+      "title": "Fotopromenad i byn",
+      "category": "Foto",
+      "description": "Öva komposition och ljus med mobilen eller en egen kamera.",
+      "durationMinutes": 90,
+      "priceSek": 200,
+      "slots": [
+        {
+          "id": "foto-tor-17",
+          "label": "Torsdag 17.30–19.00",
+          "placesLeft": 8
+        },
+        {
+          "id": "foto-lor-14",
+          "label": "Lördag 14.00–15.30",
+          "placesLeft": 0
+        }
+      ]
     }
   ],
-  "sprites": {
-    "front_default": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
-    "front_shiny": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/25.png"
+  "bookings": []
+}
+```
+
+### `server.cjs`
+
+Skapa `server.cjs` i projektets rot:
+
+```js
+const jsonServer = require('json-server');
+
+const server = jsonServer.create();
+const router = jsonServer.router('db.json');
+
+server.use(jsonServer.defaults());
+server.use(jsonServer.bodyParser);
+server.use('/api', router);
+
+server.listen(3001, () => {
+  console.log('Demo-API: http://localhost:3001/api');
+});
+```
+
+Backend kommer senare i kursen. Här är servern färdig kursinfrastruktur.
+
+### `vite.config.js`
+
+Lägg till proxyn men behåll React-pluginen:
+
+```js
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    proxy: {
+      '/api': 'http://localhost:3001',
+    },
   },
-  "stats": [
-    {
-      "base_stat": 35,
-      "stat": {
-        "name": "hp"
-      }
-    }
-    // ... fler stats
-  ]
-}
+});
 ```
 
-### Bygg en Pokemon-app steg för steg
+### `package.json`
 
-Låt oss börja enkelt och bygga upp funktionaliteten bit för bit.
+Ersätt bara `scripts` med dessa fem scripts. Behåll övriga fält och dependencies:
 
-#### Steg 1: Hämta och visa en Pokemon
-
-Först - låt oss bara hämta Pikachu och visa namnet:
-
-```jsx
-function PokemonApp() {
-  const [pokemon, setPokemon] = useState(null);
-
-  useEffect(() => {
-    fetch('https://pokeapi.co/api/v2/pokemon/pikachu')
-      .then(response => response.json())
-      .then(data => setPokemon(data));
-  }, []);
-
-  return (
-    <div className="pokemon-app">
-      <h1>Min Pokemon App</h1>
-      {pokemon && <h2>{pokemon.name}</h2>}
-    </div>
-  );
-}
-```
-
-**Testa detta först!** Öppna Network-fliken i utvecklarverktygen och se API-anropet.
-
-#### Steg 2: Lägg till bild och grundinfo
-
-```jsx
-function PokemonApp() {
-  const [pokemon, setPokemon] = useState(null);
-
-  useEffect(() => {
-    fetch('https://pokeapi.co/api/v2/pokemon/pikachu')
-      .then(response => response.json())
-      .then(data => setPokemon(data));
-  }, []);
-
-  return (
-    <div className="pokemon-app">
-      <h1>Min Pokemon App</h1>
-      
-      {pokemon && (
-        <div className="pokemon-card">
-          <h2>{pokemon.name}</h2>
-          <img src={pokemon.sprites.front_default} alt={pokemon.name} />
-          <p>Höjd: {pokemon.height / 10} m</p>
-          <p>Vikt: {pokemon.weight / 10} kg</p>
-        </div>
-      )}
-    </div>
-  );
-}
-```
-
-
-#### Steg 3: Lägg till sökfunktion
-
-Nu gör vi det interaktivt:
-
-```jsx
-function PokemonApp() {
-  const [pokemon, setPokemon] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
-
-  const searchPokemon = () => {
-    fetch(`https://pokeapi.co/api/v2/pokemon/${searchTerm.toLowerCase()}`)
-      .then(response => response.json())
-      .then(data => setPokemon(data));
-  };
-
-  return (
-    <div className="pokemon-app">
-      <h1>Pokemon Sökare</h1>
-      
-      <div className="search-box">
-        <input 
-          type="text" 
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Skriv Pokemon namn..."
-          className="search-input"
-        />
-        <button onClick={searchPokemon} className="search-button">
-          Sök
-        </button>
-      </div>
-
-      {pokemon && (
-        <div className="pokemon-card">
-          <h2>{pokemon.name}</h2>
-          <img src={pokemon.sprites.front_default} alt={pokemon.name} />
-          <p>Höjd: {pokemon.height / 10} m</p>
-          <p>Vikt: {pokemon.weight / 10} kg</p>
-          <p>Typ: {pokemon.types.map(type => type.type.name).join(', ')}</p>
-        </div>
-      )}
-    </div>
-  );
-}
-```
-
-**Prova att söka på:** pikachu, charizard, bulbasaur, squirtle
-
-#### Steg 4: Hantera fel och loading
-
-Vad händer om vi söker på något som inte finns?
-
-```jsx
-function PokemonApp() {
-  const [pokemon, setPokemon] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  const searchPokemon = async () => {
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${searchTerm.toLowerCase()}`);
-      
-      if (!response.ok) {
-        throw new Error('Pokemon hittades inte!');
-      }
-      
-      const data = await response.json();
-      setPokemon(data);
-    } catch (err) {
-      setError(err.message);
-      setPokemon(null);
-    }
-    
-    setLoading(false);
-  };
-
-  return (
-    <div className="pokemon-app">
-      <h1>Pokemon Sökare</h1>
-      
-      <div className="search-box">
-        <input 
-          type="text" 
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Skriv Pokemon namn..."
-          className="search-input"
-        />
-        <button 
-          onClick={searchPokemon} 
-          disabled={loading}
-          className="search-button"
-        >
-          {loading ? 'Söker...' : 'Sök'}
-        </button>
-      </div>
-
-      {error && <div className="error">Fel: {error}</div>}
-
-      {pokemon && (
-        <div className="pokemon-card">
-          <h2>{pokemon.name}</h2>
-          <img src={pokemon.sprites.front_default} alt={pokemon.name} />
-          <p>Höjd: {pokemon.height / 10} m</p>
-          <p>Vikt: {pokemon.weight / 10} kg</p>
-          <p>Typ: {pokemon.types.map(type => type.type.name).join(', ')}</p>
-        </div>
-      )}
-    </div>
-  );
-}
-```
-
-**Lägg till CSS:**
-```css
-.search-box {
-  margin: 20px 0;
-}
-
-.search-input {
-  padding: 10px;
-  margin-right: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-}
-
-.search-button {
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.search-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-.error {
-  color: red;
-  margin: 10px 0;
-}
-```
-
-**Testa fel:** Sök på "asdfgh" och se vad som händer!
-
-### Steg 5: Gör appen din egen! 🎯
-
-Nu har du en fungerande Pokemon-sökare. Dags att experimentera och lägga till egna funktioner!
-
-#### Enkla förbättringar att prova:
-
-**Random Pokemon-knapp:**
-```jsx
-// Lägg till i din searchPokemon-funktion
-const getRandomPokemon = () => {
-  const randomId = Math.floor(Math.random() * 1010) + 1;
-  setSearchTerm(randomId.toString());
-  // Sedan kan du kalla searchPokemon() eller göra fetch direkt
-};
-
-// Lägg till knappen i din JSX
-<button onClick={getRandomPokemon} className="random-button">
-  Slumpa Pokemon
-</button>
-```
-
-**Visa shiny-versionen:**
-```jsx
-// I din pokemon-card, lägg till:
-{pokemon.sprites.front_shiny && (
-  <div>
-    <p>Shiny version:</p>
-    <img src={pokemon.sprites.front_shiny} alt={`Shiny ${pokemon.name}`} />
-  </div>
-)}
-```
-
-**Visa Pokemon stats:**
-```jsx
-// Lägg till i pokemon-card:
-<div className="stats">
-  <h3>Stats:</h3>
-  {pokemon.stats.map(stat => (
-    <p key={stat.stat.name}>
-      {stat.stat.name}: {stat.base_stat}
-    </p>
-  ))}
-</div>
-```
-
-#### Medelsvåra utmaningar:
-
-- **Sök med Enter:** Gör så man kan trycka Enter i sökrutan
-- **Favoriter:** Spara favorit-Pokemon i `localStorage`
-- **Historik:** Visa de senaste sökta Pokemon
-- **Jämför Pokemon:** Visa två Pokemon sida vid sida
-
-#### Avancerade idéer:
-
-- **Pokemon Team Builder:** Bygg ett lag med max 6 Pokemon
-- **Type effectiveness:** Visa vilka typer som är starka/svaga mot varandra
-- **Evolution chain:** Visa hela evolution-kedjan
-- **Moves/attacker:** Lista Pokemon:s attacker
-
-#### Tips för utveckling:
-
-```jsx
-// Enter-tangent för sökning
-const handleKeyPress = (e) => {
-  if (e.key === 'Enter') {
-    searchPokemon();
+```json
+{
+  "scripts": {
+    "vite": "vite",
+    "api": "node server.cjs",
+    "dev": "concurrently -k -n API,VITE \"npm:api\" \"npm:vite\"",
+    "build": "vite build",
+    "start": "node server.cjs"
   }
-};
-
-// Lägg till onKeyPress={handleKeyPress} på din input
-
-// Spara i localStorage
-const saveFavorite = () => {
-  const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
-  favorites.push(pokemon.name);
-  localStorage.setItem('favorites', JSON.stringify(favorites));
-};
+}
 ```
 
-**Experimentera och ha kul!** Det viktigaste är att du förstår hur API-anrop fungerar. Allt annat är bonus! 🎮
+Starta båda delarna:
 
-## Custom Hooks för API-anrop
+```bash
+npm run dev
+```
 
-Custom hooks gör API‑logik återanvändbar och ren. För en komplett genomgång med många exempel (useApi, useResource, caching, retry m.m.), se fördjupningslektionen: [Custom Hooks i React](./fordjupning/custom-hooks.md).
+Öppna `http://localhost:3001/api/workshops`. Fortsätt först när du ser en JSON-array med `keramik`, `vavning` och `foto`.
 
+## 3. Samla API-anropen i `src/api.js`
+
+Skapa filen:
+
+```js
+export async function getWorkshops(signal) {
+  const response = await fetch('/api/workshops', { signal });
+
+  if (!response.ok) {
+    throw new Error(`Servern svarade med status ${response.status}.`);
+  }
+
+  return response.json();
+}
+
+export async function createBooking(booking) {
+  const response = await fetch('/api/bookings', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(booking),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Servern svarade med status ${response.status}.`);
+  }
+
+  return response.json();
+}
+```
+
+`getWorkshops` får en `signal` så att appen kan avbryta anropet när den försvinner. `createBooking` skickar bokningsobjektet i request body.
+
+## 4. Låt formuläret invänta POST-anropet
+
+I `BookingForm.jsx` behövs tre avgränsade ändringar. All validering från förra lektionen ska vara kvar.
+
+Lägg till state efter `errors` och `status`:
+
+```jsx
+const [submitting, setSubmitting] = useState(false);
+```
+
+Gör `handleSubmit` asynkron och ersätt den godkända delen efter valideringen:
+
+```jsx
+async function handleSubmit(event) {
+  event.preventDefault();
+  const nextErrors = validate();
+  setErrors(nextErrors);
+
+  if (Object.keys(nextErrors).length > 0) {
+    setStatus('Bokningen kunde inte skickas. Kontrollera fälten.');
+    return;
+  }
+
+  try {
+    setSubmitting(true);
+    setStatus('Skickar bokningen…');
+    await onBooked(booking);
+    setStatus('Bokningen är klar.');
+  } catch (error) {
+    setStatus('Bokningen kunde inte skickas. Försök igen.');
+  } finally {
+    setSubmitting(false);
+  }
+}
+```
+
+Ersätt submitknappen och behåll statusraden:
+
+```jsx
+<button type="submit" disabled={submitting}>
+  {submitting ? 'Skickar…' : 'Bekräfta bokning'}
+</button>
+<p aria-live="polite">{status}</p>
+```
+
+Formuläret vet inte hur API:t fungerar. Det väntar bara på funktionen i `onBooked`. Därför kan samma formulär fortsätta återanvändas.
+
+## 5. Komplett slutsteg: lyft fetch-state till `App`
+
+Nu ersätter du `src/App.jsx` med den kompletta versionen nedan. Det är den enda stora filen som ändras i slutsteget.
+
+Skillnader från routing-lektionen:
+
+- importen från `./data/workshops.js` är borta,
+- `App` äger `workshops`, `status`, `errorMessage` och Effectet,
+- alla tre datavyer får samma props,
+- varje datavy hanterar loading, error, empty och success innan den använder datan,
+- `handleBooked` skickar POST och sparar samma bekräftade bokningsobjekt.
+
+```jsx
+import { useEffect, useState } from 'react';
+import {
+  BrowserRouter,
+  Link,
+  NavLink,
+  Route,
+  Routes,
+  useNavigate,
+  useParams,
+} from 'react-router-dom';
+import { createBooking, getWorkshops } from './api.js';
+import BookingForm from './components/BookingForm.jsx';
+import BookingSummary from './components/BookingSummary.jsx';
+import WorkshopList from './components/WorkshopList.jsx';
+
+const emptyBooking = {
+  workshopId: '',
+  slotId: '',
+  name: '',
+  email: '',
+  participants: 1,
+  message: '',
+};
+
+function ErrorNotice({ message, onRetry }) {
+  return (
+    <section role="alert">
+      <h1>Något gick fel</h1>
+      <p>{message}</p>
+      <button type="button" onClick={onRetry}>Försök igen</button>
+    </section>
+  );
+}
+
+function HomePage({
+  workshops,
+  status,
+  errorMessage,
+  onRetry,
+  category,
+  onCategoryChange,
+  onSelectSlot,
+}) {
+  const navigate = useNavigate();
+
+  if (status === 'loading') return <p aria-live="polite">Laddar workshops…</p>;
+  if (status === 'error') {
+    return <ErrorNotice message={errorMessage} onRetry={onRetry} />;
+  }
+  if (workshops.length === 0) {
+    return <p>Det finns inga workshops just nu.</p>;
+  }
+
+  const visibleWorkshops = category === 'Alla'
+    ? workshops
+    : workshops.filter((workshop) => workshop.category === category);
+
+  function handleSelectSlot(workshopId, slotId) {
+    onSelectSlot(workshopId, slotId);
+    navigate(`/book/${workshopId}`);
+  }
+
+  return (
+    <section>
+      <h1>Hitta din nästa workshop</h1>
+      <p>Välj en aktivitet, ett tillfälle och boka din plats.</p>
+
+      <div aria-label="Filtrera workshops">
+        {['Alla', 'Hantverk', 'Textil', 'Foto'].map((item) => (
+          <button
+            key={item}
+            type="button"
+            aria-pressed={category === item}
+            onClick={() => onCategoryChange(item)}
+          >
+            {item}
+          </button>
+        ))}
+      </div>
+
+      {visibleWorkshops.length === 0 ? (
+        <p>Inga workshops matchar filtret.</p>
+      ) : (
+        <WorkshopList
+          workshops={visibleWorkshops}
+          onSelectSlot={handleSelectSlot}
+        />
+      )}
+    </section>
+  );
+}
+
+function WorkshopPage({ workshops, status, errorMessage, onRetry }) {
+  const { workshopId } = useParams();
+
+  if (status === 'loading') return <p aria-live="polite">Laddar workshop…</p>;
+  if (status === 'error') {
+    return <ErrorNotice message={errorMessage} onRetry={onRetry} />;
+  }
+  if (workshops.length === 0) {
+    return <p>Det finns inga workshops att visa.</p>;
+  }
+
+  const workshop = workshops.find((item) => item.id === workshopId);
+  if (!workshop) return <MissingWorkshop />;
+
+  const hasOpenSlot = workshop.slots.some((slot) => slot.placesLeft > 0);
+
+  return (
+    <article>
+      <p>{workshop.category}</p>
+      <h1>{workshop.title}</h1>
+      <p>{workshop.description}</p>
+      <p>{workshop.durationMinutes} minuter · {workshop.priceSek} kr</p>
+      <h2>Tillfällen</h2>
+      <ul>
+        {workshop.slots.map((slot) => (
+          <li key={slot.id}>
+            {slot.label} · {slot.placesLeft > 0
+              ? `${slot.placesLeft} platser kvar`
+              : 'Fullbokad'}
+          </li>
+        ))}
+      </ul>
+      {hasOpenSlot ? (
+        <Link to={`/book/${workshop.id}`}>Boka {workshop.title}</Link>
+      ) : (
+        <p>Workshoppen är fullbokad.</p>
+      )}
+    </article>
+  );
+}
+
+function BookPage({
+  workshops,
+  status,
+  errorMessage,
+  onRetry,
+  booking,
+  onBookingChange,
+  onBooked,
+}) {
+  const { workshopId } = useParams();
+  const navigate = useNavigate();
+
+  if (status === 'loading') return <p aria-live="polite">Laddar bokning…</p>;
+  if (status === 'error') {
+    return <ErrorNotice message={errorMessage} onRetry={onRetry} />;
+  }
+  if (workshops.length === 0) {
+    return <p>Det finns inga workshops att boka.</p>;
+  }
+
+  const workshop = workshops.find((item) => item.id === workshopId);
+  if (!workshop) return <MissingWorkshop />;
+
+  const pageBooking = booking.workshopId === workshop.id
+    ? booking
+    : { ...booking, workshopId: workshop.id, slotId: '', participants: 1 };
+
+  async function handleBooked(nextBooking) {
+    await onBooked(nextBooking);
+    navigate('/confirm');
+  }
+
+  return (
+    <section>
+      <h1>Boka {workshop.title}</h1>
+      <BookingSummary booking={pageBooking} workshops={workshops} />
+      <BookingForm
+        workshop={workshop}
+        booking={pageBooking}
+        onBookingChange={onBookingChange}
+        onBooked={handleBooked}
+      />
+    </section>
+  );
+}
+
+function ConfirmPage({ booking, workshops }) {
+  if (!booking) {
+    return (
+      <section>
+        <h1>Ingen bokning att visa</h1>
+        <p>Gör en bokning först, eller välj en workshop från listan.</p>
+        <Link to="/">Till alla workshops</Link>
+      </section>
+    );
+  }
+
+  const workshop = workshops.find((item) => item.id === booking.workshopId);
+  const slot = workshop && workshop.slots.find((item) => item.id === booking.slotId);
+
+  if (!workshop || !slot) {
+    return <p>Bokningen är sparad, men workshopinformationen kunde inte visas.</p>;
+  }
+
+  return (
+    <section>
+      <h1>Tack för din bokning, {booking.name}!</h1>
+      <p>{workshop.title}</p>
+      <p>{slot.label} · {booking.participants} deltagare</p>
+      <p>Bekräftelsen skickas till {booking.email}.</p>
+      <Link to="/">Till alla workshops</Link>
+    </section>
+  );
+}
+
+function MissingWorkshop() {
+  return (
+    <section>
+      <h1>Workshoppen finns inte</h1>
+      <Link to="/">Till alla workshops</Link>
+    </section>
+  );
+}
+
+function NotFoundPage() {
+  return (
+    <section>
+      <h1>Sidan finns inte</h1>
+      <Link to="/">Till startsidan</Link>
+    </section>
+  );
+}
+
+function Layout(props) {
+  return (
+    <>
+      <header>
+        <NavLink to="/">Kulturverkstan</NavLink>
+        <nav aria-label="Huvudmeny">
+          <NavLink to="/">Workshops</NavLink>
+        </nav>
+      </header>
+      <main>
+        <Routes>
+          <Route
+            path="/"
+            element={(
+              <HomePage
+                workshops={props.workshops}
+                status={props.status}
+                errorMessage={props.errorMessage}
+                onRetry={props.onRetry}
+                category={props.category}
+                onCategoryChange={props.onCategoryChange}
+                onSelectSlot={props.onSelectSlot}
+              />
+            )}
+          />
+          <Route
+            path="/workshops/:workshopId"
+            element={(
+              <WorkshopPage
+                workshops={props.workshops}
+                status={props.status}
+                errorMessage={props.errorMessage}
+                onRetry={props.onRetry}
+              />
+            )}
+          />
+          <Route
+            path="/book/:workshopId"
+            element={(
+              <BookPage
+                workshops={props.workshops}
+                status={props.status}
+                errorMessage={props.errorMessage}
+                onRetry={props.onRetry}
+                booking={props.booking}
+                onBookingChange={props.onBookingChange}
+                onBooked={props.onBooked}
+              />
+            )}
+          />
+          <Route
+            path="/confirm"
+            element={(
+              <ConfirmPage
+                booking={props.confirmedBooking}
+                workshops={props.workshops}
+              />
+            )}
+          />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </main>
+    </>
+  );
+}
+
+export default function App() {
+  const [workshops, setWorkshops] = useState([]);
+  const [status, setStatus] = useState('loading');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [reloadCount, setReloadCount] = useState(0);
+  const [category, setCategory] = useState('Alla');
+  const [booking, setBooking] = useState(emptyBooking);
+  const [confirmedBooking, setConfirmedBooking] = useState(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function loadWorkshops() {
+      setStatus('loading');
+      setErrorMessage('');
+      setWorkshops([]);
+
+      try {
+        const data = await getWorkshops(controller.signal);
+        setWorkshops(data);
+        setStatus('success');
+      } catch (error) {
+        if (error.name !== 'AbortError') {
+          setErrorMessage('Workshops kunde inte hämtas. Försök igen.');
+          setStatus('error');
+        }
+      }
+    }
+
+    loadWorkshops();
+    return () => controller.abort();
+  }, [reloadCount]);
+
+  function handleSelectSlot(workshopId, slotId) {
+    const workshop = workshops.find((item) => item.id === workshopId);
+    const slot = workshop.slots.find((item) => item.id === slotId);
+
+    setBooking((current) => ({
+      ...current,
+      workshopId,
+      slotId,
+      participants: Math.min(current.participants, slot.placesLeft),
+    }));
+    setConfirmedBooking(null);
+  }
+
+  async function handleBooked(nextBooking) {
+    await createBooking(nextBooking);
+    setConfirmedBooking(nextBooking);
+  }
+
+  return (
+    <BrowserRouter>
+      <Layout
+        workshops={workshops}
+        status={status}
+        errorMessage={errorMessage}
+        onRetry={() => setReloadCount((count) => count + 1)}
+        category={category}
+        onCategoryChange={setCategory}
+        booking={booking}
+        onBookingChange={setBooking}
+        confirmedBooking={confirmedBooking}
+        onSelectSlot={handleSelectSlot}
+        onBooked={handleBooked}
+      />
+    </BrowserRouter>
+  );
+}
+```
+
+`WorkshopList` ska fortfarande bara ta emot `workshops` och `onSelectSlot` som props. Lägg inte `useEffect` där. Om datan hämtades i listan skulle detalj- och bokningsvyn behöva göra samma anrop eller få datan på en omväg.
+
+När appen fungerar från API:t används inte längre `src/data/workshops.js`. Behåll filen under lektionen som en trygg jämförelse och ta bort importen; du kan radera filen senare när API-checkpointen är godkänd.
+
+## 6. Testa alla lägen, vy för vy
+
+| Läge | Lista `/` | Detalj `/workshops/keramik` | Bokning `/book/keramik` |
+| --- | --- | --- | --- |
+| loading | “Laddar workshops…” | “Laddar workshop…” | “Laddar bokning…” |
+| error | stoppa API:t och använd Försök igen | samma felruta | samma felruta |
+| empty | sätt `workshops` till `[]` i `db.json` | inget innehåll att visa | inget innehåll att boka |
+| success | tre kort | keramikdetaljen | formuläret |
+
+Återställ alltid `db.json` och starta om API:t efter empty-testet.
+
+Kontrollera POST i Network-fliken. Request body ska innehålla exakt:
+
+```text
+workshopId, slotId, name, email, participants, message
+```
+
+`json-server` lägger till ett `id` i **svaret**, men request body från formuläret har de sex beslutade fälten.
+
+## Se → förutsäg → kör → ändra
+
+1. **Se:** markera rendering, submit-event och Effect i slutkoden.
+2. **Förutsäg:** vilket tidigt `return` används när API:t ger `[]`?
+3. **Kör:** testa tabellens tolv kombinationer och titta i Network.
+4. **Ändra:** gör GET-adressen fel, kontrollera error och återställ.
+5. **Kontrollera:** dubbelklick ska inte ge två POST eftersom knappen låses.
+6. **Förklara:** varför äger `App` GET-state men formulärets submit-event startar POST?
+
+## Checkpoint
+
+Du är klar när:
+
+- samma tre workshops visas från `/api/workshops` utan lokal dataimport
+- loading, error, empty och success fungerar på lista, detalj och bokning
+- Försök igen startar ett nytt GET-anrop
+- giltig submit skickar sex fält, väntar på svaret och går till `/confirm`
+- felaktig submit eller misslyckad POST stannar på formuläret med begriplig status
+
+## Första hjälpen
+
+| Problem | Kontrollera först |
+| --- | --- |
+| `Unexpected token <` | Gav URL:en HTML i stället för JSON? Titta i Network. |
+| 404 på `/api/workshops` | Kör både API och Vite via `npm run dev`. |
+| `map is not a function` | Är API-svaret arrayen från `/api/workshops`? |
+| GET kör om och om igen | Har Effectet bara `[reloadCount]` som beroende? |
+| CORS-fel | Finns Vite-proxyn och används den relativa adressen `/api`? |
+| POST lyckas men ingen navigation sker | Returnerar och inväntar `handleBooked` Promise-kedjan? |
+| För många deltagare kan skickas | Använder formuläret vald slots `placesLeft` i både `max` och `validate`? |
+
+## Commit
+
+```bash
+git add src db.json server.cjs vite.config.js package.json package-lock.json
+git commit -m "koppla kulturverkstan till api"
+```

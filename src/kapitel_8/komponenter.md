@@ -1,447 +1,394 @@
-# Komponenter: Återanvändbara UI-byggstenar
+# Komponenter: bygg Kulturverkstans workshoplista
 
-Komponenter låter dig dela upp UI:t i oberoende, återanvändbara delar och tänka på varje del isolerat. Den här sidan ger en introduktion till idén om komponenter.
+I förra avsnittet startade du React-appen. Nu delar du upp gränssnittet i små delar och visar Kulturverkstans workshops från data. Vi använder samma app genom resten av kapitlet.
 
-**Mål:** Lära dig skapa, organisera och återanvända komponenter för att bygga skalbar React-kod.
+> **Mål**
+>
+> Efter lektionen kan du:
+>
+> - skapa och använda funktionskomponenter i olika filer,
+> - skicka data från en förälder till ett barn med props,
+> - rendera en lista med `map`, stabila `key`-värden och ett enkelt villkor.
 
-## Definiera en Komponent
+**Förkunskaper:** Du har en startad Vite-app och kan skriva enkel JSX.
 
-React-komponenter är JavaScript-funktioner som returnerar markup:
+**Efter lektionen har appen:** en rubrik och ett kort för varje workshop. Kortet visar även om det finns platser kvar.
+
+## Börja med något som syns
+
+Öppna `src/App.jsx` och ersätt innehållet med detta:
 
 ```jsx
-function MyButton() {
+function WorkshopCard() {
   return (
-    <button>Jag är en knapp</button>
+    <article>
+      <h2>Keramik för nybörjare</h2>
+      <p>Forma och dekorera en egen liten skål.</p>
+    </article>
+  );
+}
+
+export default function App() {
+  return (
+    <main>
+      <h1>Kulturverkstan</h1>
+      <WorkshopCard />
+    </main>
   );
 }
 ```
 
-Nu när du har deklarerat `MyButton` kan du nästla den i en annan komponent:
+Spara filen. I webbläsaren ska du nu se rubriken **Kulturverkstan** och ett workshopkort.
 
+> **Kom ihåg:** Ett komponentnamn börjar med stor bokstav. `<WorkshopCard />` betyder “rendera komponenten”, medan `<article>` är ett vanligt HTML-element.
+
+## Så fungerar en komponent
+
+En React-komponent är en JavaScript-funktion som returnerar JSX. Komponenten ska ha ett tydligt ansvar. Här ansvarar `WorkshopCard` för ett kort och `App` för hela sidan.
+
+```mermaid
+graph TD
+  App --> Main[main]
+  Main --> Heading[h1]
+  Main --> WorkshopCard
+  WorkshopCard --> Article[article]
+```
+
+Trädet hjälper dig att svara på två frågor:
+
+- Vilken komponent äger sidan? `App`.
+- Vilken komponent ska ändras om kortets utseende ändras? `WorkshopCard`.
+
+## Se → förutsäg → kör → ändra → kontrollera → förklara
+
+### 1. Se: samma komponent med olika props
+
+**Props** är värden som en förälder skickar till ett barn. Läs koden utan att köra den först.
+
+<!-- react-playground -->
 ```jsx
-function MyApp() {
+function WorkshopCard({ title, category }) {
   return (
-    <div>
-      <h1>Välkommen till min app</h1>
-      <MyButton />
-    </div>
+    <article>
+      <h2>{title}</h2>
+      <p>Kategori: {category}</p>
+    </article>
+  );
+}
+
+export default function App() {
+  return (
+    <main>
+      <h1>Kulturverkstan</h1>
+      <WorkshopCard title="Keramik för nybörjare" category="Hantverk" />
+      <WorkshopCard title="Väv din första provbit" category="Textil" />
+    </main>
   );
 }
 ```
 
-Observera att `<MyButton />` börjar med stor bokstav. Så här vet du att det är en React-komponent. React-komponentnamn måste alltid börja med stor bokstav, medan HTML-taggar måste vara små bokstäver.
+### 2. Förutsäg
 
-## Komponenter inom komponenter
+Skriv ner dina svar innan du kör:
 
-Komponenter är vanliga JavaScript-funktioner, så du kan hålla flera komponenter i samma fil:
+1. Hur många `article`-element visas?
+2. Vilken text visas efter den andra rubriken?
+3. Vad händer om den andra `category` ändras till `Foto`?
 
-```jsx
-function Avatar() {
-  return (
-    <img
-      className="avatar"
-      src="./assets/react-images/1bX5QH6.jpg"
-      alt="Lin Lanying"
-      width={100}
-      height={100}
-    />
-  );
-}
+### 3. Kör
 
-function Profile() {
-  return (
-    <div>
-      <Avatar />
-      <Avatar />
-      <Avatar />
-    </div>
-  );
-}
-```
+Kör exemplet eller kopiera det till `src/App.jsx`. Kontrollera dina svar i webbläsaren.
 
-I detta exempel har `Profile`-komponenten tre `Avatar`-komponenter.
+### 4. Ändra
 
-## Funktionella Komponenter: Det Moderna Sättet
+Lägg till en prop som heter `durationMinutes`. Visa exempelvis `120 minuter` i varje kort. Ge de två workshopparna olika tider.
 
-Sedan React 16.8 och introduktionen av **Hooks** är funktionella komponenter standardsättet att skriva React-kod.
+<details>
+<summary>Tips 1</summary>
 
-### Grundläggande Komponent
+Ta emot värdet tillsammans med `title` och `category`.
 
-```jsx
-// Enkel funktionell komponent
-function Greeting() {
-  return <h1>Hej världen!</h1>;
-}
+</details>
 
-// Arrow function syntax (också vanlig)
-const Greeting = () => {
-  return <h1>Hej världen!</h1>;
-};
+<details>
+<summary>Tips 2</summary>
 
-// Kort syntax för enkel return
-const Greeting = () => <h1>Hej världen!</h1>;
-```
+Du kan skriva `<p>{durationMinutes} minuter</p>` i komponentens JSX.
 
-### Komponent med Logik
+</details>
+
+### 5. Kontrollera
+
+- [ ] Två kort visas.
+- [ ] Samma komponent används två gånger.
+- [ ] Varje kort visar sin egen titel, kategori och längd.
+- [ ] Det finns ingen kopia av hela `WorkshopCard`-funktionen.
+
+### 6. Förklara
+
+Förklara med en mening för en klasskamrat: varför är `title` en prop i stället för hårdkodad text i `WorkshopCard`?
+
+## Flytta komponenten till en egen fil
+
+När en komponent växer får den en egen fil. Skapa `src/components/WorkshopCard.jsx`:
 
 ```jsx
-function UserProfile() {
-  const user = {
-    name: "Anna Andersson",
-    age: 28,
-    email: "anna@example.com",
-    avatar: "/images/anna.jpg"
-  };
-
-  const isAdult = user.age >= 18;
-
+export default function WorkshopCard({ title, category, durationMinutes }) {
   return (
-    <div className="user-profile">
-      <img src={user.avatar} alt={`${user.name}s avatar`} />
-      <h2>{user.name}</h2>
-      <p>Ålder: {user.age} {isAdult && "✅ Myndig"}</p>
-      <p>E-post: {user.email}</p>
-    </div>
+    <article>
+      <h2>{title}</h2>
+      <p>Kategori: {category}</p>
+      <p>{durationMinutes} minuter</p>
+    </article>
   );
 }
 ```
 
-## Exportera och Importera Komponenter
-
-Magin med komponenter ligger i deras återanvändbarhet: du kan skapa komponenter som består av andra komponenter. Men när du nästlar fler och fler komponenter är det ofta vettigt att börja dela upp dem i olika filer. Detta låter dig hålla dina filer lätta att skanna och återanvända komponenter på fler ställen.
+Importera den högst upp i `src/App.jsx`:
 
 ```jsx
-// Gallery.js
-import Profile from './Profile.js';
+import WorkshopCard from "./components/WorkshopCard.jsx";
 
-function Gallery() {
+export default function App() {
   return (
-    <section>
-      <h1>Fantastiska forskare</h1>
-      <Profile />
-      <Profile />
-      <Profile />
+    <main>
+      <h1>Kulturverkstan</h1>
+      <WorkshopCard
+        title="Keramik för nybörjare"
+        category="Hantverk"
+        durationMinutes={120}
+      />
+    </main>
+  );
+}
+```
+
+`export default` gör komponenten till filens huvudsakliga export. `import` gör att en annan fil kan använda den. Sökvägen börjar med `./` eftersom `components` ligger i samma mapp som `App.jsx`.
+
+> **Måste kunna:** skapa en funktionskomponent, exportera den och importera den med rätt relativ sökväg.
+
+## Visa workshops från en array
+
+Att skriva ett nytt `<WorkshopCard>` för varje workshop fungerar dåligt när data förändras. Spara i stället workshopparna i `src/data/workshops.js`:
+
+```js
+export const workshops = [
+  {
+    id: "keramik",
+    title: "Keramik för nybörjare",
+    category: "Hantverk",
+    description: "Forma och dekorera en egen liten skål.",
+    durationMinutes: 120,
+    priceSek: 350,
+    slots: [
+      {
+        id: "keramik-lor-10",
+        label: "Lördag 10.00–12.00",
+        placesLeft: 6,
+      },
+      {
+        id: "keramik-ons-18",
+        label: "Onsdag 18.00–20.00",
+        placesLeft: 2,
+      },
+    ],
+  },
+  {
+    id: "vavning",
+    title: "Väv din första provbit",
+    category: "Textil",
+    description: "Lär dig grunderna i färg, varp och inslag i en liten bordsvävstol.",
+    durationMinutes: 150,
+    priceSek: 425,
+    slots: [
+      {
+        id: "vavning-son-13",
+        label: "Söndag 13.00–15.30",
+        placesLeft: 4,
+      },
+    ],
+  },
+  {
+    id: "foto",
+    title: "Fotopromenad i byn",
+    category: "Foto",
+    description: "Öva komposition och ljus med mobilen eller en egen kamera.",
+    durationMinutes: 90,
+    priceSek: 200,
+    slots: [
+      {
+        id: "foto-tor-17",
+        label: "Torsdag 17.30–19.00",
+        placesLeft: 8,
+      },
+      {
+        id: "foto-lor-14",
+        label: "Lördag 14.00–15.30",
+        placesLeft: 0,
+      },
+    ],
+  },
+];
+```
+
+Varje workshop följer samma form:
+
+```text
+Workshop
+├── id, title, category, description
+├── durationMinutes, priceSek
+└── slots
+    └── id, label, placesLeft
+```
+
+`id` är ett stabilt unikt värde. Det ska inte ändras när listan sorteras eller filtreras.
+
+Skapa `src/components/WorkshopList.jsx`:
+
+```jsx
+import WorkshopCard from "./WorkshopCard.jsx";
+
+export default function WorkshopList({ workshops }) {
+  return (
+    <section aria-labelledby="workshops-heading">
+      <h2 id="workshops-heading">Aktuella workshops</h2>
+      {workshops.map((workshop) => (
+        <WorkshopCard key={workshop.id} workshop={workshop} />
+      ))}
     </section>
   );
 }
-
-export default Gallery;
 ```
+
+`map` går igenom arrayen och skapar ett kort för varje objekt. `key={workshop.id}` hjälper React att känna igen rätt kort när listan ändras. Använd inte arrayens index som `key` när objekten redan har ett id.
+
+Ändra `WorkshopCard.jsx` så att hela objektet tas emot:
 
 ```jsx
-// Profile.js
-function Profile() {
-  return (
-    <img
-      src="./assets/react-images/QIrZWGIs.jpg"
-      alt="Alan L. Hart"
-    />
+export default function WorkshopCard({ workshop }) {
+  const placesLeft = workshop.slots.reduce(
+    (total, slot) => total + slot.placesLeft,
+    0,
   );
-}
 
-export default Profile;
-```
-
-```jsx
-// App.js
-import Gallery from './Gallery.js';
-
-function App() {
-  return (
-    <Gallery />
-  );
-}
-
-export default App;
-```
-
-## Komponentens Anatomi
-
-En React-komponent består av några viktiga delar:
-
-```jsx
-// 1. Import-statements (om du använder andra komponenter)
-import { useState } from 'react';
-import './Button.css';
-
-// 2. Komponentfunktionen
-function Button() {
-  // 3. Logik (variabler, funktioner)
-  const handleClick = () => {
-    alert('Knappen klickades!');
-  };
-  
-  // 4. Return-statement med JSX
-  return (
-    <button onClick={handleClick}>
-      Klicka mig
-    </button>
-  );
-}
-
-// 5. Export-statement
-export default Button;
-```
-
-## Klasskomponenter: Det Äldre Sättet
-
-Före hooks använde React klasskomponenter för att hantera state och lifecycle. Du kommer fortfarande stöta på dem i äldre kodbaser.
-
-```jsx
-import React, { Component } from 'react';
-
-class ClassCounter extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      count: 0
-    };
-  }
-
-  // Lifecycle-metod
-  componentDidMount() {
-    console.log('Component har monterats');
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.count !== this.state.count) {
-      console.log(`Count ändrades från ${prevState.count} till ${this.state.count}`);
-    }
-  }
-
-  componentWillUnmount() {
-    console.log('Component kommer att avmonteras');
-  }
-
-  // Event handler
-  incrementCount = () => {
-    this.setState({ count: this.state.count + 1 });
-  }
-
-  render() {
-    return (
-      <div>
-        <h2>Räknare: {this.state.count}</h2>
-        <button onClick={this.incrementCount}>
-          Öka
-        </button>
-      </div>
-    );
-  }
-}
-```
-
-## Organisera Komponenter
-
-När din app växer är det viktigt att organisera komponenter på ett smart sätt:
-
-### Fil-per-komponent (Rekommenderat)
-
-```
-src/
-  components/
-    Button/
-      Button.jsx
-      Button.css
-      Button.test.js
-    Avatar/
-      Avatar.jsx
-      Avatar.css
-    Card/
-      Card.jsx
-      Card.css
-  pages/
-    Home.jsx
-    About.jsx
-  App.jsx
-```
-
-### Flera komponenter per fil (För små, relaterade komponenter)
-
-```jsx
-// components/UI.jsx
-export function Button({ children, onClick, type = "button" }) {
-  return (
-    <button type={type} onClick={onClick} className="btn">
-      {children}
-    </button>
-  );
-}
-
-export function Input({ placeholder, value, onChange }) {
-  return (
-    <input 
-      className="input"
-      placeholder={placeholder}
-      value={value}
-      onChange={onChange}
-    />
-  );
-}
-
-export function Card({ children }) {
-  return (
-    <div className="card">
-      {children}
-    </div>
-  );
-}
-```
-
-## Komponent-komposition
-
-En av Reacts starkaste funktioner är **komposition** - att bygga komplexa komponenter från enklare komponenter:
-
-```jsx
-function WelcomeMessage({ name }) {
-  return <h1>Hej {name}!</h1>;
-}
-
-function UserAvatar({ imageUrl, name }) {
-  return (
-    <img 
-      src={imageUrl} 
-      alt={name}
-      className="avatar" 
-    />
-  );
-}
-
-function UserCard({ user }) {
-  return (
-    <div className="user-card">
-      <UserAvatar imageUrl={user.avatar} name={user.name} />
-      <WelcomeMessage name={user.name} />
-      <p>E-post: {user.email}</p>
-    </div>
-  );
-}
-
-// Användning
-function App() {
-  const user = {
-    name: "Anna Andersson",
-    email: "anna@example.com", 
-    avatar: "/anna.jpg"
-  };
-
-  return <UserCard user={user} />;
-}
-```
-
-## Best Practices för Komponenter
-
-### 1. Håll Komponenter Små och Fokuserade
-
-```jsx
-// ❌ För stor komponent
-function BlogPost({ post, user, comments, relatedPosts }) {
   return (
     <article>
-      {/* Hundratals rader kod... */}
-    </article>
-  );
-}
-
-// ✅ Uppdelade komponenter
-function BlogPost({ post }) {
-  return (
-    <article>
-      <BlogHeader post={post} />
-      <BlogContent content={post.content} />
-      <BlogFooter postId={post.id} />
-    </article>
-  );
-}
-
-function BlogHeader({ post }) {
-  return (
-    <header>
-      <h1>{post.title}</h1>
-      <AuthorInfo author={post.author} />
-      <PublishDate date={post.publishedAt} />
-    </header>
-  );
-}
-```
-
-### 2. Använda PropTypes för Typkontroll (Optional)
-PropTypes är ett verktyg för typkontroll i React som hjälper dig att:
-
-1. **Hitta buggar tidigt:** Genom att validera props under utveckling upptäcks fel direkt istället för att de dyker upp i produktion.
-
-2. **Dokumentera komponenter:** PropTypes fungerar som självdokumenterande kod - andra utvecklare kan snabbt se vilka props en komponent förväntar sig.
-
-3. **Förbättra underhållbarhet:** När du ändrar en komponent varnar PropTypes om du råkar skicka fel datatyp eller glömmer en required prop.
-
-4. **Underlätta refaktorering:** Med tydliga kontrakt mellan komponenter blir det säkrare att göra större kodändringar.
-
-Exempel på vanliga PropTypes:
-
-
-```jsx
-import PropTypes from 'prop-types';
-
-function ProductCard({ name, price, image, onSale }) {
-  return (
-    <div className="product-card">
-      <img src={image} alt={name} />
-      <h3>{name}</h3>
-      <p className={onSale ? "sale-price" : "regular-price"}>
-        {price} kr
+      <p>{workshop.category}</p>
+      <h3>{workshop.title}</h3>
+      <p>{workshop.description}</p>
+      <p>
+        {workshop.durationMinutes} minuter · {workshop.priceSek} kr
       </p>
-    </div>
+      {placesLeft > 0 ? (
+        <p>{placesLeft} platser kvar</p>
+      ) : (
+        <p>Fullbokad</p>
+      )}
+    </article>
   );
 }
-
-ProductCard.propTypes = {
-  name: PropTypes.string.isRequired,
-  price: PropTypes.number.isRequired,
-  image: PropTypes.string.isRequired,
-  onSale: PropTypes.bool
-};
-
-ProductCard.defaultProps = {
-  onSale: false
-};
 ```
 
-Ett vanligt alternativ till PropTypes är TypeScript som erbjuder statisk typkontroll under kompilering och ger bättre IDE-stöd med autocompletions och refaktoreringsmöjligheter. TypeScript är särskilt användbart i större projekt där PropTypes kan bli otillräckligt.
+Villkoret `placesLeft > 0 ? ... : ...` väljer en av två texter. Här behövs ännu ingen state: resultatet kan räknas ut direkt från props.
 
-### 3. Komponentnamnskonventioner
+Till sist använder `App.jsx` listan:
 
 ```jsx
-// ✅ PascalCase för komponenter
-function UserProfile() { }
-function ProductCard() { }
-function NavigationMenu() { }
+import WorkshopList from "./components/WorkshopList.jsx";
+import { workshops } from "./data/workshops.js";
 
-// ✅ camelCase för funktioner och variabler
-const handleClick = () => { };
-const userName = "Anna";
-const isLoading = true;
-
-// ✅ Beskrivande namn
-function LoadingSpinner() { }  // Bättre än Spinner()
-function ErrorMessage() { }   // Bättre än Error()
+export default function App() {
+  return (
+    <main>
+      <h1>Kulturverkstan</h1>
+      <p>Hitta en workshop och boka din plats.</p>
+      <WorkshopList workshops={workshops} />
+    </main>
+  );
+}
 ```
 
-## Sammanfattning
+## Bygg vidare med minskande stöd
 
-Komponenter är byggstenen i React-applikationer:
+### Följ med: kontrollera den tredje workshopen
 
-*   **Komponenter** är JavaScript-funktioner som returnerar JSX
-*   **Komponentnamn** måste börja med stor bokstav
-*   **Import/Export** låter dig organisera komponenter i separata filer
-*   **Komposition** bygger komplexa UI från enkla komponenter
-*   **Håll komponenter små** och fokuserade på en sak
+Leta upp workshopen med id `foto` i datafilen. Kontrollera att båda tiderna
+finns och att kortet räknar ihop `8` lediga platser. Den fullbokade tiden ska
+bidra med `0` till summan.
 
-## Vad händer härnäst?
+### Fyll i: visa prisnivå
 
-Nu när du kan skapa komponenter är det dags att göra dem interaktiva! I nästa avsnitt lär du dig:
+Fyll i luckorna så att kortet visar “Gratis” när priset är noll:
 
-* **Props** - skicka data mellan komponenter
-* **State** - ge komponenter minne
-* **Events** - reagera på användarinteraktion
+```jsx
+<p>{workshop._____ === 0 ? "_____" : `${workshop.priceSek} kr`}</p>
+```
 
-Gå vidare till **State och Props** för att lära dig hur du gör dina komponenter levande!
+<details>
+<summary>Lösningsförslag</summary>
+
+```jsx
+<p>{workshop.priceSek === 0 ? "Gratis" : `${workshop.priceSek} kr`}</p>
+```
+
+</details>
+
+### Gör själv: tom lista
+
+**Bra att kunna:** Ändra `WorkshopList` så att texten “Inga workshops hittades” visas när arrayen är tom. Testa genom att tillfälligt skicka `[]` från `App`.
+
+**Klar när:** tom text visas för `[]`, men rubrik och kort visas igen när `workshops` skickas in.
+
+<details>
+<summary>Tips 1</summary>
+
+Kontrollera `workshops.length` innan du kör `map`.
+
+</details>
+
+<details>
+<summary>Tips 2</summary>
+
+En tidig `return` kan göra villkoret lättare att läsa.
+
+</details>
+
+## Första hjälpen
+
+| Symptom | Trolig orsak | Så kontrollerar du |
+| --- | --- | --- |
+| `WorkshopCard is not defined` | Importen saknas eller namnet skiljer sig | Jämför exportnamn, importnamn och sökväg |
+| Sidan blir tom efter en ändring | Ett syntaxfel stoppar renderingen | Läs det första röda felet i terminalen eller Console |
+| `map is not a function` | `workshops` är inte en array | Logga värdet och kontrollera propens namn |
+| Varning om unik `key` | `key` saknas eller ligger inuti kortet | Sätt `key={workshop.id}` där `map` skapar komponenten |
+| Inget syns från komponenten | Namnet börjar med liten bokstav eller `return` saknas | Kontrollera stor bokstav och komponentens `return` |
+
+## Checkpoint
+
+Gör checkpointen utan att kopiera en färdig lösning:
+
+1. Kontrollera att keramik, vävning och foto kommer från datafilen.
+2. Rendera alla workshops genom `WorkshopList`.
+3. Visa titel, kategori, tid, pris och antal platser i `WorkshopCard`.
+4. Sätt tillfälligt båda fototillfällena till `placesLeft: 0` och visa “Fullbokad”. Återställ sedan värdena till `8` och `0`.
+5. Skapa med flit en felaktig importsökväg, läs felet och rätta den igen.
+
+**Klar när:** minst tre kort visas från arrayen, varje kort har en stabil `key`, det fullbokade läget går att testa och du kan förklara dataflödet `App → WorkshopList → WorkshopCard`.
+
+> **Fördjupning:** Skissa komponentträdet på papper och markera vilka props som passerar varje pil. Skapa inga nya abstraktioner ännu.
+
+## Sammanfattning och commit
+
+- En komponent är en funktion som returnerar JSX.
+- Props skickar data från en förälder till ett barn.
+- `map` gör data till komponenter och varje komponent behöver en stabil `key`.
+- Villkorlig rendering väljer vad användaren ser.
+
+Spara ett tydligt steg i Git:
+
+```bash
+git add src
+git commit -m "Bygg workshoplista med komponenter"
+```
+
+I nästa avsnitt gör du listan interaktiv med events och state.

@@ -4,4 +4,7 @@
 README.md
 book/
 target/
+node_modules/
+examples/kulturverkstan/node_modules/
+examples/kulturverkstan/dist/
 .gitignore

@@ -1,4 +1,15 @@
 # =========================================
+# Browser asset stage (Sandpack + React)
+# =========================================
+FROM node:22-alpine AS react-playground-builder
+
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
+COPY theme/react-playground/app.jsx ./theme/react-playground/app.jsx
+RUN npm run build:react-playground
+
+# =========================================
 # Builder stage (mdbook + mermaid support)
 # =========================================
 FROM rust:1.89 AS builder
@@ -23,6 +34,7 @@ RUN npm install -g @mermaid-js/mermaid-cli
 
 WORKDIR /app
 COPY . .
+COPY --from=react-playground-builder /app/src/theme/react-playground.bundle.js /app/src/theme/react-playground.bundle.js
 
 # =========================================
 # Development stage (live reload)

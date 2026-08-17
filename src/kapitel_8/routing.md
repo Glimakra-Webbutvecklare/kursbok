@@ -1,601 +1,371 @@
-# Routing med React Router: Navigation i SPA:er
+# Routing: fyra vyer i Kulturverkstan
 
-I traditionella webbapplikationer hanteras navigation av servern - varje URL motsvarar en specifik fil eller endpoint. I Single Page Applications behöver vi **client-side routing** för att hantera navigation utan att ladda om hela sidan.
+Kulturverkstan har redan en fungerande lista, bokningsstate och ett formulär. Nu flyttar vi dessa delar till fyra adresser. Vi behåller komponenterna och datan; routing bestämmer bara **vilken vy** som visas.
 
-**React Router** är det de facto-standardbiblioteket för routing i React-applikationer.
+Efter lektionen kan besökaren gå från lista till detalj, bokning och bekräftelse utan att hela sidan laddas om. En wildcard-route fångar alla okända adresser.
 
-**Mål:** Lära sig React Router, implementera BrowserRouter, konfigurera routes, hantera navigation programmatiskt och skapa protected routes.
+## Mål
 
-## Installation och Grundkonfiguration
+- skapa fyra appvyer och en fallback med `BrowserRouter`, `Routes` och `Route`
+- navigera med `Link` och läsa `workshopId` med `useParams`
+- navigera efter ett event med `useNavigate` utan att förlora bokningsstate
 
-### Installation
+## 1. Installera React Router
+
+Stå i Kulturverkstans projektmapp:
 
 ```bash
-npm install react-router-dom
+npm install react-router-dom@7.18.2
+npm run dev
 ```
 
-### Grundläggande Router Setup
+Appen ser likadan ut tills routerkomponenterna används.
+
+## 2. Förutsäg appens fem route-regler
 
 ```jsx
-// App.js
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Layout from './components/Layout';
-import Home from './pages/Home';
-import About from './pages/About';
-import Contact from './pages/Contact';
-import NotFound from './pages/NotFound';
+<Routes>
+  <Route path="/" element={<HomePage />} />
+  <Route path="/workshops/:workshopId" element={<WorkshopPage />} />
+  <Route path="/book/:workshopId" element={<BookPage />} />
+  <Route path="/confirm" element={<ConfirmPage />} />
+  <Route path="*" element={<NotFoundPage />} />
+</Routes>
+```
 
-function App() {
+De fyra första är appens vyer. `*` är en **wildcard fallback** för alla andra adresser.
+
+`:workshopId` är en parameter. Adressen `/workshops/keramik` ger parametern `workshopId` värdet `'keramik'`. Samma route fungerar för `vavning` och `foto`.
+
+## 3. Lägg till länkar utan att skriva om kortet
+
+Behåll valknapparna i `WorkshopCard`. Importera dessutom `Link` och lägg till en detaljlänk i kortet:
+
+```jsx
+import { Link } from 'react-router-dom';
+
+// Behåll kortets befintliga innehåll och tidsknappar.
+<Link to={`/workshops/${workshop.id}`}>
+  Läs mer om {workshop.title}
+</Link>
+```
+
+`Link` byter adress utan en helsidesladdning. En knapp används fortfarande för valet av en tid, eftersom det är en användarhandling som ändrar state.
+
+## 4. Integrera routing i den befintliga `App`
+
+Ersätt `src/App.jsx` med koden nedan. Lägg märke till vad som **finns kvar** från formulärlektionen:
+
+- `WorkshopList`, `BookingSummary` och `BookingForm` återanvänds.
+- `src/data/workshops.js` är fortfarande enda datakällan.
+- `category`, `booking` och `confirmedBooking` ägs fortfarande av `App`.
+
+```jsx
+import { useState } from 'react';
+import {
+  BrowserRouter,
+  Link,
+  NavLink,
+  Route,
+  Routes,
+  useNavigate,
+  useParams,
+} from 'react-router-dom';
+import BookingForm from './components/BookingForm.jsx';
+import BookingSummary from './components/BookingSummary.jsx';
+import WorkshopList from './components/WorkshopList.jsx';
+import { workshops } from './data/workshops.js';
+
+const emptyBooking = {
+  workshopId: '',
+  slotId: '',
+  name: '',
+  email: '',
+  participants: 1,
+  message: '',
+};
+
+function HomePage({ category, onCategoryChange, onSelectSlot }) {
+  const navigate = useNavigate();
+  const visibleWorkshops = category === 'Alla'
+    ? workshops
+    : workshops.filter((workshop) => workshop.category === category);
+
+  function handleSelectSlot(workshopId, slotId) {
+    onSelectSlot(workshopId, slotId);
+    navigate(`/book/${workshopId}`);
+  }
+
   return (
-    <Router>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Layout>
-    </Router>
+    <section>
+      <h1>Hitta din nästa workshop</h1>
+      <p>Välj en aktivitet, ett tillfälle och boka din plats.</p>
+
+      <div aria-label="Filtrera workshops">
+        {['Alla', 'Hantverk', 'Textil', 'Foto'].map((item) => (
+          <button
+            key={item}
+            type="button"
+            aria-pressed={category === item}
+            onClick={() => onCategoryChange(item)}
+          >
+            {item}
+          </button>
+        ))}
+      </div>
+
+      <WorkshopList
+        workshops={visibleWorkshops}
+        onSelectSlot={handleSelectSlot}
+      />
+    </section>
   );
 }
 
-export default App;
-```
+function WorkshopPage() {
+  const { workshopId } = useParams();
+  const workshop = workshops.find((item) => item.id === workshopId);
 
-## Router-typer
+  if (!workshop) return <MissingWorkshop />;
 
-React Router erbjuder flera router-typer för olika användningsfall:
+  const hasOpenSlot = workshop.slots.some((slot) => slot.placesLeft > 0);
 
-```mermaid
-graph TD
-    A[React Router] --> B[BrowserRouter]
-    A --> C[HashRouter]
-    A --> D[MemoryRouter]
-    
-    B --> E["Clean URLs<br/>/about, /products"]
-    C --> F["Hash URLs<br/>/#/about, /#/products"]
-    D --> G["Memory only<br/>(testing, React Native)"]
-    
-    style B fill:#98fb98
-    style E fill:#98fb98
-```
+  return (
+    <article>
+      <p>{workshop.category}</p>
+      <h1>{workshop.title}</h1>
+      <p>{workshop.description}</p>
+      <p>{workshop.durationMinutes} minuter · {workshop.priceSek} kr</p>
 
-### BrowserRouter (Rekommenderad)
+      <h2>Tillfällen</h2>
+      <ul>
+        {workshop.slots.map((slot) => (
+          <li key={slot.id}>
+            {slot.label} · {slot.placesLeft > 0
+              ? `${slot.placesLeft} platser kvar`
+              : 'Fullbokad'}
+          </li>
+        ))}
+      </ul>
 
-```jsx
-import { BrowserRouter } from 'react-router-dom';
+      {hasOpenSlot ? (
+        <Link to={`/book/${workshop.id}`}>Boka {workshop.title}</Link>
+      ) : (
+        <p>Workshoppen är fullbokad.</p>
+      )}
+    </article>
+  );
+}
 
-// Ger rena URLs: example.com/about
-function App() {
+function BookPage({ booking, onBookingChange, onBooked }) {
+  const { workshopId } = useParams();
+  const navigate = useNavigate();
+  const workshop = workshops.find((item) => item.id === workshopId);
+
+  if (!workshop) return <MissingWorkshop />;
+
+  const pageBooking = booking.workshopId === workshop.id
+    ? booking
+    : { ...booking, workshopId: workshop.id, slotId: '', participants: 1 };
+
+  function handleBooked(nextBooking) {
+    onBooked(nextBooking);
+    navigate('/confirm');
+  }
+
+  return (
+    <section>
+      <h1>Boka {workshop.title}</h1>
+      <BookingSummary booking={pageBooking} workshops={workshops} />
+      <BookingForm
+        workshop={workshop}
+        booking={pageBooking}
+        onBookingChange={onBookingChange}
+        onBooked={handleBooked}
+      />
+    </section>
+  );
+}
+
+function ConfirmPage({ booking }) {
+  if (!booking) {
+    return (
+      <section>
+        <h1>Ingen bokning att visa</h1>
+        <p>Gör en bokning först, eller välj en workshop från listan.</p>
+        <Link to="/">Till alla workshops</Link>
+      </section>
+    );
+  }
+
+  const workshop = workshops.find((item) => item.id === booking.workshopId);
+  const slot = workshop && workshop.slots.find((item) => item.id === booking.slotId);
+
+  if (!workshop || !slot) return <MissingWorkshop />;
+
+  return (
+    <section>
+      <h1>Tack för din bokning, {booking.name}!</h1>
+      <p>{workshop.title}</p>
+      <p>{slot.label} · {booking.participants} deltagare</p>
+      <p>Bekräftelsen skickas till {booking.email}.</p>
+      <Link to="/">Till alla workshops</Link>
+    </section>
+  );
+}
+
+function MissingWorkshop() {
+  return (
+    <section>
+      <h1>Workshoppen finns inte</h1>
+      <p>Kontrollera adressen eller välj en workshop från listan.</p>
+      <Link to="/">Till alla workshops</Link>
+    </section>
+  );
+}
+
+function NotFoundPage() {
+  return (
+    <section>
+      <h1>Sidan finns inte</h1>
+      <p>Adressen matchar ingen av Kulturverkstans fyra vyer.</p>
+      <Link to="/">Till startsidan</Link>
+    </section>
+  );
+}
+
+function Layout({
+  category,
+  onCategoryChange,
+  booking,
+  onBookingChange,
+  confirmedBooking,
+  onSelectSlot,
+  onBooked,
+}) {
+  return (
+    <>
+      <header>
+        <p>Kulturverkstan</p>
+        <nav aria-label="Huvudmeny">
+          <NavLink to="/">Workshops</NavLink>
+        </nav>
+      </header>
+      <main>
+        <Routes>
+          <Route
+            path="/"
+            element={(
+              <HomePage
+                category={category}
+                onCategoryChange={onCategoryChange}
+                onSelectSlot={onSelectSlot}
+              />
+            )}
+          />
+          <Route path="/workshops/:workshopId" element={<WorkshopPage />} />
+          <Route
+            path="/book/:workshopId"
+            element={(
+              <BookPage
+                booking={booking}
+                onBookingChange={onBookingChange}
+                onBooked={onBooked}
+              />
+            )}
+          />
+          <Route
+            path="/confirm"
+            element={<ConfirmPage booking={confirmedBooking} />}
+          />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </main>
+    </>
+  );
+}
+
+export default function App() {
+  const [category, setCategory] = useState('Alla');
+  const [booking, setBooking] = useState(emptyBooking);
+  const [confirmedBooking, setConfirmedBooking] = useState(null);
+
+  function handleSelectSlot(workshopId, slotId) {
+    const workshop = workshops.find((item) => item.id === workshopId);
+    const slot = workshop.slots.find((item) => item.id === slotId);
+
+    setBooking((current) => ({
+      ...current,
+      workshopId,
+      slotId,
+      participants: Math.min(current.participants, slot.placesLeft),
+    }));
+    setConfirmedBooking(null);
+  }
+
   return (
     <BrowserRouter>
-      {/* Routes här */}
+      <Layout
+        category={category}
+        onCategoryChange={setCategory}
+        booking={booking}
+        onBookingChange={setBooking}
+        confirmedBooking={confirmedBooking}
+        onSelectSlot={handleSelectSlot}
+        onBooked={setConfirmedBooking}
+      />
     </BrowserRouter>
   );
 }
 ```
 
-### HashRouter (Fallback)
+Koden är lång eftersom alla fyra vyer visas samlat första gången. Den introducerar inte en ny app: varje vy återanvänder komponenter och state som redan fungerar. Senare kan sidkomponenterna flyttas till egna filer utan att beteendet ändras.
 
-```jsx
-import { HashRouter } from 'react-router-dom';
+## 5. Kontrollera en vy i taget
 
-// Ger hash URLs: example.com/#/about
-// Användbart för statiska hostar som GitHub Pages
-function App() {
-  return (
-    <HashRouter>
-      {/* Routes här */}
-    </HashRouter>
-  );
-}
+| Adress | Ska visa | Tidigare kod som återanvänds |
+| --- | --- | --- |
+| `/` | filter och `WorkshopList` | komponent- och statelektionerna |
+| `/workshops/keramik` | detalj och bokningslänk | samma workshopdata |
+| `/book/keramik` | `BookingSummary` och `BookingForm` | formulärlektionen |
+| `/confirm` | senaste bokningen eller ett tomläge | `confirmedBooking` |
+| valfri annan adress | `NotFoundPage` | wildcard `*` |
+
+Direkt omladdning av en route kan kräva serverinställning efter publicering. Det löser vi i hosting-lektionen.
+
+## Se → förutsäg → kör → ändra
+
+1. **Se:** hitta de fyra appvyerna och wildcard-routen.
+2. **Förutsäg:** vad visas på `/workshops/finns-inte` respektive `/helt-fel`?
+3. **Kör:** välj en tid på startsidan, fyll i formuläret och kontrollera `/confirm`.
+4. **Ändra:** länka Kulturverkstans namn i sidhuvudet till `/`.
+5. **Kontrollera:** data och formulärvärden ska finnas kvar när du navigerar inom appen.
+6. **Förklara:** varför är `Link` rätt för navigation men en knapp rätt för att välja en tid?
+
+## Checkpoint
+
+Du är klar när:
+
+- `/`, `/workshops/:workshopId`, `/book/:workshopId` och `/confirm` fungerar
+- wildcard-routen visar hjälp för en okänd adress
+- `WorkshopList`, filtret, bokningsstate och kapacitetsvalideringen finns kvar
+- en giltig bokning navigerar till `/confirm` utan helsidesladdning
+
+## Första hjälpen
+
+| Problem | Kontrollera först |
+| --- | --- |
+| Tom sida | Läs första felet i Console och kontrollera imports. |
+| `useParams` eller `useNavigate` ger fel | Körs komponenten inuti `BrowserRouter`? |
+| Rätt URL men fel workshop | Jämför parametern med `workshop.id`, inte `title`. |
+| Formuläret visar gammal tid | Skapar `pageBooking` ett tomt `slotId` för en annan workshop? |
+| Okänd route visar tom sida | Finns `<Route path="*" element={<NotFoundPage />} />` sist? |
+
+## Commit
+
+```bash
+git add src package.json package-lock.json
+git commit -m "lägg till kulturverkstans fyra routes"
 ```
 
-## Routes och Route Configuration
-
-### Grundläggande Routes
-
-```jsx
-import { Routes, Route } from 'react-router-dom';
-
-function AppRoutes() {
-  return (
-    <Routes>
-      {/* Exact match för hem-sidan */}
-      <Route path="/" element={<Home />} />
-      
-      {/* Enkla routes */}
-      <Route path="/about" element={<About />} />
-      <Route path="/services" element={<Services />} />
-      <Route path="/contact" element={<Contact />} />
-      
-      {/* 404 - måste vara sist */}
-      <Route path="*" element={<NotFound />} />
-    </Routes>
-  );
-}
-```
-
-### Nested Routes (Nästlade routes)
-
-```jsx
-// Huvudroutes
-function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          {/* Child routes */}
-          <Route index element={<Home />} />
-          <Route path="about" element={<About />} />
-          <Route path="products/*" element={<ProductRoutes />} />
-        </Route>
-      </Routes>
-    </Router>
-  );
-}
-
-// Layout-komponent med Outlet
-import { Outlet } from 'react-router-dom';
-
-function Layout() {
-  return (
-    <div>
-      <header>
-        <Navigation />
-      </header>
-      <main>
-        <Outlet /> {/* Här renderas child routes */}
-      </main>
-      <footer>
-        <Footer />
-      </footer>
-    </div>
-  );
-}
-
-// Produktroutes som separata komponenter (v6, relativa paths)
-function ProductRoutes() {
-  return (
-    <Routes>
-      <Route index element={<ProductList />} />
-      <Route path=":id" element={<ProductDetail />} />
-      <Route path="categories" element={<ProductCategories />} />
-      <Route path="categories/:category" element={<CategoryProducts />} />
-    </Routes>
-  );
-}
-```
-
-### Dynamiska Routes med Parameters
-
-```jsx
-import { useParams } from 'react-router-dom';
-
-// Route configuration
-<Route path="/users/:userId" element={<UserProfile />} />
-<Route path="/posts/:postId/comments/:commentId" element={<Comment />} />
-
-// I komponenten
-function UserProfile() {
-  const { userId } = useParams();
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    fetch(`/api/users/${userId}`)
-      .then(res => res.json())
-      .then(setUser);
-  }, [userId]);
-
-  if (!user) return <div>Laddar...</div>;
-
-  return (
-    <div>
-      <h1>{user.name}</h1>
-      <p>{user.email}</p>
-    </div>
-  );
-}
-
-// Query parameters
-function ProductList() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const category = searchParams.get('category');
-  const sort = searchParams.get('sort');
-
-  const updateSearch = (newCategory) => {
-    setSearchParams({ category: newCategory, sort });
-  };
-
-  return (
-    <div>
-      <h2>Produkter {category && `i kategorin ${category}`}</h2>
-      <button onClick={() => updateSearch('electronics')}>
-        Elektronik
-      </button>
-    </div>
-  );
-}
-```
-
-## Navigation (varför och hur)
-
-### Link Component
-
-```jsx
-import { Link } from 'react-router-dom';
-
-function Navigation() {
-  return (
-    <nav>
-      {/* Grundläggande länkar */}
-      <Link to="/">Hem</Link>
-      <Link to="/about">Om oss</Link>
-      <Link to="/products">Produkter</Link>
-      
-      {/* Dynamiska länkar */}
-      <Link to={`/users/${user.id}`}>Min profil</Link>
-      
-      {/* Med state (för att skicka data) */}
-      <Link 
-        to="/checkout" 
-        state={{ from: 'cart', items: cartItems }}
-      >
-        Till kassan
-      </Link>
-      
-      {/* Ersätt current history entry */}
-      <Link to="/login" replace>
-        Logga in
-      </Link>
-    </nav>
-  );
-}
-```
-
-### NavLink för Aktiva Länkar
-
-```jsx
-import { NavLink } from 'react-router-dom';
-
-function Navigation() {
-  return (
-    <nav>
-      <NavLink 
-        to="/" 
-        className={({ isActive }) => isActive ? 'active' : ''}
-      >
-        Hem
-      </NavLink>
-      
-      <NavLink 
-        to="/products" 
-        style={({ isActive }) => ({
-          color: isActive ? 'red' : 'blue'
-        })}
-      >
-        Produkter
-      </NavLink>
-      
-      {/* Med custom active class (v6) */}
-      <NavLink 
-        to="/about"
-        className={({ isActive }) => `nav-link ${isActive ? 'current' : ''}`}
-      >
-        Om oss
-      </NavLink>
-    </nav>
-  );
-}
-```
-
-### Programmatisk Navigation (varför)
-
-```jsx
-import { useNavigate, useLocation } from 'react-router-dom';
-
-function LoginForm() {
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  const handleLogin = async (credentials) => {
-    try {
-      await login(credentials);
-      
-      // Navigera tillbaka till föregående sida eller hem
-      const from = location.state?.from?.pathname || '/';
-      navigate(from, { replace: true });
-    } catch (error) {
-      setError('Inloggning misslyckades');
-    }
-  };
-
-  const goBack = () => {
-    navigate(-1); // Gå tillbaka i historiken
-  };
-
-  const goToProducts = () => {
-    navigate('/products', { 
-      state: { from: 'login' },
-      replace: false 
-    });
-  };
-
-  return (
-    <form onSubmit={handleLogin}>
-      {/* Formulärfält */}
-      <button type="button" onClick={goBack}>
-        Tillbaka
-      </button>
-      <button type="submit">
-        Logga in
-      </button>
-    </form>
-  );
-}
-```
-
-## Vidare läsning
-
-Fler routing‑ämnen när du är redo: skyddade routes (auth), data‑laddare, central felhantering, och animerade övergångar. Dessa bör komma efter att grunderna sitter.
-
-<!-- Avancerade exempel flyttade till fördjupning -->
-
-<!-- Avancerade Routing Patterns flyttade till fördjupning -->
-
-<!-- Route Configuration Object -->
-
-```jsx
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <Layout />,
-    errorElement: <ErrorPage />,
-    children: [
-      {
-        index: true,
-        element: <Home />
-      },
-      {
-        path: 'products',
-        element: <ProductsLayout />,
-        children: [
-          {
-            index: true,
-            element: <ProductList />
-          },
-          {
-            path: ':id',
-            element: <ProductDetail />,
-            loader: async ({ params }) => {
-              return fetch(`/api/products/${params.id}`);
-            }
-          }
-        ]
-      },
-      {
-        path: 'admin',
-        element: <ProtectedRoute requiredRole="admin"><AdminLayout /></ProtectedRoute>,
-        children: [
-          {
-            path: 'users',
-            element: <UserManagement />
-          },
-          {
-            path: 'settings',
-            element: <Settings />
-          }
-        ]
-      }
-    ]
-  }
-]);
-
-function App() {
-  return <RouterProvider router={router} />;
-}
-```
-
-<!-- Data Loading med Loaders -->
-
-```jsx
-// Modern data loading pattern (React Router v6.4+)
-const router = createBrowserRouter([
-  {
-    path: '/products/:id',
-    element: <ProductDetail />,
-    loader: async ({ params }) => {
-      const product = await fetch(`/api/products/${params.id}`);
-      if (!product.ok) {
-        throw new Response('Product not found', { status: 404 });
-      }
-      return product.json();
-    },
-    errorElement: <ProductError />
-  }
-]);
-
-// I komponenten
-function ProductDetail() {
-  const product = useLoaderData();
-  
-  return (
-    <div>
-      <h1>{product.name}</h1>
-      <p>{product.description}</p>
-    </div>
-  );
-}
-```
-
-<!-- Route Transitions och Animations -->
-
-```jsx
-import { AnimatePresence, motion } from 'framer-motion';
-import { useLocation } from 'react-router-dom';
-
-function AnimatedRoutes() {
-  const location = useLocation();
-
-  return (
-    <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
-        <Route 
-          path="/" 
-          element={
-            <motion.div
-              initial={{ opacity: 0, x: -100 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 100 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Home />
-            </motion.div>
-          } 
-        />
-        {/* Andra routes... */}
-      </Routes>
-    </AnimatePresence>
-  );
-}
-```
-
-<!-- Error Handling och 404 Pages -->
-
-### Error Boundaries för Routes
-
-```jsx
-class RouteErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false };
-  }
-
-  static getDerivedStateFromError(error) {
-    return { hasError: true };
-  }
-
-  componentDidCatch(error, errorInfo) {
-    console.error('Route error:', error, errorInfo);
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className="error-page">
-          <h2>Något gick fel</h2>
-          <p>Vi ber om ursäkt för besväret.</p>
-          <Link to="/">Gå tillbaka till startsidan</Link>
-        </div>
-      );
-    }
-
-    return this.props.children;
-  }
-}
-
-// 404 Component
-function NotFound() {
-  const location = useLocation();
-
-  return (
-    <div className="not-found">
-      <h1>404 - Sidan hittades inte</h1>
-      <p>Sidan <code>{location.pathname}</code> existerar inte.</p>
-      <Link to="/">Gå till startsidan</Link>
-    </div>
-  );
-}
-```
-
-## Best Practices
-
-### 1. Route Organization
-
-```jsx
-// routes/index.js - Centraliserad route configuration
-export const routes = {
-  home: '/',
-  about: '/about',
-  products: '/products',
-  productDetail: (id) => `/products/${id}`,
-  userProfile: (userId) => `/users/${userId}`,
-  admin: {
-    base: '/admin',
-    users: '/admin/users',
-    settings: '/admin/settings'
-  }
-};
-
-// Användning
-<Link to={routes.productDetail(product.id)}>
-  {product.name}
-</Link>
-```
-
-### 2. Route Guards
-
-```jsx
-// Reusable route guard component
-function RouteGuard({ 
-  children, 
-  requireAuth = false, 
-  requiredRole = null,
-  fallback = null 
-}) {
-  const { user, loading } = useAuth();
-  const location = useLocation();
-
-  if (loading) return <LoadingSpinner />;
-
-  if (requireAuth && !user) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
-
-  if (requiredRole && (!user || user.role !== requiredRole)) {
-    return fallback || <Navigate to="/unauthorized" replace />;
-  }
-
-  return children;
-}
-```
-
-### 3. SEO-vänliga Routes
-
-```jsx
-// Dynamiska titles baserat på route
-function useDocumentTitle(title) {
-  useEffect(() => {
-    const prevTitle = document.title;
-    document.title = title;
-    return () => {
-      document.title = prevTitle;
-    };
-  }, [title]);
-}
-
-function ProductDetail() {
-  const { id } = useParams();
-  const [product, setProduct] = useState(null);
-
-  useDocumentTitle(product ? `${product.name} - Min Butik` : 'Laddar...');
-
-  // ...
-}
-```
-
-## Sammanfattning
-
-React Router är kraftfullt verktyg för navigation i React-applikationer:
-
-*   **BrowserRouter** ger rena URLs och är bästa valet för de flesta applikationer
-*   **Routes och Route** konfigurerar URL-mappningar till komponenter
-*   **Link och NavLink** skapar navigerbara länkar
-*   **useNavigate** möjliggör programmatisk navigation
-*   **Protected Routes** skyddar känsligt innehåll
-*   **Dynamic routes** hanterar parametrar och query strings
-
-Nästa steg är att lära sig konsumera API:er för att hämta och skicka data till backend-tjänster.
+I nästa lektion ersätter du den lokala dataimporten med API-data, men behåller samma vyer och komponenter.

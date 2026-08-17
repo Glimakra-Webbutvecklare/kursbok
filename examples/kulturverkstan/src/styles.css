@@ -1,0 +1,208 @@
+:root {
+  color: #25221f;
+  background: #f6f1e8;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-synthesis: none;
+  line-height: 1.6;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+a {
+  color: #315848;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid #d97845;
+  outline-offset: 3px;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button,
+.button-link {
+  border: 0;
+  border-radius: 0.35rem;
+  background: #315848;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-weight: 700;
+  padding: 0.7rem 1rem;
+  text-decoration: none;
+}
+
+button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.site-shell {
+  min-height: 100vh;
+}
+
+.site-header,
+main,
+footer {
+  margin-inline: auto;
+  max-width: 1120px;
+  padding: 1.25rem;
+}
+
+.site-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.site-header nav a {
+  margin-left: 1rem;
+}
+
+.brand {
+  color: #25221f;
+  font-size: 1.35rem;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+.hero,
+.detail-page,
+.form-page,
+.confirmation,
+.notice {
+  background: #fffdf8;
+  border: 1px solid #ded5c7;
+  border-radius: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding: clamp(1.25rem, 4vw, 3rem);
+}
+
+.hero h1,
+.detail-page h1,
+.form-page h1,
+.confirmation h1 {
+  font-size: clamp(2rem, 6vw, 4rem);
+  line-height: 1.05;
+  margin: 0.25rem 0 1rem;
+}
+
+.eyebrow {
+  color: #9b4a27;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.workshop-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+}
+
+.workshop-card {
+  background: #fffdf8;
+  border: 1px solid #ded5c7;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+}
+
+.facts,
+.confirmation-list {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+}
+
+.facts div,
+.confirmation-list div {
+  background: #efe7d9;
+  border-radius: 0.35rem;
+  padding: 0.6rem;
+}
+
+dt {
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+dd {
+  margin: 0;
+}
+
+.slot-list {
+  list-style: none;
+  padding: 0;
+}
+
+.slot-list li {
+  border-bottom: 1px solid #ded5c7;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+}
+
+.booking-form {
+  display: grid;
+  gap: 1rem;
+  max-width: 38rem;
+}
+
+.booking-form label {
+  display: block;
+  font-weight: 750;
+  margin-bottom: 0.25rem;
+}
+
+.booking-form input,
+.booking-form select,
+.booking-form textarea {
+  border: 1px solid #756e65;
+  border-radius: 0.35rem;
+  padding: 0.65rem;
+  width: 100%;
+}
+
+.booking-form [aria-invalid="true"] {
+  border-color: #a82424;
+}
+
+.field-error,
+.form-status {
+  color: #a82424;
+  margin: 0.25rem 0 0;
+}
+
+footer {
+  color: #5d574f;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 520px) {
+  .site-header,
+  .slot-list li {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .site-header nav a {
+    margin: 0;
+  }
+}
