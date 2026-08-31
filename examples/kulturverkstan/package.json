@@ -11,6 +11,7 @@
     "vite": "vite",
     "api": "node server.cjs",
     "build": "vite build",
+    "preview": "vite preview",
     "start": "node server.cjs"
   },
   "dependencies": {

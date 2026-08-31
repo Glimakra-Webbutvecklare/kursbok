@@ -23,6 +23,11 @@ Jämför filnamn och dataform med referensprojektet `examples/kulturverkstan` i
 kursbokens repository. Kopiera inte hela lösningen. Hitta den minsta skillnaden
 som förklarar ditt fel.
 
+Referensprojektet är en färdig målarkitektur: sidor ligger i `src/pages/` och
+`BookingForm` äger sin egen formulärstate med en `<select>`. Lektionerna håller
+bokningsstate i `App` och använder radioknappar. Jämför workshop- och
+bokningsfälten, inte arkitekturen rad för rad.
+
 </details>
 
 ## Checkpoint 1: komponenter och data
@@ -116,11 +121,16 @@ Ett kontrollerat formulär samlar in exakt dessa fält:
 
 ### Din uppgift
 
-- Koppla alla värden till state med `value` och `onChange`.
-- Koppla varje synlig etikett med `htmlFor` och `id`.
-- Validera tid, namn, e-post och antal deltagare vid submit.
-- Koppla feltext med `aria-describedby` och ogiltigt fält med `aria-invalid`.
-- Visa submitstatus med `aria-live="polite"`.
+Gör ett steg i taget, i den här ordningen:
+
+1. Koppla fälten till state med `value` och `onChange`. Varje synlig etikett
+   ska ha `htmlFor` och `id`.
+2. Stoppa submit med `preventDefault` och visa en statusrad. Kontrollera att ett
+   tomt namn fortfarande “lyckas” innan du lägger till validering.
+3. Validera tid, namn, e-post och antal deltagare vid submit. Feltexten ska
+   sitta under rätt fält.
+4. Koppla feltext med `aria-describedby` och ogiltigt fält med `aria-invalid`.
+   Visa submitstatus med `aria-live="polite"`.
 
 ### Kontroll utan mus
 
@@ -135,8 +145,8 @@ Om det inte går att skriva: kontrollera att `name`, state-nyckeln, `value` och
 
 </details>
 
-**Klar när:** tomma eller felaktiga värden stoppas vid rätt fält och en giltig
-bokning visas i en sammanfattning.
+**Klar när:** tomma eller felaktiga värden stoppas vid rätt fält, ogiltiga fält
+har `aria-invalid="true"` och en giltig bokning visas i en sammanfattning.
 
 > Commit: `git commit -m "validera bokningsformuläret"`
 
@@ -204,13 +214,14 @@ förväntade fält och dubbla klick inte skapar två anrop.
 ### Din uppgift
 
 1. Kör `npm run build` utan fel.
-2. Kör `npm start` och prova en direkt omladdning på `/book/keramik`.
-3. Publicera enligt hosting-lektionen.
+2. Kör `npm run preview` och kontrollera att Network hämtar `workshops.json`.
+3. Publicera enligt hosting-lektionen (GitHub Pages via GitHub Actions).
 4. Låt en klasskamrat genomföra bokningsflödet utan instruktioner.
 5. Be klasskamraten ge en konkret sak som var tydlig och en som bör ändras.
 
-**Klar när:** den publika appen klarar samma kontroll som den lokala och du har
-gjort minst en förbättring efter kamratens test.
+**Klar när:** den publika appen visar workshops, en direkt omladdning av
+`/book/keramik` fungerar och du har gjort minst en förbättring efter kamratens
+test.
 
 > Commit: `git commit -m "färdigställ kulturverkstan"`
 

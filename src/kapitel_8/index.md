@@ -76,7 +76,7 @@ Kulturverkstan blir till sist en **Single Page Application (SPA)**. Webbläsaren
 | 1 | JavaScript-brygga, Vite, JSX, komponenter och props | Visar en lista med workshops från en array |
 | 2 | Events, state, formulär och uppdateringar | Besökaren kan välja tid och fylla i en bokning |
 | 3 | Routing, Effects och början på API | Har fyra appvyer och hämtar workshopdata |
-| 4 | API-flöde, felsökning och publicering | Kan skapa en bokning och finns online |
+| 4 | API-flöde, felsökning och publicering | Kan skapa en bokning lokalt mot `/api` och finns online på GitHub Pages |
 
 Varje del innehåller gemensam kodning, korta övningar och tid att bygga vidare själv. Det är normalt att behöva gå tillbaka till tidigare exempel.
 

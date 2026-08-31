@@ -59,7 +59,10 @@ Andra värdar går bra om läraren säger det. Poängen är en länk i README.
 
 ## Publicera API:t
 
-API:t behöver en process och oftast en databas. I kursen används Docker-baserad hosting, till exempel Dokploy som i [Hosta React med Dokploy](../kapitel_8/hosta-react-app.md) – samma idé, annan mapp (`api/` + compose).
+API:t behöver en process och oftast en databas. Frontend kan ligga på
+[GitHub Pages](../kapitel_8/hosta-react-app.md) som Kulturverkstan. API:t kan
+inte det – använd den Node-värd som läraren anger (samma idé, annan mapp:
+`api/` plus compose).
 
 Checklistan är densamma oavsett värd:
 

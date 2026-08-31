@@ -1,5 +1,13 @@
+function workshopsUrl() {
+  if (import.meta.env.PROD) {
+    return `${import.meta.env.BASE_URL}workshops.json`;
+  }
+
+  return '/api/workshops';
+}
+
 export async function getWorkshops(signal) {
-  const response = await fetch('/api/workshops', { signal });
+  const response = await fetch(workshopsUrl(), { signal });
 
   if (!response.ok) {
     throw new Error('Det gick inte att hämta workshops.');
@@ -9,6 +17,10 @@ export async function getWorkshops(signal) {
 }
 
 export async function createBooking(booking) {
+  if (import.meta.env.PROD) {
+    return booking;
+  }
+
   const response = await fetch('/api/bookings', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

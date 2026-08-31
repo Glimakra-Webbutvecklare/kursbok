@@ -156,6 +156,9 @@ Starta båda delarna:
 npm run dev
 ```
 
+`npm start` är samma sak som `npm run api`: det lokala demo-API:t. Det är inte
+hosting. Publiceringen kommer i nästa lektion.
+
 Öppna `http://localhost:3001/api/workshops`. Fortsätt först när du ser en JSON-array med `keramik`, `vavning` och `foto`.
 
 ## 3. Samla API-anropen i `src/api.js`
@@ -594,7 +597,7 @@ export default function App() {
   }
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Layout
         workshops={workshops}
         status={status}
@@ -654,6 +657,11 @@ Du är klar när:
 - Försök igen startar ett nytt GET-anrop
 - giltig submit skickar sex fält, väntar på svaret och går till `/confirm`
 - felaktig submit eller misslyckad POST stannar på formuläret med begriplig status
+
+> **Vad följer med online?** GitHub Pages har ingen Node-process. `/api`
+> fungerar bara på din dator. Nästa lektion hämtar den publicerade appen
+> workshops från `public/workshops.json` och visar bekräftelsen utan att spara
+> POST på servern.
 
 ## Första hjälpen
 

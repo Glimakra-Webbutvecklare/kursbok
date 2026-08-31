@@ -2,6 +2,8 @@
 
 Kulturverkstan har redan en workshoplista, filter, vald tid och bokningsstate. Nu **bygger vi vidare på samma app**. Vi tar inte bort `WorkshopList`, `WorkshopCard`, `BookingSummary` eller state från föregående lektion.
 
+Använd samma tre workshops som i komponentlektionen (`keramik`, `vavning` och `foto`). Kontrollera att de syns i `WorkshopList` innan du fortsätter.
+
 Efter lektionen kan besökaren välja tid, fylla i sina uppgifter och se en bekräftelse. Antalet deltagare kan aldrig vara större än antalet lediga platser på den valda tiden.
 
 ## Mål
@@ -10,53 +12,7 @@ Efter lektionen kan besökaren välja tid, fylla i sina uppgifter och se en bekr
 - validera tid, namn, e-post och antal deltagare
 - skicka en giltig bokning upp till `App` utan att riva det tidigare flödet
 
-## 1. Säkerställ samma workshopdata
-
-Resten av kapitlet använder exakt samma tre workshops. Ersätt innehållet i `src/data/workshops.js` med:
-
-```js
-export const workshops = [
-  {
-    id: 'keramik',
-    title: 'Keramik för nybörjare',
-    category: 'Hantverk',
-    description: 'Forma och dekorera en egen liten skål.',
-    durationMinutes: 120,
-    priceSek: 350,
-    slots: [
-      { id: 'keramik-lor-10', label: 'Lördag 10.00–12.00', placesLeft: 6 },
-      { id: 'keramik-ons-18', label: 'Onsdag 18.00–20.00', placesLeft: 2 },
-    ],
-  },
-  {
-    id: 'vavning',
-    title: 'Väv din första provbit',
-    category: 'Textil',
-    description: 'Lär dig grunderna i färg, varp och inslag i en liten bordsvävstol.',
-    durationMinutes: 150,
-    priceSek: 425,
-    slots: [
-      { id: 'vavning-son-13', label: 'Söndag 13.00–15.30', placesLeft: 4 },
-    ],
-  },
-  {
-    id: 'foto',
-    title: 'Fotopromenad i byn',
-    category: 'Foto',
-    description: 'Öva komposition och ljus med mobilen eller en egen kamera.',
-    durationMinutes: 90,
-    priceSek: 200,
-    slots: [
-      { id: 'foto-tor-17', label: 'Torsdag 17.30–19.00', placesLeft: 8 },
-      { id: 'foto-lor-14', label: 'Lördag 14.00–15.30', placesLeft: 0 },
-    ],
-  },
-];
-```
-
-Kontrollera att alla tre visas genom den befintliga `WorkshopList` innan du fortsätter.
-
-## 2. Se och förutsäg
+## 1. Se och förutsäg: ett kontrollerat fält
 
 Ett **kontrollerat fält** visar ett värde från state och skickar varje ändring tillbaka till state:
 
@@ -76,18 +32,252 @@ Förutsäg vad `booking.name` innehåller när användaren skriver `Sam`:
 
 1. `value` visar värdet från state.
 2. `onChange` körs när användaren skriver.
-3. Spread behåller bokningens andra fem fält.
+3. Spread behåller bokningens andra fält.
 4. `App` sparar det nya objektet och React renderar igen.
 
 `label`, `htmlFor` och `id` hör ihop. Klick på etiketten flyttar fokus till fältet och en skärmläsare kan läsa rätt namn.
 
-## 3. Lägg till `BookingForm`
+> **Fyll i:** Vilken prop i `App` ska skickas som `onBookingChange` om `App` äger `booking` med `useState`? Svaret är setter-funktionen `__________`.
 
-Skapa `src/components/BookingForm.jsx`. Komponenten får den valda workshopen och bokningsobjektet från `App`.
+## 2. Ett fält som syns
+
+Skapa `src/components/BookingForm.jsx` med bara namnfältet. Ingen validering ännu.
+
+```jsx
+export default function BookingForm({ booking, onBookingChange }) {
+  return (
+    <form>
+      <div>
+        <label htmlFor="name">Namn</label>
+        <input
+          id="name"
+          name="name"
+          value={booking.name}
+          onChange={(event) => {
+            onBookingChange({ ...booking, name: event.target.value });
+          }}
+        />
+      </div>
+    </form>
+  );
+}
+```
+
+Koppla in formuläret i den `App.jsx` du redan har. Behåll lista, filter, sammanfattning och deltagarknappar. Lägg till importen och visa formuläret när en workshop är vald:
+
+```jsx
+import BookingForm from './components/BookingForm.jsx';
+```
+
+`selectedWorkshop` finns redan i `App`. Lägg till det här **efter** `BookingSummary`, fortfarande inuti `<main>`:
+
+```jsx
+{selectedWorkshop && (
+  <section aria-labelledby="booking-heading">
+    <h2 id="booking-heading">Boka {selectedWorkshop.title}</h2>
+    <BookingForm
+      booking={booking}
+      onBookingChange={setBooking}
+    />
+  </section>
+)}
+```
+
+**Kör:** välj en tid i listan och skriv ditt namn. Sammanfattningen och fältet ska visa samma text. Formuläret ska inte synas innan en tid är vald.
+
+## 3. Fyll i: e-post och meddelande
+
+När flera fält ska uppdatera samma objekt blir en `onChange` per fält snabbt upprepande. En gemensam `handleChange` läser fältets `name` och uppdaterar rätt nyckel.
+
+Lägg till funktionen i `BookingForm` och byt namnfältets `onChange` mot `handleChange`. Fyll sedan i luckorna så att e-post och meddelande följer samma mönster.
+
+```jsx
+function handleChange(event) {
+  const { name, value } = event.target;
+
+  onBookingChange({
+    ...booking,
+    [name]: value,
+  });
+}
+```
+
+```jsx
+<div>
+  <label htmlFor="email">E-post</label>
+  <input
+    id="email"
+    name="_____"
+    type="email"
+    value={booking._____}
+    onChange={handleChange}
+    autoComplete="email"
+  />
+</div>
+
+<div>
+  <label htmlFor="message">Meddelande (valfritt)</label>
+  <textarea
+    id="message"
+    name="_____"
+    value={booking._____}
+    onChange={_____}
+  />
+</div>
+```
+
+<details>
+<summary>Lösningsförslag</summary>
+
+```jsx
+<div>
+  <label htmlFor="email">E-post</label>
+  <input
+    id="email"
+    name="email"
+    type="email"
+    value={booking.email}
+    onChange={handleChange}
+    autoComplete="email"
+  />
+</div>
+
+<div>
+  <label htmlFor="message">Meddelande (valfritt)</label>
+  <textarea
+    id="message"
+    name="message"
+    value={booking.message}
+    onChange={handleChange}
+  />
+</div>
+```
+
+`name="email"` måste matcha nyckeln `booking.email`. Annars går det inte att skriva i fältet.
+
+</details>
+
+`[name]` är en beräknad nyckel. Om `name` är `"email"` blir det samma sak som att skriva `email: value` i objektet.
+
+**Kör:** fyll i namn, e-post och meddelande. Öppna React DevTools och kontrollera att `booking` i `App` innehåller alla tre värdena.
+
+## 4. Skicka utan validering
+
+Ett HTML-formulär laddar om sidan vid submit. I React stoppar du det med `event.preventDefault()` och låter state visa vad som hände.
+
+Utöka `BookingForm` med status, `onBooked` och en submit-knapp:
 
 ```jsx
 import { useState } from 'react';
 
+export default function BookingForm({ booking, onBookingChange, onBooked }) {
+  const [status, setStatus] = useState('');
+
+  function handleChange(event) {
+    const { name, value } = event.target;
+
+    onBookingChange({
+      ...booking,
+      [name]: value,
+    });
+  }
+
+  function handleSubmit(event) {
+    event.preventDefault();
+    setStatus('Bokningen är klar.');
+    onBooked(booking);
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      {/* namn, e-post och meddelande som tidigare */}
+      <button type="submit">Bekräfta bokning</button>
+      <p>{status}</p>
+    </form>
+  );
+}
+```
+
+I `App` behövs en state för den bekräftade bokningen och en prop till formuläret:
+
+```jsx
+const [confirmedBooking, setConfirmedBooking] = useState(null);
+```
+
+```jsx
+<BookingForm
+  booking={booking}
+  onBookingChange={setBooking}
+  onBooked={setConfirmedBooking}
+/>
+```
+
+**Kör:** skicka formuläret med tomt namn. Statusraden säger att bokningen är klar. Det är fel mot användaren, men koden gör precis vad du bad den om. Nästa steg stoppar ogiltiga värden.
+
+## 5. Validera ett fält
+
+Lägg till `errors` i `BookingForm` och en `validate`-funktion som bara kollar namn:
+
+```jsx
+const [errors, setErrors] = useState({});
+```
+
+```jsx
+function validate() {
+  const nextErrors = {};
+
+  if (!booking.name.trim()) {
+    nextErrors.name = 'Skriv ditt namn.';
+  }
+
+  return nextErrors;
+}
+```
+
+`trim()` tar bort mellanslag. Ett fält med bara blanksteg räknas som tomt.
+
+Ändra `handleSubmit` så att den validerar **innan** bokningen skickas:
+
+```jsx
+function handleSubmit(event) {
+  event.preventDefault();
+  const nextErrors = validate();
+  setErrors(nextErrors);
+
+  if (Object.keys(nextErrors).length > 0) {
+    setStatus('Bokningen kunde inte skickas. Kontrollera fälten.');
+    return;
+  }
+
+  setStatus('Bokningen är klar.');
+  onBooked(booking);
+}
+```
+
+Visa felet under namnfältet:
+
+```jsx
+<input
+  id="name"
+  name="name"
+  value={booking.name}
+  onChange={handleChange}
+  autoComplete="name"
+/>
+{errors.name && <p>{errors.name}</p>}
+```
+
+`Object.keys(nextErrors).length > 0` betyder att minst ett fält har ett fel. Då ska `onBooked` inte köras.
+
+**Kör:** skicka med tomt namn. Felet ska synas under fältet och bekräftelsen ska inte komma. Fyll i ett namn och skicka igen. Nu ska statusen bli grön.
+
+## 6. Fyll i: e-post och deltagare
+
+Formuläret ska också stoppa ogiltig e-post och ett deltagarantal utanför `placesLeft`. `BookingForm` behöver workshopen för att veta hur många platser den valda tiden har.
+
+Lägg till propen `workshop` och räkna fram den valda tiden:
+
+```jsx
 export default function BookingForm({
   workshop,
   booking,
@@ -100,256 +290,266 @@ export default function BookingForm({
   const selectedSlot = workshop.slots.find(
     (slot) => slot.id === booking.slotId,
   );
-  const maxParticipants = selectedSlot ? selectedSlot.placesLeft : 1;
+```
 
-  function handleChange(event) {
-    const { name, value } = event.target;
+I `App`:
 
-    if (name === 'slotId') {
-      const nextSlot = workshop.slots.find((slot) => slot.id === value);
-      const nextMaximum = nextSlot ? nextSlot.placesLeft : 1;
+```jsx
+<BookingForm
+  workshop={selectedWorkshop}
+  booking={booking}
+  onBookingChange={setBooking}
+  onBooked={setConfirmedBooking}
+/>
+```
 
-      onBookingChange({
-        ...booking,
-        workshopId: workshop.id,
-        slotId: value,
-        participants: Math.min(booking.participants, nextMaximum),
-      });
-      return;
-    }
+Fyll i luckorna i `validate`. Namnregeln från förra steget ska vara kvar.
 
-    onBookingChange({
-      ...booking,
-      [name]: name === 'participants' ? Number(value) : value,
-    });
+```jsx
+function validate() {
+  const nextErrors = {};
+
+  if (!booking.name.trim()) {
+    nextErrors.name = 'Skriv ditt namn.';
   }
 
-  function validate() {
-    const nextErrors = {};
-
-    if (!selectedSlot || selectedSlot.placesLeft === 0) {
-      nextErrors.slotId = 'Välj en tid med lediga platser.';
-    }
-    if (!booking.name.trim()) {
-      nextErrors.name = 'Skriv ditt namn.';
-    }
-    if (!booking.email.includes('@')) {
-      nextErrors.email = 'Skriv en giltig e-postadress.';
-    }
-    if (
-      !selectedSlot ||
-      booking.participants < 1 ||
-      booking.participants > selectedSlot.placesLeft
-    ) {
-      nextErrors.participants = selectedSlot
-        ? `Välj mellan 1 och ${selectedSlot.placesLeft} deltagare.`
-        : 'Välj en tid innan du anger antal deltagare.';
-    }
-
-    return nextErrors;
+  if (!booking.email.includes(_____)) {
+    nextErrors.email = 'Skriv en giltig e-postadress.';
   }
 
-  function handleSubmit(event) {
-    event.preventDefault();
-    const nextErrors = validate();
-    setErrors(nextErrors);
-
-    if (Object.keys(nextErrors).length > 0) {
-      setStatus('Bokningen kunde inte skickas. Kontrollera fälten.');
-      return;
-    }
-
-    setStatus('Bokningen är klar.');
-    onBooked(booking);
+  if (
+    !selectedSlot ||
+    booking.participants < 1 ||
+    booking.participants > selectedSlot._____
+  ) {
+    nextErrors.participants = selectedSlot
+      ? `Välj mellan 1 och ${selectedSlot.placesLeft} deltagare.`
+      : 'Välj en tid innan du anger antal deltagare.';
   }
 
-  return (
-    <form onSubmit={handleSubmit} noValidate>
-      <fieldset aria-invalid={Boolean(errors.slotId)}>
-        <legend>Välj tid</legend>
-        {workshop.slots.map((slot) => (
-          <div key={slot.id}>
-            <input
-              id={slot.id}
-              type="radio"
-              name="slotId"
-              value={slot.id}
-              checked={booking.slotId === slot.id}
-              onChange={handleChange}
-              aria-invalid={Boolean(errors.slotId)}
-              aria-describedby={errors.slotId ? 'slot-error' : undefined}
-              disabled={slot.placesLeft === 0}
-            />
-            <label htmlFor={slot.id}>
-              {slot.label} ({slot.placesLeft} platser kvar)
-            </label>
-          </div>
-        ))}
-        {errors.slotId && <p id="slot-error" role="alert">{errors.slotId}</p>}
-      </fieldset>
-
-      <div>
-        <label htmlFor="name">Namn</label>
-        <input
-          id="name"
-          name="name"
-          value={booking.name}
-          onChange={handleChange}
-          autoComplete="name"
-          aria-invalid={Boolean(errors.name)}
-          aria-describedby={errors.name ? 'name-error' : undefined}
-        />
-        {errors.name && <p id="name-error" role="alert">{errors.name}</p>}
-      </div>
-
-      <div>
-        <label htmlFor="email">E-post</label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          value={booking.email}
-          onChange={handleChange}
-          autoComplete="email"
-          aria-invalid={Boolean(errors.email)}
-          aria-describedby={errors.email ? 'email-error' : undefined}
-        />
-        {errors.email && <p id="email-error" role="alert">{errors.email}</p>}
-      </div>
-
-      <div>
-        <label htmlFor="participants">Antal deltagare</label>
-        <input
-          id="participants"
-          name="participants"
-          type="number"
-          min="1"
-          max={maxParticipants}
-          value={booking.participants}
-          onChange={handleChange}
-          aria-invalid={Boolean(errors.participants)}
-          aria-describedby={errors.participants ? 'participants-error' : undefined}
-        />
-        {selectedSlot && <p>Högst {selectedSlot.placesLeft} deltagare för denna tid.</p>}
-        {errors.participants && (
-          <p id="participants-error" role="alert">{errors.participants}</p>
-        )}
-      </div>
-
-      <div>
-        <label htmlFor="message">Meddelande (valfritt)</label>
-        <textarea
-          id="message"
-          name="message"
-          value={booking.message}
-          onChange={handleChange}
-        />
-      </div>
-
-      <button type="submit">Bekräfta bokning</button>
-      <p aria-live="polite">{status}</p>
-    </form>
-  );
+  return nextErrors;
 }
 ```
 
-När användaren byter tid räknas maxvärdet om från just den tidens `placesLeft`. Om antalet var 5 och den nya tiden bara har 2 platser sänks antalet automatiskt till 2.
-
-## 4. Koppla formuläret till den befintliga appen
-
-Behåll `WorkshopList`, `BookingSummary`, filtret och bokningsstate från förra lektionen. Ersätt `App.jsx` med den sammanhängande versionen nedan:
+<details>
+<summary>Lösningsförslag</summary>
 
 ```jsx
-import { useState } from 'react';
-import BookingForm from './components/BookingForm.jsx';
-import BookingSummary from './components/BookingSummary.jsx';
-import WorkshopList from './components/WorkshopList.jsx';
-import { workshops } from './data/workshops.js';
+if (!booking.email.includes('@')) {
+  nextErrors.email = 'Skriv en giltig e-postadress.';
+}
 
-const emptyBooking = {
-  workshopId: '',
-  slotId: '',
-  name: '',
-  email: '',
-  participants: 1,
-  message: '',
-};
+if (
+  !selectedSlot ||
+  booking.participants < 1 ||
+  booking.participants > selectedSlot.placesLeft
+) {
+  nextErrors.participants = selectedSlot
+    ? `Välj mellan 1 och ${selectedSlot.placesLeft} deltagare.`
+    : 'Välj en tid innan du anger antal deltagare.';
+}
+```
 
-export default function App() {
-  const [category, setCategory] = useState('Alla');
-  const [booking, setBooking] = useState(emptyBooking);
-  const [confirmedBooking, setConfirmedBooking] = useState(null);
+</details>
 
-  const visibleWorkshops = category === 'Alla'
-    ? workshops
-    : workshops.filter((workshop) => workshop.category === category);
-  const selectedWorkshop = workshops.find(
-    (workshop) => workshop.id === booking.workshopId,
-  );
+Lägg till deltagarfältet. `handleChange` måste göra om värdet till ett tal:
 
-  function handleSelectSlot(workshopId, slotId) {
-    const workshop = workshops.find((item) => item.id === workshopId);
-    const slot = workshop.slots.find((item) => item.id === slotId);
+```jsx
+function handleChange(event) {
+  const { name, value } = event.target;
 
-    setBooking((current) => ({
-      ...current,
-      workshopId,
-      slotId,
-      participants: Math.min(current.participants, slot.placesLeft),
-    }));
-    setConfirmedBooking(null);
+  onBookingChange({
+    ...booking,
+    [name]: name === 'participants' ? Number(value) : value,
+  });
+}
+```
+
+```jsx
+<div>
+  <label htmlFor="participants">Antal deltagare</label>
+  <input
+    id="participants"
+    name="participants"
+    type="number"
+    min="1"
+    max={selectedSlot ? selectedSlot.placesLeft : 1}
+    value={booking.participants}
+    onChange={handleChange}
+  />
+  {selectedSlot && (
+    <p>Högst {selectedSlot.placesLeft} deltagare för denna tid.</p>
+  )}
+  {errors.participants && <p>{errors.participants}</p>}
+</div>
+```
+
+Visa också `{errors.email && <p>{errors.email}</p>}` under e-postfältet.
+
+**Kör:** skicka med `hej` som e-post. Felet ska sitta under e-postfältet. Välj keramiktiden med 2 platser och skriv `5` som antal. Deltagarfelet ska nämna taket 2.
+
+## 7. Tillgänglighet som eget steg
+
+Felen syns nu visuellt, men ett ogiltigt fält behöver också kopplas för skärmläsare. Tre attribut gör jobbet:
+
+- `aria-invalid="true"` när fältet har ett fel
+- `aria-describedby` pekar på feltextens `id`
+- `role="alert"` på feltexten så att den läses upp
+
+**Följ med:** koppla namnfältet.
+
+```jsx
+<input
+  id="name"
+  name="name"
+  value={booking.name}
+  onChange={handleChange}
+  autoComplete="name"
+  aria-invalid={Boolean(errors.name)}
+  aria-describedby={errors.name ? 'name-error' : undefined}
+/>
+{errors.name && (
+  <p id="name-error" role="alert">{errors.name}</p>
+)}
+```
+
+`Boolean(errors.name)` blir `true` när feltexten finns, annars `false`. `aria-describedby` ska bara sättas när felstycket faktiskt finns i DOM:en.
+
+Lägg `noValidate` på `<form>` så att webbläsarens inbyggda e-postvarning inte krockar med era egna meddelanden. Flytta statusraden till `aria-live="polite"` så att “Bokningen är klar.” läses upp utan att stjäla fokus:
+
+```jsx
+<form onSubmit={handleSubmit} noValidate>
+```
+
+```jsx
+<p aria-live="polite">{status}</p>
+```
+
+**Gör själv:** lägg samma `aria-invalid`, `aria-describedby` och `role="alert"` på e-post och deltagare. Använd `id="email-error"` och `id="participants-error"`.
+
+<details>
+<summary>Lösningsförslag för e-post</summary>
+
+```jsx
+<input
+  id="email"
+  name="email"
+  type="email"
+  value={booking.email}
+  onChange={handleChange}
+  autoComplete="email"
+  aria-invalid={Boolean(errors.email)}
+  aria-describedby={errors.email ? 'email-error' : undefined}
+/>
+{errors.email && (
+  <p id="email-error" role="alert">{errors.email}</p>
+)}
+```
+
+</details>
+
+**Kontrollera:** skicka ett tomt formulär. Inspektera namnfältet. Det ska ha `aria-invalid="true"` och peka på `name-error`.
+
+## 8. Tid och tak
+
+Listan har redan valt en tid, men besökaren ska kunna byta tid i formuläret. Radioknappar i ett `fieldset` grupperar valet. Fullbokade tider ska vara `disabled`.
+
+Lägg till tidvalet **överst** i formuläret och en regel i `validate`:
+
+```jsx
+if (!selectedSlot || selectedSlot.placesLeft === 0) {
+  nextErrors.slotId = 'Välj en tid med lediga platser.';
+}
+```
+
+När användaren byter tid måste maxvärdet räknas om. Om antalet var 5 och den nya tiden bara har 2 platser sänks antalet till 2.
+
+```jsx
+function handleChange(event) {
+  const { name, value } = event.target;
+
+  if (name === 'slotId') {
+    const nextSlot = workshop.slots.find((slot) => slot.id === value);
+    const nextMaximum = nextSlot ? nextSlot.placesLeft : 1;
+
+    onBookingChange({
+      ...booking,
+      workshopId: workshop.id,
+      slotId: value,
+      participants: Math.min(booking.participants, nextMaximum),
+    });
+    return;
   }
 
-  return (
-    <main>
-      <h1>Kulturverkstan</h1>
-      <p>Hitta en workshop och boka din plats.</p>
+  onBookingChange({
+    ...booking,
+    [name]: name === 'participants' ? Number(value) : value,
+  });
+}
+```
 
-      <div aria-label="Filtrera workshops">
-        {['Alla', 'Hantverk', 'Textil', 'Foto'].map((item) => (
-          <button
-            key={item}
-            type="button"
-            aria-pressed={category === item}
-            onClick={() => setCategory(item)}
-          >
-            {item}
-          </button>
-        ))}
-      </div>
-
-      <WorkshopList
-        workshops={visibleWorkshops}
-        onSelectSlot={handleSelectSlot}
+```jsx
+<fieldset aria-invalid={Boolean(errors.slotId)}>
+  <legend>Välj tid</legend>
+  {workshop.slots.map((slot) => (
+    <div key={slot.id}>
+      <input
+        id={slot.id}
+        type="radio"
+        name="slotId"
+        value={slot.id}
+        checked={booking.slotId === slot.id}
+        onChange={handleChange}
+        aria-invalid={Boolean(errors.slotId)}
+        aria-describedby={errors.slotId ? 'slot-error' : undefined}
+        disabled={slot.placesLeft === 0}
       />
-      <BookingSummary booking={booking} workshops={workshops} />
+      <label htmlFor={slot.id}>
+        {slot.label} ({slot.placesLeft} platser kvar)
+      </label>
+    </div>
+  ))}
+  {errors.slotId && (
+    <p id="slot-error" role="alert">{errors.slotId}</p>
+  )}
+</fieldset>
+```
 
-      {selectedWorkshop && (
-        <section aria-labelledby="booking-heading">
-          <h2 id="booking-heading">Boka {selectedWorkshop.title}</h2>
-          <BookingForm
-            workshop={selectedWorkshop}
-            booking={booking}
-            onBookingChange={setBooking}
-            onBooked={setConfirmedBooking}
-          />
-        </section>
-      )}
+**Kör:** välj fototid med 8 platser och skriv `5` deltagare. Byt till keramiktiden med 2 platser. Antalet ska bli `2` utan att du rört deltagarfältet. Den fullbokade lördagen ska inte gå att välja.
 
-      {confirmedBooking && (
-        <section aria-live="polite">
-          <h2>Tack, {confirmedBooking.name}!</h2>
-          <p>Din bokning är sparad i appens state.</p>
-        </section>
-      )}
-    </main>
-  );
+## 9. Bekräftelse i App
+
+När `onBooked` körs sparar `App` bokningen i `confirmedBooking`. Visa ett tackmeddelande **efter** formulärsektionen, fortfarande i `<main>`:
+
+```jsx
+{confirmedBooking && (
+  <section aria-live="polite">
+    <h2>Tack, {confirmedBooking.name}!</h2>
+    <p>Din bokning är sparad i appens state.</p>
+  </section>
+)}
+```
+
+I `handleSelectSlot` i `App`, nollställ bekräftelsen när besökaren väljer en ny tid, så att ett gammalt tack inte ligger kvar:
+
+```jsx
+function handleSelectSlot(workshopId, slotId) {
+  const workshop = workshops.find((item) => item.id === workshopId);
+  const slot = workshop.slots.find((item) => item.id === slotId);
+
+  setBooking((current) => ({
+    ...current,
+    workshopId,
+    slotId,
+    participants: Math.min(current.participants, slot.placesLeft),
+  }));
+  setConfirmedBooking(null);
 }
 ```
 
 Detta är en utbyggnad av föregående `App`: samma lista skickar valet uppåt, samma bokningsobjekt visas i sammanfattningen och formuläret kompletterar de återstående fälten.
 
-## Se → förutsäg → kör → ändra
+## Se → förutsäg → kör → ändra → kontrollera → förklara
 
 1. **Se:** följ `booking` från `App` till ett fält och tillbaka igen.
 2. **Förutsäg:** vad händer med 5 deltagare om du byter till tiden med 2 platser?
@@ -366,6 +566,7 @@ Du är klar när:
 - alla fält har etiketter och ogiltiga fält får `aria-invalid="true"`
 - max och validering alltid följer `placesLeft` för vald tid
 - en giltig bokning visar bekräftelsen utan sidladdning
+- ett tomt namn stoppas innan `onBooked` körs
 
 ## Första hjälpen
 
@@ -376,6 +577,7 @@ Du är klar när:
 | Fel maxvärde visas | Hittas `selectedSlot` i den valda workshopens `slots`? |
 | Formuläret visas inte | Har listans knapp skickat både `workshopId` och `slotId` upp till `App`? |
 | Sidan laddas om | Kör `event.preventDefault()` först i `handleSubmit`. |
+| Bekräftelsen kommer trots fel | Returnerar `validate` ett objekt, och stoppar `handleSubmit` när det har nycklar? |
 
 ## Commit
 

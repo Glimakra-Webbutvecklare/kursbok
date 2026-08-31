@@ -178,6 +178,24 @@ Komponenten använder värdet för att hitta rätt objekt i workshops-arrayen.
 
 </details>
 
+## 11. Statisk hosting och `/api`
+
+**Fråga:** Kulturverkstan hämtar workshops från `/api/workshops` när du kör
+`npm run dev`. Varför fungerar samma adress inte på GitHub Pages, och vad
+hämtar den publicerade appen i stället?
+
+<details>
+<summary>Kontrollpunkter</summary>
+
+- GitHub Pages serverar bara statiska filer. Det finns ingen Node-process och
+  därför ingen json-server.
+- Den byggda appen (`import.meta.env.PROD`) hämtar `workshops.json` från
+  `public/`, med `import.meta.env.BASE_URL` som prefix på en projektsajt.
+- POST mot `/api/bookings` sparar lokalt i `db.json`. Online returnerar
+  `createBooking` objektet så bekräftelsen syns, men inget lagras på servern.
+
+</details>
+
 ## Praktisk slutfråga
 
 Demonstrera Kulturverkstan och förklara samtidigt:

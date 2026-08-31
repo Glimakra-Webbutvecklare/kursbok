@@ -1,69 +1,147 @@
-# Publicera Kulturverkstan med Dokploy
+# Publicera Kulturverkstan med GitHub Pages
 
 Nu fungerar lista, detalj, bokning, bekräftelse och demo-API lokalt. I den här
-lektionen bygger du appen, pushar den till GitHub och publicerar samma flöde.
+lektionen bygger du en statisk produktionsversion och publicerar den med
+GitHub Actions till GitHub Pages.
 
-> **Mål:** Bygga en produktionsversion, publicera den med Dokploy och kontrollera att både direkta routes och `/api` fungerar.
+> **Mål:** Bygga `dist`, publicera med GitHub Actions och kontrollera att startsidan, en direktlänk till en route och hämtningen av `workshops.json` fungerar.
 
-## Före publicering
+GitHub Pages serverar **bara filer**. Det är samma idé som i
+[Jekyll-lektionen](../kapitel_6/jekyll.md): pusha, bygg, visa statiska filer.
+Skillnaden är byggaren. Jekyll byggs av GitHub. Här bygger **GitHub Actions**
+med Node, precis som testerna i
+[grupparbetet](../grupparbete/testning-och-actions.md).
 
-Kör kontrollerna i Kulturverkstans projektmapp:
+json-server är kursinfrastruktur på din dator. Den följer inte med online.
+Därför gör appen två saker i produktion:
 
-```bash
-npm run build
-npm start
+- **GET** hämtar `workshops.json` från den publicerade sajten. Effect, loading,
+  error och empty finns kvar.
+- **POST** har ingen server att spara mot. `createBooking` returnerar
+  bokningsobjektet så att bekräftelsen visas. Inget lagras på GitHub Pages.
+
+```mermaid
+flowchart LR
+  subgraph local [Lokalt]
+    ViteDev[Vite] --> Proxy["/api proxy"]
+    Proxy --> JsonServer[json-server]
+  end
+  subgraph pages [GitHub Pages]
+    Actions[GitHub Actions] --> Dist[dist]
+    Dist --> StaticJSON[workshops.json]
+    Dist --> SPA[React Router]
+  end
 ```
 
-Öppna adressen som terminalen visar. Kontrollera sedan:
+## 1. Statisk workshopdata
 
-- `/api/workshops` visar JSON,
-- `/workshops/keramik` visar detaljsidan,
-- `/book/keramik` visar formuläret,
-- en bokning leder till `/confirm`.
+Skapa `public/workshops.json`. Vite kopierar allt i `public/` till `dist/` vid
+bygget. Innehållet ska vara **samma array** som `GET /api/workshops` returnerar,
+inte hela `db.json`.
 
-Avsluta servern med `Ctrl+C`.
+Kopiera `workshops`-arrayen från `db.json` till filen. Resultatet ska börja med
+`[` och sluta med `]`.
 
-## Gör demoservern redo för produktion
+Kontrollera att filen har tre objekt med id `keramik`, `vavning` och `foto`.
 
-I API-lektionen använde du `server.cjs` enbart för API:t. Ersätt filen med
-versionen nedan. Den serverar också Vites `dist`-mapp och skickar `index.html`
-för direkta React Router-adresser.
+> I en riktig app skulle du inte duplicera datan. Här är det medvetet: lokalt
+> finns en server, online finns en fil.
+
+## 2. Ett produktionsspår i `src/api.js`
+
+Ersätt `getWorkshops` och `createBooking` så att de väljer källa utifrån
+om appen är byggd eller inte.
 
 ```js
-const fs = require('node:fs');
-const path = require('node:path');
-const jsonServer = require('json-server');
-
-const server = jsonServer.create();
-const api = jsonServer.router(path.join(__dirname, 'db.json'));
-const port = Number(process.env.PORT) || 3001;
-const distDirectory = path.join(__dirname, 'dist');
-
-server.use(jsonServer.defaults({
-  static: fs.existsSync(distDirectory) ? distDirectory : undefined,
-}));
-server.use(jsonServer.bodyParser);
-server.use('/api', api);
-
-server.get('*', (request, response) => {
-  const indexFile = path.join(distDirectory, 'index.html');
-
-  if (fs.existsSync(indexFile)) {
-    response.sendFile(indexFile);
-    return;
+function workshopsUrl() {
+  if (import.meta.env.PROD) {
+    return `${import.meta.env.BASE_URL}workshops.json`;
   }
 
-  response.status(404).json({
-    message: 'Bygg appen med npm run build.',
-  });
-});
+  return '/api/workshops';
+}
 
-server.listen(port, () => {
-  console.log(`Kulturverkstan kör på port ${port}`);
+export async function getWorkshops(signal) {
+  const response = await fetch(workshopsUrl(), { signal });
+
+  if (!response.ok) {
+    throw new Error(`Servern svarade med status ${response.status}.`);
+  }
+
+  return response.json();
+}
+
+export async function createBooking(booking) {
+  if (import.meta.env.PROD) {
+    return booking;
+  }
+
+  const response = await fetch('/api/bookings', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(booking),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Servern svarade med status ${response.status}.`);
+  }
+
+  return response.json();
+}
+```
+
+`import.meta.env.PROD` är `false` under `npm run dev` och `true` i en byggd
+app. `import.meta.env.BASE_URL` är `/` lokalt och `/reponamn/` på en
+projektsajt hos GitHub Pages.
+
+Lokalt med `npm run dev` händer alltså samma sak som i API-lektionen. POST
+sparas i `db.json`. Online syns bekräftelsen, men `bookings` på GitHub är
+tomt — det finns ingen process som tar emot POST.
+
+## 3. Vite `base` och router-`basename`
+
+En projektsajt ligger på `https://användarnamn.github.io/reponamn/`, inte i
+webbrotten. Utan `base` letar index.html efter `/assets/...` och får 404.
+Det är samma fallgrop som Jekylls `baseurl`.
+
+Uppdatera `vite.config.js`. Behåll React-pluginen och proxyn:
+
+```js
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+
+const repository = process.env.GITHUB_REPOSITORY?.split('/')[1];
+const isUserSite = repository?.endsWith('.github.io');
+
+export default defineConfig({
+  base: repository && !isUserSite ? `/${repository}/` : '/',
+  plugins: [react()],
+  server: {
+    proxy: {
+      '/api': 'http://localhost:3001',
+    },
+  },
 });
 ```
 
-Kontrollera att `package.json` innehåller dessa scripts:
+`GITHUB_REPOSITORY` sätts automatiskt i Actions (`ägare/reponamn`). På din
+dator är den osatt, så `base` blir `/` och `npm run dev` beter sig som
+tidigare.
+
+Om repot heter `dittnamn.github.io` är det en **användarsajt** i roten.
+Då ska `base` vara `/`, vilket `isUserSite` tar hand om.
+
+React Router måste veta samma prefix. Routing-lektionen satte redan
+
+```jsx
+<BrowserRouter basename={import.meta.env.BASE_URL}>
+```
+
+Kontrollera att raden finns kvar efter API-lektionens `App`-ersättning.
+`Link` till `/book/keramik` får automatiskt rätt prefix. Du ska inte skriva
+reponamnet i länkarna.
+
+Lägg till förhandsgranskning i `package.json` under `scripts`:
 
 ```json
 {
@@ -72,29 +150,49 @@ Kontrollera att `package.json` innehåller dessa scripts:
     "api": "node server.cjs",
     "dev": "concurrently -k -n API,VITE \"npm:api\" \"npm:vite\"",
     "build": "vite build",
+    "preview": "vite preview",
     "start": "node server.cjs"
   }
 }
 ```
 
-> Demoservern är kursinfrastruktur. `db.json` kan återställas när appen byggs
-> om och är inte en riktig databas.
+`npm start` startar fortfarande bara det lokala demo-API:t. Det är inte
+hosting.
 
-## Checkpoint 1: gör en lokal produktionskontroll
+## 4. Lokal produktionskontroll
 
-Kör på nytt:
+Kör i Kulturverkstans projektmapp:
 
 ```bash
 npm run build
-npm start
+npm run preview
 ```
 
-Skriv in `/book/keramik` direkt i adressfältet och ladda om sidan. Du är klar
-när sidan fortfarande visas och `/api/workshops` svarar.
+Öppna adressen som terminalen visar. Det här är den statiska appen, samma
+sorts filer som Pages kommer att servera. `import.meta.env.PROD` är `true`,
+så Network ska visa `workshops.json` — inte `/api/workshops`.
 
-## Pusha till GitHub
+Kontrollera:
 
-Kontrollera först att `node_modules` och `dist` ignoreras:
+- startsidan visar tre workshops,
+- `/workshops/keramik` fungerar via en länk i appen,
+- en bokning leder till `/confirm`,
+- Network visar en GET mot `workshops.json`.
+
+Skriv in `/book/keramik` direkt i adressfältet och ladda om. Lokalt med
+`vite preview` brukar det fungera. På GitHub Pages gör vi extra filen
+`404.html` i nästa steg, annars ger omladdning 404.
+
+Avsluta med `Ctrl+C`.
+
+## Checkpoint 1: bygget är grönt
+
+Du är klar med den lokala delen när `npm run build` avslutas utan fel och
+`npm run preview` visar listan från `workshops.json`.
+
+## 5. Pusha till GitHub
+
+Kontrollera att `node_modules` och `dist` ignoreras:
 
 ```gitignore
 node_modules/
@@ -102,75 +200,124 @@ dist/
 .env
 ```
 
-Committa och pusha:
+Committa och pusha när workflow-filen i nästa avsnitt också finns:
 
 ```bash
 git add .
-git commit -m "förbered kulturverkstan för publicering"
+git commit -m "förbered kulturverkstan för github pages"
 git push
 ```
 
-Kontrollera på GitHub att `db.json`, `server.cjs`, `package.json` och
-`package-lock.json` finns, men inte `node_modules`.
+Kontrollera på GitHub att `public/workshops.json`, `src/api.js`,
+`vite.config.js` och `package-lock.json` finns, men inte `node_modules`.
 
-## Skapa applikationen i Dokploy
+## 6. GitHub Actions-workflow
 
-1. Logga in på kursens Dokploy-instans.
-2. Skapa eller öppna ditt projekt.
-3. Skapa en **Application**.
-4. Välj GitHub som källa och välj Kulturverkstans repository och branch.
-5. Använd projektroten som build path.
-6. Välj **Nixpacks** eller den byggtyp läraren anger.
-7. Ange vid behov:
-   - build command: `npm run build`
-   - start command: `npm start`
-8. Spara och starta deployment.
+Skapa `.github/workflows/deploy.yml`:
 
-Dokploy kan ansluta GitHub-repositories och automatiskt publicera den valda
-branchen efter nya pushes. De exakta fältnamnen kan förändras; läs därför även
-[Dokploys GitHub-guide](https://docs.dokploy.com/docs/core/github) och
-[översikten över build types](https://docs.dokploy.com/docs/core/applications/build-type).
+```yaml
+name: Deploy to GitHub Pages
 
-## Koppla domän och port
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
 
-När deploymenten är grön:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
-1. Öppna fliken **Domains**.
-2. Lägg till domänen som läraren har tilldelat.
-3. Ange den port som Dokploy visar för applikationen.
-4. Aktivera HTTPS om det inte sker automatiskt.
+concurrency:
+  group: pages
+  cancel-in-progress: true
 
-Öppna den publika adressen i ett privat webbläsarfönster. Det avslöjar om du
-råkar vara beroende av något som bara finns lokalt.
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: SPA fallback for GitHub Pages
+        run: cp dist/index.html dist/404.html
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+```
+
+`cp dist/index.html dist/404.html` är SPA-tricket. GitHub Pages har ingen
+Node-server som kan skicka `index.html` för `/book/keramik`. Okända sökvägar
+serverar `404.html`. När den filen är en kopia av `index.html` startar React
+Router och visar rätt vy.
+
+Om din standardbranch heter `master` i stället för `main`, ändra `branches`
+i workflow-filen.
+
+## 7. Aktivera GitHub Pages
+
+1. Öppna repositoryt på GitHub.
+2. Gå till **Settings → Pages**.
+3. Under **Source**, välj **GitHub Actions**.
+4. Om första körningen redan har misslyckats: öppna **Actions**, välj
+   workflowen och kör **Re-run jobs**.
+
+När jobbet `deploy` är grönt finns en publik URL, ofta
+`https://användarnamn.github.io/reponamn/`.
+
+Öppna den i ett privat webbläsarfönster. Det avslöjar om du råkar vara
+beroende av något som bara finns lokalt.
 
 ## Se → förutsäg → kör → ändra → kontrollera → förklara
 
-1. **Se:** hitta build- och startkommandot i deploymentloggen.
-2. **Förutsäg:** vad händer om `dist` inte har byggts?
-3. **Kör:** öppna `/api/workshops` på den publika domänen.
-4. **Ändra:** uppdatera en workshoptext, committa och pusha.
-5. **Kontrollera:** texten ska synas efter nästa deployment.
-6. **Förklara:** varför måste servern skicka `index.html` för `/book/keramik`?
+1. **Se:** hitta `npm run build` och kopieringen av `404.html` i Action-loggen.
+2. **Förutsäg:** vad händer med CSS och JS om `base` saknas på en projektsajt?
+3. **Kör:** öppna den publika startsidan och Network. Vilken URL har
+   `workshops.json`?
+4. **Ändra:** uppdatera en workshoptext i både `db.json` och
+   `public/workshops.json`, committa och pusha.
+5. **Kontrollera:** texten ska synas efter nästa deployment. En ny bokning
+   online ska visa bekräftelse men inte finnas kvar efter omladdning av
+   `/confirm`.
+6. **Förklara:** varför fungerar `POST /api/bookings` lokalt men inte på Pages?
 
 ## Första hjälpen
 
 | Symptom | Kontroll |
 |---|---|
 | Builden misslyckas | Kör `npm run build` lokalt och läs det första felet |
-| `npm start` saknas | Kontrollera scripts i `package.json` |
-| Startsidan fungerar men `/api/workshops` ger 404 | Kontrollera `server.use('/api', api)` |
-| Direktlänk ger 404 | Kontrollera `server.get('*', ...)` och att `dist/index.html` finns |
-| Appen lyssnar på fel port | Använd `process.env.PORT` som i serverfilen |
-| Ny push publiceras inte | Kontrollera vald branch och deploymentloggen |
+| Vit sida, fel i Console om `/assets/` | Saknas `base` i `vite.config.js`, eller matchar det inte reponamnet? |
+| Länkar går till fel app | Har `BrowserRouter` `basename={import.meta.env.BASE_URL}`? |
+| Startsida fungerar, F5 på `/book/keramik` ger 404 | Saknas `cp dist/index.html dist/404.html` i workflowen? |
+| `workshops.json` ger 404 | Ligger filen i `public/` och börjar den med `[`? |
+| Fortfarande `/api/workshops` i Network på Pages | Körs den byggda appen (`PROD`) eller har du öppnat `localhost:5173`? |
+| Workflowen körs inte | Heter branchen `main`, och är Pages-källan **GitHub Actions**? |
+| Användarsajt (`namn.github.io`) får fel sökvägar | `base` ska vara `/` — kontrollera `isUserSite` |
 
 ## Slutcheckpoint
 
 Du är klar när:
 
-- den publika startsidan visar workshops,
-- ett GET-anrop och en boknings-POST fungerar,
-- `/workshops/keramik` och `/book/keramik` kan laddas om direkt,
+- den publika startsidan visar workshops från `workshops.json`,
+- `/workshops/keramik` och `/book/keramik` går att öppna via länkar och via
+  omladdning,
 - `/confirm` visar ett hjälpsamt tomläge efter en direkt omladdning,
+- en bokning online visar bekräftelse utan att sparas på servern,
 - en ny push leder till en ny fungerande deployment.
 
-> **Commit-förslag:** `git commit -m "publicera kulturverkstan"`
+> **Commit-förslag:** `git commit -m "publicera kulturverkstan på github pages"`

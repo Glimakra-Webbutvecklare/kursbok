@@ -37,6 +37,29 @@ De fyra första är appens vyer. `*` är en **wildcard fallback** för alla andr
 
 `:workshopId` är en parameter. Adressen `/workshops/keramik` ger parametern `workshopId` värdet `'keramik'`. Samma route fungerar för `vavning` och `foto`.
 
+### Fyll i: läs parametern
+
+När adressen är `/workshops/keramik` ska sidan visa just den workshopen. Fyll i luckorna:
+
+```jsx
+function WorkshopPage() {
+  const { _____ } = useParams();
+  const workshop = workshops.find((item) => item.id === _____);
+```
+
+<details>
+<summary>Lösningsförslag</summary>
+
+```jsx
+function WorkshopPage() {
+  const { workshopId } = useParams();
+  const workshop = workshops.find((item) => item.id === workshopId);
+```
+
+`useParams` ger ett objekt med namnen från routen. Nyckeln måste heta `workshopId` eftersom pathen är `/workshops/:workshopId`.
+
+</details>
+
 ## 3. Lägg till länkar utan att skriva om kortet
 
 Behåll valknapparna i `WorkshopCard`. Importera dessutom `Link` och lägg till en detaljlänk i kortet:
@@ -59,6 +82,11 @@ Ersätt `src/App.jsx` med koden nedan. Lägg märke till vad som **finns kvar** 
 - `WorkshopList`, `BookingSummary` och `BookingForm` återanvänds.
 - `src/data/workshops.js` är fortfarande enda datakällan.
 - `category`, `booking` och `confirmedBooking` ägs fortfarande av `App`.
+
+`BrowserRouter` får `basename={import.meta.env.BASE_URL}`. Lokalt är värdet
+`/`. På GitHub Pages blir det `/reponamn/`. Sätt det redan nu så att
+publiceringen inte kräver en ny router. Länkar som `to="/book/keramik"` ska
+inte innehålla reponamnet.
 
 ```jsx
 import { useState } from 'react';
@@ -304,7 +332,7 @@ export default function App() {
   }
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Layout
         category={category}
         onCategoryChange={setCategory}
@@ -331,7 +359,8 @@ Koden är lång eftersom alla fyra vyer visas samlat första gången. Den introd
 | `/confirm` | senaste bokningen eller ett tomläge | `confirmedBooking` |
 | valfri annan adress | `NotFoundPage` | wildcard `*` |
 
-Direkt omladdning av en route kan kräva serverinställning efter publicering. Det löser vi i hosting-lektionen.
+Direkt omladdning av en route på GitHub Pages kräver en `404.html` som är en
+kopia av `index.html`. Det löser vi i hosting-lektionen.
 
 ## Se → förutsäg → kör → ändra
 
@@ -357,6 +386,7 @@ Du är klar när:
 | --- | --- |
 | Tom sida | Läs första felet i Console och kontrollera imports. |
 | `useParams` eller `useNavigate` ger fel | Körs komponenten inuti `BrowserRouter`? |
+| Vit sida efter publicering | Har `BrowserRouter` `basename={import.meta.env.BASE_URL}`? |
 | Rätt URL men fel workshop | Jämför parametern med `workshop.id`, inte `title`. |
 | Formuläret visar gammal tid | Skapar `pageBooking` ett tomt `slotId` för en annan workshop? |
 | Okänd route visar tom sida | Finns `<Route path="*" element={<NotFoundPage />} />` sist? |

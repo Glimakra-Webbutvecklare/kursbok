@@ -113,7 +113,7 @@
   - [Routing](./kapitel_8/routing.md)
   - [API och Effects](./kapitel_8/api-integration.md)
   - [Praktiska övningar](./kapitel_8/ovningar.md)
-  - [Publicera med Dokploy](./kapitel_8/hosta-react-app.md)
+  - [Publicera med GitHub Pages](./kapitel_8/hosta-react-app.md)
   - [Förklara och felsök React](./kapitel_8/teknisk-intervju.md)
   - [Fördjupning: state och logik](./kapitel_8/fordjupning/index.md)
     - [Context och reducer](./kapitel_8/fordjupning/state-fordjupning.md)
