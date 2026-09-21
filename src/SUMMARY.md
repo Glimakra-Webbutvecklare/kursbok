@@ -25,6 +25,7 @@
   - [Introduktion till CSS](./kapitel_3/css-intro.md)
   - [Selektorer, färger och typografi](./kapitel_3/selektorer.md)
   - [Boxmodellen och layoutprinciper](./kapitel_3/boxmodellen.md)
+  - [Flexbox och CSS Grid](./kapitel_3/flexbox-grid.md)
   - [CSS-enheter: Absoluta och relativa mått](./kapitel_3/css-units.md)
   - [Responsiv design](./kapitel_3/responsiv-design.md)
   - [Mobile-first design](./kapitel_3/mobile-first.md)

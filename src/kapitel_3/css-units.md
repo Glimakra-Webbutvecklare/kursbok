@@ -88,18 +88,14 @@ Relativa enheter anpassar sig till sin kontext, vilket gör dem perfekta för re
   margin: 0 auto;    /* Centrerar containern */
 }
 
-.sidebar {
-  width: 25%;        /* En fjärdedel av förälderns bredd */
-  float: left;
-}
-
-.main-content {
-  width: 75%;        /* Tre fjärdedelar av förälderns bredd */
-  float: right;
+.page-layout {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  gap: 2rem;
 }
 ```
 
-> **Historisk kod:** `float` användes länge för enkla kolumnlayouter. I modern CSS använder vi oftast Flexbox eller Grid för layout; exemplet visar bara hur procent fungerar i äldre kod.
+`grid-template-columns: 1fr 3fr` ger sidopanelen en del och huvudinnehållet tre delar av det lediga utrymmet. I modern CSS använder vi vanligen Flexbox eller Grid för layout i stället för `float`.
 
 ### Em (em) – Relativt till förälderns fontstorlek
 
@@ -221,7 +217,7 @@ html {
 .spacing-lg { margin: 1.5rem; }   /* 24px */
 ```
 
-### Exempel 2: Flexibel layout med procent och max-width
+### Exempel 2: Flexibel layout med Grid och max-width
 
 ```css
 .page-layout {
@@ -229,22 +225,17 @@ html {
   max-width: 1200px;     /* Begränsa på stora skärmar */
   margin: 0 auto;        /* Centrera */
   padding: 0 5%;         /* Responsive padding */
-}
-
-.two-column {
-  width: 100%;
-  overflow: hidden;      /* Clearfix för floats */
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
 }
 
 .main-content {
-  width: 65%;            /* 65% av containerns bredd */
-  float: left;           /* Placera till vänster */
-  padding-right: 2rem;   /* Avstånd till sidebar */
+  min-width: 0;
 }
 
 .sidebar {
-  width: 30%;            /* 30% av containerns bredd */
-  float: right;          /* Placera till höger */
+  min-width: 0;
 }
 ```
 
@@ -284,11 +275,11 @@ html {
   margin-bottom: 2rem;            /* Margin i rem */
   border: 1px solid #e0e0e0;      /* Border i px */
   border-radius: 0.5rem;          /* Border-radius i rem */
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1); /* Skugga i px */
-  float: left;                    /* För att placera kort bredvid varandra */
-  margin-right: 2%;               /* Margin i procent för responsive avstånd */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Skugga i px */
 }
 
+
+Placera flera `.card`-element i en gemensam Grid-container om de ska ligga i kolumner. Containern styr då mellanrummet med `gap`, medan kortet bara ansvarar för sitt eget innehåll och utseende.
 .card-title {
   font-size: 1.25rem;             /* Titel i rem */
   margin-bottom: 0.75rem;         /* Margin i rem */

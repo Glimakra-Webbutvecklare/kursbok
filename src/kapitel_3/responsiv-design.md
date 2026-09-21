@@ -2,10 +2,12 @@
 
 Idag surfar människor på webben från en mängd olika enheter: stora datorskärmar, bärbara datorer, surfplattor och mobiler av alla storlekar. En modern webbplats måste kunna anpassa sin layout och sitt innehåll för att se bra ut och vara användbar på alla dessa skärmar. Detta kallas **responsiv web design (responsive web design, RWD)**.
 
+**Förutsättningar:** Du ska känna till grunderna i [Flexbox och CSS Grid](./flexbox-grid.md). Här använder vi Grid för att ändra en redan känd layout vid rätt skärmbredd.
+
 > **Mål:**
 > Kunna använda en `min-width`-media query och testa hur en layout ändras när förhandsvisningen blir bredare.
 
-**Prova först:** Dra i kanten på förhandsvisningen efter att du klickat på **Kör**. Vid 600px blir rutorna två kolumner i stället för en.
+**Prova först:** Dra i kanten på förhandsvisningen efter att du klickat på **Kör**. Vid 600px blir rutorna två kolumner i stället för en. Förutsäg först vilken regel som byter antal kolumner.
 
 <!-- playground:start -->
 ```html

@@ -23,6 +23,7 @@ Svaret är **CSS (Cascading Style Sheets)**. CSS är språket vi använder för 
 - **Introduktion till CSS:** Vad CSS är och hur du kopplar det till HTML.
 - **Selektorer, färger och typografi:** Hur du väljer ut HTML-element (selektorer) och applicerar grundläggande stilar som färger och typsnitt.
 - **Boxmodellen och layout:** Hur varje HTML-element kan ses som en låda (box model) och hur du kan kontrollera dess dimensioner, marginaler (margin) och utfyllnad (padding).
+- **Flexbox och CSS Grid:** Hur du bygger moderna layouter i en rad, en kolumn eller ett rutnät.
 - **CSS-enheter och responsiv design:** Hur relativa mått och media queries anpassar en sida till olika skärmstorlekar.
 - **Mobile-first design:** Principen att designa för mobilen först och sedan skala upp för större skärmar.
 - **Praktiska övningar:** Du får applicera CSS-regler för att styla den "Om Mig"-sida du skapade i förra kapitlet.

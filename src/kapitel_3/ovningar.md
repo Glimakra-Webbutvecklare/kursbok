@@ -19,6 +19,7 @@ Nu är det dags att applicera det vi lärt oss om CSS! Vi fortsätter med "Om Mi
 > - Använda olika selektorer (element, klass, ID).
 > - Ändra färger och typografi.
 > - Arbeta med box model (padding, margin, border).
+> - Bygga enkla layouter med Flexbox och CSS Grid.
 > - Implementera grundläggande responsivitet med Media Queries (mobile-first design).
 
 **Förutsättningar:**  
@@ -118,32 +119,159 @@ Du har projektet `om-mig-sida` från kapitel 2, med `index.html` och Git initial
 
 ---
 
-## Övning 3: Responsivitet med Media Query
+## Övning 3: Flexbox för en navigering
 
-Låt oss göra så att bakgrundsfärgen på `body` ändras på lite större skärmar.
+Skapa en liten navigering med minst tre länkar. Målet är att länkarna ska placeras i en rad med jämnt mellanrum.
+
+1. Skapa en `<nav>` med en lista och minst tre länkar.
+2. Lägg `display: flex` och `gap` på listan, inte på varje länk.
+3. Ta bort listans standardpunkter och standardutfyllnad.
+4. Ändra tillfälligt `flex-direction` mellan `row` och `column`. Förutsäg resultatet innan du uppdaterar webbläsaren.
+
+<details>
+<summary>Lösningsförslag</summary>
+
+```html
+<nav aria-label="Huvudmeny">
+   <ul class="menu">
+      <li><a href="#start">Start</a></li>
+      <li><a href="#about">Om mig</a></li>
+      <li><a href="#contact">Kontakt</a></li>
+   </ul>
+</nav>
+```
+
+```css
+.menu {
+   display: flex;
+   gap: 1rem;
+   padding: 0;
+   list-style: none;
+}
+```
+
+</details>
+
+**Checkpoint:** Länkarna ligger i en rad. När du ändrar `flex-direction: column` hamnar de under varandra.
+
+---
+
+## Övning 4: CSS Grid för kort
+
+Skapa fyra kort i en `<section class="card-grid">`. Använd Grid för att skapa två lika breda kolumner.
+
+1. Sätt `display: grid` på `.card-grid`.
+2. Skapa två kolumner med `grid-template-columns` och använd `gap` för mellanrummet.
+3. Ändra tillfälligt den andra kolumnen till `2fr`. Vilket kort blir bredast, och varför?
+
+<details>
+<summary>Lösningsförslag</summary>
+
+```html
+<section class="card-grid">
+   <article>Projekt 1</article>
+   <article>Projekt 2</article>
+   <article>Projekt 3</article>
+   <article>Projekt 4</article>
+</section>
+```
+
+```css
+.card-grid {
+   display: grid;
+   grid-template-columns: 1fr 1fr;
+   gap: 1rem;
+}
+
+.card-grid article {
+   padding: 1rem;
+   border: 1px solid #333;
+}
+```
+
+</details>
+
+**Checkpoint:** Det finns två kolumner och två rader. Med `1fr 2fr` får den andra kolumnen två delar av det lediga utrymmet.
+
+---
+
+## Övning 5: Felsök en layout
+
+Korten nedan ska hamna bredvid varandra, men gör inte det. Rätta CSS:en och förklara med en mening varför ändringen fungerar.
+
+```html
+<section class="projects">
+   <article class="project">Projekt A</article>
+   <article class="project">Projekt B</article>
+</section>
+```
+
+```css
+.project {
+   display: flex;
+   gap: 1rem;
+}
+```
+
+<details>
+<summary>Lösningsförslag</summary>
+
+```css
+.projects {
+   display: flex;
+   gap: 1rem;
+}
+```
+
+Flexbox placeras på föräldern `.projects` eftersom den styr hur dess direkta barn placeras.
+
+</details>
+
+**Checkpoint:** Korten hamnar bredvid varandra, och du kan peka ut vilken del av HTML som är flex container respektive flex items.
+
+---
+
+## Övning 6: Responsivitet med Media Query
+
+Låt korten från föregående övning ligga i en kolumn på liten skärm och två kolumner från `768px`.
 
 1. **Lägg till Media Query:**  
    Lägg till följande i slutet av `style.css`:
    ```css
+    .card-grid {
+       display: grid;
+       grid-template-columns: 1fr;
+       gap: 1rem;
+    }
+
    @media (min-width: 768px) {
-     body {
-       background-color: #f0f8ff; /* AliceBlue */
-       font-size: 18px;
+       .card-grid {
+          grid-template-columns: 1fr 1fr;
      }
-     /* Lägg till fler regler här som bara ska gälla på större skärmar */
    }
    ```
 
 2. **Commit:**
    - `git add .`
-   - `git commit -m "Gör sidan responsiv: ändra bakgrund och font på bredare skärm"`
+   - `git commit -m "Gör kortlayouten responsiv med CSS Grid"`
 
 3. **Visa och testa:**  
-   Öppna `index.html`. Ändra bredden på webbläsarfönstret. Ser du hur bakgrundsfärgen och textstorleken ändras när fönstret passerar 768 pixlars bredd?
+   Öppna `index.html`. Ändra bredden på webbläsarfönstret. Kortens layout ska ändras från en till två kolumner när fönstret passerar 768 pixlars bredd.
 
 ---
 
-## Övning 4: Pusha till GitHub
+## Övning 7: Logisk ordning med tangentbordet
+
+1. Skriv HTML i ordningen: rubrik, navigering, huvudinnehåll och kontaktlänk.
+2. Använd Grid eller Flexbox för att ändra den visuella layouten på bred skärm.
+3. Tryck på `Tab` och kontrollera att fokus går i en begriplig ordning.
+4. Använd inte CSS-egenskapen `order` för att byta plats på länkar eller viktigt innehåll.
+
+**Checkpoint:** Sidans HTML-ordning är begriplig även utan CSS, och tangentbordsfokus följer samma ordning.
+
+---
+
+## Övning 8: Pusha till GitHub
 
 Om du kopplade ditt repo till GitHub i kapitel 2, pusha dina ändringar:
 
@@ -156,6 +284,6 @@ Om du kopplade ditt repo till GitHub i kapitel 2, pusha dina ändringar:
 
 ## Sammanfattning och nästa steg
 
-Du har nu tagit dina första steg med CSS! Du har länkat en extern stilmall, använt olika selektorer, lagt till färger och typografi, arbetat med box model och introducerat responsivitet med en Media Query enligt mobile-first design. Du har också fortsatt att använda Git för att spara dina framsteg.
+Du har nu tagit dina första steg med CSS! Du har länkat en extern stilmall, använt olika selektorer, lagt till färger och typografi, arbetat med box model, byggt layouter med Flexbox och Grid samt introducerat responsivitet med en Media Query enligt mobile-first design. Du har också fortsatt att använda Git för att spara dina framsteg.
 
 I nästa kapitel dyker vi ner i JavaScript för att lägga till interaktivitet på våra webbsidor.

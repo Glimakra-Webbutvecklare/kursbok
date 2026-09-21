@@ -84,10 +84,13 @@ nav li {
       flex: 1; /* Tar 1 del av tillgängligt utrymme */
   }
 
+  nav ul {
+    display: flex;
+    gap: 15px;
+  }
+
   nav li {
-    display: inline-block; /* Länkar bredvid varandra */
     margin-bottom: 0;
-    margin-right: 15px;
   }
 }
 

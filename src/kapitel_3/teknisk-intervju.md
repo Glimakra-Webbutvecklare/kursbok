@@ -327,6 +327,50 @@ Vad är skillnaden mellan CSS Grid och Flexbox? Visa hur du skulle skapa en enke
 
 ---
 
+## Fråga 13: Felsöka Flexbox
+
+**Fråga:** Varför hamnar inte korten bredvid varandra i koden nedan, och hur rättar du felet?
+
+```html
+<section class="card-list">
+  <article class="card">Första kortet</article>
+  <article class="card">Andra kortet</article>
+</section>
+```
+
+```css
+.card {
+  display: flex;
+  gap: 1rem;
+}
+```
+
+**Förslag till svar:** `display: flex` ska placeras på föräldern som styr sina direkta barn, inte på varje kort.
+
+```css
+.card-list {
+  display: flex;
+  gap: 1rem;
+}
+```
+
+Vid felsökning kontrollerar jag först vilken container som har layoutregeln och om de element jag vill placera är direkta barn till den containern.
+
+---
+
+## Fråga 14: Layout och tillgänglighet
+
+**Fråga:** Varför ska du vara försiktig med att ändra elementens visuella ordning med Flexbox eller Grid?
+
+**Förslag till svar:** CSS kan ändra var ett element visas, men tangentbordsfokus och skärmläsare följer normalt HTML-ordningen. Om exempelvis en kontaktlänk flyttas visuellt före navigeringen men ligger efter navigeringen i HTML, kan ordningen bli svår att förstå.
+
+**Bästa praxis:**
+- Skriv HTML i en logisk läsordning från början.
+- Kontrollera med `Tab` att fokusordningen är begriplig.
+- Använd inte `order` enbart för att få en annan visuell layout av viktigt innehåll.
+
+---
+
 ## Tips för tekniska intervjuer
 
 - **Visa dina kunskaper visuellt** – rita box model eller beskriv layout-flöde.

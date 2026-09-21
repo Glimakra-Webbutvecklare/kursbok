@@ -254,6 +254,8 @@ flowchart LR
         direction TB
         block1["📦 Blockelement<br/>hela tillgängliga bredden"]
         block2["📦 Nästa blockelement<br/>ny rad, hela bredden"]
+
+        block1 ~~~ block2
     end
     
     subgraph container2 ["Inline-element: delar en rad"]
@@ -278,6 +280,8 @@ flowchart LR
 
 > **Motivation:**  
 > Ibland räcker det inte med det normala flödet av element på en webbsida. Du kanske vill placera en meny som följer med när användaren scrollar, eller positionera en popup exakt där du vill ha den. CSS positionering ger dig full kontroll över var element hamnar på sidan.
+
+**Viktigt:** Använd först det normala flödet, Flexbox eller CSS Grid för sidans vanliga layout. `position` passar främst för överlägg, små justeringar och element som ska fästas vid en tydlig plats.
 
 CSS erbjuder flera sätt att positionera element på en webbsida. Här är de vanligaste positioneringsmetoderna:
 
@@ -310,7 +314,7 @@ Med `position: relative;` kan du flytta ett element i förhållande till dess ur
 
 ## 3. Absolute
 
-`position: absolute;` placerar elementet i förhållande till närmaste förfader med `position: relative;` (eller till sidans kant om ingen sådan finns). Elementet tas bort från det normala flödet.
+`position: absolute;` placerar elementet i förhållande till närmaste förälder med `position: relative;` (eller till sidans kant om ingen sådan finns). Elementet tas bort från det normala flödet.
 
 ```css
 .parent {
